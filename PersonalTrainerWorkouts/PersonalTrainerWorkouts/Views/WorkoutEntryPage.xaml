@@ -1,0 +1,108 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
+             x:Class="PersonalTrainerWorkouts.Views.WorkoutEntryPage"
+             x:DataType="models:Workouts"
+             Title="Add/Edit Workout" >
+    <ContentPage.Resources>
+        <!-- Implicit styles -->
+        <Style TargetType="{x:Type Editor}">
+            <Setter Property="BackgroundColor"
+                    Value="{DynamicResource AppBackgroundColor}" />
+        </Style>
+        <Style TargetType="StackLayout">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="{DynamicResource AppPrimaryColor}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <!-- Add an item to the toolbar -->
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Manage Exercises"
+                     Clicked="OnManageExercisesClicked" />
+    </ContentPage.ToolbarItems>
+
+    <!-- Layout children vertically -->
+    <StackLayout Margin="{DynamicResource PageMargin}">
+        
+        <Editor Placeholder="Title"
+                Text="{Binding Title}"
+                HeightRequest="50" >
+            <Editor.Keyboard>
+                <Keyboard x:FactoryMethod="Create">
+                    <x:Arguments>
+                        <KeyboardFlags>Suggestions,CapitalizeWord</KeyboardFlags>
+                    </x:Arguments>
+                </Keyboard>
+            </Editor.Keyboard>
+        </Editor>
+                
+        <Editor Placeholder="Description"
+                Text="{Binding Description}"
+                VerticalOptions="StartAndExpand"
+                AutoSize="TextChanges">
+            <Editor.Keyboard>
+                <Keyboard x:FactoryMethod="Create">
+                    <x:Arguments>
+                        <KeyboardFlags>Suggestions,CapitalizeSentence</KeyboardFlags>
+                    </x:Arguments>
+                </Keyboard>
+            </Editor.Keyboard>
+        </Editor>
+
+        <Grid ColumnDefinitions="*,*">
+            <!-- Layout children in two columns -->
+            <Button Text="Save"
+                    HeightRequest="75"
+                    Clicked="OnSaveButtonClicked" />
+            <Button Grid.Column="1"
+                    Text="Delete"
+                    Clicked="OnDeleteButtonClicked"/>
+        </Grid>
+
+        <BoxView   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   HeightRequest="1"
+                   WidthRequest="200"  
+                   Color="Gray"/>
+
+        <CollectionView x:Name="CollectionView"
+                        Margin="{DynamicResource PageMargin}"
+                        SelectionMode="Multiple"
+                        SelectionChanged="OnSelectionChanged"
+                        x:DataType="models:Exercises">
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical"
+                                   ItemSpacing="10" />
+            </CollectionView.ItemsLayout>
+            <!-- Define the appearance of each item in the list -->
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <StackLayout>
+                        <Label Text="{Binding Name}"
+                               FontSize="Medium" />
+                        <Label Text="{Binding Description}"
+                               TextColor="{DynamicResource TertiaryColor}"
+                               FontSize="Small" />
+                        <Label Text="{Binding LengthOfTime}"
+                               TextColor="{DynamicResource TertiaryColor}"
+                               FontSize="Small" />
+                    </StackLayout>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </StackLayout>
+
+</ContentPage>

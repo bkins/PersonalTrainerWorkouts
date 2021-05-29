@@ -1,0 +1,36 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
+             xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             x:Class="PersonalTrainerWorkouts.Views.ExerciseExistingEntryPage"
+             x:DataType="viewmodels:ExerciseViewModel"
+             Title="Add Exercise" >
+
+    <!-- Layout children vertically -->
+    <StackLayout Margin="{DynamicResource PageMargin}">
+        <Picker Title="Select an exercise"
+                TitleColor="Red"
+                ItemsSource="{Binding AllExercises}"
+                SelectedItem="{Binding SelectedExercise}"
+                ItemDisplayBinding="{Binding Name}" />
+        <Label HorizontalOptions="StartAndExpand"
+               Text="{Binding SelectedExercise.Name}"/>
+        <Label HorizontalOptions="StartAndExpand"
+               Text="{Binding SelectedExercise.Description}"/>
+        <Label HorizontalOptions="StartAndExpand"
+               Text="{Binding SelectedExercise.LengthOfTime}"/>
+        <Label HorizontalOptions="StartAndExpand"
+               Text="{Binding SelectedExercise.PushPull}"/>
+
+        <Grid ColumnDefinitions="*,*">
+            <!-- Layout children in two columns -->
+            <Button Text="Save"
+                    HeightRequest="25"
+                    Clicked="OnSaveButtonClicked" />
+            <Button Grid.Column="1"
+                    Text="Delete"
+                    Clicked="OnDeleteButtonClicked"/>
+        </Grid>
+    </StackLayout>
+</ContentPage>
