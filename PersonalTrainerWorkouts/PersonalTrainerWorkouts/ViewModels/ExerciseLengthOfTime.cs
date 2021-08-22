@@ -5,15 +5,17 @@ namespace PersonalTrainerWorkouts.ViewModels
 {
     public class ExerciseLengthOfTime
     {
-        public int       WorkoutExerciseId { get; set; }
+        public int      WorkoutExerciseId { get; set; }
         public Exercise Exercise          { get; set; }
-        public int       LengthOfTime      { get; set; }
+        public int      LengthOfTime      { get; set; }
+        public int      Reps              { get; set; }
 
-        public ExerciseLengthOfTime(int workoutExerciseId, int exerciseId, int lengthOfTime)
+        public ExerciseLengthOfTime(int workoutExerciseId, int exerciseId, int lengthOfTime, int reps)
         {
             WorkoutExerciseId = workoutExerciseId;
             Exercise          = App.Database.GetExercise(exerciseId);
             LengthOfTime      = lengthOfTime;
+            Reps              = reps;
         }
         //public ExerciseLengthOfTime(int workoutId, int exerciseId)
         //{

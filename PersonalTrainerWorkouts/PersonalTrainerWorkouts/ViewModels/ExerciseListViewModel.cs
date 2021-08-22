@@ -14,7 +14,7 @@ namespace PersonalTrainerWorkouts.ViewModels
     public class ExerciseListViewModel : ViewModelBase
     {
         private ObservableCollection<WorkoutExerciseWithChildren> _linkWorkoutExercises;
-        private int                                               _workoutId { get; set; }
+        public int                                               WorkoutId { get; set; }
 
         public ObservableCollection<WorkoutExerciseWithChildren> LinkWorkoutExercises
         {
@@ -30,7 +30,7 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         public ExerciseListViewModel(int workoutId)
         {
-            _workoutId = workoutId;
+            WorkoutId = workoutId;
             RefreshData();
         }
 
@@ -39,9 +39,9 @@ namespace PersonalTrainerWorkouts.ViewModels
             LinkWorkoutExercises = new ObservableCollection<WorkoutExerciseWithChildren>();
 
             //var workoutExercisesAssociatedWithWorkout = DataAccessLayer.GetWorkoutExercises(_workoutId);
-            var workoutExercisesAssociatedWithWorkout = DataAccessLayer.GetLinkedWorkoutsToExercises(_workoutId);
+            var workoutExercisesAssociatedWithWorkout = DataAccessLayer.GetLinkedWorkoutsToExercises(WorkoutId);
 
-            var workoutExercisesWithChildren = GetWorkoutExerciseWithChildrenFromDatabase(_workoutId
+            var workoutExercisesWithChildren = GetWorkoutExerciseWithChildrenFromDatabase(WorkoutId
                                                                                         , workoutExercisesAssociatedWithWorkout);
 
             foreach (var workoutExerciseWithChildren in workoutExercisesWithChildren)

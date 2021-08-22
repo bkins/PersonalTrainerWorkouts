@@ -55,7 +55,7 @@ namespace PersonalTrainerWorkouts.Views
         {
             InitializeComponent();
 
-            BindingContext = new Workout();
+            BindingContext = new Workout(); 
         }
         //https://docs.microsoft.com/en-us/xamarin/get-started/quickstarts/database?pivots=windows
 

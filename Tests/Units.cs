@@ -18,6 +18,9 @@ using Xunit.Abstractions;
 
 namespace Tests
 {
+    //These test are more of integration test.
+    //BENDO: Consider moving these to an Integrations Test class. Or renaming and recreating the Unit Test class
+
     public class Units : IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
@@ -309,14 +312,14 @@ namespace Tests
 
         #endregion
 
-    #region Views
+    #region ViewModels
 
         [Fact]
         public void ReorderExerciseList()
         {
             RefreshDatabase();
 
-            var viewModel = LoadExerciseToReorder(out var exerciseOne
+            var viewModel = LoadExerciseListViewModel(out var exerciseOne
                                                 , out var exerciseTwo
                                                 , out var exerciseThree
                                                 , out var exerciseFour);
@@ -357,84 +360,20 @@ namespace Tests
             }
         }
 
-        private ExerciseListViewModel LoadExerciseToReorder(out WorkoutExerciseWithChildren exerciseOne
-                                                          , out WorkoutExerciseWithChildren exerciseTwo
-                                                          , out WorkoutExerciseWithChildren exerciseThree
-                                                          , out WorkoutExerciseWithChildren exerciseFour)
+        [Fact]
+        public void CalculateTotalReps()
         {
-            var workout = new Workout
-                          {
-                              Name = "Test Reordering Exercises"
-                          };
+            RefreshDatabase();
 
-            var workoutId = DataAccessLayer.AddNewWorkout(workout);
+            var viewModel = LoadWorkoutExerciseViewModel();
+            var totalReps = viewModel.TotalReps;
 
-            var exercise1 = new Exercise
-                            {
-                                Name = "Exercise 1"
-                            };
-
-            var exercise2 = new Exercise
-                            {
-                                Name = "Exercise 2"
-                            };
-
-            var exercise3 = new Exercise
-                            {
-                                Name = "Exercise 3"
-                            };
-
-            var exercise4 = new Exercise
-                            {
-                                Name = "Exercise 4"
-                            };
-
-            var exercise1Id = DataAccessLayer.AddNewExercise(exercise1);
-            var exercise2Id = DataAccessLayer.AddNewExercise(exercise2);
-            var exercise3Id = DataAccessLayer.AddNewExercise(exercise3);
-            var exercise4Id = DataAccessLayer.AddNewExercise(exercise4);
-
-            var workoutExercise1 = new WorkoutExercise
-                                   {
-                                       ExerciseId = exercise1Id
-                                     , WorkoutId  = workoutId
-                                   };
-
-            var workoutExercise2 = new WorkoutExercise
-                                   {
-                                       ExerciseId = exercise2Id
-                                     , WorkoutId  = workoutId
-                                   };
-
-            var workoutExercise3 = new WorkoutExercise
-                                   {
-                                       ExerciseId = exercise3Id
-                                     , WorkoutId  = workoutId
-                                   };
-
-            var workoutExercise4 = new WorkoutExercise
-                                   {
-                                       ExerciseId = exercise4Id
-                                     , WorkoutId  = workoutId
-                                   };
-
-            DataAccessLayer.AddWorkoutExercise(workoutExercise1);
-            DataAccessLayer.AddWorkoutExercise(workoutExercise2);
-            DataAccessLayer.AddWorkoutExercise(workoutExercise3);
-            DataAccessLayer.AddWorkoutExercise(workoutExercise4);
-
-            var viewModel = new ExerciseListViewModel(workoutId);
-
-            exerciseOne   = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise1.Name);
-            exerciseTwo   = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise2.Name);
-            exerciseThree = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise3.Name);
-            exerciseFour  = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise4.Name);
-
-            return viewModel;
+            Assert.Equal(viewModel.ExercisesWithLengthOfTime.Count, totalReps);
         }
 
     #endregion
-#endregion
+
+    #endregion
 
 #region ApplicationExceptions
 
@@ -608,6 +547,96 @@ namespace Tests
         private static void SearchListThatResultInNotElementsInSequence()
         {
             Database.GetWorkout(-1);
+        }
+
+        private WorkoutExerciseViewModel LoadWorkoutExerciseViewModel()
+        {
+            var exerciseListViewModel = LoadExerciseListViewModel(out _, out _, out _, out _);
+
+            var workoutExerciseViewModel = new WorkoutExerciseViewModel(exerciseListViewModel.WorkoutId.ToString());
+
+            foreach (var exerciseLengthOfTime in workoutExerciseViewModel.ExercisesWithLengthOfTime)
+            {
+                exerciseLengthOfTime.Reps = 1;
+            }
+
+            return workoutExerciseViewModel;
+        }
+
+        private ExerciseListViewModel LoadExerciseListViewModel(out WorkoutExerciseWithChildren exerciseOne
+                                                              , out WorkoutExerciseWithChildren exerciseTwo
+                                                              , out WorkoutExerciseWithChildren exerciseThree
+                                                              , out WorkoutExerciseWithChildren exerciseFour)
+        {
+            var workout = new Workout
+                          {
+                              Name = "Test Reordering Exercises"
+                          };
+
+            var workoutId = DataAccessLayer.AddNewWorkout(workout);
+
+            var exercise1 = new Exercise
+                            {
+                                Name = "Exercise 1"
+                            };
+
+            var exercise2 = new Exercise
+                            {
+                                Name = "Exercise 2"
+                            };
+
+            var exercise3 = new Exercise
+                            {
+                                Name = "Exercise 3"
+                            };
+
+            var exercise4 = new Exercise
+                            {
+                                Name = "Exercise 4"
+                            };
+
+            var exercise1Id = DataAccessLayer.AddNewExercise(exercise1);
+            var exercise2Id = DataAccessLayer.AddNewExercise(exercise2);
+            var exercise3Id = DataAccessLayer.AddNewExercise(exercise3);
+            var exercise4Id = DataAccessLayer.AddNewExercise(exercise4);
+
+            var workoutExercise1 = new LinkedWorkoutsToExercises
+                                   {
+                                       ExerciseId = exercise1Id
+                                     , WorkoutId  = workoutId
+                                   };
+
+            var workoutExercise2 = new LinkedWorkoutsToExercises
+                                   {
+                                       ExerciseId = exercise2Id
+                                     , WorkoutId  = workoutId
+                                   };
+
+            var workoutExercise3 = new LinkedWorkoutsToExercises
+                                   {
+                                       ExerciseId = exercise3Id
+                                     , WorkoutId  = workoutId
+                                   };
+
+            var workoutExercise4 = new LinkedWorkoutsToExercises
+                                   {
+                                       ExerciseId = exercise4Id
+                                     , WorkoutId  = workoutId
+                                   };
+
+            DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise1);
+            DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise2);
+            DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise3);
+            DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise4);
+
+            var viewModel = new ExerciseListViewModel(workoutId);
+
+            exerciseOne   = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise1.Name);
+            exerciseTwo   = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise2.Name);
+            exerciseThree = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise3.Name);
+            exerciseFour  = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise4.Name);
+
+            return viewModel;
         }
 
 #endregion

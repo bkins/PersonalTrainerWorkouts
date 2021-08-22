@@ -14,6 +14,7 @@ namespace PersonalTrainerWorkouts.Models.Intermediates
         public int ExerciseId { get; set; }
 
         public int LengthOfTime { get; set; }
+        public int Reps         { get; set; }   
         public int OrderBy      { get; set; }
         
     }
