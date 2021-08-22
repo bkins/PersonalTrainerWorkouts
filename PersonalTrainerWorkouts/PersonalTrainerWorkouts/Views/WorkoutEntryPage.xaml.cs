@@ -1,92 +1,101 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using ApplicationExceptions;
 using PersonalTrainerWorkouts.Models;
+using PersonalTrainerWorkouts.ViewModels;
+using PersonalTrainerWorkouts.Utilities;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace PersonalTrainerWorkouts.Views
 {
-    [QueryProperty(nameof(ItemId), nameof(ItemId))]
     public partial class WorkoutEntryPage : ContentPage
     {
-        private string _itemId = "0";
-
-        public string ItemId
-        {
-            get => _itemId;
-            set => LoadWorkout(value);
-        }
-        async void LoadWorkout(string itemId)
-        {
-            try
-            {
-                _itemId = itemId;
-
-                var id      = Convert.ToInt32(itemId);
-                var workout = await App.Database.GetWorkoutsAsync(id);
-                
-                BindingContext             = workout;
-                CollectionView.ItemsSource = await App.Database.GetExercisesInWorkoutAsync(id);
-            }
-            catch (Exception)
-            {
-                //BENDO:  Implement "toast" messages: https://stackoverflow.com/a/44126899/431319
-                Console.WriteLine("Failed to load Workout.");
-            }
-        }
-
+        private WorkoutEntryViewModel ViewModel { get; set; }
+        private Entry                 NameEntry { get; set; }
+        
         public WorkoutEntryPage()
         {
             InitializeComponent();
+            ViewModel      = new WorkoutEntryViewModel();
+            BindingContext = ViewModel;
 
-            BindingContext = new Workouts();
+            DifficultyEditor.Text = string.Empty;
         }
         //https://docs.microsoft.com/en-us/xamarin/get-started/quickstarts/database?pivots=windows
         
-        async void OnSaveButtonClicked(object sender, EventArgs e)
-        {
-            var workout = (Workouts)BindingContext;
-            workout.CreateDateTime = DateTime.UtcNow;
-            if ( ! string.IsNullOrWhiteSpace(workout.Title))
-            {
-                await App.Database.SaveWorkoutAsync(workout);
-            }
-
-            // Navigate backwards
-            await Shell.Current.GoToAsync("..");
-        }
-
-        async void OnDeleteButtonClicked(object sender, EventArgs e)
-        {
-            var workout = (Workouts)BindingContext;
-            await App.Database.DeleteWorkoutAsync(workout);
-
-            // Navigate backwards
-            await Shell.Current.GoToAsync("..");
-        }
-
         private async void OnSelectionChanged(object                    sender,
                                               SelectionChangedEventArgs e)
         {
-            var exercise = (Exercises)e.CurrentSelection.FirstOrDefault();
+            var exercise = (Exercise)e.CurrentSelection.FirstOrDefault();
 
             if (exercise == null)
             {
                 return;
             }
 
-            var path = $"{nameof(ExerciseNewEntryPage)}?{nameof(ExerciseNewEntryPage.WorkoutId)}={ItemId}&{nameof(ExerciseNewEntryPage.ExerciseId)}={exercise.Id}";
-            await Shell.Current.GoToAsync(path);
+            await PageNavigation.NavigateTo(nameof(ExerciseNewEntryPage)
+                                          , nameof(ExerciseNewEntryPage.WorkoutId)
+                                          , ViewModel.NewWorkout.Id.ToString()
+                                          , nameof(ExerciseNewEntryPage.ExerciseId)
+                                          , exercise.Id.ToString());
         }
         
         async void OnManageExercisesClicked(object    sender,
                                             EventArgs e)
         {
-            var path = $"{nameof(ExerciseListPage)}?{nameof(ExerciseListPage.ItemId)}={ItemId}";
-            await Shell.Current.GoToAsync(path);
+            await PageNavigation.NavigateTo(nameof(ExerciseListPage)
+                                          , nameof(ExerciseListPage.WorkoutId)
+                                          , ViewModel.NewWorkout.Id.ToString());
+        }
+        
+        private void SaveWorkout()
+        {
+            var context = (WorkoutEntryViewModel)BindingContext;
+            context.NewWorkout.CreateDateTime = DateTime.UtcNow;
+
+            try
+            {
+                context.SaveWorkout();
+            }
+            catch (AttemptToAddDuplicateEntityException e)
+            {
+                NameEntry.Focus();
+
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
+            }
+            catch (UnnamedEntityException e)
+            {
+                NameEntry.Focus();
+                Logger.WriteLine("Please name the workout before continuing.", Category.Warning, e);
+            }
+
+        }
+
+        private void Name_OnUnfocused(object         sender
+                                    , FocusEventArgs e)
+        {
+            NameEntry = (Entry) sender;
+
+            SaveWorkout();
+        }
+
+        private void Description_OnUnfocused(object         sender
+                                             , FocusEventArgs e)
+        {
+            SaveWorkout();
+        }
+
+        private void Difficulty_OnUnfocused(object         sender
+                                          , FocusEventArgs e)
+        {
+            SaveWorkout();
         }
     }
 }

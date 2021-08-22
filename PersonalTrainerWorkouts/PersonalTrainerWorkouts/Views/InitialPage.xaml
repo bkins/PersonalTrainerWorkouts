@@ -1,8 +1,12 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
+             xmlns:xForms="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
              x:Class="PersonalTrainerWorkouts.Views.InitialPage"
              Title = "Workouts">
+    
+    
     <ContentPage.Resources>
         <!-- Define a visual state for the Selected state of the CollectionView -->
         <Style TargetType="StackLayout">
@@ -20,6 +24,33 @@
                 </VisualStateGroupList>
             </Setter>
         </Style>
+
+        <ResourceDictionary>
+            <DataTemplate x:Name="ItemTemplate"  
+                          x:Key="ItemTemplate">
+                <Grid x:Name="grid"
+                      >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <Label Text="{Binding Name}"
+                           Grid.Row="0"
+                           FontSize="Medium"
+                           FontAttributes="Bold"
+                           Margin="10, 0, 0, 0"
+                           />
+                    <Label Text="{Binding Description}"
+                           Grid.Row="1"
+                           FontSize="Medium"
+                           LineBreakMode="TailTruncation"
+                           Margin="10, 0, 0, 0"
+                    />
+                    
+                </Grid>
+                
+            </DataTemplate>
+        </ResourceDictionary>
     </ContentPage.Resources>
 
     <!-- Add an item to the toolbar -->
@@ -29,27 +60,51 @@
     </ContentPage.ToolbarItems>
 
     <!-- Display workouts in a list -->
-    <CollectionView x:Name="CollectionView"
-                    Margin="{DynamicResource PageMargin}"
+    <!--Margin="{DynamicResource PageMargin}"-->
+    <xForms:SfListView x:Name="ListView"
+                    HeightRequest="100" 
+                    AutoFitMode="DynamicHeight"
                     SelectionMode="Single"
-                    SelectionChanged="OnSelectionChanged">
-        <CollectionView.ItemsLayout>
+                    AllowSwiping="True"
+                    SelectionChanged="OnSelectionChanged"
+                    Swiping="ListView_OnSwiping"
+                    SwipeEnded="ListView_SwipeEnded"
+                    ItemTemplate="{StaticResource ItemTemplate}"
+                    >
+        <!--<CollectionView.ItemsLayout>
             <LinearItemsLayout Orientation="Vertical"
                                ItemSpacing="10" />
-        </CollectionView.ItemsLayout>
+        </CollectionView.ItemsLayout>-->
         <!-- Define the appearance of each item in the list -->
-        <CollectionView.ItemTemplate>
-            <DataTemplate>
-                <StackLayout>
-                    <Label Text="{Binding Title}"
-                           FontSize="Medium" />
-                    <Label Text="{Binding Description}"
-                           TextColor="{DynamicResource TertiaryColor}"
-                           FontSize="Small" />
-                </StackLayout>
+        <xForms:SfListView.LeftSwipeTemplate>
+            <DataTemplate x:Name="LeftSwipeTemplate" >
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid Grid.Column="0"
+                          BackgroundColor="#DC595F" 
+                          HorizontalOptions="Fill" 
+                          VerticalOptions="Fill" 
+                          >
+                        <Grid VerticalOptions="Center" 
+                              HorizontalOptions="Center">
+                            <Image x:Name="DeleteImage" 
+                                   Grid.Column="0"
+                                   Grid.Row="0"
+                                   BackgroundColor="Transparent"
+                                   HeightRequest="35"
+                                   WidthRequest="35"
+                                   BindingContextChanged="LeftImage_BindingContextChanged"
+                                   
+                                   Source="Delete.png" />
+                        </Grid>
+                    </Grid>
+                </Grid>
+                
             </DataTemplate>
-        </CollectionView.ItemTemplate>
-    </CollectionView>
+        </xForms:SfListView.LeftSwipeTemplate>
+    </xForms:SfListView>
 </ContentPage>
     
     

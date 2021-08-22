@@ -9,9 +9,16 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalTrainerWorkouts.And
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalTrainerWorkouts.iOS", "PersonalTrainerWorkouts\PersonalTrainerWorkouts.iOS\PersonalTrainerWorkouts.iOS.csproj", "{30ADA1C3-11E9-4C29-BB4F-FF0028E0106C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PersonalTrainerWorkouts", "PersonalTrainerWorkouts\PersonalTrainerWorkouts\PersonalTrainerWorkouts.csproj", "{A5DDD988-41CF-455B-8A86-A1F067D0B11D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PersonalTrainerWorkouts", "PersonalTrainerWorkouts\PersonalTrainerWorkouts\PersonalTrainerWorkouts.csproj", "{A5DDD988-41CF-455B-8A86-A1F067D0B11D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Tests", "Tests\Tests.csproj", "{546A008C-53BE-4B01-B43B-E5139216B31F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tests", "Tests\Tests.csproj", "{546A008C-53BE-4B01-B43B-E5139216B31F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1BB185AD-5828-4B5B-BFF3-D789223DCF5C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApplicationExceptions", "ApplicationExceptions\ApplicationExceptions.csproj", "{B840D004-177A-4F78-83AE-47BA324C568B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -197,6 +204,30 @@ Global
 		{546A008C-53BE-4B01-B43B-E5139216B31F}.Release|x64.Build.0 = Release|Any CPU
 		{546A008C-53BE-4B01-B43B-E5139216B31F}.Release|x86.ActiveCfg = Release|Any CPU
 		{546A008C-53BE-4B01-B43B-E5139216B31F}.Release|x86.Build.0 = Release|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Debug|ARM.ActiveCfg = Debug|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Debug|ARM.Build.0 = Debug|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Debug|x64.Build.0 = Debug|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Debug|x86.Build.0 = Debug|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Release|ARM.ActiveCfg = Release|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Release|ARM.Build.0 = Release|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Release|iPhone.Build.0 = Release|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Release|x64.ActiveCfg = Release|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Release|x64.Build.0 = Release|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Release|x86.ActiveCfg = Release|Any CPU
+		{B840D004-177A-4F78-83AE-47BA324C568B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

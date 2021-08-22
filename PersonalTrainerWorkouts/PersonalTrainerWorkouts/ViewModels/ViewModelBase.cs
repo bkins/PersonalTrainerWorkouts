@@ -1,4 +1,5 @@
 ﻿
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -11,10 +12,24 @@ namespace PersonalTrainerWorkouts.ViewModels
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
-            if (handler != null)
-            {
-                handler(this, new PropertyChangedEventArgs(propertyName));
-            }
+
+            handler?.Invoke(this
+                          , new PropertyChangedEventArgs(propertyName));
         }
-	}
+
+        protected void SetValue<T>(ref T                     backingField
+                                 , T                         value
+                                 , [CallerMemberName] string propertyName = null)
+        {
+            if (EqualityComparer<T>.Default.Equals(backingField
+                                                 , value))
+            {
+                return;
+            }
+
+            backingField = value;
+
+            OnPropertyChanged(propertyName);
+        }
+    }
 }

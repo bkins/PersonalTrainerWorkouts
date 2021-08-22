@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -10,26 +11,32 @@ using System.Threading.Tasks;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using PersonalTrainerWorkouts.Models;
+using PersonalTrainerWorkouts.Utilities;
+using PersonalTrainerWorkouts.ViewModels;
+using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views
 {
     [QueryProperty(nameof(ItemId), nameof(ItemId))]
     public partial class ExerciseExistingEntryPage : ContentPage, INotifyPropertyChanged
     {
+        private bool              _loading = true;
+        private ExerciseViewModel ViewModel { get; set; }
 
-        private string _itemId = "0";
+        private string            _itemId = "0";
 
         public string ItemId
         {
             get => _itemId;
             set => LoadExercises(value);
         }
-        
-        public List<Exercises> AllExercises { get; set; }  //=> App.Database.GetAllExercisesAsync().Result;
-        
-        private Exercises _selectedExercise;
+        public List<Exercise> AllExercisesList { get; set; }
+        //public List<Exercises> AllExercises { get; set; }  //=> App.Database.GetAllExercisesAsync().Result;
+        public Exercise[] AllExercises { get; set; }
 
-        public Exercises SelectedExercise
+        private Exercise _selectedExercise;
+
+        public Exercise SelectedExercise
         {
             get => _selectedExercise;
             set
@@ -48,18 +55,69 @@ namespace PersonalTrainerWorkouts.Views
             {
                 _itemId = itemId;
                 var id      = Convert.ToInt32(itemId);
-                AllExercises = await App.Database.GetAllExercisesAsync();
+                //AllExercises = await App.AsyncDatabase.GetAllExercisesAsync();
+                AllExercises = App.Database.GetExercises() as Exercise[];
+                //var listOfExercises  = await App.AsyncDatabase.GetObservableCollectionOfExercisesAsync();
+                var listOfExercises = AllExercises;
+
+                ExercisePicker.ItemsSource   = ViewModel.AllExercises;
+                //ExercisePicker.SelectedIndex = -1;
+
+
+                //AllExercisesList           = listOfExercises;
+                //ExercisePicker.ItemsSource = AllExercisesList;
+                //ExercisePicker = new ExistingExerciseList
+                //                 {
+                //                     ColumnHeaderTextCollection = new ObservableCollection<string>
+                //                                                  {
+                //                                                      "Name"
+                //                                                    , "LengthOfTime"
+                //                                                  }
+
+                //                   , ExercisesList       = listOfExercises
+                //                   , HeaderText          = "Exercise Picker Header"
+                //                   , IsEnableAutoReverse = false
+                //                   , IsEnableBorderColor = true
+                //                   , IsShowColumnHeader  = true
+                //                   , IsShowHeader        = true
+                //                   , Name                = "PickerName"
+                //                   , SelectedIndex       = 0
+                //                   , ItemsSource         = listOfExercises
+                //                 };
+
+                //ExercisePicker.ItemsSource = new ExistingExerciseList()
+                //{
+                //    ColumnHeaderTextCollection = new List<string>
+                //                                 {
+                //                                     "Name"
+                //                                   , "LengthOfTime"
+                //                                 }
+                //                               , ExercisesList       = listOfExercises
+                //                               , HeaderText          = "Exercise Picker Header"
+                //                               , IsEnableAutoReverse = false
+                //                               , IsEnableBorderColor = true
+                //                               , IsShowColumnHeader  = true
+                //                               , IsShowHeader        = true
+                //                               , Name                = "PickerName"
+                //                               , SelectedIndex       = 0
+
+                //};
+
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                //BENDO:  Implement "toast" messages: https://stackoverflow.com/a/44126899/431319
-                Console.WriteLine("Failed to load Workout.");
+                Logger.WriteLine("Failed to load Workout.", Category.Error, e);
+                //BENDO: consider implementing a page that shows exception details
             }
+
+            _loading = false;
         }
 
         public ExerciseExistingEntryPage()
         {
             InitializeComponent();
+            ViewModel = new ExerciseViewModel();
+
             // BindingContext = new Exercises();
         }
         
@@ -74,21 +132,26 @@ namespace PersonalTrainerWorkouts.Views
 
         private async void SetAllExercises()
         {
-            AllExercises = await App.Database.GetAllExercisesAsync();
+            //AllExercises = await App.AsyncDatabase.GetAllExercisesAsync();
+            AllExercises = App.Database.GetExercises() as Exercise[];
         }
 
         async void OnSaveButtonClicked(object    sender,
                                        EventArgs e)
         {
-            var exercise = (Exercises)BindingContext;
+            var exercise = (Exercise)BindingContext;
             if ( ! string.IsNullOrWhiteSpace(exercise.Name))
             {
-                var workout = App.Database.GetWorkoutsAsync(Convert.ToInt32(ItemId)).Result;
-                workout.Exercises.Add(exercise);
-                await App.Database.SaveWorkoutAsync(workout);
+                //var workout  = App.AsyncDatabase.GetWorkoutsAsync(Convert.ToInt32(ItemId)).Result;
+                var workout = App.Database.GetWorkout(Convert.ToInt32(ItemId));
 
-                // Navigate backwards
-                await Shell.Current.GoToAsync("..");
+                workout.Exercises.Add(exercise);
+                //await App.AsyncDatabase.SaveWorkoutAsync(workout);
+                App.Database.UpdateWorkout(workout);
+                
+                await PageNavigation.NavigateTo(nameof(ExerciseListPage), nameof(ExerciseListPage.WorkoutId), workout.Id.ToString());
+                //// Navigate backwards
+                //await Shell.Current.GoToAsync("..");
             }
 
         }
@@ -98,6 +161,51 @@ namespace PersonalTrainerWorkouts.Views
         {
             throw new NotImplementedException();
         }
-        
+
+        private async void ExercisePicker_OnSelectionChanged(object                    sender
+                                                           , SelectionChangedEventArgs e)
+        {
+            return;
+
+            if (_loading 
+             || ExercisePicker.SelectedIndex == null 
+             || ((int)ExercisePicker.SelectedIndex) == -1)
+                return;
+
+        }
+
+        private async void ExercisePicker_OnOkButtonClicked(object                    sender
+                                                          , SelectionChangedEventArgs e)
+        {
+            ViewModel.SelectedExercise = (Exercise) ExercisePicker.SelectedItem;
+
+            ViewModel.SaveExercise(Convert.ToInt32(ItemId));
+            
+            //if (ViewModel.SelectedExercise == null)
+            //{
+            //    return;
+            //}
+            ////var workout  = App.AsyncDatabase.GetWorkoutsAsync(Convert.ToInt32(ItemId)).Result;
+            //var workout = App.Database.GetWorkout(Convert.ToInt32(ItemId));
+            //workout.Exercises.Add(exercise);
+            
+            ////await App.AsyncDatabase.SaveNewWorkoutExerciseAsync(workout.Id, exercise.Id, exercise.LengthOfTime);
+            //App.Database.UpdateWorkout(workout);
+
+            ////if ( ! workout.Exercises.Contains(exercise))
+            ////{
+            ////    await App.Database.SaveExerciseAsync(exercise);
+            ////    workout.Exercises.Add(exercise);
+            ////}
+            
+            //////BUG:  When adding an existing exercise to a workout it is only saved when you add a new exercise
+
+            ////await App.Database.SaveWorkoutAsync(workout);
+
+            //////App.Database.FillModels();
+
+            ////// Navigate backwards
+            await Shell.Current.GoToAsync("..");
+        }
     }
 }

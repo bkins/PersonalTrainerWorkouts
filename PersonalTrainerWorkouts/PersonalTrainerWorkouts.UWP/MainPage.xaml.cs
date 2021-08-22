@@ -1,4 +1,5 @@
-﻿using System;
+using Syncfusion.ListView.XForms.UWP;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,14 +13,17 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using PersonalTrainerWorkouts.UWP.Utilities;
 
+[assembly: Xamarin.Forms.Dependency(typeof(MessageUwp))]
 namespace PersonalTrainerWorkouts.UWP
 {
     public sealed partial class MainPage
     {
         public MainPage()
         {
-            this.InitializeComponent();
+this.InitializeComponent();
+SfListViewRenderer.Init();
 
             LoadApplication(new PersonalTrainerWorkouts.App());
         }

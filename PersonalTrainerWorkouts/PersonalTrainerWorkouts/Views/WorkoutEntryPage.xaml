@@ -2,9 +2,12 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
+             xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.WorkoutEntryPage"
-             x:DataType="models:Workouts"
-             Title="Add/Edit Workout" >
+             x:DataType="viewmodels:WorkoutEntryViewModel"
+             Title="Add Workout" >
+             <!---->
+             <!--x:DataType="models:Workout"-->
     <ContentPage.Resources>
         <!-- Implicit styles -->
         <Style TargetType="{x:Type Editor}">
@@ -30,29 +33,40 @@
 
     <!-- Add an item to the toolbar -->
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Manage Exercises"
-                     Clicked="OnManageExercisesClicked" />
+        <ToolbarItem Name="ManageExerciseToolBarItem"
+                     Text="Manage Exercises"
+                     Clicked="OnManageExercisesClicked" 
+                     IsEnabled="{Binding ManageExerciseToolBarItemIsEnabled}"
+                     /><!---->
     </ContentPage.ToolbarItems>
 
     <!-- Layout children vertically -->
     <StackLayout Margin="{DynamicResource PageMargin}">
         
-        <Editor Placeholder="Title"
-                Text="{Binding Title}"
-                HeightRequest="50" >
-            <Editor.Keyboard>
+        <Entry   
+                Placeholder="Name"
+                Text="{Binding NewWorkout.Name}"
+                HeightRequest="50" 
+                IsTabStop="True"
+                ReturnType="Next"
+                TabIndex="1"
+                Unfocused="Name_OnUnfocused"
+                
+                >
+            <Entry.Keyboard>
                 <Keyboard x:FactoryMethod="Create">
                     <x:Arguments>
                         <KeyboardFlags>Suggestions,CapitalizeWord</KeyboardFlags>
                     </x:Arguments>
                 </Keyboard>
-            </Editor.Keyboard>
-        </Editor>
+            </Entry.Keyboard>
+        </Entry>
                 
         <Editor Placeholder="Description"
-                Text="{Binding Description}"
-                VerticalOptions="StartAndExpand"
-                AutoSize="TextChanges">
+                Text="{Binding NewWorkout.Description}"
+                AutoSize="TextChanges"
+                TabIndex="2"
+                Unfocused="Description_OnUnfocused">
             <Editor.Keyboard>
                 <Keyboard x:FactoryMethod="Create">
                     <x:Arguments>
@@ -61,16 +75,25 @@
                 </Keyboard>
             </Editor.Keyboard>
         </Editor>
+        <!--TODO: move Difficulty to be right under Description.  -->
+        <!--Along with Save/Delete to be right under Difficulty -->
+        <Editor x:Name="DifficultyEditor"
+                Placeholder="Difficulty"
+                Text="{Binding NewWorkout.Difficulty}"
+                Keyboard="Numeric"
+                TabIndex="3"
+                Unfocused="Difficulty_OnUnfocused"/>
 
-        <Grid ColumnDefinitions="*,*">
-            <!-- Layout children in two columns -->
+        <!--<Grid ColumnDefinitions="*,*">
+            --><!-- Layout children in two columns --><!--
             <Button Text="Save"
                     HeightRequest="75"
                     Clicked="OnSaveButtonClicked" />
             <Button Grid.Column="1"
                     Text="Delete"
                     Clicked="OnDeleteButtonClicked"/>
-        </Grid>
+            
+        </Grid-->
 
         <BoxView   VerticalOptions="Center"
                    HorizontalOptions="Center"
@@ -78,31 +101,11 @@
                    WidthRequest="200"  
                    Color="Gray"/>
 
-        <CollectionView x:Name="CollectionView"
-                        Margin="{DynamicResource PageMargin}"
-                        SelectionMode="Multiple"
-                        SelectionChanged="OnSelectionChanged"
-                        x:DataType="models:Exercises">
-            <CollectionView.ItemsLayout>
-                <LinearItemsLayout Orientation="Vertical"
-                                   ItemSpacing="10" />
-            </CollectionView.ItemsLayout>
-            <!-- Define the appearance of each item in the list -->
-            <CollectionView.ItemTemplate>
-                <DataTemplate>
-                    <StackLayout>
-                        <Label Text="{Binding Name}"
-                               FontSize="Medium" />
-                        <Label Text="{Binding Description}"
-                               TextColor="{DynamicResource TertiaryColor}"
-                               FontSize="Small" />
-                        <Label Text="{Binding LengthOfTime}"
-                               TextColor="{DynamicResource TertiaryColor}"
-                               FontSize="Small" />
-                    </StackLayout>
-                </DataTemplate>
-            </CollectionView.ItemTemplate>
-        </CollectionView>
+        <!--BENDO: Display the list of exercises associated with Workout.  
+                   This is so that when you add exercises to he new workout and navigate back to the screen the list is there.-->
+        <!--BENDO: Might be better/easier combine the functionality of this page with the WorkoutExercisePage
+                   So the user would edit and add Workouts using the same page-->
+
     </StackLayout>
 
 </ContentPage>

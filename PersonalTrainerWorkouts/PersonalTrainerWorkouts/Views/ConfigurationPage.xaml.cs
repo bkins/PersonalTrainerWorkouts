@@ -1,5 +1,6 @@
 ﻿
 using System;
+using PersonalTrainerWorkouts.Views.Debugging;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -23,6 +24,33 @@ namespace PersonalTrainerWorkouts.Views
                                                EventArgs e)
         {
             App.Database.CreateTables();
+        }
+
+        private async void ViewLogButtonClicked(object    sender,
+                                          EventArgs e)
+        {
+            var path = $"{nameof(MessageLog)}";
+            await Shell.Current.GoToAsync(path);
+        }
+        
+        private async void ViewWorkoutExerciseButtonClicked(object    sender
+                                                    , EventArgs e)
+        {
+            var path = $"{nameof(WorkoutExerciseDebugPage)}";
+            await Shell.Current.GoToAsync(path);
+        }
+
+        private async void ViewExercisesButtonClicked(object    sender
+                                              , EventArgs e)
+        {
+            var path = $"{nameof(ExercisesDebugPage)}";
+            await Shell.Current.GoToAsync(path);
+        }
+
+        private void FillTablesButtonClicked(object    sender
+                                           , EventArgs e)
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,36 +1,55 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:picker="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
+             xmlns:listCollection="clr-namespace:System.Collections.Generic;assembly=mscorlib"
              xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
              xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.ExerciseExistingEntryPage"
              x:DataType="viewmodels:ExerciseViewModel"
-             Title="Add Exercise" >
+             Title="Select an Exercise" >
 
     <!-- Layout children vertically -->
     <StackLayout Margin="{DynamicResource PageMargin}">
-        <Picker Title="Select an exercise"
+        
+        <picker:SfPicker x:Name="ExercisePicker"
+                         ItemsSource="{Binding AllExercises}"
+                         DisplayMemberPath="Name"
+                         ShowColumnHeader="False"
+                         ColumnHeaderText="Exercise Name"
+                         ShowHeader="False"
+                         OkButtonClicked="ExercisePicker_OnOkButtonClicked"
+                         ShowFooter="True">
+            
+            <picker:SfPicker.Behaviors>
+                <views:SfPickerBehavior />
+            </picker:SfPicker.Behaviors>
+
+        </picker:SfPicker>
+
+        
+        <!--<Picker x:Name="ExercisePicker"
+                Title="Select an exercise"
                 TitleColor="Red"
                 ItemsSource="{Binding AllExercises}"
                 SelectedItem="{Binding SelectedExercise}"
-                ItemDisplayBinding="{Binding Name}" />
-        <Label HorizontalOptions="StartAndExpand"
-               Text="{Binding SelectedExercise.Name}"/>
-        <Label HorizontalOptions="StartAndExpand"
-               Text="{Binding SelectedExercise.Description}"/>
-        <Label HorizontalOptions="StartAndExpand"
-               Text="{Binding SelectedExercise.LengthOfTime}"/>
-        <Label HorizontalOptions="StartAndExpand"
-               Text="{Binding SelectedExercise.PushPull}"/>
+                ItemDisplayBinding="{Binding Name}" />-->
 
-        <Grid ColumnDefinitions="*,*">
-            <!-- Layout children in two columns -->
+
+        <!--<Label HorizontalOptions="StartAndExpand"
+               Text="{Binding SelectedExercise.Name}"/>
+        <Label HorizontalOptions="Start"
+               Text="{Binding SelectedExercise.Description}"/>
+        <Label Text="{Binding SelectedExercise.LengthOfTime}"/>-->
+
+        <!--<Grid ColumnDefinitions="*">
+             Layout children in two columns 
             <Button Text="Save"
                     HeightRequest="25"
-                    Clicked="OnSaveButtonClicked" />
-            <Button Grid.Column="1"
+                    Clicked="OnSaveButtonClicked" />-->
+            <!--<Button Grid.Column="1"
                     Text="Delete"
-                    Clicked="OnDeleteButtonClicked"/>
-        </Grid>
+                    Clicked="OnDeleteButtonClicked"/>-->
+        <!--</Grid>-->
     </StackLayout>
 </ContentPage>

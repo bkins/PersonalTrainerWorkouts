@@ -5,6 +5,8 @@ using System.Linq;
 using Foundation;
 using UIKit;
 
+//BENDO:  Implement Toast feature in iOS, like it is for Android
+
 namespace PersonalTrainerWorkouts.iOS
 {
     public class Application

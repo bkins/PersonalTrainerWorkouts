@@ -3,14 +3,26 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="3.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="NLog" Version="4.7.10" />
     <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
-    <PackageReference Include="SQLiteNetExtensions" Version="2.0.0" />
+    <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
     <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2012" />  
-    <PackageReference Include="Xamarin.Essentials" Version="1.6.1" />
+    <PackageReference Include="Syncfusion.Xamarin.SfListView" Version="19.2.0.51" />
+    <PackageReference Include="Syncfusion.Xamarin.SfPicker" Version="19.2.0.51" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2083" />  
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\ApplicationExceptions\ApplicationExceptions.csproj" />
   </ItemGroup>
 
   <ItemGroup>
@@ -19,6 +31,12 @@
     </Compile>
     <Compile Update="Views\ConfigurationPage.xaml.cs">
       <DependentUpon>ConfigurationPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Debugging\WorkoutExerciseDebugPage.xaml.cs">
+      <DependentUpon>WorkoutExerciseDebugPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\MessageLog.xaml.cs">
+      <DependentUpon>MessageLog.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\ExerciseExistingEntryPage.xaml.cs">
       <DependentUpon>ExerciseExistingEntryPage.xaml</DependentUpon>
@@ -29,6 +47,9 @@
     <Compile Update="Views\ExerciseListPage.xaml.cs">
       <DependentUpon>ExerciseListPage.xaml</DependentUpon>
     </Compile>
+    <Compile Update="Views\WorkoutExercisePage.xaml.cs">
+      <DependentUpon>WorkoutExercisePage.xaml</DependentUpon>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +57,15 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\ConfigurationPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Debugging\ExercisesDebugPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\Debugging\WorkoutExerciseDebugPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+    <EmbeddedResource Update="Views\MessageLog.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Update="Views\ExerciseNewEntryPage.xaml">
@@ -50,5 +80,18 @@
     <EmbeddedResource Update="Views\WorkoutEntryPage.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Views\WorkoutsPage.xaml">
+      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Views\Debugging\WorkoutExercisePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
   </ItemGroup>
 </Project>

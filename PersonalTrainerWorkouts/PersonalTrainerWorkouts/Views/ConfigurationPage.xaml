@@ -4,11 +4,41 @@
              x:Class="PersonalTrainerWorkouts.Views.ConfigurationPage">
     <ContentPage.Content>
         <StackLayout>
+
+
+            <BoxView   VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       HeightRequest="1"
+                       WidthRequest="200"  
+                       Color="Gray"/>
+
             <Button Text="Drop Tables"
                     Clicked="DropTablesButtonClicked" />
-            <Button Grid.Column="1"
-                    Text="Create Tables"
+            <Button Text="Create Tables"
                     Clicked="CreateTablesButtonClicked"/>
+            <Button Text="Fill Tables"
+                    Clicked="FillTablesButtonClicked"/>
+            <Button Text="View WorkoutExercise Table"
+                    Clicked="ViewWorkoutExerciseButtonClicked"/>
+            <Button Text="View Exercises Table"
+                    Clicked="ViewExercisesButtonClicked"/>
+
+            <BoxView   VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       HeightRequest="1"
+                       WidthRequest="200"  
+                       Color="Gray"/>
+
+            <Button Text="View Log"
+                    Clicked="ViewLogButtonClicked"/>
+            
+
+            <BoxView   VerticalOptions="Center"
+                       HorizontalOptions="Center"
+                       HeightRequest="1"
+                       WidthRequest="200"  
+                       Color="Gray"/>
+
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

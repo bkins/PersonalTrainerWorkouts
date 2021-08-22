@@ -1,0 +1,3 @@
+adb -d shell "run-as com.companyname.personaltrainerworkouts cat /data/user/0/com.companyname.personaltrainerworkouts/files/.local/share/WorkoutDatabase.db3" > "C:\Users\Ben\source\repos\PersonalTrainerWorkouts\data.db"
+
+If there is an error, like "Access Denied" or anything else, try disconnecting the pnone and reconnecting. Then try action again.

@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:picker="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
              x:Class="PersonalTrainerWorkouts.App">
     <!--
         Define global resources and styles here, that apply to all pages in your app.
@@ -11,18 +12,27 @@
             <Color x:Key="Primary">#2196F3</Color>
             <Color x:Key="PageBackgroundColor">White</Color>
             
+            <Style TargetType="picker:SfPicker">
+                <Setter Property="HeaderBackgroundColor" Value="CornflowerBlue"/>
+            </Style>
+
+            <Style TargetType="Entry">
+                <Setter Property="TextColor" Value="DarkSlateGray"/>
+                <Setter Property="PlaceholderColor" Value="LightGray"></Setter>
+            </Style>
+
             <Style TargetType="Editor">
-                <Setter Property="TextColor" Value="DarkGray"/>
+                <Setter Property="TextColor" Value="DarkSlateGray"/>
                 <Setter Property="PlaceholderColor" Value="LightGray"></Setter>
             </Style>
             
             <Style TargetType="Label">
-                <Setter Property="TextColor" Value="DarkGray"/>
+                <Setter Property="TextColor" Value="DarkSlateGray"/>
             </Style>
 
             <Style TargetType="TabBar">
                 <Setter Property="Shell.TabBarBackgroundColor"
-                        Value="CornflowerBlue" />
+                        Value="{StaticResource Primary}" />
                 <Setter Property="Shell.TabBarTitleColor"
                         Value="Black" />
                 <Setter Property="Shell.TabBarUnselectedColor"
@@ -30,9 +40,11 @@
             </Style>
 
             <Style TargetType="Button">
-            
-                <Setter Property="TextColor" Value="White"></Setter>
+                
+                <Setter Property="Padding" Value="5"/>
+                <Setter Property="TextColor" Value="White"/>
                 <Setter Property="VisualStateManager.VisualStateGroups">
+
                     <VisualStateGroupList>
                         
                         <VisualStateGroup x:Name="CommonStates">

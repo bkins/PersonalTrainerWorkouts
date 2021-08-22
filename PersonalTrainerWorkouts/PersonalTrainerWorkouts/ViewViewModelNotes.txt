@@ -1,0 +1,49 @@
+ID	| View						| ViewModel										| Reference/Path												
+---	| ------------------------- | --------------------------------------------- | --------------------------------------------------------------
+1	| InitialPage				| InitialPageViewModel							| OnSelectionChanged:						WorkoutExercisePage	
+	| 							| 												| OnAddClicked:								WorkoutEntryPage
+---	| ------------------------- | --------------------------------------------- | --------------------------------------------------------------
+2	| WorkoutExercisePage		| WorkoutExerciseViewModel						| OnSelectionChanged:						ExerciseNewEntryPage
+	| 																			| OnToolbarManageExercisesClicked:			ExerciseListPage
+---	| ------------------------- | --------------------------------------------- | --------------------------------------------------------------
+3	| ExerciseListPage			| NONE: Uses:									| OnAddNewClicked:							ExerciseNewEntryPage
+	|							| App.Database.GetWorkout(id)					|											await PageNavigation.NavigateTo(nameof(ExerciseNewEntryPage), nameof(ExerciseNewEntryPage.WorkoutId), WorkoutId, nameof(ExerciseNewEntryPage.ExerciseId), "0"); 								
+	|							|             .Exercises;						| OnAddExistingClicked:						ExerciseExistingEntryPage
+	|							|												|											$"{nameof(ExerciseExistingEntryPage)}?{nameof(ExerciseExistingEntryPage.ItemId)}={WorkoutId}";
+	|							|												| OnSelectionChanged:						ExerciseExistingEntryPage
+	|							|												|											$"{nameof(ExerciseExistingEntryPage)}?{nameof(ExerciseExistingEntryPage.ItemId)}={WorkoutId}";
+	|							|												| SelectionChangedPicker:					NONE
+	|							|												| ClearLogsButton_OnClickedClearLogsButton:	NONE
+	|							|												| ExercisePicker_OnSelectionChanged:		NONE
+	|							|												| ExerciseList_OnItemDragging:				NONE (Takes action)
+---	| ------------------------- | --------------------------------------------- | --------------------------------------------------------------
+4	| WorkoutEntryPage			| WorkoutEntryViewModel							| OnSaveButtonClicked:						WorkoutExercisePage
+	|							|												| OnDeleteButtonClicked:					NONE (Takes action)
+	|							|												| OnSelectionChanged:						ExerciseNewEntryPage
+	|							|												| OnManageExercisesClicked:					ExerciseListPage
+---	| ------------------------- | --------------------------------------------- | --------------------------------------------------------------
+5	| ExerciseNewEntryPage		| NONE: Uses:									| OnSaveButtonClicked:						await Shell.Current.GoToAsync("..");
+	|							| workout.Exercises								| 
+	|							|        .FirstOrDefault						| 
+	|							| (e => e.Id ==									| 
+	|							| Convert.ToInt32(ExerciseId));					| 
+---	| ------------------------- | --------------------------------------------- | --------------------------------------------------------------
+6	| ExerciseExistingEntryPage	| NONE: Uses:									| OnSaveButtonClicked:						ExerciseListPage
+	|							| await App.AsyncDatabase						|											await PageNavigation.NavigateTo(nameof(ExerciseListPage), nameof(ExerciseListPage.WorkoutId), workout.Id.ToString());
+	|							| .GetObservableCollectionOfExercisesAsync();	| ExercisePicker_OnOkButtonClicked:			await Shell.Current.GoToAsync("..");
+
+
+ID  | BENDOs
+--- | --------------------------------------------------------------------------------------------------------------------------------------------------------
+1	| Working/Done																
+--- | --------------------------------------------------------------------------------------------------------------------------------------------------------
+2	| Working/Done
+--- | --------------------------------------------------------------------------------------------------------------------------------------------------------
+3	| Create ViewModel to get List<Exercise> to replace App.Database.GetWorkout(id).Exercises;
+	| Used use List<Exercise>().IndexOf to identify the specified exercises being moved.  See BENDO in ExerciseList_OnItemDragging event
+--- | --------------------------------------------------------------------------------------------------------------------------------------------------------
+4	| Remove this page and ViewModel and use WorkoutExercisePage/WorkoutExerciseViewModel
+--- | --------------------------------------------------------------------------------------------------------------------------------------------------------
+5	| Create ViewModel to get an Exercise
+--- | --------------------------------------------------------------------------------------------------------------------------------------------------------
+6	| Create ViewModel to get an ObservableCollection<Exercise>

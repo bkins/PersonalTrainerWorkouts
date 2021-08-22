@@ -1,0 +1,217 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
+             xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
+             x:Class="PersonalTrainerWorkouts.Views.WorkoutExercisePage"
+             x:DataType="viewModels:WorkoutExerciseViewModel"
+             Title="Edit Workout" >
+    <ContentPage.Resources>
+        <!-- Implicit styles -->
+        <Style TargetType="{x:Type Editor}">
+            <Setter Property="BackgroundColor"
+                    Value="{DynamicResource AppBackgroundColor}" />
+        </Style>
+        <Style TargetType="StackLayout">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="{DynamicResource AppPrimaryColor}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <!-- Add an item to the toolbar -->
+    <ContentPage.ToolbarItems>
+
+        <!--TODO: Find images instead of 'M'-->
+
+        <ToolbarItem Text="M"
+                     Clicked="OnToolbarManageExercisesClicked" />
+        
+    </ContentPage.ToolbarItems>
+
+    <!-- Layout children vertically -->
+    <StackLayout Margin="{DynamicResource PageMargin}">
+        <!--Top section - Workout-->
+        <Entry Placeholder="Title"
+               Text="{Binding Workout.Name}"
+               HeightRequest="50" 
+               IsTabStop="True"
+               ReturnType="Next"
+               TabIndex="1"
+               Unfocused="Name_OnUnfocused">
+            <Entry.Keyboard>
+                <Keyboard x:FactoryMethod="Create">
+                    <x:Arguments>
+                        <KeyboardFlags>Suggestions,CapitalizeWord</KeyboardFlags>
+                    </x:Arguments>
+                </Keyboard>
+            </Entry.Keyboard>
+        </Entry>
+                
+        <Editor Placeholder="Description"
+                Text="{Binding Workout.Description}"
+                VerticalOptions="StartAndExpand"
+                AutoSize="TextChanges"
+                Unfocused="Description_OnUnfocused">
+            <Editor.Keyboard>
+                <Keyboard x:FactoryMethod="Create">
+                    <x:Arguments>
+                        <KeyboardFlags>Suggestions,CapitalizeSentence</KeyboardFlags>
+                    </x:Arguments>
+                </Keyboard>
+            </Editor.Keyboard>
+        </Editor>
+
+        <Editor Placeholder="Difficulty"
+                Text="{Binding Workout.Difficulty}"
+                Keyboard="Numeric"
+                Unfocused="Difficulty_OnUnfocused"/>
+
+        <Grid ColumnDefinitions="auto,*">
+            
+            <Label Text="Total Time:"
+                   HeightRequest="100"
+                   Font="Bold"
+                   HorizontalTextAlignment="Start"/>
+
+            <Label Grid.Column="1"
+                   HorizontalTextAlignment="Start"
+                   Text="{Binding TotalTime}"/>
+
+        </Grid>
+
+        <!--BENDO Replace Save button with silent, PropertyChange-->
+        <!--For save on property changed-->
+        <!--https://stackoverflow.com/a/56044196/431319-->
+        <!--<Grid ColumnDefinitions="*,*">
+             --><!--Layout children in two columns--><!-- 
+            <Button Text="Save"
+                    HeightRequest="100"
+                    Clicked="OnSaveButtonClicked" />
+            --><!--<Button Grid.Column="1"
+                    Text="Delete"
+                    Clicked="OnDeleteButtonClicked"/>--><!--
+        </Grid>-->
+        <Label Text="- Exercises -"
+               HorizontalOptions="Center"
+               FontSize="Medium"/>
+
+        <!--<BoxView   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   HeightRequest="1"
+                   WidthRequest="200"  
+                   Color="Gray"/>-->
+
+        <!--Bottom section - Exercises-->
+        <CollectionView x:Name="CollectionView"
+                        Margin="{DynamicResource PageMargin}"
+                        SelectionMode="Single"
+                        SelectionChanged="OnSelectionChanged"
+                        x:DataType="viewModels:WorkoutExerciseViewModel">
+            
+            <CollectionView.ItemsLayout>
+                <LinearItemsLayout Orientation="Vertical"
+                                   ItemSpacing="0" />
+            </CollectionView.ItemsLayout>
+            
+            <!-- Define the appearance of each item in the list -->
+            <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0"
+                        x:DataType="viewModels:ExerciseLengthOfTime">
+                        
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="40"/>
+                        </Grid.RowDefinitions>
+
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                            
+                       
+                         <!--
+                              Column 0         | Column 1     | Column 2 |
+                             +=================+==============+==========+==========+
+                          0  | Exercise Name (Spans 3 columns)           |          |
+                             +=================+==============+==========+==========+
+                          1  | Length of Time: | LengthOfTime | (00:00)  | Save     |
+                             +=================+==============+==========+==========+
+                        
+                        -->
+
+                        <Label Grid.ColumnSpan="3"
+                               Grid.Column="0"
+                               VerticalOptions="End"
+                               Text="{Binding Exercise.Name}"
+                               FontSize="Medium" 
+                        />
+                         <!--<Label Grid.Row="0"
+                                Grid.Column="3"
+                                Text="{Binding WorkoutExerciseId}"
+                                FontSize="Small"
+                        />-->
+                        <Label Grid.Row="1" 
+                               Grid.Column="0"
+                               VerticalTextAlignment="Center"
+                               Text ="  Length of time: "
+                               FontSize="Small" 
+                        />
+                         <!--BENDO Replace Save button with silent, PropertyChange-->
+                         <!--For save on property changed-->
+                         <!--https://stackoverflow.com/a/56044196/431319-->
+                        <Editor Grid.Row="1" 
+                                Grid.Column="1"
+                                VerticalOptions="Center"
+                                HorizontalOptions="Center"
+                                WidthRequest="50"
+                                Text="{Binding LengthOfTime}"
+                                TextColor="{DynamicResource TertiaryColor}"
+                                FontSize="Small" 
+                                Keyboard="Numeric"
+                                Unfocused="ExerciseLengthOfTime_OnUnfocused"
+                                
+                         />
+                         <!--<Label Grid.Row="1" 
+                                Grid.Column="2"
+                                VerticalTextAlignment="Center"
+                                Text ="{Binding LengthAsSpan,StringFormat=\{0:h\\:mm\\:ss}}"
+                                FontSize="Small" 
+                         />-->
+                        <Button Grid.Row="1"
+                                Grid.Column="3"
+                                WidthRequest="75"
+                                HorizontalOptions="End"
+                                Text="Save"
+                                Clicked="OnSaveWorkoutExerciseButtonClick"
+                                CommandParameter="{Binding .}"
+                        />
+
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+        
+        <BoxView   VerticalOptions="Center"
+                   HorizontalOptions="Center"
+                   HeightRequest="1"
+                   WidthRequest="200"  
+                   Color="Gray"/>
+        
+    </StackLayout>
+
+</ContentPage>

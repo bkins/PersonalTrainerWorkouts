@@ -6,6 +6,9 @@
 
     <TabBar >
         
+        <!--<ShellContent Title="Home"
+                      Icon= "icon_feed.png"
+                      ContentTemplate="{DataTemplate views:WorkoutsPage}" />-->
         <ShellContent Title="Home"
                       Icon= "icon_feed.png"
                       ContentTemplate="{DataTemplate views:InitialPage}" />

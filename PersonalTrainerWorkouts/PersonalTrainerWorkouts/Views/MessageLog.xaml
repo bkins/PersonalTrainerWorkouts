@@ -1,0 +1,39 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+             xmlns:viewmodel="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             x:Class="PersonalTrainerWorkouts.Views.MessageLog"
+             x:DataType="viewmodel:MessageLogViewModel">
+    <ContentPage.Resources>
+        <!-- Implicit styles -->
+        <Style TargetType="{x:Type Editor}">
+            <Setter Property="BackgroundColor"
+                    Value="{DynamicResource AppBackgroundColor}" />
+        </Style>
+        <Style TargetType="StackLayout">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="{DynamicResource AppPrimaryColor}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <ContentPage.Content>
+        <StackLayout Margin="{DynamicResource PageMargin}"
+                     x:DataType="viewmodel:MessageLogViewModel">
+            <Label Text="{Binding CompleteLog}"
+                   VerticalOptions="StartAndExpand" 
+                   HorizontalOptions="StartAndExpand" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

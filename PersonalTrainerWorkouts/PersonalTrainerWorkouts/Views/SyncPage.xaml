@@ -4,9 +4,10 @@
              x:Class="PersonalTrainerWorkouts.Views.SyncPage">
     <ContentPage.Content>
         <StackLayout>
-            <Label Text="Welcome to Xamarin.Forms!"
+            <Label Text="Under construction: This page will have a feature to sync the database between the version of the app (e.g. If the user is using an Android and the Desktop versions of the app they could sync the database between those tow version.)"
                 VerticalOptions="CenterAndExpand" 
-                HorizontalOptions="CenterAndExpand" />
+                HorizontalOptions="CenterAndExpand" 
+                Padding="5"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

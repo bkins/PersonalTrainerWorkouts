@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<ContentPage Title="Contacts" xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml" 
+             x:Name="workoutsPage" 
+             x:Class="PersonalTrainerWorkouts.Views.WorkoutsPage">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem Text="Add" Command="{Binding AddWorkoutCommand}" />
+    </ContentPage.ToolbarItems>
+
+    <ListView ItemsSource="{Binding Workouts}" 
+              SelectedItem="{Binding SelectedWorkout, Mode=TwoWay}" 
+              HasUnevenRows="True" 
+              SeparatorColor="Gray" 
+              ItemSelected="OnContactSelected">
+        <ListView.ItemTemplate>
+            <DataTemplate>
+                <Label Text="{Binding Name}" />
+            </DataTemplate>
+        </ListView.ItemTemplate>
+    </ListView>
+</ContentPage>

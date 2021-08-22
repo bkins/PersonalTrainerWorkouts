@@ -1,4 +1,7 @@
-﻿using System;
+using Syncfusion.SfPicker.XForms.UWP;
+using Syncfusion.ListView.XForms.UWP;
+using System.Reflection;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -57,7 +60,10 @@ namespace PersonalTrainerWorkouts.UWP
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
                 global::Xamarin.Forms.Forms.SetFlags("Shell_UWP_Experimental");
-                Xamarin.Forms.Forms.Init(e);
+List<Assembly> assembliesToInclude = new List<Assembly>();
+assembliesToInclude.Add(typeof(SfPickerRenderer).GetTypeInfo().Assembly);
+assembliesToInclude.Add(typeof(SfListViewRenderer).GetTypeInfo().Assembly);
+Xamarin.Forms.Forms.Init(e, assembliesToInclude);
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {
@@ -75,6 +81,7 @@ namespace PersonalTrainerWorkouts.UWP
                 // parameter
                 rootFrame.Navigate(typeof(MainPage), e.Arguments);
             }
+            
             // Ensure the current window is active
             Window.Current.Activate();
         }

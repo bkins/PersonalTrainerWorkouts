@@ -1,17 +1,19 @@
 ﻿using System.Collections.Generic;
+using PersonalTrainerWorkouts.Models.Intermediates;
+using SQLite;
+using SQLiteNetExtensions.Attributes;
 
 namespace PersonalTrainerWorkouts.Models
 {
-    public partial class Equipment
+    [Table("Equipment")]
+    public class Equipment : BaseModel
     {
-        public Equipment()
-        {
-            ExerciseEquipment = new HashSet<ExerciseEquipment>();
-        }
+        [PrimaryKey, AutoIncrement]
+        public int Id { get;      set; }
 
-        public long Id { get; set; }
-        public string Title { get; set; }
-
-        public virtual ICollection<ExerciseEquipment> ExerciseEquipment { get; set; }
+        //public string Name { get; set; }
+        
+        [ManyToMany(typeof(ExerciseEquipment), CascadeOperations = CascadeOperation.All)]
+        public List<Exercise> Exercises { get; set; }
     }
 }
