@@ -48,6 +48,7 @@ namespace PersonalTrainerWorkouts.ViewModels
             {
                 LinkWorkoutExercises.Add(workoutExerciseWithChildren);
             }
+            ReorderWorkoutExercises();
         }
 
         private IEnumerable<WorkoutExerciseWithChildren> 

@@ -48,6 +48,7 @@ namespace PersonalTrainerWorkouts.ViewModels
         public WorkoutsToExerciseViewModel(string workoutId)
         {
             Initialize(workoutId);
+            
         }
 
         private void Initialize(string workoutId)
@@ -126,6 +127,11 @@ namespace PersonalTrainerWorkouts.ViewModels
                                     , string exerciseId)
         {
             Initialize(workoutId);
+        }
+
+        public void Save(LinkedWorkoutsToExercises workoutsToExercise)
+        {
+            DataAccessLayer.UpdateLinkedWorkoutsToExercises(workoutsToExercise);
         }
     }
 }

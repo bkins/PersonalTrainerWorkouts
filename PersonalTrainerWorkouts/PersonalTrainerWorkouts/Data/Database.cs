@@ -512,7 +512,7 @@ namespace PersonalTrainerWorkouts.Data
             try
             {
                 var linkedWorkoutsToExercises = _database.GetAllWithChildren<LinkedWorkoutsToExercises>()
-                                                        .Where(item => item.WorkoutId == workoutId);
+                                                         .Where(item => item.WorkoutId == workoutId);
                 
                 return linkedWorkoutsToExercises;
             }

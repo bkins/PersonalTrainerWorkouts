@@ -79,6 +79,7 @@ namespace PersonalTrainerWorkouts.Views
         {
 
         }
+        
         async void OnSaveButtonClicked(object sender, EventArgs e)
         {
             var workout = (Workout)BindingContext;
@@ -163,32 +164,19 @@ namespace PersonalTrainerWorkouts.Views
         private void OnSaveWorkoutExerciseButtonClick(object    sender
                                                     , EventArgs e)
         {
-            var itemData                = (Button)sender;
-            var selectedWorkoutExercise = itemData.CommandParameter as ExerciseViewModel;
-            
-            if (selectedWorkoutExercise == null)
+            var itemData = (Button) sender;
+
+            if ( ! (itemData.CommandParameter is ExerciseViewModel selectedWorkoutExercise))
                 return;
 
             var workoutsToExercise = ViewModel.WorkoutsToExercises
                                               .First(field => field.Id == selectedWorkoutExercise.WorkoutExerciseId);
-
-            var maxOrderBy = -1;
-
-            if (ViewModel.WorkoutsToExercises.Any())
-            {
-                maxOrderBy = ViewModel.WorkoutsToExercises
-                                      .Where(field => field.WorkoutId == workoutsToExercise.WorkoutId)
-                                      .Max(field => field.OrderBy);
-            }
-
-            maxOrderBy += 1;
-
+            
             workoutsToExercise.LengthOfTime = selectedWorkoutExercise.LengthOfTime;
             workoutsToExercise.Reps         = selectedWorkoutExercise.Reps;
-            workoutsToExercise.OrderBy      = maxOrderBy;
 
-            
-            App.Database.UpdateLinkedWorkoutsToExercises(workoutsToExercise);
+            ViewModel.Save(workoutsToExercise);
+            LoadWorkout(ViewModel.Workout.Id.ToString());
         }
 
     }

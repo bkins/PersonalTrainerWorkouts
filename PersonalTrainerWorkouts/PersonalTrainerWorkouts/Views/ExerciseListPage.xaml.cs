@@ -38,14 +38,11 @@ namespace PersonalTrainerWorkouts.Views
             try
             {
                 _workoutId = itemId;
-                var id                       = Convert.ToInt32(itemId);
-                //var workoutExerciseViewModel = new WorkoutsToExerciseViewModel(itemId);
+                var id = Convert.ToInt32(itemId);
+
                 ViewModel = new ExerciseListViewModel(id);
 
                 ExerciseList.ItemsSource = ViewModel.LinkWorkoutExercises;
-
-                //ExerciseList.ItemsSource = App.Database.GetWorkout(id)
-                //                              .Exercises;
             }
             catch (Exception ex)
             {
@@ -86,9 +83,6 @@ namespace PersonalTrainerWorkouts.Views
         {
             ExercisePicker.IsVisible = true;
             
-            //var path = $"{nameof(ExerciseExistingEntryPage)}?{nameof(ExerciseExistingEntryPage.ItemId)}={WorkoutId}";
-            //await Shell.Current.GoToAsync(path);
-
             await PageNavigation.NavigateTo(nameof(ExerciseExistingEntryPage)
                                           , nameof(ExerciseExistingEntryPage.ItemId)
                                           , WorkoutId);
@@ -97,9 +91,6 @@ namespace PersonalTrainerWorkouts.Views
         private async void OnSelectionChanged(object                    sender,
                                               SelectionChangedEventArgs e)
         {
-            //var path = $"{nameof(ExerciseExistingEntryPage)}?{nameof(ExerciseExistingEntryPage.ItemId)}={WorkoutId}";
-            //await Shell.Current.GoToAsync(path);
-
             await PageNavigation.NavigateTo(nameof(ExerciseExistingEntryPage)
                                           , nameof(ExerciseExistingEntryPage.ItemId)
                                           , WorkoutId);
@@ -141,91 +132,29 @@ namespace PersonalTrainerWorkouts.Views
                 case DragAction.Drop:
 
                     await Task.Delay(100);
-                    ChangeData(e);
+                    MoveItem(e);
                     
-                    return;
+                    break;
 
-                    //if (DrugExercise.WorkoutExercise.OrderBy == e.NewIndex)
-                    //{
-                    //    return;
-                    //}
-                    
-                    //ViewModel.LinkWorkoutExercises.MoveTo(e.OldIndex, e.NewIndex);
+                default:
 
-                    ////Assigns the OrderBy to the original order
-                    //for (int i = 0; i < ExerciseList.DataSource.DisplayItems.Count-1; i++)
-                    //{
-                    //    var currentItem     = ExerciseList.DataSource.DisplayItems[i];
-                    //    var workoutExercise = (WorkoutExerciseWithChildren) currentItem;
-
-                    //    workoutExercise.WorkoutExercise.OrderBy = i;
-                    //    App.Database.UpdateWorkoutExercises(workoutExercise.WorkoutExercise);
-                    //}
-                    //return;
-
-                    //var movedDown = (e.NewIndex - e.OldIndex) > 0;
-
-                    //foreach (var exercise in (List<Exercise>)ExerciseList.ItemsSource)
-                    //{
-                    //    //BENDO:  If the same exercise is in a workout more than once, how will I know which exercise I am moving?
-                    //    //Answer: Change the the binding to a WorkoutExercises viewModel, and reference the Exercise associated with
-                    //    //        the WorkoutExercise in the viewModel
-                    //    var workoutExercise = App.Database.GetWorkoutExercises(Convert.ToInt32(_workoutId), DrugExercise.Id);
-                    //}
-                    
-
-                    //DrugExercise.WorkoutExercise.OrderBy = e.NewIndex;
-
-                    //foreach (var workoutExercise in ViewModel.LinkWorkoutExercises.Where(field=> field.WorkoutExercise.Id 
-                    //                                                                      != DrugExercise.WorkoutExercise.Id))
-                    //{
-                    //    if ( ! movedDown && workoutExercise.WorkoutExercise.OrderBy >= e.NewIndex)
-                    //    {
-                    //        workoutExercise.WorkoutExercise.OrderBy += 1;
-                    //    }
-                    //    else if (movedDown && workoutExercise.WorkoutExercise.OrderBy <= e.NewIndex)
-                    //    {
-                    //        workoutExercise.WorkoutExercise.OrderBy -= 1;
-                    //    }
-                    //    //BENDO:  It is not save the order after dragging the item :-(
-                    //    workoutExercise.Save();
-                    //}
-                    //break;
-                    
+                    Logger.WriteLine($"While dragging the Exercise, something went terribly wrong.  Please try again.", Category.Warning);
+                    break;
             }
         }
 
-        public  void ChangeData(ItemDraggingEventArgs e)
+        public  void MoveItem(ItemDraggingEventArgs itemMoved)
         {
-            var exerciseListChanges = new StringBuilder();
-
-            exerciseListChanges.AppendLine("BEFORE");
-            
-            foreach (var workoutExercise in ViewModel.LinkWorkoutExercises)
-            {
-                exerciseListChanges.AppendLine(workoutExercise.ExerciseForDebugging);
-            }
-
-            ViewModel.LinkWorkoutExercises.MoveTo(e.OldIndex, e.NewIndex);
+            ViewModel.LinkWorkoutExercises.MoveTo(itemMoved.OldIndex, itemMoved.NewIndex);
             for (int i = 0; i < ViewModel.LinkWorkoutExercises.Count; i++)
             {
                 ViewModel.LinkWorkoutExercises[i].WorkoutExercise.OrderBy = i;
                 ViewModel.LinkWorkoutExercises[i].Save();
             }
-
+            
             ViewModel.RefreshData();
             
             ExerciseList.ItemsSource = ViewModel.LinkWorkoutExercises;
-
-            exerciseListChanges.AppendLine("AFTER");
-
-            foreach (var workoutExercise in ViewModel.LinkWorkoutExercises)
-            {
-                exerciseListChanges.AppendLine(workoutExercise.ExerciseForDebugging);
-            }
-            
-            var beforeChange = exerciseListChanges.ToString();
-
         }
     }
 
@@ -239,7 +168,7 @@ namespace PersonalTrainerWorkouts.Views
         {
             if (Device.RuntimePlatform == Device.UWP)
             {
-                (bindable as Syncfusion.SfPicker.XForms.SfPicker).Dispose();
+                bindable.Dispose();
             }
             base.OnDetachingFrom(bindable);
         }

@@ -368,16 +368,21 @@ namespace Tests
             var viewModel = LoadWorkoutExerciseViewModel();
             var totalReps = viewModel.TotalReps;
 
+            //Why am I using the Count of the list?  Because I added 4 exercies with 1 rep each
             Assert.Equal(viewModel.ExercisesWithIntermediateFields.Count, totalReps);
-            var totalRepsFromDb = 0;
 
-            foreach (var exerciseViewModel in viewModel.ExercisesWithIntermediateFields)
+            var totalRepsFromDb = 0;
+            
+            var workoutsToExercises = new List<LinkedWorkoutsToExercises>(DataAccessLayer.GetLinkedWorkoutsToExercises(1));
+            
+            foreach (var workoutsToExercise in workoutsToExercises)
             {
-                var exercises = DataAccessLayer.GetLinkedWorkoutsToExercises(viewModel.Workout.Id);
-                var exercise  = exercises.First(field => field.ExerciseId == exerciseViewModel.Exercise.Id);
+                var exercises = DataAccessLayer.GetLinkedWorkoutsToExercises(workoutsToExercise.WorkoutId);
+                var exercise  = exercises.First(field => field.ExerciseId == workoutsToExercise.ExerciseId);
 
                 totalRepsFromDb += exercise.Reps;
             }
+
             Assert.Equal(totalReps, totalRepsFromDb);
         }
 
@@ -588,21 +593,25 @@ namespace Tests
             var exercise1 = new Exercise
                             {
                                 Name = "Exercise 1"
+                              , Reps = 1
                             };
 
             var exercise2 = new Exercise
                             {
                                 Name = "Exercise 2"
+                              , Reps = 1
                             };
 
             var exercise3 = new Exercise
                             {
                                 Name = "Exercise 3"
+                              , Reps = 1
                             };
 
             var exercise4 = new Exercise
                             {
                                 Name = "Exercise 4"
+                              , Reps = 1
                             };
 
             var exercise1Id = DataAccessLayer.AddNewExercise(exercise1);
@@ -614,24 +623,28 @@ namespace Tests
                                    {
                                        ExerciseId = exercise1Id
                                      , WorkoutId  = workoutId
+                                     , Reps       = exercise1.Reps
                                    };
 
             var workoutExercise2 = new LinkedWorkoutsToExercises
                                    {
                                        ExerciseId = exercise2Id
                                      , WorkoutId  = workoutId
+                                     , Reps       = exercise2.Reps
                                    };
 
             var workoutExercise3 = new LinkedWorkoutsToExercises
                                    {
                                        ExerciseId = exercise3Id
                                      , WorkoutId  = workoutId
+                                     , Reps       = exercise3.Reps
                                    };
 
             var workoutExercise4 = new LinkedWorkoutsToExercises
                                    {
                                        ExerciseId = exercise4Id
                                      , WorkoutId  = workoutId
+                                     , Reps       = exercise4.Reps
                                    };
 
             DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise1);

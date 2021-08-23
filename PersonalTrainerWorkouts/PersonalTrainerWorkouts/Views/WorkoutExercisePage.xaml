@@ -35,7 +35,7 @@
 
         <!--TODO: Find images instead of 'M'-->
 
-        <ToolbarItem Text="M"
+        <ToolbarItem Text="Manage Exercises"
                      Clicked="OnToolbarManageExercisesClicked" />
         
     </ContentPage.ToolbarItems>
@@ -76,29 +76,36 @@
         <Editor Placeholder="Difficulty"
                 Text="{Binding Workout.Difficulty}"
                 Keyboard="Numeric"
-                Unfocused="Difficulty_OnUnfocused"/>
+                Unfocused="Difficulty_OnUnfocused"
+        />
 
         <Grid ColumnDefinitions="auto,*"
               RowDefinitions="*,*">
             
             <Label Text="Total Time:"
                    HeightRequest="100"
-                   HorizontalTextAlignment="Start"/>
+                   HorizontalTextAlignment="Start"
+                   FontAttributes="Bold"
+            />
 
             <Label Grid.Column="1"
                    HorizontalTextAlignment="Start"
-                   Text="{Binding TotalTime}"/>
+                   Text="{Binding TotalTime}"
+            />
             
             <Label Grid.Column="0"
                    Grid.Row="1"
                    Text="Total Reps:"
                    HeightRequest="100"
-                   HorizontalTextAlignment="Start"/>
+                   HorizontalTextAlignment="Start"
+                   FontAttributes="Bold"
+            />
 
             <Label Grid.Column="1"
                    Grid.Row="1"
                    HorizontalTextAlignment="Start"
-                   Text="{Binding TotalReps}"/>
+                   Text="{Binding TotalReps}"
+            />
 
         </Grid>
 
@@ -176,11 +183,6 @@
                                FontSize="Medium" 
                                FontAttributes="Bold"
                         />
-                         <!--<Label Grid.Row="0"
-                                Grid.Column="3"
-                                Text="{Binding WorkoutExerciseId}"
-                                FontSize="Small"
-                        />-->
                         <Label Grid.Row="1" 
                                Grid.Column="0"
                                VerticalTextAlignment="Center"
@@ -202,7 +204,7 @@
                                 3 for Right
                                 4 for Bottom
                         -->
-                        <Editor x:Name="LengthOfTimeEdit"
+                        <Editor x:Name="LengthOfTimeEditor"
                                 Grid.Row="1" 
                                 Grid.Column="1"
                                 VerticalOptions="Center"
@@ -235,7 +237,6 @@
                          />-->
                         <Button Grid.Row="1"
                                 Grid.Column="3"
-                                Grid.RowSpan="2"
                                 WidthRequest="75"
                                 HorizontalOptions="End"
                                 Text="Save"

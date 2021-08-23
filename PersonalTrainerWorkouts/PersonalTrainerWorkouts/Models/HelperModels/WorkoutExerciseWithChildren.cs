@@ -54,7 +54,7 @@ namespace PersonalTrainerWorkouts.Models.HelperModels
             }
         }
 
-        private static DataAccess      DataAccessLayer      => new DataAccess(App.Database);
+        private static DataAccess DataAccessLayer => new DataAccess(App.Database);
 
         public WorkoutExerciseWithChildren(int workoutId)
         {
