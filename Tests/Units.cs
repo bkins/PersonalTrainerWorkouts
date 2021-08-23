@@ -368,7 +368,17 @@ namespace Tests
             var viewModel = LoadWorkoutExerciseViewModel();
             var totalReps = viewModel.TotalReps;
 
-            Assert.Equal(viewModel.ExercisesWithLengthOfTime.Count, totalReps);
+            Assert.Equal(viewModel.ExercisesWithIntermediateFields.Count, totalReps);
+            var totalRepsFromDb = 0;
+
+            foreach (var exerciseViewModel in viewModel.ExercisesWithIntermediateFields)
+            {
+                var exercises = DataAccessLayer.GetLinkedWorkoutsToExercises(viewModel.Workout.Id);
+                var exercise  = exercises.First(field => field.ExerciseId == exerciseViewModel.Exercise.Id);
+
+                totalRepsFromDb += exercise.Reps;
+            }
+            Assert.Equal(totalReps, totalRepsFromDb);
         }
 
     #endregion
@@ -549,13 +559,13 @@ namespace Tests
             Database.GetWorkout(-1);
         }
 
-        private WorkoutExerciseViewModel LoadWorkoutExerciseViewModel()
+        private WorkoutsToExerciseViewModel LoadWorkoutExerciseViewModel()
         {
             var exerciseListViewModel = LoadExerciseListViewModel(out _, out _, out _, out _);
 
-            var workoutExerciseViewModel = new WorkoutExerciseViewModel(exerciseListViewModel.WorkoutId.ToString());
+            var workoutExerciseViewModel = new WorkoutsToExerciseViewModel(exerciseListViewModel.WorkoutId.ToString());
 
-            foreach (var exerciseLengthOfTime in workoutExerciseViewModel.ExercisesWithLengthOfTime)
+            foreach (var exerciseLengthOfTime in workoutExerciseViewModel.ExercisesWithIntermediateFields)
             {
                 exerciseLengthOfTime.Reps = 1;
             }

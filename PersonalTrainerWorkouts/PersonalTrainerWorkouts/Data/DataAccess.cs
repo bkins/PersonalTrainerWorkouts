@@ -127,6 +127,11 @@ namespace PersonalTrainerWorkouts.Data
             return Database.GetAllLinkedWorkoutsToExercises(workoutId);
         }
 
+        public LinkedWorkoutsToExercises GetLinkedWorkoutsToExercise(int linkedWorkoutsToExercisesId)
+        {
+            return Database.GetLinkedWorkoutsToExercise(linkedWorkoutsToExercisesId);
+        }
+
         public Exercise GetExercise(int exerciseId)
         {
             return Database.GetExercise(exerciseId);

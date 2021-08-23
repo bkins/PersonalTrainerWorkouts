@@ -16,10 +16,10 @@ namespace PersonalTrainerWorkouts.Views
     [QueryProperty(nameof(WorkoutId), nameof(WorkoutId))]
     public partial class WorkoutExercisePage : ContentPage
     {
-        public WorkoutExerciseViewModel ViewModel;
+        public WorkoutsToExerciseViewModel ViewModel;
         public int                      TotalWorkoutTime { get; set; }
 
-        private ExerciseLengthOfTime     _selectedExerciseLengthOfTime { get; set; }
+        private ExerciseViewModel     SelectedExerciseViewModel { get; set; }
         
         private string _workoutId = "0";
         public string WorkoutId
@@ -33,15 +33,17 @@ namespace PersonalTrainerWorkouts.Views
             try
             {
                 _workoutId = workoutId;
-                ViewModel = new WorkoutExerciseViewModel(workoutId);
-                
+
+                ViewModel = new WorkoutsToExerciseViewModel(workoutId);
+
                 var workout   = ViewModel.Workout;
-                var exercises = ViewModel.ExercisesWithLengthOfTime;
+                var exercises = ViewModel.ExercisesWithIntermediateFields;
                 var totalTime = ViewModel.TotalTime;
 
                 BindingContext             = ViewModel;
                 CollectionView.ItemsSource = exercises;
                 TotalWorkoutTime           = ViewModel.TotalTime;
+                
             }
             catch (Exception ex)
             {
@@ -61,7 +63,7 @@ namespace PersonalTrainerWorkouts.Views
 
         private void SaveWorkout()
         {
-             var workout = (Workout)BindingContext;
+            var workout = ((WorkoutsToExerciseViewModel)BindingContext).Workout;
             workout.CreateDateTime = DateTime.UtcNow;
 
             if ( ! string.IsNullOrWhiteSpace(workout.Name))
@@ -94,8 +96,8 @@ namespace PersonalTrainerWorkouts.Views
         private async void OnSelectionChanged(object                    sender,
                                               SelectionChangedEventArgs e)
         {
-            var exercise = (ExerciseLengthOfTime)e.CurrentSelection.FirstOrDefault();
-            _selectedExerciseLengthOfTime = exercise;
+            var exercise = (ExerciseViewModel)e.CurrentSelection.FirstOrDefault();
+            SelectedExerciseViewModel = exercise;
 
             if (exercise == null)
             {
@@ -145,24 +147,30 @@ namespace PersonalTrainerWorkouts.Views
             var theE      = e;
 
 
-            //BENDO: _selectedExerciseLengthOfTime is null
+            //BENDO: SelectedExerciseViewModel is null
             //I can't get this to work :-(
             //var workoutExercise = ViewModel.WorkoutExercises
-            //                               .First(field => field.Id == _selectedExerciseLengthOfTime.WorkoutExerciseId);
+            //                               .First(field => field.Id == SelectedExerciseViewModel.WorkoutExerciseId);
             //App.Database.UpdateWorkoutExercises(workoutExercise);
+        }
+        
+        private void ExerciseReps_OnUnfocused(object         sender
+                                            , FocusEventArgs e)
+        {
+            //Silent save is not working.  See ExerciseLengthOfTime_OnUnfocused.  Use Save button on each item in the Exercise List
         }
 
         private void OnSaveWorkoutExerciseButtonClick(object    sender
                                                     , EventArgs e)
         {
             var itemData                = (Button)sender;
-            var selectedWorkoutExercise = itemData.CommandParameter as ExerciseLengthOfTime;
+            var selectedWorkoutExercise = itemData.CommandParameter as ExerciseViewModel;
             
             if (selectedWorkoutExercise == null)
                 return;
 
             var workoutsToExercise = ViewModel.WorkoutsToExercises
-                                           .First(field => field.Id == selectedWorkoutExercise.WorkoutExerciseId);
+                                              .First(field => field.Id == selectedWorkoutExercise.WorkoutExerciseId);
 
             var maxOrderBy = -1;
 
@@ -176,9 +184,12 @@ namespace PersonalTrainerWorkouts.Views
             maxOrderBy += 1;
 
             workoutsToExercise.LengthOfTime = selectedWorkoutExercise.LengthOfTime;
+            workoutsToExercise.Reps         = selectedWorkoutExercise.Reps;
             workoutsToExercise.OrderBy      = maxOrderBy;
 
+            
             App.Database.UpdateLinkedWorkoutsToExercises(workoutsToExercise);
         }
+
     }
 }

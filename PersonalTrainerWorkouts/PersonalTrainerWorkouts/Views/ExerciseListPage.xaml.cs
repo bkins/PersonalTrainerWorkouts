@@ -39,7 +39,7 @@ namespace PersonalTrainerWorkouts.Views
             {
                 _workoutId = itemId;
                 var id                       = Convert.ToInt32(itemId);
-                var workoutExerciseViewModel = new WorkoutExerciseViewModel(itemId);
+                //var workoutExerciseViewModel = new WorkoutsToExerciseViewModel(itemId);
                 ViewModel = new ExerciseListViewModel(id);
 
                 ExerciseList.ItemsSource = ViewModel.LinkWorkoutExercises;

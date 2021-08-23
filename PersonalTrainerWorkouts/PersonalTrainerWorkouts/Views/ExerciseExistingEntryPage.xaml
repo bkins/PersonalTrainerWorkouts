@@ -6,7 +6,7 @@
              xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
              xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.ExerciseExistingEntryPage"
-             x:DataType="viewmodels:ExerciseViewModel"
+             x:DataType="viewmodels:ExerciseItemViewModel"
              Title="Select an Exercise" >
 
     <!-- Layout children vertically -->

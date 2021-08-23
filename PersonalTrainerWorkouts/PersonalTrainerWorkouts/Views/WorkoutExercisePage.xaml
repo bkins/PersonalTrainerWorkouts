@@ -5,7 +5,7 @@
              xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
              xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.WorkoutExercisePage"
-             x:DataType="viewModels:WorkoutExerciseViewModel"
+             x:DataType="viewModels:WorkoutsToExerciseViewModel"
              Title="Edit Workout" >
     <ContentPage.Resources>
         <!-- Implicit styles -->
@@ -78,16 +78,27 @@
                 Keyboard="Numeric"
                 Unfocused="Difficulty_OnUnfocused"/>
 
-        <Grid ColumnDefinitions="auto,*">
+        <Grid ColumnDefinitions="auto,*"
+              RowDefinitions="*,*">
             
             <Label Text="Total Time:"
                    HeightRequest="100"
-                   Font="Bold"
                    HorizontalTextAlignment="Start"/>
 
             <Label Grid.Column="1"
                    HorizontalTextAlignment="Start"
                    Text="{Binding TotalTime}"/>
+            
+            <Label Grid.Column="0"
+                   Grid.Row="1"
+                   Text="Total Reps:"
+                   HeightRequest="100"
+                   HorizontalTextAlignment="Start"/>
+
+            <Label Grid.Column="1"
+                   Grid.Row="1"
+                   HorizontalTextAlignment="Start"
+                   Text="{Binding TotalReps}"/>
 
         </Grid>
 
@@ -105,7 +116,8 @@
         </Grid>-->
         <Label Text="- Exercises -"
                HorizontalOptions="Center"
-               FontSize="Medium"/>
+               FontSize="Medium"
+               FontAttributes="Bold"/>
 
         <!--<BoxView   VerticalOptions="Center"
                    HorizontalOptions="Center"
@@ -118,7 +130,7 @@
                         Margin="{DynamicResource PageMargin}"
                         SelectionMode="Single"
                         SelectionChanged="OnSelectionChanged"
-                        x:DataType="viewModels:WorkoutExerciseViewModel">
+                        x:DataType="viewModels:WorkoutsToExerciseViewModel">
             
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical"
@@ -129,10 +141,11 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="0"
-                        x:DataType="viewModels:ExerciseLengthOfTime">
+                        x:DataType="viewModels:ExerciseViewModel">
                         
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="40"/>
                             <RowDefinition Height="40"/>
                         </Grid.RowDefinitions>
 
@@ -151,6 +164,8 @@
                              +=================+==============+==========+==========+
                           1  | Length of Time: | LengthOfTime | (00:00)  | Save     |
                              +=================+==============+==========+==========+
+                          1  | Reps:           | Reps         |          |          |
+                             +=================+==============+==========+==========+
                         
                         -->
 
@@ -159,6 +174,7 @@
                                VerticalOptions="End"
                                Text="{Binding Exercise.Name}"
                                FontSize="Medium" 
+                               FontAttributes="Bold"
                         />
                          <!--<Label Grid.Row="0"
                                 Grid.Column="3"
@@ -171,10 +187,23 @@
                                Text ="  Length of time: "
                                FontSize="Small" 
                         />
+                        <Label Grid.Row="2"
+                               Grid.Column="0"
+                               VerticalTextAlignment="Center"
+                               Text="  Reps: "
+                               FontSize="Small"
+                        />
                          <!--BENDO Replace Save button with silent, PropertyChange-->
                          <!--For save on property changed-->
                          <!--https://stackoverflow.com/a/56044196/431319-->
-                        <Editor Grid.Row="1" 
+                         <!--Margin="1,2,3,4"
+                                1 for Left
+                                2 for Top
+                                3 for Right
+                                4 for Bottom
+                        -->
+                        <Editor x:Name="LengthOfTimeEdit"
+                                Grid.Row="1" 
                                 Grid.Column="1"
                                 VerticalOptions="Center"
                                 HorizontalOptions="Center"
@@ -186,6 +215,18 @@
                                 Unfocused="ExerciseLengthOfTime_OnUnfocused"
                                 
                          />
+                         <Editor Grid.Row="2" 
+                                 Grid.Column="1"
+                                 VerticalOptions="Center"
+                                 HorizontalOptions="Center"
+                                 WidthRequest="50"
+                                 Text="{Binding Reps}"
+                                 TextColor="{DynamicResource TertiaryColor}"
+                                 FontSize="Small" 
+                                 Keyboard="Numeric"
+                                 Unfocused="ExerciseReps_OnUnfocused"
+                                
+                         />
                          <!--<Label Grid.Row="1" 
                                 Grid.Column="2"
                                 VerticalTextAlignment="Center"
@@ -194,6 +235,7 @@
                          />-->
                         <Button Grid.Row="1"
                                 Grid.Column="3"
+                                Grid.RowSpan="2"
                                 WidthRequest="75"
                                 HorizontalOptions="End"
                                 Text="Save"

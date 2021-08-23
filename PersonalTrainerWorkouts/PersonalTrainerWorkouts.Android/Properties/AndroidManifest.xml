@@ -5,7 +5,6 @@
           package="com.companyname.personaltrainerworkouts">
     <uses-sdk android:minSdkVersion="21" 
               android:targetSdkVersion="30" />
-    <!--android:allowBackup="false"-->
     <application android:label="PersonalTrainerWorkouts.Android" 
                  android:theme="@style/MainTheme"
                  android:allowBackup="false"

@@ -26,9 +26,10 @@
 
                 <DataTemplate>
                     <Grid Padding="0"
-                        x:DataType="intermediates:WorkoutExercise">
+                        x:DataType="intermediates:LinkedWorkoutsToExercises">
                         
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
                             <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
@@ -36,38 +37,74 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         
                        
                          <!--
-                             | Column 0  | Column 1   | Column 2      |
-                             +===========+============+===============+
-                          0  | WorkoutId | ExerciseId | LengthOfTime  |
-                             +===========+============+===============+
+                             | Column 0  | Column 1   | Column 2      | Column 3      | Column 4      |
+                             +===========+============+===============+===============+===============+
+                          0  | WorkoutId | ExerciseId | LengthOfTime  | Reps          | OrderBy       |
+                             +===========+============+===============+===============+===============+
                         
                         -->
-                        
                         <Label Grid.Column="0"
                                Grid.Row="0"
+                               VerticalOptions="StartAndExpand"
+                               Text="WorkoutId"
+                               FontSize="Medium"
+                        />
+                         <Label Grid.Column="1"
+                                Grid.Row="0"
+                                VerticalOptions="StartAndExpand"
+                                Text="ExerciseId"
+                                FontSize="Medium"
+                         />
+                         <Label Grid.Column="2"
+                                Grid.Row="0"
+                                VerticalOptions="StartAndExpand"
+                                Text="LengthOfTime"
+                                FontSize="Medium"
+                         />
+                         <Label Grid.Column="3"
+                                Grid.Row="0"
+                                VerticalOptions="StartAndExpand"
+                                Text="Reps"
+                                FontSize="Medium"
+                         />
+                         <Label Grid.Column="4"
+                                Grid.Row="0"
+                                VerticalOptions="StartAndExpand"
+                                Text="OrderBy"
+                                FontSize="Medium"
+                         />
+                        <Label Grid.Column="0"
+                               Grid.Row="1"
                                VerticalOptions="StartAndExpand"
                                Text="{Binding WorkoutId}"
                                FontSize="Medium" 
                         />
                         <Label Grid.Column="1"
-                               Grid.Row="0"
+                               Grid.Row="1"
                                VerticalOptions="StartAndExpand"
                                Text="{Binding ExerciseId}"
                                FontSize="Medium" 
                         />
                         <Label Grid.Column="2"
-                               Grid.Row="0"
+                               Grid.Row="1"
                                VerticalOptions="StartAndExpand"
                                Text="{Binding LengthOfTime}"
                                FontSize="Medium" 
                         />
                          <Label Grid.Column="3"
-                                Grid.Row="0"
+                                Grid.Row="1"
+                                VerticalOptions="StartAndExpand"
+                                Text="{Binding Reps}"
+                                FontSize="Medium" 
+                        />
+                         <Label Grid.Column="4"
+                                Grid.Row="1"
                                 VerticalOptions="StartAndExpand"
                                 Text="{Binding OrderBy}"
                                 FontSize="Medium" 

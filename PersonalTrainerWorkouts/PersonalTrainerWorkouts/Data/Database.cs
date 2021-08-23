@@ -27,8 +27,14 @@ namespace PersonalTrainerWorkouts.Data
         public Database(string dbPath)
         {
             _database = new SQLiteConnection(dbPath);
-
+            var databaseVersion = GetDatabaseVersion();
             CreateTables();
+            Check();
+        }
+        
+        private int GetDatabaseVersion()
+        {
+            return  _database.ExecuteScalar<int>("pragma user_version");
         }
 
         public void CreateTables()
@@ -63,9 +69,11 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<LinkedWorkoutsToExercises>();
         }
 
-        public int Check()
+        public bool Check()
         {
-            return 0;
+            var mappings = _database.TableMappings;
+            
+            return false;
 
             //return _database.Query("integrity_check");
 
@@ -445,7 +453,7 @@ namespace PersonalTrainerWorkouts.Data
             return _database.GetAllWithChildren<Workout>();
         }
 
-        public LinkedWorkoutsToExercises                GetLinkedWorkoutsToExercises(int linkedWorkoutsToExercisesId)
+        public LinkedWorkoutsToExercises                GetLinkedWorkoutsToExercise(int linkedWorkoutsToExercisesId)
         {
             try 
             {
@@ -483,7 +491,7 @@ namespace PersonalTrainerWorkouts.Data
             {
                 throw new SequenceContainsNoElementsException(GetNoElementsExceptionMessage(nameof(workoutExerciseId)
                                                                                           , workoutExerciseId)
-                                                            , nameof(ExerciseEquipment)
+                                                            , nameof(WorkoutExercise)
                                                             , operationException);
             }
             catch (Exception e)
@@ -512,7 +520,7 @@ namespace PersonalTrainerWorkouts.Data
             {
                 throw new SequenceContainsNoElementsException(GetNoElementsExceptionMessage(nameof(workoutId)
                                                                                           , workoutId)
-                                                            , typeof(ExerciseEquipment).ToString()
+                                                            , typeof(LinkedWorkoutsToExercises).ToString()
                                                             , operationException);                
             }
             catch (Exception e)
@@ -522,6 +530,7 @@ namespace PersonalTrainerWorkouts.Data
                 throw;
             }
         }
+        
         public IEnumerable<WorkoutExercise>             GetWorkoutExercises(bool forceRefresh = false)
         {
             return _database.GetAllWithChildren<WorkoutExercise>();

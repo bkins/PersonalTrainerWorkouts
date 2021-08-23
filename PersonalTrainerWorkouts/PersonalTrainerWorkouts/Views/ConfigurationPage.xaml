@@ -14,12 +14,16 @@
 
             <Button Text="Drop Tables"
                     Clicked="DropTablesButtonClicked" />
+
             <Button Text="Create Tables"
                     Clicked="CreateTablesButtonClicked"/>
+
             <Button Text="Fill Tables"
                     Clicked="FillTablesButtonClicked"/>
-            <Button Text="View WorkoutExercise Table"
+
+            <Button Text="View LinkedWorkoutsToExercises Table"
                     Clicked="ViewWorkoutExerciseButtonClicked"/>
+
             <Button Text="View Exercises Table"
                     Clicked="ViewExercisesButtonClicked"/>
 

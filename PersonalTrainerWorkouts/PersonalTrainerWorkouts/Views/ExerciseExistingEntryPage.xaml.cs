@@ -21,7 +21,7 @@ namespace PersonalTrainerWorkouts.Views
     public partial class ExerciseExistingEntryPage : ContentPage, INotifyPropertyChanged
     {
         private bool              _loading = true;
-        private ExerciseViewModel ViewModel { get; set; }
+        private ExerciseItemViewModel ItemViewModel { get; set; }
 
         private string            _itemId = "0";
 
@@ -60,7 +60,7 @@ namespace PersonalTrainerWorkouts.Views
                 //var listOfExercises  = await App.AsyncDatabase.GetObservableCollectionOfExercisesAsync();
                 var listOfExercises = AllExercises;
 
-                ExercisePicker.ItemsSource   = ViewModel.AllExercises;
+                ExercisePicker.ItemsSource   = ItemViewModel.AllExercises;
                 //ExercisePicker.SelectedIndex = -1;
 
 
@@ -116,7 +116,7 @@ namespace PersonalTrainerWorkouts.Views
         public ExerciseExistingEntryPage()
         {
             InitializeComponent();
-            ViewModel = new ExerciseViewModel();
+            ItemViewModel = new ExerciseItemViewModel();
 
             // BindingContext = new Exercises();
         }
@@ -177,9 +177,9 @@ namespace PersonalTrainerWorkouts.Views
         private async void ExercisePicker_OnOkButtonClicked(object                    sender
                                                           , SelectionChangedEventArgs e)
         {
-            ViewModel.SelectedExercise = (Exercise) ExercisePicker.SelectedItem;
+            ItemViewModel.SelectedExercise = (Exercise) ExercisePicker.SelectedItem;
 
-            ViewModel.SaveExercise(Convert.ToInt32(ItemId));
+            ItemViewModel.SaveExercise(Convert.ToInt32(ItemId));
             
             //if (ViewModel.SelectedExercise == null)
             //{

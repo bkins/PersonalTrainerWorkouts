@@ -69,7 +69,7 @@ namespace PersonalTrainerWorkouts.Data
         //Gets
         Workout                                GetWorkout                           (int  workoutId);
         IEnumerable<Workout>                   GetWorkouts                          (bool forceRefresh = false);
-        LinkedWorkoutsToExercises              GetLinkedWorkoutsToExercises         (int  linkedWorkoutsToExercisesId);
+        LinkedWorkoutsToExercises              GetLinkedWorkoutsToExercise         (int  linkedWorkoutsToExercisesId);
         IEnumerable<LinkedWorkoutsToExercises> GetAllLinkedWorkoutsToExercises      (bool forceRefresh = false);
         IEnumerable<LinkedWorkoutsToExercises> GetAllLinkedWorkoutsToExercises      (int workoutId);
         IEnumerable<LinkedWorkoutsToExercises> GetAllLinkedWorkoutsToExercises      (int workoutId

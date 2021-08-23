@@ -16,19 +16,22 @@ namespace PersonalTrainerWorkouts.Views.Debugging
     public partial class WorkoutExerciseDebugPage : ContentPage
     {
 
-        public List<WorkoutExercise> WorkoutExercisesData { get; }
+        public List<LinkedWorkoutsToExercises> WorkoutExercisesData { get; }
             
         public ObservableCollection<WorkoutExercise> ListOfWorkoutExercises { get; set; }
 
         public WorkoutExerciseDebugPage()
         {
             InitializeComponent();
+            var linkedViewModel = new WorkoutsToExerciseViewModel("1");
+            WorkoutExercisesData = linkedViewModel.WorkoutsToExercises;
+
             var viewModel = new WorkoutExerciseRawViewModel();
-            WorkoutExercisesData   = viewModel.WorkoutExercisesData;
+            //WorkoutExercisesData   = viewModel.WorkoutExercisesData;
             ListOfWorkoutExercises = viewModel.ListOfWorkoutExercises;
 
-            BindingContext             = ListOfWorkoutExercises;
-            CollectionView.ItemsSource = ListOfWorkoutExercises;
+            BindingContext             = WorkoutExercisesData;
+            CollectionView.ItemsSource = WorkoutExercisesData;
         }
 
         private void OnSelectionChanged(object                    sender

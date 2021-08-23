@@ -33,7 +33,8 @@
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
                         </Grid.ColumnDefinitions>
                         
                        
@@ -68,6 +69,12 @@
                                 VerticalOptions="StartAndExpand"
                                 Text="{Binding LengthOfTime}"
                                 FontSize="Medium" 
+                         />
+                         <Label Grid.Column="4"
+                                Grid.Row="0"
+                                VerticalOptions="StartAndExpand"
+                                Text="{Binding Reps}"
+                                FontSize="Medium"
                          />
                     </Grid>
                 </DataTemplate>
