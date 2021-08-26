@@ -18,6 +18,7 @@ namespace PersonalTrainerWorkouts.Droid
                                      | ConfigChanges.UiMode
                                      | ConfigChanges.ScreenLayout
                                      | ConfigChanges.SmallestScreenSize
+             , ScreenOrientation = ScreenOrientation.Portrait
             )]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {

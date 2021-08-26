@@ -57,7 +57,7 @@
                          IsStickyGroupHeader="false"
                          SelectionMode="None"
                          ItemDragging ="ExerciseList_OnItemDragging"
-                         >
+                         ItemTapped="ExerciseList_OnItemTapped">
         <listview:SfListView.DataSource>
             <dataSource:DataSource>
                 <dataSource:DataSource.SortDescriptors>
@@ -83,7 +83,7 @@
                         </Grid.ColumnDefinitions>
 
                         <Label x:Name="textLabel" 
-                               Text="{Binding ExerciseForDebugging}"
+                               Text="{Binding Exercise.Name}"
                                Grid.Column="0"
                                FontSize="15"
                                TextColor="#333333"

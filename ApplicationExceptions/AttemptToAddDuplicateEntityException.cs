@@ -24,7 +24,7 @@ namespace ApplicationExceptions
         { }
 
         public AttemptToAddDuplicateEntityException(string message
-                                                  , string   typeDuplicated
+                                                  , string typeDuplicated
                                                   , string nameOfTypeDuplicated
                                                   , object objectDuplicated
                                                   , string fieldDuplicated) : base(message)

@@ -15,7 +15,7 @@ namespace PersonalTrainerWorkouts.Models
 
         //public string Name         { get; set; }
         public string Description  { get; set; }
-        public int    LengthOfTime { get; set; }
+        public string LengthOfTime { get; set; }
         public int    Reps         { get; set; }
 
         public Exercise()

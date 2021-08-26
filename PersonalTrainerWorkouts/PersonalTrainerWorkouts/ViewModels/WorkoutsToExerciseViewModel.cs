@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using ApplicationExceptions;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
@@ -18,16 +19,17 @@ namespace PersonalTrainerWorkouts.ViewModels
         public List<LinkedWorkoutsToExercises>  WorkoutsToExercises             { get; set; }
         public List<ExerciseViewModel>          ExercisesWithIntermediateFields { get; set; }
         public List<ResolvedWorkoutsToExercise> ResolvedWorkoutToExercisesList  { get; set; }
-        public int TotalTime => GetTotalTime();
-        public int TotalReps => GetTotalReps();
+        public TimeSpan                         TotalTime                       => GetTotalTime();
+        public int                              TotalReps                       => GetTotalReps();
 
-        private int GetTotalTime()
+        private TimeSpan GetTotalTime()
         {
-            var total = 0;
+            var total = new TimeSpan(0, 0, 0, 0);
 
             foreach (var exerciseLengthOfTime in ExercisesWithIntermediateFields)
             {
-                total += exerciseLengthOfTime.LengthOfTime;
+                var exerciseLengthOfTimeAsTime = exerciseLengthOfTime.LengthOfTime.ToTime();
+                total =  total.Add(exerciseLengthOfTimeAsTime);
             }
 
             return total;
@@ -73,8 +75,8 @@ namespace PersonalTrainerWorkouts.ViewModels
                     ResolvedWorkoutToExercisesList.Add(resolvedWorkoutsToExercise);
 
                     var exerciseToAdd       = App.Database.GetExercise( workoutsToExercise.ExerciseId );
-                    var lengthOfTimeToUse   = GetLengthOfTimeToUse(exerciseToAdd
-                                                                 , workoutsToExercise);
+
+                    var lengthOfTimeToUse = GetLengthOfTimeToUse(exerciseToAdd, workoutsToExercise).ToShortForm(); //.ToString(Constants.TimeFormat);
                     var repsToUse           = GetRepsToUse(exerciseToAdd
                                                          , workoutsToExercise);
 
@@ -104,17 +106,18 @@ namespace PersonalTrainerWorkouts.ViewModels
             return repsToUse;
         }
 
-        private static int GetLengthOfTimeToUse(Exercise                  exerciseToAdd
-                                              , LinkedWorkoutsToExercises workoutsToExercise)
+        private static TimeSpan GetLengthOfTimeToUse(Exercise                  exerciseToAdd
+                                                   , LinkedWorkoutsToExercises workoutsToExercise)
         {
-            var lengthOfTimeToUse = exerciseToAdd.LengthOfTime;
+            var defaultLengthOfTime                = exerciseToAdd.LengthOfTime.ToTime();
+            var lengthOfTimeFromWorkoutToExercises = workoutsToExercise.LengthOfTime.ToTime();
 
-            if (workoutsToExercise.LengthOfTime != 0)
+            if (lengthOfTimeFromWorkoutToExercises != new TimeSpan(0, 0, 0, 0))
             {
-                lengthOfTimeToUse = workoutsToExercise.LengthOfTime;
+                defaultLengthOfTime = lengthOfTimeFromWorkoutToExercises;
             }
 
-            return lengthOfTimeToUse;
+            return defaultLengthOfTime;
         }
 
         public WorkoutsToExerciseViewModel(string workoutId
@@ -131,6 +134,15 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         public void Save(LinkedWorkoutsToExercises workoutsToExercise)
         {
+            if (workoutsToExercise.LengthOfTime.ToTime() > new TimeSpan(0, 1, 0, 0))
+            {
+                throw new ValueTooLargeException(nameof(workoutsToExercise.LengthOfTime)
+                                               , workoutsToExercise.LengthOfTime
+                                               , workoutsToExercise.LengthOfTime.GetType().ToString()
+                                               , workoutsToExercise.LengthOfTime
+                                               , "it is great than 1 hour.");
+            }
+
             DataAccessLayer.UpdateLinkedWorkoutsToExercises(workoutsToExercise);
         }
     }

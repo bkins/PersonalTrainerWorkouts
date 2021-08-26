@@ -15,14 +15,16 @@ namespace PersonalTrainerWorkouts.Views
 {
     public partial class WorkoutEntryPage : ContentPage
     {
-        private WorkoutEntryViewModel ViewModel { get; set; }
-        private Entry                 NameEntry { get; set; }
-        
+        private WorkoutEntryViewModel ViewModel          { get; set; }
+        private Entry                 NameEntry          { get; set; }
+
         public WorkoutEntryPage()
         {
             InitializeComponent();
             ViewModel      = new WorkoutEntryViewModel();
             BindingContext = ViewModel;
+
+            //NameEntry.Focus();
 
             DifficultyEditor.Text = string.Empty;
         }
@@ -86,16 +88,28 @@ namespace PersonalTrainerWorkouts.Views
             SaveWorkout();
         }
 
-        private void Description_OnUnfocused(object         sender
-                                             , FocusEventArgs e)
+        private void Description_OnUnfocused(object           sender
+                                           , FocusEventArgs e)
         {
-            SaveWorkout();
+            var description = (Editor) sender;
+
+            if (description.Text.HasValue())
+            {
+                SaveWorkout();
+            }
+            
         }
 
-        private void Difficulty_OnUnfocused(object         sender
-                                          , FocusEventArgs e)
+        private async void Difficulty_OnUnfocused(object         sender
+                                                , FocusEventArgs e)
         {
-            SaveWorkout();
+            var difficulty = (Entry) sender;
+
+            if (difficulty.Text.HasValue())
+            {
+                SaveWorkout();
+            }
+            await PageNavigation.NavigateBackwards();
         }
     }
 }

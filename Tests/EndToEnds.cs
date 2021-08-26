@@ -208,7 +208,7 @@ namespace Tests
                                               {
                                                   Name         = "Exercise 1"
                                                 , Description  = "Exercise One description."
-                                                , LengthOfTime = 5
+                                                , LengthOfTime = "5:00"
                                                 , MuscleGroups = new List<MuscleGroup>
                                                                  {
                                                                      new ()
@@ -282,7 +282,7 @@ namespace Tests
                                               {
                                                   Name         = "Exercise 1"
                                                 , Description  = "Exercise One description."
-                                                , LengthOfTime = 5
+                                                , LengthOfTime = "5:00"
                                                 , MuscleGroups = new List<MuscleGroup>
                                                                  {
                                                                      new ()
@@ -431,7 +431,7 @@ namespace Tests
                             {
                                 Name         = expectedExerciseOneName
                               , Description  = $"{expectedExerciseOneName} description"
-                              , LengthOfTime = 5
+                              , LengthOfTime = "5:00"
                               , Equipment = new List<Equipment>()
                                             {
                                                 rack
@@ -451,7 +451,7 @@ namespace Tests
                             {
                                 Name         = expectedExerciseTwoName
                               , Description  = $"{expectedExerciseTwoName} description"
-                              , LengthOfTime = 10
+                              , LengthOfTime = "10:00"
                               , Equipment = new List<Equipment>()
                                             {
                                                 largeExerciseBall
@@ -620,7 +620,7 @@ namespace Tests
                             {
                                 Name         = ExpectedExerciseOneName
                               , Description  = $"{ExpectedExerciseOneName} description"
-                              , LengthOfTime = 5
+                              , LengthOfTime = "5:00"
                               , Equipment = new List<Equipment>()
                                             {
                                                 Rack
@@ -640,7 +640,7 @@ namespace Tests
                             {
                                 Name         = ExpectedExerciseTwoName
                               , Description  = $"{ExpectedExerciseTwoName} description"
-                              , LengthOfTime = 10
+                              , LengthOfTime = "10:00"
                               , Equipment = new List<Equipment>()
                                             {
                                                 LargeExerciseBall

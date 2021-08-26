@@ -16,6 +16,7 @@ using PersonalTrainerWorkouts.ViewModels;
 using Syncfusion.DataSource.Extensions;
 using Syncfusion.GridCommon.ScrollAxis;
 using Syncfusion.ListView.XForms;
+using ItemTappedEventArgs = Syncfusion.ListView.XForms.ItemTappedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views
 {
@@ -75,7 +76,11 @@ namespace PersonalTrainerWorkouts.Views
         {
             //var path = $"{nameof(ExerciseNewEntryPage)}?{nameof(ExerciseNewEntryPage.WorkoutId)}={WorkoutId}";
             //await Shell.Current.GoToAsync(path);
-            await PageNavigation.NavigateTo(nameof(ExerciseNewEntryPage), nameof(ExerciseNewEntryPage.WorkoutId), WorkoutId, nameof(ExerciseNewEntryPage.ExerciseId), "0");
+            await PageNavigation.NavigateTo(nameof(ExerciseNewEntryPage)
+                                          , nameof(ExerciseNewEntryPage.WorkoutId)
+                                          , WorkoutId
+                                          , nameof(ExerciseNewEntryPage.ExerciseId)
+                                          , "0");
         }
 
         private async void OnAddExistingClicked(object     sender
@@ -155,6 +160,18 @@ namespace PersonalTrainerWorkouts.Views
             ViewModel.RefreshData();
             
             ExerciseList.ItemsSource = ViewModel.LinkWorkoutExercises;
+        }
+
+        private async void ExerciseList_OnItemTapped(object              sender
+                                             , ItemTappedEventArgs e)
+        {
+            var tappedExercise = (WorkoutExerciseWithChildren) e.ItemData;
+            
+            await PageNavigation.NavigateTo(nameof(ExerciseNewEntryPage)
+                                          , nameof(ExerciseNewEntryPage.WorkoutId)
+                                          , tappedExercise.Workout.Id.ToString()
+                                          , nameof(ExerciseNewEntryPage.ExerciseId)
+                                          , tappedExercise.Exercise.Id.ToString());
         }
     }
 

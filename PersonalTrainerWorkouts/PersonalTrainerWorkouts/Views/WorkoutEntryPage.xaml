@@ -50,9 +50,7 @@
                 IsTabStop="True"
                 ReturnType="Next"
                 TabIndex="1"
-                Unfocused="Name_OnUnfocused"
-                
-                >
+                Unfocused="Name_OnUnfocused">
             <Entry.Keyboard>
                 <Keyboard x:FactoryMethod="Create">
                     <x:Arguments>
@@ -77,7 +75,7 @@
         </Editor>
         <!--TODO: move Difficulty to be right under Description.  -->
         <!--Along with Save/Delete to be right under Difficulty -->
-        <Editor x:Name="DifficultyEditor"
+        <Entry x:Name="DifficultyEditor"
                 Placeholder="Difficulty"
                 Text="{Binding NewWorkout.Difficulty}"
                 Keyboard="Numeric"

@@ -91,6 +91,7 @@
             <Label Grid.Column="1"
                    HorizontalTextAlignment="Start"
                    Text="{Binding TotalTime}"
+                   
             />
             
             <Label Grid.Column="0"
@@ -152,14 +153,14 @@
                         
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="40"/>
-                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                             
@@ -207,21 +208,28 @@
                         <Editor x:Name="LengthOfTimeEditor"
                                 Grid.Row="1" 
                                 Grid.Column="1"
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center"
-                                WidthRequest="50"
+                                Grid.ColumnSpan="2"
+                                VerticalOptions="End"
+                                HorizontalOptions="StartAndExpand"
+                                AutoSize="TextChanges"
                                 Text="{Binding LengthOfTime}"
                                 TextColor="{DynamicResource TertiaryColor}"
                                 FontSize="Small" 
-                                Keyboard="Numeric"
-                                Unfocused="ExerciseLengthOfTime_OnUnfocused"
-                                
-                         />
+                                Unfocused="ExerciseLengthOfTime_OnUnfocused">
+                            <Editor.Keyboard>
+                                <Keyboard x:FactoryMethod="Create">
+                                    <x:Arguments>
+                                        <KeyboardFlags>None</KeyboardFlags>
+                                    </x:Arguments>
+                                </Keyboard>
+                            </Editor.Keyboard>
+                        </Editor>
+                          
                          <Editor Grid.Row="2" 
                                  Grid.Column="1"
-                                 VerticalOptions="Center"
-                                 HorizontalOptions="Center"
-                                 WidthRequest="50"
+                                 VerticalOptions="End"
+                                 HorizontalOptions="StartAndExpand"
+                                 AutoSize="TextChanges"
                                  Text="{Binding Reps}"
                                  TextColor="{DynamicResource TertiaryColor}"
                                  FontSize="Small" 

@@ -20,24 +20,15 @@ namespace PersonalTrainerWorkouts.Views
     [QueryProperty(nameof(ExerciseId), nameof(ExerciseId))]
     public partial class ExerciseNewEntryPage : ContentPage, INotifyPropertyChanged, IQueryAttributable
     {
+        //private ExerciseNewEntryViewModel ViewModel { get; set; }
+        private ExerciseAddEditViewModel ViewModel           { get; set; }
+        public  string                   WorkoutId           { get; set; }
+        public  string                   ExerciseId          { get; set; }
+        public  string                   InitialName         { get; set; }
+        public  string                   InitialDescription  { get; set; }
+        public  string                   InitialLengthOfTime { get; set; }
+        private Entry                    NameEntry           { get; set; }
         
-        private string                    _workoutId = "0";
-        private ExerciseNewEntryViewModel ViewModel { get; set; }
-        private Entry                     NameEntry { get; set; }
-
-        public  string                    WorkoutId { get; set; }
-        //{
-        //    get => _workoutId;
-        //    set => LoadWorkout(value);
-        //}
-
-        private string _exerciseId = "0";
-
-        public string ExerciseId { get; set; }
-        //{
-        //    get => _exerciseId;
-        //    set => LoadExercise(value);
-        //}
         public void ApplyQueryAttributes(IDictionary<string, string> query)
         {
             try
@@ -45,7 +36,10 @@ namespace PersonalTrainerWorkouts.Views
                 // The query parameter requires URL decoding.
                 WorkoutId  = HttpUtility.UrlDecode(query[nameof(WorkoutId)]);
                 ExerciseId = HttpUtility.UrlDecode(query[nameof(ExerciseId)]);
-                LoadExercise();
+
+                ViewModel = new ExerciseAddEditViewModel(int.Parse(WorkoutId)
+                                                       , int.Parse(ExerciseId));
+                LoadData();
             }
             catch (Exception e)
             {
@@ -54,20 +48,16 @@ namespace PersonalTrainerWorkouts.Views
                 throw;
             }
         }
-        private async void LoadExercise()
+
+        private void LoadData()
         {
             try
             {
-                //var workout  = await App.AsyncDatabase.GetWorkoutsAsync(WorkoutId);
-                var workout = App.Database.GetWorkout(Convert.ToInt32(WorkoutId));
+                InitialName         = ViewModel.Exercise.Name;
+                InitialDescription  = ViewModel.Exercise.Description;
+                InitialLengthOfTime = ViewModel.Exercise.LengthOfTime;
 
-                var exercise = workout.Exercises.FirstOrDefault(e => e.Id == Convert.ToInt32(ExerciseId));
-                
-                BindingContext = exercise ?? new Exercise();
-
-                LengthOfTimeEditor.Text = LengthOfTimeEditor.Text == "0" ?
-                                                  "" :
-                                                  LengthOfTimeEditor.Text;
+                BindingContext      = ViewModel;
             }
             catch (Exception e)
             {
@@ -75,17 +65,13 @@ namespace PersonalTrainerWorkouts.Views
                 //BENDO: consider implementing a page that shows exception details
             }
         }
-
-        private void LoadWorkout(string id)
-        {
-            _workoutId = id;
-        }
+        
 
         public ExerciseNewEntryPage()
         {
             InitializeComponent();
-            ViewModel      = new ExerciseNewEntryViewModel();
-            BindingContext = ViewModel.NewExercise;
+            ViewModel      = new ExerciseAddEditViewModel();
+            BindingContext = ViewModel;
         }
         
         protected override void OnAppearing()
@@ -99,13 +85,13 @@ namespace PersonalTrainerWorkouts.Views
 
         private void UpdateExercise()
         {
-            ViewModel.NewExercise = GetContextExercise();
-            ViewModel.UpdateNewExercise();
+            ViewModel.Exercise = GetContextExercise();
+            ViewModel.UpdateExercise();
         }
 
-        private async void SaveExercise()
+        private void SaveExercise()
         {
-            ViewModel.NewExercise = GetContextExercise();
+            ViewModel.Exercise = GetContextExercise();
 
             try
             {
@@ -113,7 +99,7 @@ namespace PersonalTrainerWorkouts.Views
             }
             catch (AttemptToAddDuplicateEntityException e)
             {
-                Logger.WriteLine($"An exercise with the name {ViewModel.NewExercise.Name} already exists.  Please either add that exercise or use a different name."
+                Logger.WriteLine($"An exercise with the name {ViewModel.Exercise.Name} already exists.  Please either add that exercise or use a different name."
                                , Category.Warning
                                , e);
 
@@ -122,34 +108,6 @@ namespace PersonalTrainerWorkouts.Views
             catch (UnnamedEntityException e)
             {
                 Logger.WriteLine("An exercise must have a name to save.", Category.Warning, e);
-            }
-            
-            return;
-
-            //BENDO: Replace this with Save in ViewModel
-            try
-            {
-                var exercise = GetContextExercise();
-                
-                if ( ! string.IsNullOrWhiteSpace(exercise.Name))
-                {
-                    //BENDO: Interfacing with the database needs to be in the ViewModel.  Move this to the viewModel.
-                    var workout = App.Database.GetWorkout(Convert.ToInt32(WorkoutId));
-                    
-                    workout.Exercises.Add(exercise);
-                    
-                    //BENDO: Interfacing with the database needs to be in the ViewModel.  Move this to the viewModel.
-                    App.Database.AddCompleteWorkout(workout);
-                    
-                    // Navigate backwards
-                    await PageNavigation.NavigateBackwards();
-                }
-            }
-            catch (Exception e)
-            {
-                Logger.WriteLine(e.Message, Category.Error, e);
-
-                throw;
             }
         }
 
@@ -161,95 +119,54 @@ namespace PersonalTrainerWorkouts.Views
         /// <returns></returns>
         private Exercise GetContextExercise()
         {
-            var exercise = (Exercise) BindingContext;
-            return exercise;
+            var exercise = (ExerciseAddEditViewModel) BindingContext;
+            exercise.Exercise.LengthOfTime = exercise.LengthOfTime;
 
-            //BUG:  Database call to get exercise just hangs when connected to actual device.
-            //Behavior does not occur when using emulator.  Need more testing!
-            //For now, I am not going to implement prevention of adding duplicate exercises to a Workout
-
-            //Logger.WriteLine($"Current exercise: ID={exercise.Id}; Name={exercise.Name}"
-            //               , Category.Information);
-
-            //var existingExercise = GetExistingExercise(exercise);
-            
-            //if (existingExercise    == null ||
-            //    existingExercise.Id == 0)
-            //{
-            //    return exercise;
-            //}
-
-            //var yes = await DisplayAlert("Exercise already exists", "Would you like to add the existing exercise to the workout instead?", "Yes", "No");
-
-            //if ( ! yes)
-            //{
-            //    return exercise;
-            //}
-            
-            //if (DoesExerciseExistInWorkout(existingExercise))
-            //{
-            //    await DisplayAlert("Can't add this exercise to this workout", $"The exercise {existingExercise.Name} is already in the workout", "OK");
-            //    existingExercise.Name = string.Empty;
-            //}
-
-            //exercise = existingExercise;
-
-            //return exercise;
+            return exercise.Exercise;
         }
-
-        //Obsolete:  On adding to the database duplicate names are validated
-        //private bool DoesExerciseExistInWorkout(Exercise existingExercise)
-        //{
-        //    //var workout                    = App.AsyncDatabase.GetWorkoutsAsync(WorkoutId);
-        //    var workout                    = App.Database.GetWorkout(Convert.ToInt32(WorkoutId));
-        //    var doesExerciseExistInWorkout = workout.Exercises.Any(field => field.Name == existingExercise.Name);
-        //    return doesExerciseExistInWorkout;
-        //}
-
-        //private static Exercise GetExistingExercise(Exercise exercise)
-        //{
-        //    var existingExercise = App.AsyncDatabase.GetExerciseByName(exercise.Name);
-            
-        //    return existingExercise.Result;
-        //}
-
+        
         void OnSaveButtonClicked(object    sender,
                                  EventArgs e)
         {
             
         }
         
-        private void OnDeleteButtonClicked(object    sender,
-                                           EventArgs e)
-        {
-            var exercise = (Exercise) BindingContext;
-            //App.AsyncDatabase.DeleteExerciseAsync(exercise);
-            App.Database.DeleteExercise(ref exercise);
-        }
-
-        private void OnToolbarDeleteClicked(object    sender
-                                          , EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
         private void Name_OnUnfocused(object         sender
-                                             , FocusEventArgs e)
+                                    , FocusEventArgs e)
         {
             NameEntry = (Entry) sender;
-            SaveExercise();
+
+            if (string.IsNullOrEmpty(InitialName))
+            {
+                SaveExercise();
+            }
+            else if (NameEntry.Text != InitialName)
+            {
+                UpdateExercise();
+            }
         }
 
         private void Description_OnUnfocused(object         sender
-                                             , FocusEventArgs e)
+                                           , FocusEventArgs e)
         {
-            UpdateExercise();
+            var description = (Editor) sender;
+
+            if (InitialDescription != description.Text)
+            {
+                UpdateExercise();
+            }
         }
 
         private async void LengthOfTimeEditor_OnUnfocused(object         sender
-                                                  , FocusEventArgs e)
+                                                        , FocusEventArgs e)
         {
-            UpdateExercise();
+            var lengthOfTime = (Entry) sender;
+
+            if (InitialLengthOfTime != lengthOfTime.Text)
+            {
+                UpdateExercise();
+            }
+
             await PageNavigation.NavigateBackwards();
         }
     }

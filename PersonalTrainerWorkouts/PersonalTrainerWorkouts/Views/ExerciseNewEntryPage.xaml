@@ -3,9 +3,11 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
              xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
+             xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.ExerciseNewEntryPage"
-             x:DataType="models:Exercise"
+             x:DataType="viewmodels:ExerciseAddEditViewModel"
              Title="Add/Edit Exercise" >
+    <!--x:DataType="models:Exercise"-->
     <ContentPage.Resources>
         <!-- Implicit styles -->
         <Style TargetType="{x:Type Editor}">
@@ -32,17 +34,13 @@
     <!-- Add an item to the toolbar -->
     <ContentPage.ToolbarItems>
 
-        <!--TODO: Find images instead of 'D'-->
-
-        <ToolbarItem Text="D"
-                     Clicked="OnToolbarDeleteClicked" />
     </ContentPage.ToolbarItems>
 
     <!-- Layout children vertically -->
     <StackLayout Margin="{DynamicResource PageMargin}"
-                 x:DataType="models:Exercise">
+                 x:DataType="viewmodels:ExerciseAddEditViewModel">
         <Entry Placeholder="Title"
-               Text="{Binding Name}"
+               Text="{Binding Exercise.Name}"
                HeightRequest="50" 
                IsTabStop="True"
                ReturnType="Next"
@@ -58,7 +56,7 @@
         </Entry>
 
         <Editor Placeholder="Description"
-                Text="{Binding Description}"
+                Text="{Binding Exercise.Description}"
                 VerticalOptions="Start"
                 AutoSize="TextChanges"
                 Unfocused="Description_OnUnfocused">
@@ -70,12 +68,24 @@
                 </Keyboard>
             </Editor.Keyboard>
         </Editor>
-
         <Editor x:Name="LengthOfTimeEditor"
-                Placeholder="Length of time"
+                Placeholder="Default Length of time"
+                VerticalOptions="End"
+                HorizontalOptions="StartAndExpand"
+                AutoSize="TextChanges"
                 Text="{Binding LengthOfTime}"
-                Keyboard="Numeric" 
-                Unfocused="LengthOfTimeEditor_OnUnfocused"/>
+                TextColor="{DynamicResource TertiaryColor}"
+                FontSize="Medium" 
+                Unfocused="LengthOfTimeEditor_OnUnfocused">
+            <Editor.Keyboard>
+                <Keyboard x:FactoryMethod="Create">
+                    <x:Arguments>
+                        <KeyboardFlags>None</KeyboardFlags>
+                    </x:Arguments>
+                </Keyboard>
+            </Editor.Keyboard>
+        </Editor>
+        
         
         <!--BENDO Replace Save button with silent, PropertyChange-->
         <!--For save on property changed-->

@@ -16,7 +16,7 @@ namespace PersonalTrainerWorkouts.ViewModels
         public int                       Id                           { get; set; }
         public Workout                   Workout                      { get; set; }
         public Exercise                  Exercise                     { get; set; }
-        public int                       LengthOfTime                 { get; set; }
+        public string                    LengthOfTime                 { get; set; }
         public int                       Reps                         { get; set; }
         public int                       OrderBy                      { get; set; }
         public LinkedWorkoutsToExercises TheLinkedWorkoutsToExercises { get; set; }

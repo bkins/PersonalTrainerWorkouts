@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using ApplicationExceptions;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
 using PersonalTrainerWorkouts.Utilities;
@@ -17,7 +18,7 @@ namespace PersonalTrainerWorkouts.Views
     public partial class WorkoutExercisePage : ContentPage
     {
         public WorkoutsToExerciseViewModel ViewModel;
-        public int                      TotalWorkoutTime { get; set; }
+        public string                      TotalWorkoutTime { get; set; }
 
         private ExerciseViewModel     SelectedExerciseViewModel { get; set; }
         
@@ -42,8 +43,10 @@ namespace PersonalTrainerWorkouts.Views
 
                 BindingContext             = ViewModel;
                 CollectionView.ItemsSource = exercises;
-                TotalWorkoutTime           = ViewModel.TotalTime;
-                
+                TotalWorkoutTime           = ViewModel.TotalTime.ToShortForm();
+
+                //TotalWorkoutTime           = ViewModel.TotalTime.ToString(Constants.TimeFormat);
+
             }
             catch (Exception ex)
             {
@@ -175,8 +178,24 @@ namespace PersonalTrainerWorkouts.Views
             workoutsToExercise.LengthOfTime = selectedWorkoutExercise.LengthOfTime;
             workoutsToExercise.Reps         = selectedWorkoutExercise.Reps;
 
-            ViewModel.Save(workoutsToExercise);
-            LoadWorkout(ViewModel.Workout.Id.ToString());
+            try
+            {
+                ViewModel.Save(workoutsToExercise);
+                LoadWorkout(ViewModel.Workout.Id.ToString());
+            }
+            catch (ValueTooLargeException exception)
+            {
+                Logger.WriteLine($"{exception.Message}  Value NOT saved!"
+                               , Category.Warning
+                               , exception);
+            }
+            catch (Exception exception)
+            {
+                Logger.WriteLine($"Error while saving the {typeof(LinkedWorkoutsToExercises)}: {exception.Message}"
+                               , Category.Error
+                               , exception);
+            }
+
         }
 
     }

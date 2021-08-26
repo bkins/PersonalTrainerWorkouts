@@ -1,6 +1,7 @@
 ﻿using System;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
+using PersonalTrainerWorkouts.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
@@ -12,7 +13,7 @@ namespace PersonalTrainerWorkouts.ViewModels
         public Exercise Exercise          { get; set; }
         public string   Name              { get; set; }
         public string   Description       { get; set; }
-        public int      LengthOfTime      { get; set; }
+        public string   LengthOfTime      { get; set; }
         public int      Reps              { get; set; }
 
         public ExerciseViewModel()
@@ -20,7 +21,7 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         }
 
-        public ExerciseViewModel(int workoutExerciseId, int exerciseId, int lengthOfTime, int reps)
+        public ExerciseViewModel(int workoutExerciseId, int exerciseId, string lengthOfTime, int reps)
         {
             WorkoutExerciseId = workoutExerciseId;
             Exercise          = DataAccessLayer.GetExercise(exerciseId);
@@ -32,10 +33,10 @@ namespace PersonalTrainerWorkouts.ViewModels
         
         private TimeSpan FormattedLengthAsTime()
         {
-            var minutesAsTicks   = TimeSpan.FromMinutes( LengthOfTime ).Ticks;
-            var timeSpanOfLength = new TimeSpan( minutesAsTicks );
+            //var minutesAsTicks   = TimeSpan.FromMinutes( LengthOfTime ).Ticks;
+            //var timeSpanOfLength = new TimeSpan( minutesAsTicks );
 
-            return timeSpanOfLength;//.ToString( "hh:mm" );
+            return LengthOfTime.ToTime();
         }
 
         private string ConvertMinutes( TimeSpan interval )
