@@ -11,7 +11,7 @@
                       ContentTemplate="{DataTemplate views:WorkoutsPage}" />-->
         <ShellContent Title="Home"
                       Icon= "icon_feed.png"
-                      ContentTemplate="{DataTemplate views:InitialPage}" />
+                      ContentTemplate="{DataTemplate views:WorkoutListPage}" />
         <ShellContent Title="Sync"
                       Icon= "Sync.ico"
                       ContentTemplate="{DataTemplate views:SyncPage}" />

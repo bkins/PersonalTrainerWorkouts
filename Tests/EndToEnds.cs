@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ApplicationExceptions;
 using Xunit.Abstractions;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
-using SQLite;
-using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xunit;
-using static PersonalTrainerWorkouts.Data.DataAccess;
 
 namespace Tests
 {
@@ -171,7 +165,7 @@ namespace Tests
             // 6. Get the junction table's OpposingMuscleGroup value
             var newOpposingMuscleGroups = Database.GetOpposingMuscleGroupByMuscleGroup(theMuscleGroup.Id);
 
-            // 7. Save that newly created relationship in the object and the database.
+            // 7. SaveWorkoutsToExercise that newly created relationship in the object and the database.
             workout.Exercises.First()
                    .MuscleGroups.First()
                    .OpposingMuscleGroup = newOpposingMuscleGroups;
@@ -236,7 +230,7 @@ namespace Tests
             var testMuscleGroup         = Database.GetMuscleGroups();
             var newOpposingMuscleGroups = Database.GetOpposingMuscleGroupByMuscleGroup(muscleGroupId);
 
-            // 5. Save that newly created relationship in the object and the database.
+            // 5. SaveWorkoutsToExercise that newly created relationship in the object and the database.
             workout.Exercises.First()
                    .MuscleGroups.First()
                    .OpposingMuscleGroup = newOpposingMuscleGroups;
@@ -310,7 +304,7 @@ namespace Tests
             var testMuscleGroup         = Database.GetMuscleGroups();
             var newOpposingMuscleGroups = Database.GetOpposingMuscleGroupByMuscleGroup(muscleGroupId);
 
-            // 5. Save that newly created relationship in the object and the database.
+            // 5. SaveWorkoutsToExercise that newly created relationship in the object and the database.
             workout.Exercises.First()
                    .MuscleGroups.First()
                    .OpposingMuscleGroup = newOpposingMuscleGroups;

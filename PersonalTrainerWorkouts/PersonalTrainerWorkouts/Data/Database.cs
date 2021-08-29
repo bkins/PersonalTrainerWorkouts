@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using ApplicationExceptions;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
 using PersonalTrainerWorkouts.Utilities;
-using PersonalTrainerWorkouts.ViewModels;
 using SQLite;
 using SQLiteNetExtensions.Extensions;
-using SQLiteNetExtensionsAsync.Extensions;
 using Syncfusion.DataSource.Extensions;
 using InvalidOperationException = System.InvalidOperationException;
 using TypeOfExercise = PersonalTrainerWorkouts.Models.TypeOfExercise;
@@ -21,7 +16,8 @@ namespace PersonalTrainerWorkouts.Data
 {
     public class Database : IDataStore
     {
-        //BENDO:  Implement the use of forceRefresh in methods that use it (and add to methods that it makes sense to add it to)
+        //BENDO:  Implement the use of forceRefresh in methods that use it
+        //(and add to methods that it makes sense to add it to)
         private readonly SQLiteConnection _database;
         
         public Database(string dbPath)
@@ -163,7 +159,7 @@ namespace PersonalTrainerWorkouts.Data
         
         /// <summary>
         /// Adds just one Workout without any children.
-        /// Use case:  Add new workout -> Save -> Add exercise
+        /// Use case:  Add new workout -> SaveWorkoutsToExercise -> Add exercise
         /// </summary>
         /// <param name="workout"></param>
         public int  AddJustOneWorkout           (Workout workout)

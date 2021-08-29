@@ -10,8 +10,6 @@ namespace PersonalTrainerWorkouts.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get;      set; }
-
-        //public string Name { get; set; }
         
         [ManyToMany( typeof(ExerciseType), CascadeOperations = CascadeOperation.All)]
         public List<Exercise> Exercises { get; set; }

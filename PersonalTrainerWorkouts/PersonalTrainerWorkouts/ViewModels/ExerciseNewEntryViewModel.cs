@@ -1,20 +1,16 @@
 ﻿using System;
 using ApplicationExceptions;
-using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
 using PersonalTrainerWorkouts.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
+    [Obsolete("Need to determine if I should simply remove this ViewModel or if it is not refeerenced in err")]
     public class ExerciseNewEntryViewModel : ViewModelBase
     {
         public Exercise NewExercise { get; set; }
         
-        private static DataAccess _dataAccess;
-        
-        private static DataAccess DataAccessLayer => _dataAccess = _dataAccess ?? new DataAccess(App.Database);
-
         public ExerciseNewEntryViewModel()
         {
             NewExercise = new Exercise();
@@ -37,14 +33,13 @@ namespace PersonalTrainerWorkouts.ViewModels
                 
                 workout.Exercises.Add(NewExercise);
 
-                var workoutExercise = new LinkedWorkoutsToExercises //WorkoutExercise
+                var workoutExercise = new LinkedWorkoutsToExercises
                                       {
                                           ExerciseId   = exerciseId
                                         , WorkoutId    = workoutId
                                         , LengthOfTime = NewExercise.LengthOfTime
                                       };
                 
-                //var workoutExerciseId = DataAccessLayer.AddWorkoutExercise(workoutExercise);
                 var workoutExerciseId = DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise);
 
                 if (workoutExerciseId==0)

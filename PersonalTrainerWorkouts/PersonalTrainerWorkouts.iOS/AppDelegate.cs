@@ -1,9 +1,5 @@
 using Syncfusion.SfPicker.XForms.iOS;
 using Syncfusion.ListView.XForms.iOS;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-
 using Foundation;
 using UIKit;
 

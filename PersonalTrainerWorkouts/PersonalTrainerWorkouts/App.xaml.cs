@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.IO;
 using PersonalTrainerWorkouts.Data;
 using Xamarin.Forms;
 namespace PersonalTrainerWorkouts

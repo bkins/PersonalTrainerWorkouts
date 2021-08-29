@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
@@ -9,10 +6,8 @@ using PersonalTrainerWorkouts.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
-    public class ResolvedWorkoutsToExercise
+    public class ResolvedWorkoutsToExercise : ViewModelBase
     {
-        private static DataAccess DataAccessLayer => new DataAccess(App.Database);
-
         public int                       Id                           { get; set; }
         public Workout                   Workout                      { get; set; }
         public Exercise                  Exercise                     { get; set; }

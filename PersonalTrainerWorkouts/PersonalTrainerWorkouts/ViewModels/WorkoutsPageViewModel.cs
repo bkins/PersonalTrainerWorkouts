@@ -1,29 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Services;
-using PersonalTrainerWorkouts.Views;
 using Xamarin.Forms;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
+    [System.Obsolete("This ViewModel and the View WorkoutPage are an incomplete trial of a different approach I would like to explore more later.  For now they are not used.")]
     public class WorkoutsPageViewModel : ViewModelBase
     {
         //BENDO: This isn't quite working.  I tried a little different approach.  See link below for example:
         //https://medium.com/swlh/xamarin-forms-mvvm-how-to-work-with-sqlite-db-c-xaml-26fcae303edd
 
-        private WorkoutViewModel _selectedWorkout;
-        private IDataStore       _dataStore;
-        private IPageService     _pageService;
+        private          WorkoutViewModel _selectedWorkout;
+        private readonly IDataStore       _dataStore;
+        private readonly IPageService     _pageService;
 
         private bool _isDataLoaded;
 
-        public ObservableCollection<Workout> Workouts { get; private set; } 
+        public ObservableCollection<Workout> Workouts { get; } 
             = new ObservableCollection<Workout>();
 
         public WorkoutViewModel SelectedWorkout
@@ -33,10 +30,9 @@ namespace PersonalTrainerWorkouts.ViewModels
         }
 
         
-        public ICommand LoadDataCommand      { get; private set; }
-        public ICommand AddWorkoutCommand    { get; private set; }
-        public ICommand SelectWorkoutCommand { get; private set; }
-        public ICommand DeleteWorkoutCommand { get; private set; }
+        public ICommand LoadDataCommand      { get; }
+        public ICommand SelectWorkoutCommand { get; }
+        public ICommand DeleteWorkoutCommand { get; }
 
         public WorkoutsPageViewModel(IDataStore   dataStore
                                    , IPageService pageService)
@@ -45,8 +41,7 @@ namespace PersonalTrainerWorkouts.ViewModels
             _pageService = pageService;
 
             LoadDataCommand      = new Command( LoadData);
-            AddWorkoutCommand    = new Command( async () => await AddWorkout());
-            SelectWorkoutCommand = new Command<Workout>( async viewModel => await SelectWorkout(viewModel)); 
+            SelectWorkoutCommand = new Command<Workout>( SelectWorkout ); 
             DeleteWorkoutCommand = new Command<Workout>( async viewModel => await DeleteWorkout(viewModel));
 
         }
@@ -65,21 +60,12 @@ namespace PersonalTrainerWorkouts.ViewModels
             }
         }
         
-        private async Task AddWorkout()
-        {
-            //BENDO: Modify WorkoutEntryPage to take a WorkoutViewModel
-            //await _pageService.PushAsync(new WorkoutEntryPage(new WorkoutViewModel()));
-        }
-        
-        private async Task SelectWorkout(Workout workoutViewModel)
+        private void SelectWorkout(Workout workoutViewModel)
         {
             if (workoutViewModel == null)
                 return;
 
             SelectedWorkout = null;
-
-            //BENDO: Modify WorkoutEntryPage to take a WorkoutViewModel
-            //await _pageService.PushAsync(new WorkoutEntryPage(workoutViewModel));
         }
         
         private async Task DeleteWorkout(Workout workoutViewModel)

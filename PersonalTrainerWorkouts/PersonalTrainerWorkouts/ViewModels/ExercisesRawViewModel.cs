@@ -1,21 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Text;
 using PersonalTrainerWorkouts.Models;
-using Syncfusion.DataSource.Extensions;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
     public class ExercisesRawViewModel : ViewModelBase
     {
-        public List<Exercise>                 ExercisesData   { get; }
+        private List<Exercise>                 ExercisesData   { get; }
         public ObservableCollection<Exercise> ListOfExercises { get; set; }
         
         public ExercisesRawViewModel()
         {
-            //ExercisesData   = App.Database.Exercises;
-            var arrayOfExercises = App.Database.GetExercises();
+            var arrayOfExercises = DataAccessLayer.GetExercises();
 
             ExercisesData   = new List<Exercise>();
 

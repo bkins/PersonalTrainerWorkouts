@@ -2,17 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using ApplicationExceptions;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Models.HelperModels;
 using PersonalTrainerWorkouts.Models.Intermediates;
 using PersonalTrainerWorkouts.ViewModels;
-using PersonalTrainerWorkouts.Views;
 using Syncfusion.DataSource.Extensions;
-using Syncfusion.ListView.XForms;
-using Xamarin.Forms;
 using Xunit;
 using Xunit.Abstractions;
 

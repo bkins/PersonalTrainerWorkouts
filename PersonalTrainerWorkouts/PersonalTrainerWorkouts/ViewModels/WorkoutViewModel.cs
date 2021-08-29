@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Text.RegularExpressions;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 
@@ -9,7 +6,6 @@ namespace PersonalTrainerWorkouts.ViewModels
 {
     public class WorkoutViewModel : ViewModelBase
     {
-        
         public int Id { get; set; }
 
         private string _name;
@@ -55,24 +51,16 @@ namespace PersonalTrainerWorkouts.ViewModels
                 OnPropertyChanged(nameof(CreateDateTime));
             }
         }
-
-        private Workout    _workout;
-        private Database   _database;
-        private DataAccess _dataAccess;
-                
+               
         public WorkoutViewModel(Database database, int workoutId)
         {
-            _database   = database;
-            _dataAccess = new DataAccess(_database);
 
-            Id       = workoutId;
-            //_workout = _dataAccess.GetWorkout(Id);
+            Id = workoutId;
         }
 
         public WorkoutViewModel(Workout workout)
         {
-            Id           = workout.Id;
-
+            Id              = workout.Id;
             _name           = workout.Name;
             _description    = workout.Description;
             _difficulty     = workout.Difficulty;

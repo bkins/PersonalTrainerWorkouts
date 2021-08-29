@@ -4,7 +4,7 @@ using SQLiteNetExtensions.Attributes;
 namespace PersonalTrainerWorkouts.Models.Intermediates
 {
     [Table("ExerciseMuscleGroups")]
-    public partial class ExerciseMuscleGroup
+    public class ExerciseMuscleGroup
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }

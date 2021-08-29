@@ -1,18 +1,22 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace PersonalTrainerWorkouts.Utilities
 {
     public static class StringExtensions
     {
+        private const string BAD_TIME_FORMAT_MESSAGE = "To convert to a time, the value must be a whole number or in [hh:]mm[:ss] format.";
+
         public static bool IsNullEmptyOrWhitespace(this string value)
         {
             return string.IsNullOrEmpty(value) 
                 || string.IsNullOrWhiteSpace(value);
         }
+
         /// <summary>
-        /// "HasValue" means the string is NOT Null, and NOT Empty, and NOT Whitespace
+        /// "HasValue" means the string is:
+        ///     NOT Null,
+        /// and NOT Empty,
+        /// and NOT Whitespace
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
@@ -20,14 +24,16 @@ namespace PersonalTrainerWorkouts.Utilities
         {
             return ! IsNullEmptyOrWhitespace(value);
         }
+
         public static TimeSpan ToTime(this string timeAsString)
         {
-            if (timeAsString == null)
+            //No value, return a new TimeSpan
+            if (timeAsString.IsNullEmptyOrWhitespace())
             {
                 return new TimeSpan(0, 0, 0, 0);
             }
 
-            //string passed in is a whole number, convert to 1:00 (one minute)
+            //Value is a whole number, return TimeSpan in minutes
             if (int.TryParse(timeAsString, out var number))
             {
                 return new TimeSpan(0
@@ -35,76 +41,67 @@ namespace PersonalTrainerWorkouts.Utilities
                                   , number
                                   , 0);
             }
+            
+            //Value is not in a time format (there is no ':' in string), throw error  
+            if (! timeAsString.Contains(":"))
+                throw new FormatException(BAD_TIME_FORMAT_MESSAGE);
 
-                        
-            if (timeAsString.Contains(":"))
+            var timeParts = timeAsString.Split(':');
+
+            switch (timeParts.Length)
             {
-                var timeParts = timeAsString.Split(':');
+                case 2: //00:00
+                    
+                    return TryToGetTimeInMinutesAndSeconds(timeParts);
+                    
+                case 3://00:00:00
+                    
+                    return TryToGetTimeInHoursMinutesAndSeconds(timeParts);
+                    
+                default:
 
-                switch (timeParts.Length)
-                {
-                    case 2:
-                        
-                        if (int.TryParse(timeParts[0], out var minutes)
-                         && int.TryParse(timeParts[1], out var seconds))
-                        {
-                            return new TimeSpan(0
-                                              , 0
-                                              , minutes
-                                              , seconds);
-                        }
-                        
-                        break;
+                    throw new FormatException(BAD_TIME_FORMAT_MESSAGE);
+            }
+        }
 
-                    case 3:
+        private static TimeSpan TryToGetTimeInHoursMinutesAndSeconds(string[] timeParts)
+        {
+            TimeSpan time;
 
-                        var hoursAsString   = timeParts[0];
-                        var minutesAsString = timeParts[1];
-                        var secondsAsString = timeParts[2];
-
-                        if (int.TryParse(hoursAsString,   out var hours)
-                         && int.TryParse(minutesAsString, out minutes)
-                         && int.TryParse(secondsAsString, out seconds))
-                        {
-                            return new TimeSpan(0
-                                              , hours
-                                              , minutes
-                                              , seconds);
-                        }
-
-                        break;
-
-                    default:
-
-                        throw new FormatException("To convert to a time, the value must be a whole number or in mm:ss format.");
-                }
+            if (int.TryParse(timeParts[0]
+                           , out var hours)
+             && int.TryParse(timeParts[1]
+                           , out var minutes)
+             && int.TryParse(timeParts[2]
+                           , out var seconds))
+            {
+                time = new TimeSpan(0
+                                  , hours
+                                  , minutes
+                                  , seconds);
             }
 
-            throw new FormatException("To convert to a time, the value must be a whole number or in mm:ss format.");
-            //return new TimeSpan();
-
+            return time;
         }
 
-        public static bool IsStringInStringMoreThanOnce(this string stringToSearchThrough, string valueToSearch)
+        private static TimeSpan TryToGetTimeInMinutesAndSeconds(string[] timeParts)
         {
-            var firstIndex = stringToSearchThrough.IndexOf(valueToSearch
-                                                         , StringComparison.Ordinal);
+            TimeSpan time;
 
-            var result = firstIndex != stringToSearchThrough.LastIndexOf(valueToSearch
-                                                                       , StringComparison.Ordinal) 
-                      && firstIndex != -1;
+            if (int.TryParse(timeParts[0]
+                           , out var minutes)
+             && int.TryParse(timeParts[1]
+                           , out var seconds))
+            {
+                time = new TimeSpan(0
+                                         , 0
+                                         , minutes
+                                         , seconds);
+            }
 
-            return result;
+            return time;
         }
 
-        public static bool IsCharInStringExactlyTwice(this string stringToSearchThrough
-                                                      , char      valueToSearch)
-        {
-            var test = stringToSearchThrough.Split(valueToSearch);
-
-            return test.Length == 3;
-
-        }
         public static string ToShortForm(this TimeSpan t)
         {
             string shortForm = "";
@@ -113,18 +110,10 @@ namespace PersonalTrainerWorkouts.Utilities
                 shortForm += $"{t.Hours}:";
             }
 
+            //Add leading zeroes to minutes and seconds
             shortForm += $"{t.Minutes.ToString().PadLeft(2, '0')}:{t.Seconds.ToString().PadLeft(2, '0')}";
             
-            //if (t.Minutes > 0)
-            //{
-            //    shortForm += $"{t.Minutes}";
-            //}
-            //if (t.Seconds > 0)
-            //{
-            //    shortForm += $":{t.Seconds}";
-            //}
             return shortForm;
         }
-        
     }
 }

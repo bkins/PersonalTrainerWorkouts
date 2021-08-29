@@ -1,30 +1,19 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
-using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Models.HelperModels;
-using PersonalTrainerWorkouts.Models.Intermediates;
 using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
 using Syncfusion.DataSource.Extensions;
-using Syncfusion.GridCommon.ScrollAxis;
 using Syncfusion.ListView.XForms;
 using ItemTappedEventArgs = Syncfusion.ListView.XForms.ItemTappedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views
 {
     [QueryProperty(nameof(WorkoutId), nameof(WorkoutId))]
-    public partial class ExerciseListPage : ContentPage
+    public partial class ExerciseListPage
     {
         private string                      _workoutId = "0";
-        private WorkoutExerciseWithChildren DrugExercise;
+        private WorkoutExerciseWithChildren _drugExercise;
         public  ExerciseListViewModel       ViewModel;
 
         public string WorkoutId
@@ -33,15 +22,14 @@ namespace PersonalTrainerWorkouts.Views
             set => LoadExercises(value);
         }
         
-       
-        async void LoadExercises(string itemId)
+        private void LoadExercises(string itemId)
         {
             try
             {
                 _workoutId = itemId;
-                var id = Convert.ToInt32(itemId);
+                var workoutId = int.Parse(itemId);
 
-                ViewModel = new ExerciseListViewModel(id);
+                ViewModel = new ExerciseListViewModel(workoutId);
 
                 ExerciseList.ItemsSource = ViewModel.LinkWorkoutExercises;
             }
@@ -71,25 +59,21 @@ namespace PersonalTrainerWorkouts.Views
             }
         }
 
-        private async void OnAddNewClicked(object     sender
+        private async void OnAddNewClicked(object    sender
                                          , EventArgs e)
         {
-            //var path = $"{nameof(ExerciseNewEntryPage)}?{nameof(ExerciseNewEntryPage.WorkoutId)}={WorkoutId}";
-            //await Shell.Current.GoToAsync(path);
-            await PageNavigation.NavigateTo(nameof(ExerciseNewEntryPage)
-                                          , nameof(ExerciseNewEntryPage.WorkoutId)
+            await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+                                          , nameof(ExerciseAddEditPage.WorkoutId)
                                           , WorkoutId
-                                          , nameof(ExerciseNewEntryPage.ExerciseId)
+                                          , nameof(ExerciseAddEditPage.ExerciseId)
                                           , "0");
         }
 
-        private async void OnAddExistingClicked(object     sender
+        private async void OnAddExistingClicked(object    sender
                                               , EventArgs e)
         {
-            ExercisePicker.IsVisible = true;
-            
             await PageNavigation.NavigateTo(nameof(ExerciseExistingEntryPage)
-                                          , nameof(ExerciseExistingEntryPage.ItemId)
+                                          , nameof(ExerciseExistingEntryPage.WorkoutId)
                                           , WorkoutId);
         }
 
@@ -97,36 +81,18 @@ namespace PersonalTrainerWorkouts.Views
                                               SelectionChangedEventArgs e)
         {
             await PageNavigation.NavigateTo(nameof(ExerciseExistingEntryPage)
-                                          , nameof(ExerciseExistingEntryPage.ItemId)
+                                          , nameof(ExerciseExistingEntryPage.WorkoutId)
                                           , WorkoutId);
         }
-
-        private void SelectionChangedPicker(object                                               sender
-                                          , Syncfusion.SfPicker.XForms.SelectionChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ClearLogsButton_OnClickedClearLogsButton(object    sender
-                                                            , EventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
-        private void ExercisePicker_OnSelectionChanged(object                                               sender
-                                                     , Syncfusion.SfPicker.XForms.SelectionChangedEventArgs e)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         private async void ExerciseList_OnItemDragging(object                sender
-                                               , ItemDraggingEventArgs e)
+                                                     , ItemDraggingEventArgs e)
         {
             switch (e.Action)
             {
                 case DragAction.Start:
                     
-                    DrugExercise = (WorkoutExerciseWithChildren) e.ItemData;
+                    _drugExercise = (WorkoutExerciseWithChildren) e.ItemData;
 
                     break;
 
@@ -151,7 +117,7 @@ namespace PersonalTrainerWorkouts.Views
         public  void MoveItem(ItemDraggingEventArgs itemMoved)
         {
             ViewModel.LinkWorkoutExercises.MoveTo(itemMoved.OldIndex, itemMoved.NewIndex);
-            for (int i = 0; i < ViewModel.LinkWorkoutExercises.Count; i++)
+            for (var i = 0; i < ViewModel.LinkWorkoutExercises.Count; i++)
             {
                 ViewModel.LinkWorkoutExercises[i].WorkoutExercise.OrderBy = i;
                 ViewModel.LinkWorkoutExercises[i].Save();
@@ -163,14 +129,14 @@ namespace PersonalTrainerWorkouts.Views
         }
 
         private async void ExerciseList_OnItemTapped(object              sender
-                                             , ItemTappedEventArgs e)
+                                                   , ItemTappedEventArgs e)
         {
             var tappedExercise = (WorkoutExerciseWithChildren) e.ItemData;
             
-            await PageNavigation.NavigateTo(nameof(ExerciseNewEntryPage)
-                                          , nameof(ExerciseNewEntryPage.WorkoutId)
+            await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+                                          , nameof(ExerciseAddEditPage.WorkoutId)
                                           , tappedExercise.Workout.Id.ToString()
-                                          , nameof(ExerciseNewEntryPage.ExerciseId)
+                                          , nameof(ExerciseAddEditPage.ExerciseId)
                                           , tappedExercise.Exercise.Id.ToString());
         }
     }

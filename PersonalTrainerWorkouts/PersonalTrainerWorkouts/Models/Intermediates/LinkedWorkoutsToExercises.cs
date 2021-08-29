@@ -1,5 +1,4 @@
 ﻿using SQLite;
-using SQLiteNetExtensions.Attributes;
 
 namespace PersonalTrainerWorkouts.Models.Intermediates
 {

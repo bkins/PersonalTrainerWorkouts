@@ -4,7 +4,7 @@
              xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
              xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
              xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
-             x:Class="PersonalTrainerWorkouts.Views.ExerciseNewEntryPage"
+             x:Class="PersonalTrainerWorkouts.Views.ExerciseAddEditPage"
              x:DataType="viewmodels:ExerciseAddEditViewModel"
              Title="Add/Edit Exercise" >
     <!--x:DataType="models:Exercise"-->

@@ -1,30 +1,24 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.IO;
 using System.Linq;
-using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Utilities;
-using PersonalTrainerWorkouts.Utilities.Interfaces;
 using PersonalTrainerWorkouts.ViewModels;
 using Syncfusion.ListView.XForms;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using SwipeEndedEventArgs = Syncfusion.ListView.XForms.SwipeEndedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views
 {
     
-    public partial class InitialPage : ContentPage
+    public partial class WorkoutListPage : ContentPage
     {
         public int                  SwipedItem     { get; set; }
-        public InitialPageViewModel ViewModel      { get; set; }
+        public WorkoutListViewModel ViewModel      { get; set; }
 
-        public InitialPage()
+        public WorkoutListPage()
         {
             InitializeComponent();
-            ViewModel = new InitialPageViewModel();
+            ViewModel = new WorkoutListViewModel();
         }
 
         protected override void OnAppearing()
@@ -37,7 +31,7 @@ namespace PersonalTrainerWorkouts.Views
         async void OnAddClicked(object    sender,
                                 EventArgs e)
         {
-            await Shell.Current.GoToAsync(nameof(WorkoutEntryPage));
+            await PageNavigation.NavigateTo(nameof(WorkoutEntryPage));
         }
 
         async void OnSelectionChanged(object                        sender,
@@ -45,7 +39,6 @@ namespace PersonalTrainerWorkouts.Views
         {
             if (e.AddedItems != null)
             {
-                // Navigate to the NoteEntryPage, passing the ID as a query parameter.
                 var workout = (Workout)e.AddedItems.FirstOrDefault();
                 
                 if (workout == null)
@@ -94,18 +87,6 @@ namespace PersonalTrainerWorkouts.Views
             Logger.WriteLine($"Deleted Workout: {itemDeleted} deleted.", Category.Information);
             
             ListView.ResetSwipe();
-        }
-
-        private void ListView_OnSwiping(object           sender
-                                      , SwipingEventArgs e)
-        {
-            
-        }
-
-        private void RightImage_BindingContextChanged(object    sender
-                                                    , EventArgs e)
-        {
-            //throw new NotImplementedException();
         }
     }
 }

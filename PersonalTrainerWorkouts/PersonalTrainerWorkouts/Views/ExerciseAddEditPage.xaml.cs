@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using ApplicationExceptions;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
@@ -18,9 +12,8 @@ namespace PersonalTrainerWorkouts.Views
 {
     [QueryProperty(nameof(WorkoutId),  nameof(WorkoutId))]
     [QueryProperty(nameof(ExerciseId), nameof(ExerciseId))]
-    public partial class ExerciseNewEntryPage : ContentPage, INotifyPropertyChanged, IQueryAttributable
+    public partial class ExerciseAddEditPage : IQueryAttributable
     {
-        //private ExerciseNewEntryViewModel ViewModel { get; set; }
         private ExerciseAddEditViewModel ViewModel           { get; set; }
         public  string                   WorkoutId           { get; set; }
         public  string                   ExerciseId          { get; set; }
@@ -43,7 +36,7 @@ namespace PersonalTrainerWorkouts.Views
             }
             catch (Exception e)
             {
-                Logger.WriteLine("Failed initiate ExerciseNewEntryPage.", Category.Error, e);
+                Logger.WriteLine("Failed initiate ExerciseAddEditPage.", Category.Error, e);
 
                 throw;
             }
@@ -53,11 +46,14 @@ namespace PersonalTrainerWorkouts.Views
         {
             try
             {
-                InitialName         = ViewModel.Exercise.Name;
-                InitialDescription  = ViewModel.Exercise.Description;
-                InitialLengthOfTime = ViewModel.Exercise.LengthOfTime;
+                if (ViewModel != null)
+                {
+                    InitialName         = ViewModel.Exercise?.Name;
+                    InitialDescription  = ViewModel.Exercise?.Description;
+                    InitialLengthOfTime = ViewModel.Exercise?.LengthOfTime;
 
-                BindingContext      = ViewModel;
+                    BindingContext = ViewModel;
+                }
             }
             catch (Exception e)
             {
@@ -67,22 +63,14 @@ namespace PersonalTrainerWorkouts.Views
         }
         
 
-        public ExerciseNewEntryPage()
+        public ExerciseAddEditPage()
         {
             InitializeComponent();
+
             ViewModel      = new ExerciseAddEditViewModel();
             BindingContext = ViewModel;
         }
         
-        protected override void OnAppearing()
-        {
-            base.OnAppearing();
-            //AllExercises = await App.Database.GetAllExercisesAsync();
-            //SetAllExercises();
-            //BindingContext = App.Database.GetAllExercisesAsync()
-            //    .Result;
-        }
-
         private void UpdateExercise()
         {
             ViewModel.Exercise = GetContextExercise();
@@ -95,7 +83,10 @@ namespace PersonalTrainerWorkouts.Views
 
             try
             {
-                ViewModel.SaveExercise(Convert.ToInt32(WorkoutId));
+                ViewModel.SaveExercise(int.Parse(WorkoutId));
+                InitialName         = ViewModel.Exercise.Name;
+                InitialDescription  = ViewModel.Exercise?.Description;
+                InitialLengthOfTime = ViewModel.Exercise?.LengthOfTime;
             }
             catch (AttemptToAddDuplicateEntityException e)
             {
@@ -120,15 +111,14 @@ namespace PersonalTrainerWorkouts.Views
         private Exercise GetContextExercise()
         {
             var exercise = (ExerciseAddEditViewModel) BindingContext;
-            exercise.Exercise.LengthOfTime = exercise.LengthOfTime;
-
-            return exercise.Exercise;
-        }
-        
-        void OnSaveButtonClicked(object    sender,
-                                 EventArgs e)
-        {
             
+            if (exercise.Exercise == null)
+            {
+                exercise.Exercise = new Exercise{Name = NameEntry.Text};
+            }
+            exercise.Exercise.LengthOfTime = exercise.LengthOfTime ?? "00:00";
+            
+            return exercise.Exercise;
         }
         
         private void Name_OnUnfocused(object         sender
@@ -160,7 +150,7 @@ namespace PersonalTrainerWorkouts.Views
         private async void LengthOfTimeEditor_OnUnfocused(object         sender
                                                         , FocusEventArgs e)
         {
-            var lengthOfTime = (Entry) sender;
+            var lengthOfTime = (Editor) sender;
 
             if (InitialLengthOfTime != lengthOfTime.Text)
             {

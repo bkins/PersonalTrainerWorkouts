@@ -4,6 +4,7 @@ using Xamarin.Forms;
 
 namespace PersonalTrainerWorkouts.Views
 {
+    //BENDO: Remove xamarin stuff and put in info about this app
     public partial class AboutPage : ContentPage
     {
         public AboutPage()

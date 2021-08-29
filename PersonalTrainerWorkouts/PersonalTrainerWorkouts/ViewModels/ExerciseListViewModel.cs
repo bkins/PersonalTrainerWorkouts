@@ -1,22 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using PersonalTrainerWorkouts.Data;
-using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Models.HelperModels;
 using PersonalTrainerWorkouts.Models.Intermediates;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
     public class ExerciseListViewModel : ViewModelBase
     {
+        public  int                                               WorkoutId { get; set; }
         private ObservableCollection<WorkoutExerciseWithChildren> _linkWorkoutExercises;
-        public int                                               WorkoutId { get; set; }
-
-        public ObservableCollection<WorkoutExerciseWithChildren> LinkWorkoutExercises
+        public  ObservableCollection<WorkoutExerciseWithChildren> LinkWorkoutExercises
         {
             get => _linkWorkoutExercises;
             set
@@ -25,9 +18,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 OnPropertyChanged(nameof(LinkWorkoutExercises));
             }
         }
-
-        private static DataAccess DataAccessLayer => new DataAccess(App.Database);
-
+        
         public ExerciseListViewModel(int workoutId)
         {
             WorkoutId = workoutId;
@@ -37,12 +28,10 @@ namespace PersonalTrainerWorkouts.ViewModels
         public void RefreshData()
         {
             LinkWorkoutExercises = new ObservableCollection<WorkoutExerciseWithChildren>();
-
-            //var workoutExercisesAssociatedWithWorkout = DataAccessLayer.GetWorkoutExercises(_workoutId);
+            
             var workoutExercisesAssociatedWithWorkout = DataAccessLayer.GetLinkedWorkoutsToExercises(WorkoutId);
-
-            var workoutExercisesWithChildren = GetWorkoutExerciseWithChildrenFromDatabase(WorkoutId
-                                                                                        , workoutExercisesAssociatedWithWorkout);
+            var workoutExercisesWithChildren          = GetWorkoutExerciseWithChildren(WorkoutId
+                                                                                     , workoutExercisesAssociatedWithWorkout);
 
             foreach (var workoutExerciseWithChildren in workoutExercisesWithChildren)
             {
@@ -51,9 +40,8 @@ namespace PersonalTrainerWorkouts.ViewModels
             ReorderWorkoutExercises();
         }
 
-        private IEnumerable<WorkoutExerciseWithChildren> 
-                    GetWorkoutExerciseWithChildrenFromDatabase(int workoutId
-                                                             , IEnumerable<LinkedWorkoutsToExercises> workoutExercisesAssociatedWithWorkout)
+        private IEnumerable<WorkoutExerciseWithChildren> GetWorkoutExerciseWithChildren(int                                    workoutId
+                                                                                      , IEnumerable<LinkedWorkoutsToExercises> workoutExercisesAssociatedWithWorkout)
         {
             var exercisesAssociatedWithWorkout = workoutExercisesAssociatedWithWorkout.ToList();
 
@@ -69,16 +57,6 @@ namespace PersonalTrainerWorkouts.ViewModels
 
                 yield return newRecord;
             }
-
-
-
-            //foreach (var workoutExercise in exercisesAssociatedWithWorkout)
-            //    yield return new WorkoutExerciseWithChildren(workoutId)
-            //                 {
-            //                     WorkoutExercise = workoutExercise
-            //                   , Exercise        = DataAccessLayer.GetExercise(workoutExercise.ExerciseId)
-            //                   , Workout         = DataAccessLayer.GetWorkout(workoutId)
-            //                 };
         }
 
         public void ReorderWorkoutExercises()

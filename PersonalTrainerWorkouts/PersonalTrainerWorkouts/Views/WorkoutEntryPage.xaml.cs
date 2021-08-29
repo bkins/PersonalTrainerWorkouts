@@ -1,15 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ApplicationExceptions;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.ViewModels;
 using PersonalTrainerWorkouts.Utilities;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace PersonalTrainerWorkouts.Views
 {
@@ -40,10 +35,10 @@ namespace PersonalTrainerWorkouts.Views
                 return;
             }
 
-            await PageNavigation.NavigateTo(nameof(ExerciseNewEntryPage)
-                                          , nameof(ExerciseNewEntryPage.WorkoutId)
+            await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+                                          , nameof(ExerciseAddEditPage.WorkoutId)
                                           , ViewModel.NewWorkout.Id.ToString()
-                                          , nameof(ExerciseNewEntryPage.ExerciseId)
+                                          , nameof(ExerciseAddEditPage.ExerciseId)
                                           , exercise.Id.ToString());
         }
         

@@ -1,9 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PersonalTrainerWorkouts.Models.Intermediates;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
-using Xamarin.Forms;
 
 namespace PersonalTrainerWorkouts.Models
 {
@@ -12,8 +10,7 @@ namespace PersonalTrainerWorkouts.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-
-        //public string Name         { get; set; }
+        
         public string Description  { get; set; }
         public string LengthOfTime { get; set; }
         public int    Reps         { get; set; }
@@ -36,7 +33,5 @@ namespace PersonalTrainerWorkouts.Models
 
         [ManyToMany( typeof(ExerciseEquipment), CascadeOperations = CascadeOperation.All )]
         public List<Equipment> Equipment { get; set; }
-        
-        
     }
 }

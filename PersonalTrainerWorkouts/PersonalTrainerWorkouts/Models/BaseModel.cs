@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PersonalTrainerWorkouts.Models
+﻿namespace PersonalTrainerWorkouts.Models
 {
     public class BaseModel
     {
