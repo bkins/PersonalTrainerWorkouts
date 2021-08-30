@@ -10,9 +10,9 @@ namespace PersonalTrainerWorkouts
         public AppShell()
         {
             InitializeComponent();
-            Routing.RegisterRoute(nameof(WorkoutListPage),               typeof(WorkoutListPage));
+            Routing.RegisterRoute(nameof(WorkoutListPage),           typeof(WorkoutListPage));
             Routing.RegisterRoute(nameof(WorkoutEntryPage),          typeof(WorkoutEntryPage));
-            Routing.RegisterRoute(nameof(ExerciseAddEditPage),      typeof(ExerciseAddEditPage));
+            Routing.RegisterRoute(nameof(ExerciseAddEditPage),       typeof(ExerciseAddEditPage));
             Routing.RegisterRoute(nameof(ExerciseExistingEntryPage), typeof(ExerciseExistingEntryPage));
             Routing.RegisterRoute(nameof(ExerciseListPage),          typeof(ExerciseListPage));
             Routing.RegisterRoute(nameof(MessageLog),                typeof(MessageLog));
