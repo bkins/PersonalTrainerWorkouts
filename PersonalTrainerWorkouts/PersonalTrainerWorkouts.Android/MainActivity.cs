@@ -1,6 +1,4 @@
-﻿using System;
-
-using Android.App;
+﻿using Android.App;
 using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
@@ -18,6 +16,7 @@ namespace PersonalTrainerWorkouts.Droid
                                      | ConfigChanges.UiMode
                                      | ConfigChanges.ScreenLayout
                                      | ConfigChanges.SmallestScreenSize
+             , ScreenOrientation = ScreenOrientation.Portrait
             )]
     public class MainActivity : global::Xamarin.Forms.Platform.Android.FormsAppCompatActivity
     {

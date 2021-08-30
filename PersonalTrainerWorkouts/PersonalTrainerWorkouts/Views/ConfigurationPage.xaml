@@ -14,14 +14,9 @@
 
             <Button Text="Drop Tables"
                     Clicked="DropTablesButtonClicked" />
+
             <Button Text="Create Tables"
                     Clicked="CreateTablesButtonClicked"/>
-            <Button Text="Fill Tables"
-                    Clicked="FillTablesButtonClicked"/>
-            <Button Text="View WorkoutExercise Table"
-                    Clicked="ViewWorkoutExerciseButtonClicked"/>
-            <Button Text="View Exercises Table"
-                    Clicked="ViewExercisesButtonClicked"/>
 
             <BoxView   VerticalOptions="Center"
                        HorizontalOptions="Center"
@@ -32,7 +27,6 @@
             <Button Text="View Log"
                     Clicked="ViewLogButtonClicked"/>
             
-
             <BoxView   VerticalOptions="Center"
                        HorizontalOptions="Center"
                        HeightRequest="1"

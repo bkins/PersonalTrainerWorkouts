@@ -2,22 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using ApplicationExceptions;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Models.HelperModels;
 using PersonalTrainerWorkouts.Models.Intermediates;
+using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
-using PersonalTrainerWorkouts.Views;
 using Syncfusion.DataSource.Extensions;
-using Syncfusion.ListView.XForms;
-using Xamarin.Forms;
 using Xunit;
 using Xunit.Abstractions;
 
 namespace Tests
 {
+    //These test are more of integration test.
+    //BENDO: Consider moving these to an Integrations Test class. Or renaming and recreating the Unit Test class
+
     public class Units : IDisposable
     {
         private readonly ITestOutputHelper _testOutputHelper;
@@ -309,14 +308,14 @@ namespace Tests
 
         #endregion
 
-    #region Views
+    #region ViewModels
 
         [Fact]
         public void ReorderExerciseList()
         {
             RefreshDatabase();
 
-            var viewModel = LoadExerciseToReorder(out var exerciseOne
+            var viewModel = LoadExerciseListViewModel(out var exerciseOne
                                                 , out var exerciseTwo
                                                 , out var exerciseThree
                                                 , out var exerciseFour);
@@ -357,84 +356,35 @@ namespace Tests
             }
         }
 
-        private ExerciseListViewModel LoadExerciseToReorder(out WorkoutExerciseWithChildren exerciseOne
-                                                          , out WorkoutExerciseWithChildren exerciseTwo
-                                                          , out WorkoutExerciseWithChildren exerciseThree
-                                                          , out WorkoutExerciseWithChildren exerciseFour)
+        [Fact]
+        public void CalculateTotalReps()
         {
-            var workout = new Workout
-                          {
-                              Name = "Test Reordering Exercises"
-                          };
+            RefreshDatabase();
 
-            var workoutId = DataAccessLayer.AddNewWorkout(workout);
+            var viewModel = LoadWorkoutExerciseViewModel();
+            var totalReps = viewModel.TotalReps;
 
-            var exercise1 = new Exercise
-                            {
-                                Name = "Exercise 1"
-                            };
+            //Why am I using the Count of the list?  Because I added 4 exercies with 1 rep each
+            Assert.Equal(viewModel.ExercisesWithIntermediateFields.Count, totalReps);
 
-            var exercise2 = new Exercise
-                            {
-                                Name = "Exercise 2"
-                            };
+            var totalRepsFromDb = 0;
+            
+            var workoutsToExercises = new List<LinkedWorkoutsToExercises>(DataAccessLayer.GetLinkedWorkoutsToExercises(1));
+            
+            foreach (var workoutsToExercise in workoutsToExercises)
+            {
+                var exercises = DataAccessLayer.GetLinkedWorkoutsToExercises(workoutsToExercise.WorkoutId);
+                var exercise  = exercises.First(field => field.ExerciseId == workoutsToExercise.ExerciseId);
 
-            var exercise3 = new Exercise
-                            {
-                                Name = "Exercise 3"
-                            };
+                totalRepsFromDb += exercise.Reps;
+            }
 
-            var exercise4 = new Exercise
-                            {
-                                Name = "Exercise 4"
-                            };
-
-            var exercise1Id = DataAccessLayer.AddNewExercise(exercise1);
-            var exercise2Id = DataAccessLayer.AddNewExercise(exercise2);
-            var exercise3Id = DataAccessLayer.AddNewExercise(exercise3);
-            var exercise4Id = DataAccessLayer.AddNewExercise(exercise4);
-
-            var workoutExercise1 = new WorkoutExercise
-                                   {
-                                       ExerciseId = exercise1Id
-                                     , WorkoutId  = workoutId
-                                   };
-
-            var workoutExercise2 = new WorkoutExercise
-                                   {
-                                       ExerciseId = exercise2Id
-                                     , WorkoutId  = workoutId
-                                   };
-
-            var workoutExercise3 = new WorkoutExercise
-                                   {
-                                       ExerciseId = exercise3Id
-                                     , WorkoutId  = workoutId
-                                   };
-
-            var workoutExercise4 = new WorkoutExercise
-                                   {
-                                       ExerciseId = exercise4Id
-                                     , WorkoutId  = workoutId
-                                   };
-
-            DataAccessLayer.AddWorkoutExercise(workoutExercise1);
-            DataAccessLayer.AddWorkoutExercise(workoutExercise2);
-            DataAccessLayer.AddWorkoutExercise(workoutExercise3);
-            DataAccessLayer.AddWorkoutExercise(workoutExercise4);
-
-            var viewModel = new ExerciseListViewModel(workoutId);
-
-            exerciseOne   = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise1.Name);
-            exerciseTwo   = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise2.Name);
-            exerciseThree = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise3.Name);
-            exerciseFour  = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise4.Name);
-
-            return viewModel;
+            Assert.Equal(totalReps, totalRepsFromDb);
         }
 
     #endregion
-#endregion
+
+    #endregion
 
 #region ApplicationExceptions
 
@@ -596,7 +546,12 @@ namespace Tests
             }
             catch (NullReferenceException e)
             {
-                Console.WriteLine(e);
+                Logger.WriteToToast  = false;
+                Logger.WriteToLogCat = false;
+                Logger.WriteLine(e.Message, Category.Error, e);
+                //Reset Logger
+                Logger.WriteToToast  = true;
+                Logger.WriteToLogCat = true;
 
                 throw new WiringException("Success: the list of string is null."
                                         , nameof(Units)
@@ -608,6 +563,104 @@ namespace Tests
         private static void SearchListThatResultInNotElementsInSequence()
         {
             Database.GetWorkout(-1);
+        }
+
+        private WorkoutsToExerciseViewModel LoadWorkoutExerciseViewModel()
+        {
+            var exerciseListViewModel = LoadExerciseListViewModel(out _, out _, out _, out _);
+
+            var workoutExerciseViewModel = new WorkoutsToExerciseViewModel(exerciseListViewModel.WorkoutId.ToString());
+
+            foreach (var exerciseLengthOfTime in workoutExerciseViewModel.ExercisesWithIntermediateFields)
+            {
+                exerciseLengthOfTime.Reps = 1;
+            }
+
+            return workoutExerciseViewModel;
+        }
+
+        private ExerciseListViewModel LoadExerciseListViewModel(out WorkoutExerciseWithChildren exerciseOne
+                                                              , out WorkoutExerciseWithChildren exerciseTwo
+                                                              , out WorkoutExerciseWithChildren exerciseThree
+                                                              , out WorkoutExerciseWithChildren exerciseFour)
+        {
+            var workout = new Workout
+                          {
+                              Name = "Test Reordering Exercises"
+                          };
+
+            var workoutId = DataAccessLayer.AddNewWorkout(workout);
+
+            var exercise1 = new Exercise
+                            {
+                                Name = "Exercise 1"
+                              , Reps = 1
+                            };
+
+            var exercise2 = new Exercise
+                            {
+                                Name = "Exercise 2"
+                              , Reps = 1
+                            };
+
+            var exercise3 = new Exercise
+                            {
+                                Name = "Exercise 3"
+                              , Reps = 1
+                            };
+
+            var exercise4 = new Exercise
+                            {
+                                Name = "Exercise 4"
+                              , Reps = 1
+                            };
+
+            var exercise1Id = DataAccessLayer.AddNewExercise(exercise1);
+            var exercise2Id = DataAccessLayer.AddNewExercise(exercise2);
+            var exercise3Id = DataAccessLayer.AddNewExercise(exercise3);
+            var exercise4Id = DataAccessLayer.AddNewExercise(exercise4);
+
+            var workoutExercise1 = new LinkedWorkoutsToExercises
+                                   {
+                                       ExerciseId = exercise1Id
+                                     , WorkoutId  = workoutId
+                                     , Reps       = exercise1.Reps
+                                   };
+
+            var workoutExercise2 = new LinkedWorkoutsToExercises
+                                   {
+                                       ExerciseId = exercise2Id
+                                     , WorkoutId  = workoutId
+                                     , Reps       = exercise2.Reps
+                                   };
+
+            var workoutExercise3 = new LinkedWorkoutsToExercises
+                                   {
+                                       ExerciseId = exercise3Id
+                                     , WorkoutId  = workoutId
+                                     , Reps       = exercise3.Reps
+                                   };
+
+            var workoutExercise4 = new LinkedWorkoutsToExercises
+                                   {
+                                       ExerciseId = exercise4Id
+                                     , WorkoutId  = workoutId
+                                     , Reps       = exercise4.Reps
+                                   };
+
+            DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise1);
+            DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise2);
+            DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise3);
+            DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise4);
+
+            var viewModel = new ExerciseListViewModel(workoutId);
+
+            exerciseOne   = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise1.Name);
+            exerciseTwo   = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise2.Name);
+            exerciseThree = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise3.Name);
+            exerciseFour  = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise4.Name);
+
+            return viewModel;
         }
 
 #endregion

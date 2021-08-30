@@ -1,21 +1,11 @@
 ﻿using Android.App;
-using Android.Content;
-using Android.OS;
-using Android.Runtime;
-using Android.Views;
 using Android.Widget;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Android.Icu.Text;
-using Java.Util.Logging;
 using PersonalTrainerWorkouts.Droid.Utilities;
 using NLog;
 using PersonalTrainerWorkouts.Utilities.Interfaces;
 using Logger = NLog.Logger;
 using LogManager = NLog.LogManager;
-using Android.Util;
 
 [assembly: Xamarin.Forms.Dependency(typeof(MessageAndroid))]
 [assembly: Xamarin.Forms.Dependency(typeof(NLog.ILogger))]

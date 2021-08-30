@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-
              xmlns:viewmodel="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+
              x:Class="PersonalTrainerWorkouts.Views.MessageLog"
              x:DataType="viewmodel:MessageLogViewModel">
     <ContentPage.Resources>
@@ -31,9 +31,10 @@
     <ContentPage.Content>
         <StackLayout Margin="{DynamicResource PageMargin}"
                      x:DataType="viewmodel:MessageLogViewModel">
-            <Label Text="{Binding CompleteLog}"
-                   VerticalOptions="StartAndExpand" 
-                   HorizontalOptions="StartAndExpand" />
+            <Editor Text="{Binding CompleteLog}"
+                    VerticalOptions="StartAndExpand" 
+                    HorizontalOptions="StartAndExpand"
+                    IsReadOnly="True"/>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -1,14 +1,11 @@
-﻿using System.ComponentModel;
-using PersonalTrainerWorkouts.Data;
+﻿using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
-using PersonalTrainerWorkouts.ViewModels;
 
-namespace PersonalTrainerWorkouts.Models.HelperModels
+namespace PersonalTrainerWorkouts.ViewModels
 {
     public class WorkoutExerciseWithChildren : ViewModelBase
     {
         private Exercise                  _exercise;
-        //private WorkoutExercise _workoutExercise;
         private LinkedWorkoutsToExercises _workoutExercise;
         private Workout                   _workout;
         private string                    _exerciseForDebugging;
@@ -22,8 +19,7 @@ namespace PersonalTrainerWorkouts.Models.HelperModels
                 OnPropertyChanged(nameof(Exercise));
             }
         }
-
-        //public WorkoutExercise WorkoutExercise
+        
         public LinkedWorkoutsToExercises WorkoutExercise
         {
             get => _workoutExercise;
@@ -53,9 +49,7 @@ namespace PersonalTrainerWorkouts.Models.HelperModels
                 OnPropertyChanged(nameof(ExerciseForDebugging));
             }
         }
-
-        private static DataAccess      DataAccessLayer      => new DataAccess(App.Database);
-
+        
         public WorkoutExerciseWithChildren(int workoutId)
         {
             Workout = DataAccessLayer.GetWorkout(workoutId);
@@ -63,18 +57,7 @@ namespace PersonalTrainerWorkouts.Models.HelperModels
         }
         public void Save()
         {
-            //DataAccessLayer.UpdateWorkoutExercise(WorkoutExercise);
             DataAccessLayer.UpdateLinkedWorkoutsToExercises(WorkoutExercise);
         }
-
-        //public event PropertyChangedEventHandler PropertyChanged;
-
-        
-        //public void OnPropertyChanged(string name)
-        //{
-        //    if (this.PropertyChanged != null)
-        //        this.PropertyChanged(this, new PropertyChangedEventArgs(name));
-        //}
-
     }
 }

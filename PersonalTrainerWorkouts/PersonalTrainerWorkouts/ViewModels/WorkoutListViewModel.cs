@@ -1,23 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Text;
+﻿using System.Collections.ObjectModel;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
-    public class InitialPageViewModel: ViewModelBase
+    public class WorkoutListViewModel: ViewModelBase
     {
         public ObservableCollection<Workout> ListOfWorkouts
         {
-            get => new ObservableCollection<Workout>(App.Database.GetWorkouts());
+            get => new ObservableCollection<Workout>(DataAccessLayer.GetWorkouts());
             set { }
         }
 
-        public InitialPageViewModel()
+        public WorkoutListViewModel()
         {
-            ListOfWorkouts = new ObservableCollection<Workout>(App.Database.GetWorkouts());
+            ListOfWorkouts = new ObservableCollection<Workout>(DataAccessLayer.GetWorkouts());
         }
 
         public string Delete(int index)
@@ -37,7 +33,7 @@ namespace PersonalTrainerWorkouts.ViewModels
             //Delete the Workout from the database
             App.Database.DeleteWorkout(ref workoutToDelete);
             
-            ListOfWorkouts = new ObservableCollection<Workout>(App.Database.GetWorkouts());
+            ListOfWorkouts = new ObservableCollection<Workout>(DataAccessLayer.GetWorkouts());
 
             return workoutName;
         }

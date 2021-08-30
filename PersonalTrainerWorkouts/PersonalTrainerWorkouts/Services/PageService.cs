@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace PersonalTrainerWorkouts.Services
@@ -28,6 +25,6 @@ namespace PersonalTrainerWorkouts.Services
             return await MainPage.Navigation.PopAsync();
         }
 
-        private Page MainPage => Application.Current.MainPage;
+        private static Page MainPage => Application.Current.MainPage;
     }
 }

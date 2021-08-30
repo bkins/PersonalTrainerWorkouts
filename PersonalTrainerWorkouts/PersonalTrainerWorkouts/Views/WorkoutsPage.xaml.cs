@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Services;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Forms;
@@ -11,6 +6,7 @@ using Xamarin.Forms.Xaml;
 
 namespace PersonalTrainerWorkouts.Views
 {
+    [Obsolete("This View and the WorkoutsPageViewModel are an incomplete trial of a different approach I would like to explore more later.  For now they are not used.")]
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class WorkoutsPage : ContentPage
     {

@@ -1,25 +1,21 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+using ApplicationExceptions;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
 using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace PersonalTrainerWorkouts.Views
 {
     [QueryProperty(nameof(WorkoutId), nameof(WorkoutId))]
     public partial class WorkoutExercisePage : ContentPage
     {
-        public WorkoutExerciseViewModel ViewModel;
-        public int                      TotalWorkoutTime { get; set; }
+        public WorkoutsToExerciseViewModel ViewModel;
+        public string                      TotalWorkoutTime { get; set; }
 
-        private ExerciseLengthOfTime     _selectedExerciseLengthOfTime { get; set; }
+        private ExerciseViewModel     SelectedExerciseViewModel { get; set; }
         
         private string _workoutId = "0";
         public string WorkoutId
@@ -33,19 +29,17 @@ namespace PersonalTrainerWorkouts.Views
             try
             {
                 _workoutId = workoutId;
-                ViewModel = new WorkoutExerciseViewModel(workoutId);
+
+                ViewModel = new WorkoutsToExerciseViewModel(workoutId);
                 
-                var workout   = ViewModel.Workout;
-                var exercises = ViewModel.ExercisesWithLengthOfTime;
-                var totalTime = ViewModel.TotalTime;
+                var exercises = ViewModel.ExercisesWithIntermediateFields;
 
                 BindingContext             = ViewModel;
                 CollectionView.ItemsSource = exercises;
-                TotalWorkoutTime           = ViewModel.TotalTime;
+                TotalWorkoutTime           = ViewModel.TotalTime.ToShortForm();
             }
             catch (Exception ex)
             {
-
                 Logger.WriteLine("Failed to load Workout.", Category.Error, ex);
                 //BENDO: consider implementing a page that shows exception details
             }
@@ -55,69 +49,49 @@ namespace PersonalTrainerWorkouts.Views
         {
             InitializeComponent();
 
-            BindingContext = new Workout();
+            BindingContext = new Workout(); 
         }
-        //https://docs.microsoft.com/en-us/xamarin/get-started/quickstarts/database?pivots=windows
-
+        
         private void SaveWorkout()
         {
-             var workout = (Workout)BindingContext;
+            var boundContext = (WorkoutsToExerciseViewModel) BindingContext;
+            var workout      = boundContext.Workout;
             workout.CreateDateTime = DateTime.UtcNow;
 
-            if ( ! string.IsNullOrWhiteSpace(workout.Name))
+            if ( string.IsNullOrWhiteSpace(workout.Name))
             {
                 Logger.WriteLine("You must name the workout first, before saving", Category.Information);
-                //BENDO: Display that workout was not save because a name was not provided
-                //Or select the name field and highlight is red
-                App.Database.SaveWorkout(workout);
             }
-        }
-
-        private void SaveExercise()
-        {
-
-        }
-        async void OnSaveButtonClicked(object sender, EventArgs e)
-        {
-            var workout = (Workout)BindingContext;
-            workout.CreateDateTime = DateTime.UtcNow;
-            if ( ! string.IsNullOrWhiteSpace(workout.Name))
+            else
             {
-                //await App.AsyncDatabase.SaveWorkoutAsync(workout);
-                App.Database.SaveWorkout(workout);
+                ViewModel.SaveWorkout();
             }
-
-            // Navigate backwards
-            await Shell.Current.GoToAsync("..");
         }
-            
+        
         private async void OnSelectionChanged(object                    sender,
                                               SelectionChangedEventArgs e)
         {
-            var exercise = (ExerciseLengthOfTime)e.CurrentSelection.FirstOrDefault();
-            _selectedExerciseLengthOfTime = exercise;
+            var exercise = (ExerciseViewModel)e.CurrentSelection.FirstOrDefault();
+            SelectedExerciseViewModel = exercise;
 
             if (exercise == null)
             {
                 return;
             }
-
-            //Navigate to Exercise page to edit existing exercise
-            await PageNavigation.NavigateTo
-                                 (
-                                       nameof(ExerciseNewEntryPage)
-                                     , nameof(ExerciseNewEntryPage.WorkoutId)
-                                     , WorkoutId
-                                     , nameof(ExerciseNewEntryPage.ExerciseId)
-                                     , exercise.Exercise.Id.ToString()
-                                 );
+            
+            await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+                                          , nameof(ExerciseAddEditPage.WorkoutId)
+                                          , WorkoutId
+                                          , nameof(ExerciseAddEditPage.ExerciseId)
+                                          , exercise.Exercise.Id.ToString());
         }
         
         async void OnToolbarManageExercisesClicked(object    sender,
                                                    EventArgs e)
         {
-            var path = $"{nameof(ExerciseListPage)}?{nameof(ExerciseListPage.WorkoutId)}={WorkoutId}";
-            await Shell.Current.GoToAsync(path);
+            await PageNavigation.NavigateTo(nameof(ExerciseListPage)
+                                          , nameof(ExerciseListPage.WorkoutId)
+                                          , WorkoutId);
         }
         
         private void Name_OnUnfocused(object         sender
@@ -145,40 +119,63 @@ namespace PersonalTrainerWorkouts.Views
             var theE      = e;
 
 
-            //BENDO: _selectedExerciseLengthOfTime is null
-            //I can't get this to work :-(
+            //BENDO: SelectedExerciseViewModel is null
+            //SelectedExerciseViewModel is only set when the Exercise item is selected, but when the LengthOfTime or Reps fields are select the exercise item is not
+            //I can't get this to work :-(  Will use SaveWorkoutsToExercise button for now
             //var workoutExercise = ViewModel.WorkoutExercises
-            //                               .First(field => field.Id == _selectedExerciseLengthOfTime.WorkoutExerciseId);
+            //                               .First(field => field.Id == SelectedExerciseViewModel.WorkoutExerciseId);
             //App.Database.UpdateWorkoutExercises(workoutExercise);
+        }
+        
+        private void ExerciseReps_OnUnfocused(object         sender
+                                            , FocusEventArgs e)
+        {
+            //Silent save is not working.  See ExerciseLengthOfTime_OnUnfocused.  Use SaveWorkoutsToExercise button on each item in the Exercise List
         }
 
         private void OnSaveWorkoutExerciseButtonClick(object    sender
                                                     , EventArgs e)
         {
-            var itemData                = (Button)sender;
-            var selectedWorkoutExercise = itemData.CommandParameter as ExerciseLengthOfTime;
-            
-            if (selectedWorkoutExercise == null)
+            var itemData = (Button) sender;
+
+            if ( ! (itemData.CommandParameter is ExerciseViewModel selectedWorkoutExercise))
                 return;
 
-            var workoutsToExercise = ViewModel.WorkoutsToExercises
-                                           .First(field => field.Id == selectedWorkoutExercise.WorkoutExerciseId);
+            var workoutsToExercise = BuildWorkoutToExerciseFromSelected(selectedWorkoutExercise);
 
-            var maxOrderBy = -1;
+            SaveWorkoutToExerciseAndReload(workoutsToExercise);
 
-            if (ViewModel.WorkoutsToExercises.Any())
+        }
+
+        private void SaveWorkoutToExerciseAndReload(LinkedWorkoutsToExercises workoutsToExercise)
+        {
+            try
             {
-                maxOrderBy = ViewModel.WorkoutsToExercises
-                                      .Where(field => field.WorkoutId == workoutsToExercise.WorkoutId)
-                                      .Max(field => field.OrderBy);
+                ViewModel.SaveWorkoutsToExercise(workoutsToExercise);
+                LoadWorkout(ViewModel.Workout.Id.ToString());
             }
+            catch (ValueTooLargeException exception)
+            {
+                Logger.WriteLine($"{exception.Message}  Value NOT saved!"
+                               , Category.Warning
+                               , exception);
+            }
+            catch (Exception exception)
+            {
+                Logger.WriteLine($"Error while saving the {typeof(LinkedWorkoutsToExercises)}: {exception.Message}"
+                               , Category.Error
+                               , exception);
+            }
+        }
 
-            maxOrderBy += 1;
+        private LinkedWorkoutsToExercises BuildWorkoutToExerciseFromSelected(ExerciseViewModel selectedWorkoutExercise)
+        {
+            var workoutsToExercise = ViewModel.WorkoutsToExercises.First(field => field.Id == selectedWorkoutExercise.WorkoutExerciseId);
 
             workoutsToExercise.LengthOfTime = selectedWorkoutExercise.LengthOfTime;
-            workoutsToExercise.OrderBy      = maxOrderBy;
+            workoutsToExercise.Reps         = selectedWorkoutExercise.Reps;
 
-            App.Database.UpdateLinkedWorkoutsToExercises(workoutsToExercise);
+            return workoutsToExercise;
         }
     }
 }

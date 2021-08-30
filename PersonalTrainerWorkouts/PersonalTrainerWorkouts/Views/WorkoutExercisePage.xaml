@@ -1,11 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
              xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
-             xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.WorkoutExercisePage"
-             x:DataType="viewModels:WorkoutExerciseViewModel"
+             x:DataType="viewModels:WorkoutsToExerciseViewModel"
              Title="Edit Workout" >
     <ContentPage.Resources>
         <!-- Implicit styles -->
@@ -33,9 +31,7 @@
     <!-- Add an item to the toolbar -->
     <ContentPage.ToolbarItems>
 
-        <!--TODO: Find images instead of 'M'-->
-
-        <ToolbarItem Text="M"
+        <ToolbarItem Text="Manage Exercises"
                      Clicked="OnToolbarManageExercisesClicked" />
         
     </ContentPage.ToolbarItems>
@@ -76,70 +72,71 @@
         <Editor Placeholder="Difficulty"
                 Text="{Binding Workout.Difficulty}"
                 Keyboard="Numeric"
-                Unfocused="Difficulty_OnUnfocused"/>
+                Unfocused="Difficulty_OnUnfocused"
+        />
 
-        <Grid ColumnDefinitions="auto,*">
+        <Grid ColumnDefinitions="auto,*"
+              RowDefinitions="*,*">
             
             <Label Text="Total Time:"
                    HeightRequest="100"
-                   Font="Bold"
-                   HorizontalTextAlignment="Start"/>
+                   HorizontalTextAlignment="Start"
+                   FontAttributes="Bold"
+            />
 
             <Label Grid.Column="1"
                    HorizontalTextAlignment="Start"
-                   Text="{Binding TotalTime}"/>
+                   Text="{Binding TotalTime}"
+                   
+            />
+            
+            <Label Grid.Column="0"
+                   Grid.Row="1"
+                   Text="Total Reps:"
+                   HeightRequest="100"
+                   HorizontalTextAlignment="Start"
+                   FontAttributes="Bold"
+            />
+
+            <Label Grid.Column="1"
+                   Grid.Row="1"
+                   HorizontalTextAlignment="Start"
+                   Text="{Binding TotalReps}"
+            />
 
         </Grid>
 
-        <!--BENDO Replace Save button with silent, PropertyChange-->
-        <!--For save on property changed-->
-        <!--https://stackoverflow.com/a/56044196/431319-->
-        <!--<Grid ColumnDefinitions="*,*">
-             --><!--Layout children in two columns--><!-- 
-            <Button Text="Save"
-                    HeightRequest="100"
-                    Clicked="OnSaveButtonClicked" />
-            --><!--<Button Grid.Column="1"
-                    Text="Delete"
-                    Clicked="OnDeleteButtonClicked"/>--><!--
-        </Grid>-->
         <Label Text="- Exercises -"
                HorizontalOptions="Center"
-               FontSize="Medium"/>
+               FontSize="Medium"
+               FontAttributes="Bold"/>
 
-        <!--<BoxView   VerticalOptions="Center"
-                   HorizontalOptions="Center"
-                   HeightRequest="1"
-                   WidthRequest="200"  
-                   Color="Gray"/>-->
-
-        <!--Bottom section - Exercises-->
         <CollectionView x:Name="CollectionView"
                         Margin="{DynamicResource PageMargin}"
                         SelectionMode="Single"
                         SelectionChanged="OnSelectionChanged"
-                        x:DataType="viewModels:WorkoutExerciseViewModel">
+                        x:DataType="viewModels:WorkoutsToExerciseViewModel">
             
             <CollectionView.ItemsLayout>
                 <LinearItemsLayout Orientation="Vertical"
                                    ItemSpacing="0" />
             </CollectionView.ItemsLayout>
             
-            <!-- Define the appearance of each item in the list -->
             <CollectionView.ItemTemplate>
                 <DataTemplate>
                     <Grid Padding="0"
-                        x:DataType="viewModels:ExerciseLengthOfTime">
+                        x:DataType="viewModels:ExerciseViewModel">
                         
                         <Grid.RowDefinitions>
                             <RowDefinition Height="Auto"/>
-                            <RowDefinition Height="40"/>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="Auto"/>
                         </Grid.RowDefinitions>
 
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
                             
@@ -151,6 +148,8 @@
                              +=================+==============+==========+==========+
                           1  | Length of Time: | LengthOfTime | (00:00)  | Save     |
                              +=================+==============+==========+==========+
+                          1  | Reps:           | Reps         |          |          |
+                             +=================+==============+==========+==========+
                         
                         -->
 
@@ -159,39 +158,51 @@
                                VerticalOptions="End"
                                Text="{Binding Exercise.Name}"
                                FontSize="Medium" 
+                               FontAttributes="Bold"
                         />
-                         <!--<Label Grid.Row="0"
-                                Grid.Column="3"
-                                Text="{Binding WorkoutExerciseId}"
-                                FontSize="Small"
-                        />-->
                         <Label Grid.Row="1" 
                                Grid.Column="0"
                                VerticalTextAlignment="Center"
                                Text ="  Length of time: "
                                FontSize="Small" 
                         />
-                         <!--BENDO Replace Save button with silent, PropertyChange-->
-                         <!--For save on property changed-->
-                         <!--https://stackoverflow.com/a/56044196/431319-->
-                        <Editor Grid.Row="1" 
+                        <Label Grid.Row="2"
+                               Grid.Column="0"
+                               VerticalTextAlignment="Center"
+                               Text="  Reps: "
+                               FontSize="Small"
+                        />
+                        <Editor x:Name="LengthOfTimeEditor"
+                                Grid.Row="1" 
                                 Grid.Column="1"
-                                VerticalOptions="Center"
-                                HorizontalOptions="Center"
-                                WidthRequest="50"
+                                Grid.ColumnSpan="2"
+                                VerticalOptions="End"
+                                HorizontalOptions="StartAndExpand"
+                                AutoSize="TextChanges"
                                 Text="{Binding LengthOfTime}"
                                 TextColor="{DynamicResource TertiaryColor}"
                                 FontSize="Small" 
-                                Keyboard="Numeric"
-                                Unfocused="ExerciseLengthOfTime_OnUnfocused"
-                                
+                                Unfocused="ExerciseLengthOfTime_OnUnfocused">
+                            <Editor.Keyboard>
+                                <Keyboard x:FactoryMethod="Create">
+                                    <x:Arguments>
+                                        <KeyboardFlags>None</KeyboardFlags>
+                                    </x:Arguments>
+                                </Keyboard>
+                            </Editor.Keyboard>
+                        </Editor>
+                         <Editor Grid.Row="2" 
+                                 Grid.Column="1"
+                                 VerticalOptions="End"
+                                 HorizontalOptions="StartAndExpand"
+                                 AutoSize="TextChanges"
+                                 Text="{Binding Reps}"
+                                 TextColor="{DynamicResource TertiaryColor}"
+                                 FontSize="Small" 
+                                 Keyboard="Numeric"
+                                 Unfocused="ExerciseReps_OnUnfocused"
+                               
                          />
-                         <!--<Label Grid.Row="1" 
-                                Grid.Column="2"
-                                VerticalTextAlignment="Center"
-                                Text ="{Binding LengthAsSpan,StringFormat=\{0:h\\:mm\\:ss}}"
-                                FontSize="Small" 
-                         />-->
                         <Button Grid.Row="1"
                                 Grid.Column="3"
                                 WidthRequest="75"

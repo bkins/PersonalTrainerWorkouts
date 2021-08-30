@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using ApplicationExceptions;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
@@ -6,43 +7,46 @@ using PersonalTrainerWorkouts.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
-    [Obsolete("Need to determine if I should simply remove this ViewModel or if it is not refeerenced in err")]
-    public class ExerciseNewEntryViewModel : ViewModelBase
-    {
-        public Exercise NewExercise { get; set; }
-        
-        public ExerciseNewEntryViewModel()
-        {
-            NewExercise = new Exercise();
-        }
+    public class ExerciseItemViewModel : ViewModelBase
+    {   
+        public IEnumerable<Exercise> AllExercises { get; set; }
 
-        public void UpdateNewExercise()
+        private Exercise _selectedExercise;
+        public  Exercise SelectedExercise
         {
-            DataAccessLayer.UpdateExercise(NewExercise);
+            get => _selectedExercise;
+            set
+            {
+                if (_selectedExercise != value)
+                {
+                    _selectedExercise = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+        
+        public ExerciseItemViewModel()
+        {
+            AllExercises = DataAccessLayer.GetExercises();
         }
 
         public void SaveExercise(int workoutId)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(NewExercise.Name))
+                if (string.IsNullOrWhiteSpace(_selectedExercise.Name))
                     throw new UnnamedEntityException($"{nameof(Exercise)} was not named.  Must be named before attempting to save.");
                 
-                var workout    = DataAccessLayer.GetWorkout(workoutId);
-                var exerciseId = DataAccessLayer.AddNewExercise(NewExercise);
-                
-                workout.Exercises.Add(NewExercise);
-
                 var workoutExercise = new LinkedWorkoutsToExercises
                                       {
-                                          ExerciseId   = exerciseId
+                                          ExerciseId   = _selectedExercise.Id
                                         , WorkoutId    = workoutId
-                                        , LengthOfTime = NewExercise.LengthOfTime
+                                        , LengthOfTime = _selectedExercise.LengthOfTime
                                       };
                 
                 var workoutExerciseId = DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise);
 
-                if (workoutExerciseId==0)
+                if (workoutExerciseId == 0)
                 {
                     throw new Exception("LinkedWorkoutsToExercises not added");
                 }
@@ -55,4 +59,5 @@ namespace PersonalTrainerWorkouts.ViewModels
             }
         }
     }
+    
 }

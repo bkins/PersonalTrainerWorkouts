@@ -10,9 +10,7 @@ namespace PersonalTrainerWorkouts.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-
-        //public string Name { get; set; }
-
+        
         public MuscleGroup()
         {
             Exercises = new List<Exercise>();
@@ -23,9 +21,7 @@ namespace PersonalTrainerWorkouts.Models
         
         [ForeignKey(typeof(OpposingMuscleGroup))]
         public int OpposingMuscleGroupId { get; set; }
-
-        //For now, I am controlling this relationship manually.
-        //BENDO: Research how to set this relationship up.
+        
         [OneToOne]
         public OpposingMuscleGroup OpposingMuscleGroup { get; set; }
     }

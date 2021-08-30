@@ -1,6 +1,5 @@
 ﻿
 using System;
-using System.IO;
 using PersonalTrainerWorkouts.Data;
 using Xamarin.Forms;
 namespace PersonalTrainerWorkouts
@@ -24,7 +23,7 @@ namespace PersonalTrainerWorkouts
             
             MainPage = new AppShell();
             
-            //BENDO: Look at site below. Some good ideas for handling/backing up database
+            //BENDO: [Before final release of v1.0] Look at site below. Some good ideas for handling/backing up database
             //https://causerexception.com/2019/06/28/sqlite-tips-and-tricks-for-mobile-developers/
         }
 

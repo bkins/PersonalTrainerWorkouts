@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using PersonalTrainerWorkouts.Data;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
     public class ViewModelBase : INotifyPropertyChanged
     {
+        private static DataAccess _dataAccess;
+
+        protected DataAccess DataAccessLayer => _dataAccess = _dataAccess ?? new DataAccess(App.Database);
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

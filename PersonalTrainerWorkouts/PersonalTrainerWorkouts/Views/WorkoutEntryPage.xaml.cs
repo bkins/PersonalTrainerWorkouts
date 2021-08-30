@@ -1,28 +1,25 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ApplicationExceptions;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.ViewModels;
 using PersonalTrainerWorkouts.Utilities;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 
 namespace PersonalTrainerWorkouts.Views
 {
     public partial class WorkoutEntryPage : ContentPage
     {
-        private WorkoutEntryViewModel ViewModel { get; set; }
-        private Entry                 NameEntry { get; set; }
-        
+        private WorkoutEntryViewModel ViewModel          { get; set; }
+        private Entry                 NameEntry          { get; set; }
+
         public WorkoutEntryPage()
         {
             InitializeComponent();
             ViewModel      = new WorkoutEntryViewModel();
             BindingContext = ViewModel;
+
+            //NameEntry.Focus();
 
             DifficultyEditor.Text = string.Empty;
         }
@@ -38,10 +35,10 @@ namespace PersonalTrainerWorkouts.Views
                 return;
             }
 
-            await PageNavigation.NavigateTo(nameof(ExerciseNewEntryPage)
-                                          , nameof(ExerciseNewEntryPage.WorkoutId)
+            await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+                                          , nameof(ExerciseAddEditPage.WorkoutId)
                                           , ViewModel.NewWorkout.Id.ToString()
-                                          , nameof(ExerciseNewEntryPage.ExerciseId)
+                                          , nameof(ExerciseAddEditPage.ExerciseId)
                                           , exercise.Id.ToString());
         }
         
@@ -86,16 +83,28 @@ namespace PersonalTrainerWorkouts.Views
             SaveWorkout();
         }
 
-        private void Description_OnUnfocused(object         sender
-                                             , FocusEventArgs e)
+        private void Description_OnUnfocused(object           sender
+                                           , FocusEventArgs e)
         {
-            SaveWorkout();
+            var description = (Editor) sender;
+
+            if (description.Text.HasValue())
+            {
+                SaveWorkout();
+            }
+            
         }
 
-        private void Difficulty_OnUnfocused(object         sender
-                                          , FocusEventArgs e)
+        private async void Difficulty_OnUnfocused(object         sender
+                                                , FocusEventArgs e)
         {
-            SaveWorkout();
+            var difficulty = (Entry) sender;
+
+            if (difficulty.Text.HasValue())
+            {
+                SaveWorkout();
+            }
+            await PageNavigation.NavigateBackwards();
         }
     }
 }

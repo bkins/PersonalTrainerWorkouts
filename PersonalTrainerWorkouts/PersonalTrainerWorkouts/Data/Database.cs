@@ -1,18 +1,13 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using ApplicationExceptions;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
 using PersonalTrainerWorkouts.Utilities;
-using PersonalTrainerWorkouts.ViewModels;
 using SQLite;
 using SQLiteNetExtensions.Extensions;
-using SQLiteNetExtensionsAsync.Extensions;
 using Syncfusion.DataSource.Extensions;
 using InvalidOperationException = System.InvalidOperationException;
 using TypeOfExercise = PersonalTrainerWorkouts.Models.TypeOfExercise;
@@ -21,14 +16,21 @@ namespace PersonalTrainerWorkouts.Data
 {
     public class Database : IDataStore
     {
-        //BENDO:  Implement the use of forceRefresh in methods that use it (and add to methods that it makes sense to add it to)
+        //BENDO:  Implement the use of forceRefresh in methods that use it
+        //(and add to methods that it makes sense to add it to)
         private readonly SQLiteConnection _database;
         
         public Database(string dbPath)
         {
             _database = new SQLiteConnection(dbPath);
-
+            var databaseVersion = GetDatabaseVersion();
             CreateTables();
+            Check();
+        }
+        
+        private int GetDatabaseVersion()
+        {
+            return  _database.ExecuteScalar<int>("pragma user_version");
         }
 
         public void CreateTables()
@@ -63,9 +65,11 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<LinkedWorkoutsToExercises>();
         }
 
-        public int Check()
+        public bool Check()
         {
-            return 0;
+            var mappings = _database.TableMappings;
+            
+            return false;
 
             //return _database.Query("integrity_check");
 
@@ -101,8 +105,7 @@ namespace PersonalTrainerWorkouts.Data
 
             return linkedWorkoutsExercises.Id;
         }
-
-        //BENDO: Consider: Should this method be in the DataAccess class?
+        
         public int  AddWorkoutExercise          (WorkoutExercise workoutExercise)
         {
             var workoutExercisesInWorkout = GetWorkoutExercisesByWorkout(workoutExercise.WorkoutId).ToList();
@@ -155,7 +158,7 @@ namespace PersonalTrainerWorkouts.Data
         
         /// <summary>
         /// Adds just one Workout without any children.
-        /// Use case:  Add new workout -> Save -> Add exercise
+        /// Use case:  Add new workout -> SaveWorkoutsToExercise -> Add exercise
         /// </summary>
         /// <param name="workout"></param>
         public int  AddJustOneWorkout           (Workout workout)
@@ -409,7 +412,8 @@ namespace PersonalTrainerWorkouts.Data
         #endregion
 
         #region Gets
-
+        //BENDO: For all methods that take forceRefresh, call method that will rebuild the object by calling the database to get current values
+        //       necessary to fill the object.
         public Workout                                  GetWorkout(int workoutId)
         {
             try
@@ -433,9 +437,8 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                //BENDO: Implement logging (to LogCat, console, file, etc)
-                Console.WriteLine(e);
-
+                Logger.WriteLine(e.Message, Category.Error, e);
+                
                 throw;
             }
         }
@@ -445,7 +448,7 @@ namespace PersonalTrainerWorkouts.Data
             return _database.GetAllWithChildren<Workout>();
         }
 
-        public LinkedWorkoutsToExercises                GetLinkedWorkoutsToExercises(int linkedWorkoutsToExercisesId)
+        public LinkedWorkoutsToExercises                GetLinkedWorkoutsToExercise(int linkedWorkoutsToExercisesId)
         {
             try 
             {
@@ -483,7 +486,7 @@ namespace PersonalTrainerWorkouts.Data
             {
                 throw new SequenceContainsNoElementsException(GetNoElementsExceptionMessage(nameof(workoutExerciseId)
                                                                                           , workoutExerciseId)
-                                                            , nameof(ExerciseEquipment)
+                                                            , nameof(WorkoutExercise)
                                                             , operationException);
             }
             catch (Exception e)
@@ -504,7 +507,7 @@ namespace PersonalTrainerWorkouts.Data
             try
             {
                 var linkedWorkoutsToExercises = _database.GetAllWithChildren<LinkedWorkoutsToExercises>()
-                                                        .Where(item => item.WorkoutId == workoutId);
+                                                         .Where(item => item.WorkoutId == workoutId);
                 
                 return linkedWorkoutsToExercises;
             }
@@ -512,16 +515,17 @@ namespace PersonalTrainerWorkouts.Data
             {
                 throw new SequenceContainsNoElementsException(GetNoElementsExceptionMessage(nameof(workoutId)
                                                                                           , workoutId)
-                                                            , typeof(ExerciseEquipment).ToString()
+                                                            , typeof(LinkedWorkoutsToExercises).ToString()
                                                             , operationException);                
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
         }
+        
         public IEnumerable<WorkoutExercise>             GetWorkoutExercises(bool forceRefresh = false)
         {
             return _database.GetAllWithChildren<WorkoutExercise>();
@@ -545,7 +549,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -574,7 +578,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -604,7 +608,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -663,7 +667,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -689,7 +693,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -712,7 +716,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -745,7 +749,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -774,7 +778,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -797,7 +801,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             } 
@@ -808,6 +812,9 @@ namespace PersonalTrainerWorkouts.Data
             return _database.GetAllWithChildren<MuscleGroup>();
         }
 
+        //BENDO:  GetOpposingMuscleGroupByMuscleGroup is not correct, or another method needs to be written:
+        //        1.  Should be GetOpposingMuscleGroupsByMuscleGroup (notice the 's' after 'GetOpposingMuscleGroup')
+        //        2.  Return all GetOpposingMuscleGroups, not just the First.
         public OpposingMuscleGroup                      GetOpposingMuscleGroupByMuscleGroup(int muscleGroupId)
         {
             try
@@ -841,7 +848,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             } 
@@ -869,7 +876,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             } 
@@ -897,7 +904,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             } 
@@ -925,7 +932,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             } 
@@ -953,7 +960,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             } 

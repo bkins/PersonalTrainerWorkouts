@@ -1,18 +1,12 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using ApplicationExceptions;
 using Xunit.Abstractions;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
-using SQLite;
-using Xamarin.Forms.PlatformConfiguration.iOSSpecific;
 using Xunit;
-using static PersonalTrainerWorkouts.Data.DataAccess;
 
 namespace Tests
 {
@@ -167,14 +161,22 @@ namespace Tests
             
             // 5. Insert the relationship between the Muscle Group and Opposing Muscle Group in the OpposingMuscleGroup table
             Database.AddOpposingMuscleGroup(theMuscleGroup.Id, opposingMuscleGroup.Id);
+            // 5.1 Try adding the opposite relationship
+            Database.AddOpposingMuscleGroup(opposingMuscleGroup.Id
+                                          , theMuscleGroup.Id);
+
+            //BENDO: [Do in work for Milestone 2] Update ExerciseMuscleGroup -- there is nothing that links MuscleGroup to the Exercise in DB (need for Milestone 2)
             
             // 6. Get the junction table's OpposingMuscleGroup value
             var newOpposingMuscleGroups = Database.GetOpposingMuscleGroupByMuscleGroup(theMuscleGroup.Id);
 
-            // 7. Save that newly created relationship in the object and the database.
+            // 7. SaveWorkoutsToExercise that newly created relationship in the object and the database.
             workout.Exercises.First()
                    .MuscleGroups.First()
                    .OpposingMuscleGroup = newOpposingMuscleGroups;
+            
+            // 7.1 Add opposite relationship to the object
+            workout.Exercises.First().MuscleGroups.Add(TestData.Tricep);
 
             Database.UpdateWorkout(workout);
 
@@ -208,7 +210,7 @@ namespace Tests
                                               {
                                                   Name         = "Exercise 1"
                                                 , Description  = "Exercise One description."
-                                                , LengthOfTime = 5
+                                                , LengthOfTime = "5:00"
                                                 , MuscleGroups = new List<MuscleGroup>
                                                                  {
                                                                      new ()
@@ -236,7 +238,7 @@ namespace Tests
             var testMuscleGroup         = Database.GetMuscleGroups();
             var newOpposingMuscleGroups = Database.GetOpposingMuscleGroupByMuscleGroup(muscleGroupId);
 
-            // 5. Save that newly created relationship in the object and the database.
+            // 5. SaveWorkoutsToExercise that newly created relationship in the object and the database.
             workout.Exercises.First()
                    .MuscleGroups.First()
                    .OpposingMuscleGroup = newOpposingMuscleGroups;
@@ -282,7 +284,7 @@ namespace Tests
                                               {
                                                   Name         = "Exercise 1"
                                                 , Description  = "Exercise One description."
-                                                , LengthOfTime = 5
+                                                , LengthOfTime = "5:00"
                                                 , MuscleGroups = new List<MuscleGroup>
                                                                  {
                                                                      new ()
@@ -310,7 +312,7 @@ namespace Tests
             var testMuscleGroup         = Database.GetMuscleGroups();
             var newOpposingMuscleGroups = Database.GetOpposingMuscleGroupByMuscleGroup(muscleGroupId);
 
-            // 5. Save that newly created relationship in the object and the database.
+            // 5. SaveWorkoutsToExercise that newly created relationship in the object and the database.
             workout.Exercises.First()
                    .MuscleGroups.First()
                    .OpposingMuscleGroup = newOpposingMuscleGroups;
@@ -354,13 +356,8 @@ namespace Tests
             Assert.True(workout.Exercises.First().Equipment.First().Id == newEquipmentId);
         }
         
-        [Fact]
-        public void RefreshDatabaseTest()
-        {
-            RefreshDatabase();
-        }
 
-        [Fact(Skip = "Broken")]
+        [Fact(Skip = "Broken - Need to add Opposing Muscle Group appropriately.")]
         //[Fact]
         public void FullTestOfWorkout()
         {
@@ -431,7 +428,7 @@ namespace Tests
                             {
                                 Name         = expectedExerciseOneName
                               , Description  = $"{expectedExerciseOneName} description"
-                              , LengthOfTime = 5
+                              , LengthOfTime = "5:00"
                               , Equipment = new List<Equipment>()
                                             {
                                                 rack
@@ -447,11 +444,18 @@ namespace Tests
                                                   }
                             };
 
+            exercise1.MuscleGroups.First()
+                     .OpposingMuscleGroup = new OpposingMuscleGroup
+                                            {
+                                                MuscleGroupId         = bicep.Id
+                                              , OpposingMuscleGroupId = tricep.Id
+                                            };
+
             var exercise2 = new Exercise()
                             {
                                 Name         = expectedExerciseTwoName
                               , Description  = $"{expectedExerciseTwoName} description"
-                              , LengthOfTime = 10
+                              , LengthOfTime = "10:00"
                               , Equipment = new List<Equipment>()
                                             {
                                                 largeExerciseBall
@@ -495,10 +499,6 @@ namespace Tests
             muscleGroupId = workout.Exercises
                                    .First(field => field.Name == expectedExerciseTwoName)
                                    .Id;
-
-            opposingMuscleGroupId = _database.GetMuscleGroups()
-                                             .First(field => field.Name == bicep.Name)
-                                             .Id;
             
             Database.AddOpposingMuscleGroup(muscleGroupId, opposingMuscleGroupId);
             
@@ -558,6 +558,15 @@ namespace Tests
         
     #endregion
         
+    #region Helper methods
+        
+        private void RefreshDatabaseTest()
+        {
+            RefreshDatabase();
+        }
+
+    #endregion
+
     }
 
     public class TestData
@@ -620,7 +629,7 @@ namespace Tests
                             {
                                 Name         = ExpectedExerciseOneName
                               , Description  = $"{ExpectedExerciseOneName} description"
-                              , LengthOfTime = 5
+                              , LengthOfTime = "5:00"
                               , Equipment = new List<Equipment>()
                                             {
                                                 Rack
@@ -640,7 +649,7 @@ namespace Tests
                             {
                                 Name         = ExpectedExerciseTwoName
                               , Description  = $"{ExpectedExerciseTwoName} description"
-                              , LengthOfTime = 10
+                              , LengthOfTime = "10:00"
                               , Equipment = new List<Equipment>()
                                             {
                                                 LargeExerciseBall

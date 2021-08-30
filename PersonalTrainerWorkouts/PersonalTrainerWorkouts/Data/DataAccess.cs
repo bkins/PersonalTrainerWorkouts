@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
 
@@ -9,8 +7,6 @@ namespace PersonalTrainerWorkouts.Data
 {
     public class DataAccess
     {
-        //BENDO: Replace all calls to Database to calls ( not necessarily in Tests ) to calls to this class 
-
         private IDataStore Database { get; set; }
 
         public DataAccess(IDataStore database)
@@ -18,6 +14,66 @@ namespace PersonalTrainerWorkouts.Data
             Database = database;
         }
         
+        public void CreateTables()
+        {
+            Database.CreateTables();
+        }
+
+        public void DropTables()
+        {
+            Database.DropTables();
+        }
+
+        //NotImplemented: This method is INCOMPLETE.
+        //This method is to complete the Gets in the (Database class) that take the param of 'forceRefresh' that return a Workout
+        //BENDO: Instead of having this method rebuild all object within the Workout, have a 'Refresh" method for each object that can be in
+        //       a workout (e.g. RefreshExercise, RefreshEquipment, RefreshMuscleGroup, etc.).
+        public Workout RefreshWorkoutData(Workout workout)
+        {
+            //Workout is empty
+            if (workout == null)
+            {
+                return null;
+            }
+
+            //Workout does not have any exercises, just refresh the workout object
+            if (workout.Exercises == null)
+            {
+                return GetWorkout(workout.Id);
+            }
+
+            var workoutsToExercises = GetLinkedWorkoutsToExercises(workout.Id);
+
+            foreach (var workoutsToExercise in workoutsToExercises)
+            {
+                workout.Exercises.Add(GetExercise(workoutsToExercise.ExerciseId));
+            }
+
+            bool exerciseHasAnyMuscleGroups = workout.Exercises.Any(field => field.MuscleGroups.Any());
+            bool exerciseHasAnyEquipment    = workout.Exercises.Any(field => ! field.Equipment.Any());
+            bool exerciseHasAnyTypes        = workout.Exercises.Any(field => ! field.TypesOfExercise.Any());
+
+            if (! exerciseHasAnyMuscleGroups
+             && ! exerciseHasAnyEquipment
+             && ! exerciseHasAnyTypes)
+            {
+                //Exercise has no children, nothing left to refresh
+                return workout;
+            }
+
+            if (exerciseHasAnyMuscleGroups)
+            {
+                var listOfExercisesWithMuscleGroups = new List<Exercise>();
+                foreach (var exercise in workout.Exercises)
+                {
+                    var opposingMuscleGroup = GetOpposingMuscleGroupByMuscleGroup(exercise.Id);
+                    
+                }
+            }
+
+            return null;
+        }
+
     #region Adds
 
         public int AddNewWorkout(Workout workout)
@@ -114,22 +170,48 @@ namespace PersonalTrainerWorkouts.Data
 
         public Workout GetWorkout(int workoutId)
         {
-            return Database.GetWorkout(workoutId);
+            return Database.GetWorkout(workoutId) ?? new Workout();
         }
         
+        public IEnumerable<Workout> GetWorkouts()
+        {
+            return Database.GetWorkouts() ?? new List<Workout>();
+        }
+
         public IEnumerable<WorkoutExercise> GetWorkoutExercises(int workoutId)
         {
-            return Database.GetWorkoutExercisesByWorkout(workoutId).OrderBy(field=>field.OrderBy);
+            return Database.GetWorkoutExercisesByWorkout(workoutId)
+                           .OrderBy(field=>field.OrderBy);
         }
 
         public IEnumerable<LinkedWorkoutsToExercises> GetLinkedWorkoutsToExercises(int workoutId)
         {
-            return Database.GetAllLinkedWorkoutsToExercises(workoutId);
+            return Database.GetAllLinkedWorkoutsToExercises(workoutId) ?? new List<LinkedWorkoutsToExercises>();
+        }
+
+        public IEnumerable<LinkedWorkoutsToExercises> GetAllLinkedWorkoutsToExercises()
+        {
+            return Database.GetAllLinkedWorkoutsToExercises() ?? new List<LinkedWorkoutsToExercises>();
+        }
+
+        public LinkedWorkoutsToExercises GetLinkedWorkoutsToExercise(int linkedWorkoutsToExercisesId)
+        {
+            return Database.GetLinkedWorkoutsToExercise(linkedWorkoutsToExercisesId) ?? new LinkedWorkoutsToExercises();
         }
 
         public Exercise GetExercise(int exerciseId)
         {
-            return Database.GetExercise(exerciseId);
+            return Database.GetExercise(exerciseId) ?? new Exercise();
+        }
+        
+        public IEnumerable<Exercise> GetExercises()
+        {
+            return Database.GetExercises() ?? new List<Exercise>();
+        }
+
+        public OpposingMuscleGroup GetOpposingMuscleGroupByMuscleGroup(int exerciseId)
+        {
+            return Database.GetOpposingMuscleGroupByMuscleGroup(exerciseId);
         }
 
     #endregion
@@ -161,8 +243,8 @@ namespace PersonalTrainerWorkouts.Data
     #region Helper methods
         
         public static void ValidateForNoDuplicatedNames(string                 potentialDuplicatedName
-                                                       , IEnumerable<BaseModel> listOfModels
-                                                       , string                 type)
+                                                      , IEnumerable<BaseModel> listOfModels
+                                                      , string                 type)
         {
             var duplicatedWorkout = listOfModels.FirstOrDefault(field => field.Name == potentialDuplicatedName);
 

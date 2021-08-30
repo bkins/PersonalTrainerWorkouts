@@ -7,12 +7,15 @@ namespace ApplicationExceptions
     {
         public string EntityName { get; set; }
         
-        public SequenceContainsNoElementsException() { }
+        public SequenceContainsNoElementsException() 
+        { }
 
-        public SequenceContainsNoElementsException(string message) : base(message) { }
+        public SequenceContainsNoElementsException(string message) : base(message) 
+        { }
 
         public SequenceContainsNoElementsException(string    message
-                                                 , Exception inner) : base(message, inner) { }
+                                                 , Exception inner) : base(message, inner) 
+        { }
 
         public SequenceContainsNoElementsException(string    message
                                                  , string    entityName
