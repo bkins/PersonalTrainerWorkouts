@@ -2,6 +2,8 @@
 <Application xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:picker="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
+             xmlns:accordion="clr-namespace:Syncfusion.XForms.Accordion;assembly=Syncfusion.Expander.XForms"
+             xmlns:system="clr-namespace:System;assembly=netstandard"
              x:Class="PersonalTrainerWorkouts.App">
     <!--
         Define global resources and styles here, that apply to all pages in your app.
@@ -9,13 +11,17 @@
     <Application.Resources>
         <ResourceDictionary>
             
-            <Color x:Key="Primary">#2196F3</Color>
+            <Color x:Key="PrimaryBackColor">#2196F3</Color>
+            <Color x:Key="PrimaryForeColor">White</Color>
+            <Color x:Key="PrimaryUnselectedForeColor">AntiqueWhite</Color>
             <Color x:Key="PageBackgroundColor">White</Color>
+
+            <x:Double x:Key="AccordionHeight">30</x:Double>
             
             <Style TargetType="picker:SfPicker">
                 <Setter Property="HeaderBackgroundColor" Value="CornflowerBlue"/>
             </Style>
-
+            
             <Style TargetType="Entry">
                 <Setter Property="TextColor" Value="DarkSlateGray"/>
                 <Setter Property="PlaceholderColor" Value="LightGray"></Setter>
@@ -32,17 +38,17 @@
 
             <Style TargetType="TabBar">
                 <Setter Property="Shell.TabBarBackgroundColor"
-                        Value="{StaticResource Primary}" />
+                        Value="{StaticResource PrimaryBackColor}" />
                 <Setter Property="Shell.TabBarTitleColor"
                         Value="Black" />
                 <Setter Property="Shell.TabBarUnselectedColor"
-                        Value="AntiqueWhite" />
+                        Value="{StaticResource PrimaryUnselectedForeColor}" />
             </Style>
 
             <Style TargetType="Button">
                 
                 <Setter Property="Padding" Value="5"/>
-                <Setter Property="TextColor" Value="White"/>
+                <Setter Property="TextColor" Value="{StaticResource PrimaryForeColor}"/>
                 <Setter Property="VisualStateManager.VisualStateGroups">
 
                     <VisualStateGroupList>
@@ -51,7 +57,7 @@
                         
                             <VisualState x:Name="Normal">
                                 <VisualState.Setters>
-                                    <Setter Property="BackgroundColor" Value="{StaticResource Primary}" />
+                                    <Setter Property="BackgroundColor" Value="{StaticResource PrimaryBackColor}" />
                                 </VisualState.Setters>
                             </VisualState>
                             

@@ -1,4 +1,5 @@
 ﻿
+using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Views;
 using Xamarin.Forms;
 using WorkoutExercisePage = PersonalTrainerWorkouts.Views.WorkoutExercisePage;
@@ -17,6 +18,7 @@ namespace PersonalTrainerWorkouts
             Routing.RegisterRoute(nameof(ExerciseListPage),          typeof(ExerciseListPage));
             Routing.RegisterRoute(nameof(MessageLog),                typeof(MessageLog));
             Routing.RegisterRoute(nameof(WorkoutExercisePage),       typeof(WorkoutExercisePage));
+            Routing.RegisterRoute(nameof(ExerciseTypeEntryPage),     typeof(ExerciseTypeEntryPage));
         }
 
     }
