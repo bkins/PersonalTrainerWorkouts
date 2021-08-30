@@ -84,21 +84,22 @@
                     </x:Arguments>
                 </Keyboard>
             </Editor.Keyboard>
+        </Editor><Editor x:Name="RepsEditor"
+                         Placeholder="Default Reps"
+                         VerticalOptions="End"
+                         HorizontalOptions="StartAndExpand"
+                         AutoSize="TextChanges"
+                         Text="{Binding Reps}"
+                         TextColor="{DynamicResource TertiaryColor}"
+                         FontSize="Medium" 
+                         Unfocused="RepsEditor_OnUnfocused">
+            <Editor.Keyboard>
+                <Keyboard x:FactoryMethod="Create">
+                    <x:Arguments>
+                        <KeyboardFlags>None</KeyboardFlags>
+                    </x:Arguments>
+                </Keyboard>
+            </Editor.Keyboard>
         </Editor>
-        
-        
-        <!--BENDO Replace Save button with silent, PropertyChange-->
-        <!--For save on property changed-->
-        <!--https://stackoverflow.com/a/56044196/431319-->
-        <!--<Grid ColumnDefinitions="*,*">
-            --><!--Layout children in two columns--><!-- 
-            <Button Text="Save"
-                    HeightRequest="25"
-                    Clicked="OnSaveButtonClicked" />
-            --><!--<Button Grid.Column="1"
-                    Text="Delete"
-                    Clicked="OnDeleteButtonClicked"/>--><!--
-        </Grid>-->
-        
     </StackLayout>
 </ContentPage>

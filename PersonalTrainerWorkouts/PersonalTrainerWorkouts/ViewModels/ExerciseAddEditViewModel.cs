@@ -12,6 +12,7 @@ namespace PersonalTrainerWorkouts.ViewModels
         public Exercise Exercise     { get; set; }
         public Workout  Workout      { get; set; }
         public string   LengthOfTime { get; set; }
+        public int?      Reps        { get; set; }
 
         public ExerciseAddEditViewModel()
         {
@@ -26,6 +27,8 @@ namespace PersonalTrainerWorkouts.ViewModels
 
             LengthOfTime = Exercise?.LengthOfTime.ToTime()
                                     .ToShortForm();
+
+            Reps = Exercise?.Reps;
         }
         
         public void UpdateExercise()

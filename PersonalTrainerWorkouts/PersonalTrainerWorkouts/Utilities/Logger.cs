@@ -10,12 +10,12 @@ namespace PersonalTrainerWorkouts.Utilities
     public static class Logger
     {
         //BENDO: Implement a settings page to handle the setting of these values (or at least the ones that are appropriate)
-        private static bool WriteToOutput  => true;
-        private static bool WriteToConsole => true;
-        private static bool WriteToFile    => true;
-        private static bool WriteToToast   => true;
-        private static bool WriteToLogCat  => true;
-        private static bool Verbose        => true;
+        public static bool WriteToOutput   { get; set; }
+        public static bool WriteToConsole  { get; set; }
+        public static bool WriteToFile     { get; set; }
+        public static bool WriteToToast    { get; set; }
+        public static bool WriteToLogCat   { get; set; }
+        public static bool Verbose         { get; set; }
 
         public static  StringBuilder Log { get; }
 
@@ -24,6 +24,13 @@ namespace PersonalTrainerWorkouts.Utilities
         static Logger()
         {
             Log = new StringBuilder();
+
+            WriteToOutput  = true;
+            WriteToConsole = false;
+            WriteToFile    = false;
+            WriteToToast   = true;
+            WriteToLogCat  = true;
+            Verbose        = true;
         }
 
         public static void WriteLine(string message, Category category, Exception ex = null)
@@ -119,7 +126,8 @@ namespace PersonalTrainerWorkouts.Utilities
 
                 case Category.Warning:
                     return LogLevel.Warn;
-
+                
+                case Category.Unknown:
                 default:
                     return LogLevel.Debug;
             }

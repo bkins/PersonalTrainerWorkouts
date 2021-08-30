@@ -61,8 +61,6 @@ namespace PersonalTrainerWorkouts.Views
             if ( string.IsNullOrWhiteSpace(workout.Name))
             {
                 Logger.WriteLine("You must name the workout first, before saving", Category.Information);
-                //BENDO: Display that workout was not save because a name was not provided
-                //Or select the name field and highlight is red
             }
             else
             {

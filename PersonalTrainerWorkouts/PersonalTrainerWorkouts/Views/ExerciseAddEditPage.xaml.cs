@@ -20,6 +20,7 @@ namespace PersonalTrainerWorkouts.Views
         public  string                   InitialName         { get; set; }
         public  string                   InitialDescription  { get; set; }
         public  string                   InitialLengthOfTime { get; set; }
+        public  int                      InitialReps         { get; set; }
         private Entry                    NameEntry           { get; set; }
         
         public void ApplyQueryAttributes(IDictionary<string, string> query)
@@ -117,7 +118,8 @@ namespace PersonalTrainerWorkouts.Views
                 exercise.Exercise = new Exercise{Name = NameEntry.Text};
             }
             exercise.Exercise.LengthOfTime = exercise.LengthOfTime ?? "00:00";
-            
+            exercise.Exercise.Reps         = exercise.Reps         ?? 0;
+
             return exercise.Exercise;
         }
         
@@ -147,12 +149,23 @@ namespace PersonalTrainerWorkouts.Views
             }
         }
 
-        private async void LengthOfTimeEditor_OnUnfocused(object         sender
+        private void LengthOfTimeEditor_OnUnfocused(object         sender
                                                         , FocusEventArgs e)
         {
             var lengthOfTime = (Editor) sender;
 
             if (InitialLengthOfTime != lengthOfTime.Text)
+            {
+                UpdateExercise();
+            }
+        }
+
+        private async void RepsEditor_OnUnfocused(object         sender
+                                                , FocusEventArgs e)
+        {
+            var reps = (Editor) sender;
+
+            if (InitialReps != int.Parse(reps.Text))
             {
                 UpdateExercise();
             }

@@ -6,6 +6,7 @@ using ApplicationExceptions;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
+using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
 using Syncfusion.DataSource.Extensions;
 using Xunit;
@@ -545,7 +546,12 @@ namespace Tests
             }
             catch (NullReferenceException e)
             {
-                Console.WriteLine(e);
+                Logger.WriteToToast  = false;
+                Logger.WriteToLogCat = false;
+                Logger.WriteLine(e.Message, Category.Error, e);
+                //Reset Logger
+                Logger.WriteToToast  = true;
+                Logger.WriteToLogCat = true;
 
                 throw new WiringException("Success: the list of string is null."
                                         , nameof(Units)

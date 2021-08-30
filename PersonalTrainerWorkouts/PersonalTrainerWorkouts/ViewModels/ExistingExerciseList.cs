@@ -7,7 +7,7 @@ namespace PersonalTrainerWorkouts.ViewModels
 {
     /// <summary>
     /// Used to control the SfPicker
-    /// BENDO: The view references this, but I still need to implement the setting of these properties
+    /// BENDO: The view references this (or does it.  All references are now 0.), but I still need to implement the setting of these properties
     /// </summary>
     public class ExistingExerciseList : SfPicker
     {

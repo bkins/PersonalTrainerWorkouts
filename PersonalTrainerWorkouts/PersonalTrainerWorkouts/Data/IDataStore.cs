@@ -77,30 +77,32 @@ namespace PersonalTrainerWorkouts.Data
         IEnumerable<WorkoutExercise>           GetWorkoutExercises                  (int  workoutId);
         IEnumerable<WorkoutExercise>           GetWorkoutExercises                  (int workoutId
                                                                                     ,int exerciseId);
-        IEnumerable<WorkoutExercise>           GetWorkoutExercisesByWorkout         (int   workoutId);
-        IEnumerable<WorkoutExercise>           GetWorkoutExercisesByExercise        (int   exerciseId);
-        Exercise                               GetExercise                          (int   exerciseId);
-        IEnumerable<Exercise>                  GetExercises                         (bool  forceRefresh = false);
-        ExerciseMuscleGroup                    GetExerciseMuscleGroup               (int   exerciseMuscleGroupId);
-        IEnumerable<ExerciseMuscleGroup>       GetExerciseMuscleGroups              (bool  forceRefresh = false);
-        IEnumerable<ExerciseMuscleGroup>       GetExerciseMuscleGroupsByExercise    (int   exerciseId);
-        MuscleGroup                            GetMuscleGroup                       (int   muscleGroupId);
-        IEnumerable<MuscleGroup>               GetMuscleGroups                      (bool  forceRefresh = false);
-        OpposingMuscleGroup                    GetOpposingMuscleGroup               (int   opposingMuscleGroupId);
-        IEnumerable<OpposingMuscleGroup>       GetOpposingMuscleGroups              (bool  forceRefresh = false);
-        TypeOfExercise                         GetTypeOfExercise                    (int typeOfExerciseId);
-        IEnumerable<ExerciseType>              GetExerciseTypes                     (bool  forceRefresh = false);
-        TypeOfExercise                         GetType                              (int   typeId);
-        IEnumerable<TypeOfExercise>            GetTypes                             (bool  forceRefresh = false);
-        ExerciseEquipment                      GetExerciseEquipment                 (int   exerciseEquipmentId);
-        IEnumerable<ExerciseEquipment>         GetExerciseEquipments                (bool  forceRefresh = false);
-        Equipment                              GetEquipment                         (int   equipmentId);
-        IEnumerable<Equipment>                 GetAllEquipment                      (bool  forceRefresh = false);
+        IEnumerable<WorkoutExercise>     GetWorkoutExercisesByWorkout         (int  workoutId);
+        IEnumerable<WorkoutExercise>     GetWorkoutExercisesByExercise        (int  exerciseId);
+        Exercise                         GetExercise                          (int  exerciseId);
+        IEnumerable<Exercise>            GetExercises                         (bool forceRefresh = false);
+        ExerciseMuscleGroup              GetExerciseMuscleGroup               (int  exerciseMuscleGroupId);
+        IEnumerable<ExerciseMuscleGroup> GetExerciseMuscleGroups              (bool forceRefresh = false);
+        IEnumerable<ExerciseMuscleGroup> GetExerciseMuscleGroupsByExercise    (int  exerciseId);
+        MuscleGroup                      GetMuscleGroup                       (int  muscleGroupId);
+        IEnumerable<MuscleGroup>         GetMuscleGroups                      (bool forceRefresh = false);
+        OpposingMuscleGroup              GetOpposingMuscleGroup               (int  opposingMuscleGroupId);
+        OpposingMuscleGroup              GetOpposingMuscleGroupByMuscleGroup  (int exerciseId);
+        IEnumerable<OpposingMuscleGroup> GetOpposingMuscleGroups              (bool forceRefresh = false);
+        TypeOfExercise                   GetTypeOfExercise                    (int  typeOfExerciseId);
+        IEnumerable<ExerciseType>        GetExerciseTypes                     (bool forceRefresh = false);
+        TypeOfExercise                   GetType                              (int  typeId);
+        IEnumerable<TypeOfExercise>      GetTypes                             (bool forceRefresh = false);
+        ExerciseEquipment                GetExerciseEquipment                 (int  exerciseEquipmentId);
+        IEnumerable<ExerciseEquipment>   GetExerciseEquipments                (bool forceRefresh = false);
+        Equipment                        GetEquipment                         (int  equipmentId);
+        IEnumerable<Equipment>           GetAllEquipment                      (bool forceRefresh = false);
 
         int  SaveExercise (Exercise      exercise);
         void SaveWorkout  (Workout       workout);
 
-        void CreateTables();
-        void DropTables();
+        void                CreateTables();
+        void                DropTables();
+        
     }
 }

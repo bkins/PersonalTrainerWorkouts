@@ -105,8 +105,7 @@ namespace PersonalTrainerWorkouts.Data
 
             return linkedWorkoutsExercises.Id;
         }
-
-        //BENDO: Consider: Should this method be in the DataAccess class?
+        
         public int  AddWorkoutExercise          (WorkoutExercise workoutExercise)
         {
             var workoutExercisesInWorkout = GetWorkoutExercisesByWorkout(workoutExercise.WorkoutId).ToList();
@@ -413,7 +412,8 @@ namespace PersonalTrainerWorkouts.Data
         #endregion
 
         #region Gets
-
+        //BENDO: For all methods that take forceRefresh, call method that will rebuild the object by calling the database to get current values
+        //       necessary to fill the object.
         public Workout                                  GetWorkout(int workoutId)
         {
             try
@@ -437,9 +437,8 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                //BENDO: Implement logging (to LogCat, console, file, etc)
-                Console.WriteLine(e);
-
+                Logger.WriteLine(e.Message, Category.Error, e);
+                
                 throw;
             }
         }
@@ -521,7 +520,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -550,7 +549,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -579,7 +578,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -609,7 +608,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -668,7 +667,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -694,7 +693,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -717,7 +716,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -750,7 +749,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -779,7 +778,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             }
@@ -802,7 +801,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             } 
@@ -813,6 +812,9 @@ namespace PersonalTrainerWorkouts.Data
             return _database.GetAllWithChildren<MuscleGroup>();
         }
 
+        //BENDO:  GetOpposingMuscleGroupByMuscleGroup is not correct, or another method needs to be written:
+        //        1.  Should be GetOpposingMuscleGroupsByMuscleGroup (notice the 's' after 'GetOpposingMuscleGroup')
+        //        2.  Return all GetOpposingMuscleGroups, not just the First.
         public OpposingMuscleGroup                      GetOpposingMuscleGroupByMuscleGroup(int muscleGroupId)
         {
             try
@@ -846,7 +848,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             } 
@@ -874,7 +876,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             } 
@@ -902,7 +904,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             } 
@@ -930,7 +932,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             } 
@@ -958,7 +960,7 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
+                Logger.WriteLine(e.Message, Category.Error, e);
 
                 throw;
             } 

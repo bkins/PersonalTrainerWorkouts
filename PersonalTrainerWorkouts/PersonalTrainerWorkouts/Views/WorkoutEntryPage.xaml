@@ -73,8 +73,6 @@
                 </Keyboard>
             </Editor.Keyboard>
         </Editor>
-        <!--TODO: move Difficulty to be right under Description.  -->
-        <!--Along with Save/Delete to be right under Difficulty -->
         <Entry x:Name="DifficultyEditor"
                 Placeholder="Difficulty"
                 Text="{Binding NewWorkout.Difficulty}"
@@ -82,25 +80,12 @@
                 TabIndex="3"
                 Unfocused="Difficulty_OnUnfocused"/>
 
-        <!--<Grid ColumnDefinitions="*,*">
-            --><!-- Layout children in two columns --><!--
-            <Button Text="Save"
-                    HeightRequest="75"
-                    Clicked="OnSaveButtonClicked" />
-            <Button Grid.Column="1"
-                    Text="Delete"
-                    Clicked="OnDeleteButtonClicked"/>
-            
-        </Grid-->
-
         <BoxView   VerticalOptions="Center"
                    HorizontalOptions="Center"
                    HeightRequest="1"
                    WidthRequest="200"  
                    Color="Gray"/>
 
-        <!--BENDO: Display the list of exercises associated with Workout.  
-                   This is so that when you add exercises to he new workout and navigate back to the screen the list is there.-->
         <!--BENDO: Might be better/easier combine the functionality of this page with the WorkoutExercisePage
                    So the user would edit and add Workouts using the same page-->
 

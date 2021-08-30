@@ -161,6 +161,11 @@ namespace Tests
             
             // 5. Insert the relationship between the Muscle Group and Opposing Muscle Group in the OpposingMuscleGroup table
             Database.AddOpposingMuscleGroup(theMuscleGroup.Id, opposingMuscleGroup.Id);
+            // 5.1 Try adding the opposite relationship
+            Database.AddOpposingMuscleGroup(opposingMuscleGroup.Id
+                                          , theMuscleGroup.Id);
+
+            //BENDO: [Do in work for Milestone 2] Update ExerciseMuscleGroup -- there is nothing that links MuscleGroup to the Exercise in DB (need for Milestone 2)
             
             // 6. Get the junction table's OpposingMuscleGroup value
             var newOpposingMuscleGroups = Database.GetOpposingMuscleGroupByMuscleGroup(theMuscleGroup.Id);
@@ -169,6 +174,9 @@ namespace Tests
             workout.Exercises.First()
                    .MuscleGroups.First()
                    .OpposingMuscleGroup = newOpposingMuscleGroups;
+            
+            // 7.1 Add opposite relationship to the object
+            workout.Exercises.First().MuscleGroups.Add(TestData.Tricep);
 
             Database.UpdateWorkout(workout);
 
@@ -348,13 +356,8 @@ namespace Tests
             Assert.True(workout.Exercises.First().Equipment.First().Id == newEquipmentId);
         }
         
-        [Fact]
-        public void RefreshDatabaseTest()
-        {
-            RefreshDatabase();
-        }
 
-        [Fact(Skip = "Broken")]
+        [Fact(Skip = "Broken - Need to add Opposing Muscle Group appropriately.")]
         //[Fact]
         public void FullTestOfWorkout()
         {
@@ -441,6 +444,13 @@ namespace Tests
                                                   }
                             };
 
+            exercise1.MuscleGroups.First()
+                     .OpposingMuscleGroup = new OpposingMuscleGroup
+                                            {
+                                                MuscleGroupId         = bicep.Id
+                                              , OpposingMuscleGroupId = tricep.Id
+                                            };
+
             var exercise2 = new Exercise()
                             {
                                 Name         = expectedExerciseTwoName
@@ -489,10 +499,6 @@ namespace Tests
             muscleGroupId = workout.Exercises
                                    .First(field => field.Name == expectedExerciseTwoName)
                                    .Id;
-
-            opposingMuscleGroupId = _database.GetMuscleGroups()
-                                             .First(field => field.Name == bicep.Name)
-                                             .Id;
             
             Database.AddOpposingMuscleGroup(muscleGroupId, opposingMuscleGroupId);
             
@@ -552,6 +558,15 @@ namespace Tests
         
     #endregion
         
+    #region Helper methods
+        
+        private void RefreshDatabaseTest()
+        {
+            RefreshDatabase();
+        }
+
+    #endregion
+
     }
 
     public class TestData
