@@ -12,7 +12,7 @@ General notes while viewing the code:
 
 General TODOs:
 
-Current state:  Most of the Viewing/Editing/Adding of Workouts and Exercises, and the relationship between them, is working.  I need to do more testing of that.  For instance, I am not 100% sure the Junction table between Workouts and Exercises are being applied correctly.  It seems to be working, but until I see it I won't feel confident.  
+Current state:  Most of the Viewing/Editing/Adding of Workouts and Exercises, and the relationship between them, is working.  I will have the user review and confirm.  
 
  1. Since this is a learning project, there has been a lot of exploration.  So I have not followed my normal rules for myself.  Most of this has been rectified, but more to do.
 
