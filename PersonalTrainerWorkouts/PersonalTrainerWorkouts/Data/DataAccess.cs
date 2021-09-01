@@ -97,6 +97,16 @@ namespace PersonalTrainerWorkouts.Data
 
             return Database.AddJustOneTypeOfExercise(typeOfExercise);
         }
+        
+        public void AddExerciseType(int exerciseId
+                                  , int typeOfExerciseId)
+        {
+            Database.AddExerciseType(new ExerciseType
+                                     {
+                                         ExerciseId = exerciseId
+                                       , TypeId     = typeOfExerciseId
+                                     });
+        }
 
         public int AddNewExercise(Exercise exercise)
         {
@@ -207,6 +217,11 @@ namespace PersonalTrainerWorkouts.Data
         public IEnumerable<Exercise> GetExercises()
         {
             return Database.GetExercises() ?? new List<Exercise>();
+        }
+        
+        public IEnumerable<TypeOfExercise> GetAllTypesOfExercise()
+        {
+            return Database.GetTypes() ?? new List<TypeOfExercise>();
         }
 
         public OpposingMuscleGroup GetOpposingMuscleGroupByMuscleGroup(int exerciseId)

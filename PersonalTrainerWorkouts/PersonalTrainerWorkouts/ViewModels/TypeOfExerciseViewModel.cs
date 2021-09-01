@@ -4,7 +4,7 @@ using System.Text;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
-    class ExerciseTypeViewModel : ViewModelBase
+    class TypeOfExerciseViewModel : ViewModelBase
     {
 
     }

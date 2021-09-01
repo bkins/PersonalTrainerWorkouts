@@ -121,6 +121,7 @@
                                HeightRequest="{StaticResource AccordionHeight}" 
                                VerticalTextAlignment="Center"
                                HorizontalTextAlignment="Center"
+                               
                         /> 
                         <Button x:Name="AddExerciseTypesButton"
                                 Grid.Column="1"
@@ -130,6 +131,7 @@
                                 HeightRequest="{StaticResource AccordionHeight}" 
                                 VerticalOptions="FillAndExpand"
                                 HorizontalOptions="FillAndExpand"
+                                Clicked="AddTypeOfExerciseButton_OnClicked"
                         />
                     </Grid>
                 </accordion:AccordionItem.Header>

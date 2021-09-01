@@ -172,5 +172,11 @@ namespace PersonalTrainerWorkouts.Views
 
             await PageNavigation.NavigateBackwards();
         }
+
+        private async void AddTypeOfExerciseButton_OnClicked(object    sender
+                                                    , EventArgs e)
+        {
+            await PageNavigation.NavigateTo(nameof(TypeOfExerciseListPage));
+        }
     }
 }
