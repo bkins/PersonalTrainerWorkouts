@@ -18,8 +18,8 @@ namespace PersonalTrainerWorkouts
             Routing.RegisterRoute(nameof(ExerciseListPage),          typeof(ExerciseListPage));
             Routing.RegisterRoute(nameof(MessageLog),                typeof(MessageLog));
             Routing.RegisterRoute(nameof(WorkoutExercisePage),       typeof(WorkoutExercisePage));
-            Routing.RegisterRoute(nameof(TypeOfExerciseEntryPage),     typeof(TypeOfExerciseEntryPage));
-            Routing.RegisterRoute(nameof(TypeOfExerciseListPage),      typeof(TypeOfExerciseListPage));
+            Routing.RegisterRoute(nameof(TypeOfExerciseEntryPage),   typeof(TypeOfExerciseEntryPage));
+            Routing.RegisterRoute(nameof(TypeOfExerciseListPage),    typeof(TypeOfExerciseListPage));
         }
 
     }

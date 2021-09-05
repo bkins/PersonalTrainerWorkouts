@@ -7,6 +7,7 @@
 
              x:Class="PersonalTrainerWorkouts.Views.TypeOfExerciseListPage" 
              x:DataType="viewModels:TypeOfExerciseListViewModel"
+             Title="Add Existing Type to Exercise"
 >
     <ContentPage.Content>
         <StackLayout>
@@ -18,6 +19,7 @@
                              ColumnHeaderText="Type Name"
                              ShowHeader="False"
                              OkButtonClicked="TypeOfExercisePicker_OnOkButtonClicked"
+                             CancelButtonClicked="TypeOfExercisePicker_OnCancelButtonClicked"
                              ShowFooter="True"
             >
             

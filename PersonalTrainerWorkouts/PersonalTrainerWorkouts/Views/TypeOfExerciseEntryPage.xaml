@@ -8,11 +8,16 @@
 
              x:Class="PersonalTrainerWorkouts.Views.TypeOfExerciseEntryPage"
              x:DataType="viewmodels:TypeOfExerciseListViewModel"
+
+             Title="Add New Type of Exercise"
              >
             
     <ContentPage.Content>
         <StackLayout>
-            
+            <Entry Placeholder="Name"
+                   Text="{Binding SelectedTypeOfExercise.Name}"
+                   Unfocused="Name_OnUnfocused"
+            />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

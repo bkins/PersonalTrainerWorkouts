@@ -40,7 +40,6 @@
 
     </ContentPage.ToolbarItems>
 
-                         <!--x:DataType="viewmodels:ExerciseListViewModel"-->
     <listview:SfListView x:Name="ExerciseList"
                          x:DataType="viewmodels:WorkoutExerciseWithChildren"
                          ItemSize="60"

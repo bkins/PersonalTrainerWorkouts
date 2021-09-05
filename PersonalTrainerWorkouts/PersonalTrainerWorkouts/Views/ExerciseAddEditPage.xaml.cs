@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Web;
+using System.Windows.Input;
 using ApplicationExceptions;
 using Xamarin.Forms;
 using PersonalTrainerWorkouts.Models;
@@ -22,7 +23,9 @@ namespace PersonalTrainerWorkouts.Views
         public  string                   InitialLengthOfTime { get; set; }
         public  int                      InitialReps         { get; set; }
         private Entry                    NameEntry           { get; set; }
-        
+        public  List<TypeOfExercise>     TypesOfExerciseList { get; set; }
+        public  ICommand                 DeleteCommand       { get; }
+
         public void ApplyQueryAttributes(IDictionary<string, string> query)
         {
             try
@@ -49,16 +52,18 @@ namespace PersonalTrainerWorkouts.Views
             {
                 if (ViewModel != null)
                 {
-                    InitialName         = ViewModel.Exercise?.Name;
-                    InitialDescription  = ViewModel.Exercise?.Description;
-                    InitialLengthOfTime = ViewModel.Exercise?.LengthOfTime;
+                    InitialName              = ViewModel.Exercise?.Name;
+                    InitialDescription       = ViewModel.Exercise?.Description;
+                    InitialLengthOfTime      = ViewModel.Exercise?.LengthOfTime;
+                    TypesOfExerciseList      = ViewModel.TypesOfExerciseList;
 
-                    BindingContext = ViewModel;
+                    BindingContext             = ViewModel;
+                    CollectionView.ItemsSource = ViewModel.TypesOfExerciseList;
                 }
             }
             catch (Exception e)
             {
-                Logger.WriteLine("Failed to load Workout.", Category.Error, e);
+                Logger.WriteLine("Failed to load Exercise.", Category.Error, e);
                 //BENDO: consider implementing a page that shows exception details
             }
         }
@@ -70,6 +75,7 @@ namespace PersonalTrainerWorkouts.Views
 
             ViewModel      = new ExerciseAddEditViewModel();
             BindingContext = ViewModel;
+            
         }
         
         private void UpdateExercise()
@@ -176,7 +182,18 @@ namespace PersonalTrainerWorkouts.Views
         private async void AddTypeOfExerciseButton_OnClicked(object    sender
                                                     , EventArgs e)
         {
-            await PageNavigation.NavigateTo(nameof(TypeOfExerciseListPage));
+            await PageNavigation.NavigateTo(nameof(TypeOfExerciseListPage)
+                                          , nameof(TypeOfExerciseListPage.ExerciseId)
+                                          , ExerciseId);
+        }
+
+        private void RemoveType_OnClicked(object    sender
+                                        , EventArgs e)
+        {
+            var itemToDelete = (Button)sender;
+            ViewModel.DeleteExerciseType(int.Parse(itemToDelete.Text));
+            
+            CollectionView.ItemsSource = ViewModel.TypesOfExerciseList;
         }
     }
 }

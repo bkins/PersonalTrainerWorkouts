@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using ApplicationExceptions;
 using PersonalTrainerWorkouts.Models;
@@ -9,10 +11,15 @@ namespace PersonalTrainerWorkouts.ViewModels
 {
     public class ExerciseAddEditViewModel  : ViewModelBase 
     {
-        public Exercise Exercise     { get; set; }
-        public Workout  Workout      { get; set; }
-        public string   LengthOfTime { get; set; }
-        public int?      Reps        { get; set; }
+        public Exercise                             Exercise            { get; set; }
+        public Workout                              Workout             { get; set; }
+        public string                               LengthOfTime        { get; set; }
+        public int?                                 Reps                { get; set; }
+        public TypeOfExercise                       TypeOfExercise      { get; set; }
+        public ObservableCollection<TypeOfExercise> TypesOfExercise     { get; set; }
+        public List<TypeOfExercise>                 TypesOfExerciseList { get; set; }
+        public IEnumerable<Equipment>               Equipment           { get; set; }
+        public IEnumerable<MuscleGroup>             MuscleGroups        { get; set; }
 
         public ExerciseAddEditViewModel()
         {
@@ -29,8 +36,24 @@ namespace PersonalTrainerWorkouts.ViewModels
                                     .ToShortForm();
 
             Reps = Exercise?.Reps;
+
+            LoadTheTypesOfExercise();
         }
-        
+
+        private void LoadTheTypesOfExercise()
+        {
+            var exerciseTypes   = DataAccessLayer.GetAllExerciseTypes()
+                                                 .Where(field => field.ExerciseId == Exercise.Id);
+
+            var allTypes        = DataAccessLayer.GetAllTypesOfExercise();
+
+            var typesOfExercise = new ObservableCollection<TypeOfExercise>(exerciseTypes.Select(exerciseType => allTypes.First(field => field.Id == exerciseType.TypeId))
+                                                                                        .ToList());
+
+            TypesOfExercise     = typesOfExercise;
+            TypesOfExerciseList = typesOfExercise.ToList();
+        }
+
         public void UpdateExercise()
         {
             DataAccessLayer.UpdateExercise(Exercise);
@@ -85,6 +108,12 @@ namespace PersonalTrainerWorkouts.ViewModels
             {
                 throw new Exception("LinkedWorkoutsToExercises not added");
             }
+        }
+
+        public void DeleteExerciseType(int itemToDeleteId)
+        {
+            DataAccessLayer.DeleteExerciseType(Exercise.Id, itemToDeleteId);
+            LoadTheTypesOfExercise();
         }
     }
 }

@@ -1,13 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+
              xmlns:accordion="clr-namespace:Syncfusion.XForms.Accordion;assembly=Syncfusion.Expander.XForms"
+             xmlns:sfListView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
              xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
+             xmlns:converters="clr-namespace:PersonalTrainerWorkouts.Views.Converters;assembly=PersonalTrainerWorkouts"
+             xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
+
              x:Class="PersonalTrainerWorkouts.Views.ExerciseAddEditPage"
              x:DataType="viewmodels:ExerciseAddEditViewModel"
+
              Title="Add/Edit Exercise" >
-    <!--x:DataType="models:Exercise"-->
+    
+    <ContentPage.BindingContext>
+        <viewmodels:ExerciseAddEditViewModel/>
+    </ContentPage.BindingContext>
+
     <ContentPage.Resources>
         <!-- Implicit styles -->
         <Style TargetType="{x:Type Editor}">
@@ -29,12 +40,10 @@
                 </VisualStateGroupList>
             </Setter>
         </Style>
+        <ResourceDictionary>
+            <converters:HeightConverter x:TypeArguments="models:TypeOfExercise" x:Key="HeightConverter"/>
+        </ResourceDictionary>
     </ContentPage.Resources>
-
-    <!-- Add an item to the toolbar -->
-    <ContentPage.ToolbarItems>
-
-    </ContentPage.ToolbarItems>
 
     <!-- Layout children vertically -->
     <StackLayout Margin="{DynamicResource PageMargin}"
@@ -68,8 +77,8 @@
                 </Keyboard>
             </Editor.Keyboard>
         </Editor>
-        <Editor x:Name="LengthOfTimeEditor"
-                Placeholder="Default Length of time"
+        <Editor Placeholder="Default Length of time"
+                x:Name="LengthOfTimeEditor"
                 VerticalOptions="End"
                 HorizontalOptions="StartAndExpand"
                 AutoSize="TextChanges"
@@ -84,15 +93,16 @@
                     </x:Arguments>
                 </Keyboard>
             </Editor.Keyboard>
-        </Editor><Editor x:Name="RepsEditor"
-                         Placeholder="Default Reps"
-                         VerticalOptions="End"
-                         HorizontalOptions="StartAndExpand"
-                         AutoSize="TextChanges"
-                         Text="{Binding Reps}"
-                         TextColor="{DynamicResource TertiaryColor}"
-                         FontSize="Medium" 
-                         Unfocused="RepsEditor_OnUnfocused">
+        </Editor>
+        <Editor x:Name="RepsEditor"
+                Placeholder="Default Reps"
+                VerticalOptions="End"
+                HorizontalOptions="StartAndExpand"
+                AutoSize="TextChanges"
+                Text="{Binding Reps}"
+                TextColor="{DynamicResource TertiaryColor}"
+                FontSize="Medium" 
+                Unfocused="RepsEditor_OnUnfocused">
             <Editor.Keyboard>
                 <Keyboard x:FactoryMethod="Create">
                     <x:Arguments>
@@ -101,16 +111,19 @@
                 </Keyboard>
             </Editor.Keyboard>
         </Editor>
+        
         <accordion:SfAccordion x:Name="Accordion" 
                                ExpandMode="MultipleOrNone">
-          <accordion:SfAccordion.Items>
-             <accordion:AccordionItem>
-                <accordion:AccordionItem.Header>
+          <accordion:SfAccordion.Items >
+             <accordion:AccordionItem >
+                
+                 <accordion:AccordionItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="25"/>
                         </Grid.ColumnDefinitions>
+
                         <Label x:Name="ExerciseTypesLabel"
                                Grid.Column="0"
                                BackgroundColor ="{StaticResource PrimaryBackColor}" 
@@ -135,12 +148,60 @@
                         />
                     </Grid>
                 </accordion:AccordionItem.Header>
+
                 <accordion:AccordionItem.Content>
-                  <Label Text="BENDO: Bind to View Model"/>
+                    <CollectionView x:Name="CollectionView"
+                                           x:DataType="viewmodels:ExerciseAddEditViewModel"
+                                           ItemsSource="{Binding TypeOfExercise.Name}" >
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical"
+                                               ItemSpacing="0" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0"
+                        x:DataType="models:TypeOfExercise">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <!--HACK: I needed a reference to the item being deleted.  I tried a few ways.  Nothing worked. So I am setting the Text of the button to the Id of the TypeOfExercise-->
+                        <Button Grid.Column="0"
+                                x:Name="RemoveType"
+                                Text="{Binding Id}"
+                                
+                                ImageSource="Delete.png"
+                                FontSize="Caption"
+                                BackgroundColor="Red"
+                                Padding="0"
+                                HeightRequest="{StaticResource AccordionItemHeight}" 
+                                WidthRequest="{StaticResource AccordionItemButtonWidth}"
+                                VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand"
+                                Clicked="RemoveType_OnClicked"
+                        />
+                        <Label Grid.Column="1"
+                               VerticalOptions="End"
+                               Text="{Binding Name}"
+                               FontSize="Medium" 
+                        />
+                        <!--Command="{Binding Source={RelativeSource AncestorType={x:Type models:TypeOfExercise}}, Path=DeleteCommand}"-->
+                        <!--
+                                HeightRequest="{StaticResource AccordionItemHeight}" 
+                                WidthRequest="{StaticResource AccordionItemButtonWidth}"
+                                
+                                HorizontalOptions="StartAndExpand"-->
+
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+                    </CollectionView>
                 </accordion:AccordionItem.Content>
+
              </accordion:AccordionItem>
              <accordion:AccordionItem>
-                <accordion:AccordionItem.Header>
+
+                 <accordion:AccordionItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
@@ -169,7 +230,9 @@
                     </Grid>
                 </accordion:AccordionItem.Header>
                 <accordion:AccordionItem.Content>
-                  <Label Text="BENDO: Bind to View Model"/>
+                  
+                    <Label Text="BENDO: Bind to View Model"/>
+
                 </accordion:AccordionItem.Content>
              </accordion:AccordionItem>
               <accordion:AccordionItem>

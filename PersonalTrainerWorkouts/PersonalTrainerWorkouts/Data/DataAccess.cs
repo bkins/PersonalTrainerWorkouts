@@ -101,6 +101,15 @@ namespace PersonalTrainerWorkouts.Data
         public void AddExerciseType(int exerciseId
                                   , int typeOfExerciseId)
         {
+            var existingExerciseTypes = Database.GetExerciseTypes()
+                                                .Where(field => field.ExerciseId == exerciseId 
+                                                             && field.TypeId == typeOfExerciseId);
+
+            if (existingExerciseTypes.Any())
+            {
+                throw new ApplicationExceptions.ExerciseTypeRelationAlreadyExistsException("You cannot add a Exercise Type that is already associated with this Exercise.\r\nPlease select different type.");
+            }
+
             Database.AddExerciseType(new ExerciseType
                                      {
                                          ExerciseId = exerciseId
@@ -219,6 +228,11 @@ namespace PersonalTrainerWorkouts.Data
             return Database.GetExercises() ?? new List<Exercise>();
         }
         
+        public IEnumerable<ExerciseType> GetAllExerciseTypes()
+        {
+            return Database.GetExerciseTypes() ?? new List<ExerciseType>();
+        }
+
         public IEnumerable<TypeOfExercise> GetAllTypesOfExercise()
         {
             return Database.GetTypes() ?? new List<TypeOfExercise>();
@@ -251,6 +265,19 @@ namespace PersonalTrainerWorkouts.Data
         public void UpdateLinkedWorkoutsToExercises(LinkedWorkoutsToExercises linkedWorkoutsToExercises)
         {
             Database.UpdateLinkedWorkoutsToExercises(linkedWorkoutsToExercises);
+        }
+
+    #endregion
+
+    #region Deletes
+
+        public void DeleteExerciseType(int exerciseId, int typeOfExerciseId)
+        {
+            var typeOfExerciseToDelete = Database.GetExerciseTypes()
+                                                 .First(field => field.ExerciseId == exerciseId 
+                                                              && field.TypeId == typeOfExerciseId);
+
+            Database.DeleteExerciseType(ref typeOfExerciseToDelete);
         }
 
     #endregion

@@ -1,13 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using ApplicationExceptions;
 using PersonalTrainerWorkouts.Models;
+using PersonalTrainerWorkouts.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
     class TypeOfExerciseListViewModel : ViewModelBase
     {
-        public IEnumerable<TypeOfExercise> ListOfAllExerciseTypes { get; set; }
+        public IEnumerable<TypeOfExercise> ListOfAllExerciseTypes => DataAccessLayer.GetAllTypesOfExercise();
         public TypeOfExercise              SelectedTypeOfExercise { get; set; }
 
         public TypeOfExerciseListViewModel()
@@ -24,10 +26,10 @@ namespace PersonalTrainerWorkouts.ViewModels
             //                                         Name = "Pull"
             //                                     });
 
-            ListOfAllExerciseTypes = DataAccessLayer.GetAllTypesOfExercise();
+            //ListOfAllExerciseTypes = DataAccessLayer.GetAllTypesOfExercise();
         }
 
-        public void SaveExercise(int exerciseId)
+        public void SaveExerciseType(int exerciseId)
         {
             DataAccessLayer.AddExerciseType(exerciseId
                                           , SelectedTypeOfExercise.Id);
