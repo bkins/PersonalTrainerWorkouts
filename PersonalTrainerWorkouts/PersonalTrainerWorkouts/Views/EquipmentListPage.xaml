@@ -1,29 +1,31 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             
-             xmlns:picker="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
+    
+             xmlns:xForms="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
              xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
 
-             x:Class="PersonalTrainerWorkouts.Views.TypeOfExerciseListPage" 
-             x:DataType="viewModels:TypeOfExerciseListViewModel"
-             Title="Add Type to Exercise"
+             x:Class="PersonalTrainerWorkouts.Views.EquipmentListPage"
+             
+             x:DataType="viewModels:EquipmentListViewModel"
+             Title="Add Equipment to Exercise"
 >
+    
     <ContentPage.Content>
         <StackLayout>
             
-            <picker:SfPicker x:Name="TypeOfExercisePicker"
-                             ItemsSource="{Binding ListOfAllExerciseTypes}"
+            <xForms:SfPicker x:Name="EquipmentPicker"
+                             ItemsSource="{Binding ListOfAllExerciseEquipment}"
                              DisplayMemberPath="Name"
                              ShowColumnHeader="False"
                              ColumnHeaderText="Type Name"
                              ShowHeader="False"
-                             OkButtonClicked="TypeOfExercisePicker_OnOkButtonClicked"
-                             CancelButtonClicked="TypeOfExercisePicker_OnCancelButtonClicked"
+                             OkButtonClicked="EquipmentPicker_OnOkButtonClicked"
+                             CancelButtonClicked="EquipmentPicker_OnCancelButtonClicked"
                              ShowFooter="True"
             >
             
-            </picker:SfPicker>
+            </xForms:SfPicker>
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

@@ -112,8 +112,13 @@
             </Editor.Keyboard>
         </Editor>
         
+        <!--BENDO: Figure out how to make the side of the Accordion the size of one item in it times the number of items.
+            Their does not seem to be a property in the SFAccordion that does this.-->
         <accordion:SfAccordion x:Name="Accordion" 
-                               ExpandMode="MultipleOrNone">
+                               ExpandMode="SingleOrNone"
+                               VerticalOptions="StartAndExpand"
+                               DynamicSizeMode="Content"
+        >
           <accordion:SfAccordion.Items >
              <accordion:AccordionItem >
                 
@@ -150,7 +155,7 @@
                 </accordion:AccordionItem.Header>
 
                 <accordion:AccordionItem.Content>
-                    <CollectionView x:Name="CollectionView"
+                    <CollectionView x:Name="TypeOfExerciseCollectionView"
                                            x:DataType="viewmodels:ExerciseAddEditViewModel"
                                            ItemsSource="{Binding TypeOfExercise.Name}" >
                         <CollectionView.ItemsLayout>
@@ -199,15 +204,16 @@
                 </accordion:AccordionItem.Content>
 
              </accordion:AccordionItem>
-             <accordion:AccordionItem>
-
+             <accordion:AccordionItem >
+                
                  <accordion:AccordionItem.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="25"/>
                         </Grid.ColumnDefinitions>
-                        <Label x:Name="EquipmentLabel"
+
+                        <Label x:Name="EquipmentsLabel"
                                Grid.Column="0"
                                BackgroundColor ="{StaticResource PrimaryBackColor}" 
                                TextColor="{StaticResource PrimaryForeColor}" 
@@ -217,6 +223,7 @@
                                HeightRequest="{StaticResource AccordionHeight}" 
                                VerticalTextAlignment="Center"
                                HorizontalTextAlignment="Center"
+                               
                         /> 
                         <Button x:Name="AddEquipmentButton"
                                 Grid.Column="1"
@@ -226,16 +233,56 @@
                                 HeightRequest="{StaticResource AccordionHeight}" 
                                 VerticalOptions="FillAndExpand"
                                 HorizontalOptions="FillAndExpand"
+                                Clicked="AddEquipmentButton_OnClicked"
                         />
                     </Grid>
                 </accordion:AccordionItem.Header>
-                <accordion:AccordionItem.Content>
-                  
-                    <Label Text="BENDO: Bind to View Model"/>
 
+                <accordion:AccordionItem.Content>
+                    <CollectionView x:Name="EquipmentCollectionView"
+                                           x:DataType="viewmodels:ExerciseAddEditViewModel"
+                                           ItemsSource="{Binding Equipment.Name}" >
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical"
+                                               ItemSpacing="0" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0"
+                        x:DataType="models:Equipment">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                                x:Name="RemoveEquipment"
+                                Text="{Binding Id}"
+                                
+                                ImageSource="Delete.png"
+                                FontSize="Caption"
+                                BackgroundColor="Red"
+                                Padding="0"
+                                HeightRequest="{StaticResource AccordionItemHeight}" 
+                                WidthRequest="{StaticResource AccordionItemButtonWidth}"
+                                VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand"
+                                Clicked="RemoveEquipment_OnClicked"
+                        />
+                        <Label Grid.Column="1"
+                               VerticalOptions="End"
+                               Text="{Binding Name}"
+                               FontSize="Medium" 
+                        />
+                        
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+                    </CollectionView>
                 </accordion:AccordionItem.Content>
+
              </accordion:AccordionItem>
-              <accordion:AccordionItem>
+             <accordion:AccordionItem>
                   <accordion:AccordionItem.Header>
                       <Grid>
                           <Grid.ColumnDefinitions>

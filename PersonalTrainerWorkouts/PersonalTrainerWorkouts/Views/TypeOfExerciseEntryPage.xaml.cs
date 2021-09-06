@@ -62,7 +62,7 @@ namespace PersonalTrainerWorkouts.Views
         {
             var nameEntry = (Entry)sender;
             
-            ViewModel.SaveExerciseType(nameEntry.Text);
+            ViewModel.SaveTypeOfExercise(nameEntry.Text);
             
             await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
                                           , nameof(ExerciseAddEditPage.WorkoutId)

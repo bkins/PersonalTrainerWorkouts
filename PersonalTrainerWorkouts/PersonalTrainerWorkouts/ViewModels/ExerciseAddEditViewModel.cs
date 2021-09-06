@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using ApplicationExceptions;
+using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
 using PersonalTrainerWorkouts.Utilities;
@@ -15,11 +16,16 @@ namespace PersonalTrainerWorkouts.ViewModels
         public Workout                              Workout             { get; set; }
         public string                               LengthOfTime        { get; set; }
         public int?                                 Reps                { get; set; }
+
         public TypeOfExercise                       TypeOfExercise      { get; set; }
         public ObservableCollection<TypeOfExercise> TypesOfExercise     { get; set; }
         public List<TypeOfExercise>                 TypesOfExerciseList { get; set; }
-        public IEnumerable<Equipment>               Equipment           { get; set; }
-        public IEnumerable<MuscleGroup>             MuscleGroups        { get; set; }
+
+        public Equipment                       Equipment     { get; set; }
+        public ObservableCollection<Equipment> Equipments    { get; set; }
+        public List<Equipment>                 EquipmentList { get; set; }
+
+        public IEnumerable<MuscleGroup>        MuscleGroups  { get; set; }
 
         public ExerciseAddEditViewModel()
         {
@@ -38,6 +44,49 @@ namespace PersonalTrainerWorkouts.ViewModels
             Reps = Exercise?.Reps;
 
             LoadTheTypesOfExercise();
+            LoadTheEquipment();
+        }
+
+        private void LoadTheEquipment()
+        {
+            //var rack = new Equipment
+            //           {
+            //               Name = "Rack"
+            //           };
+
+            //var dumbBells = new Equipment
+            //                {
+            //                    Name = "Dumb Bells"
+            //                };
+
+            //var rackId      = DataAccessLayer.AddNewEquipment(rack);
+            //var dumbBellsId = DataAccessLayer.AddNewEquipment(dumbBells);
+
+            //var theRackToAdd = DataAccessLayer.GetAllEquipment()
+            //                                  .First(field => field.Id == rackId);
+
+            //var theDumbBellsToAdd = DataAccessLayer.GetAllEquipment()
+            //                                       .First(field => field.Id == dumbBellsId);
+
+            //Exercise.Equipment.Add(theRackToAdd);
+            //Exercise.Equipment.Add(theDumbBellsToAdd);
+
+            //DataAccessLayer.UpdateExercise(Exercise);
+
+            var exerciseEquipment = DataAccessLayer.GetAllExerciseEquipment()
+                                                   .Where(field => field.ExerciseId == Exercise.Id);
+
+            var allTEquipment = DataAccessLayer.GetAllEquipment();
+
+            var equipment = new ObservableCollection<Equipment>
+                                (
+                                    exerciseEquipment.Select(oneEquipment => allTEquipment.First(field => field.Id == oneEquipment.EquipmentId))
+                                                     .ToList()
+                                );
+
+            Equipments    = equipment;
+            EquipmentList = equipment.ToList();
+
         }
 
         private void LoadTheTypesOfExercise()
@@ -47,8 +96,11 @@ namespace PersonalTrainerWorkouts.ViewModels
 
             var allTypes        = DataAccessLayer.GetAllTypesOfExercise();
 
-            var typesOfExercise = new ObservableCollection<TypeOfExercise>(exerciseTypes.Select(exerciseType => allTypes.First(field => field.Id == exerciseType.TypeId))
-                                                                                        .ToList());
+            var typesOfExercise = new ObservableCollection<TypeOfExercise>
+                                      (
+                                        exerciseTypes.Select(exerciseType => allTypes.First(field => field.Id == exerciseType.TypeId))
+                                                     .ToList()
+                                      );
 
             TypesOfExercise     = typesOfExercise;
             TypesOfExerciseList = typesOfExercise.ToList();
@@ -114,6 +166,13 @@ namespace PersonalTrainerWorkouts.ViewModels
         {
             DataAccessLayer.DeleteExerciseType(Exercise.Id, itemToDeleteId);
             LoadTheTypesOfExercise();
+        }
+
+        public void DeleteExerciseEquipment(int itemToDeleteId)
+        {
+            DataAccessLayer.DeleteExerciseEquipment(Exercise.Id
+                                                  , itemToDeleteId);
+            LoadTheEquipment();
         }
     }
 }

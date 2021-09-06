@@ -8,6 +8,7 @@ using Xamarin.Forms;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
+using Syncfusion.XForms.Accordion;
 
 namespace PersonalTrainerWorkouts.Views
 {
@@ -57,8 +58,9 @@ namespace PersonalTrainerWorkouts.Views
                     InitialLengthOfTime      = ViewModel.Exercise?.LengthOfTime;
                     TypesOfExerciseList      = ViewModel.TypesOfExerciseList;
 
-                    BindingContext             = ViewModel;
-                    CollectionView.ItemsSource = ViewModel.TypesOfExerciseList;
+                    BindingContext                           = ViewModel;
+                    TypeOfExerciseCollectionView.ItemsSource = ViewModel.TypesOfExerciseList;
+                    EquipmentCollectionView.ItemsSource      = ViewModel.EquipmentList;
                 }
             }
             catch (Exception e)
@@ -193,7 +195,24 @@ namespace PersonalTrainerWorkouts.Views
             var itemToDelete = (Button)sender;
             ViewModel.DeleteExerciseType(int.Parse(itemToDelete.Text));
             
-            CollectionView.ItemsSource = ViewModel.TypesOfExerciseList;
+            TypeOfExerciseCollectionView.ItemsSource = ViewModel.TypesOfExerciseList;
+        }
+
+        private async void AddEquipmentButton_OnClicked(object    sender
+                                                , EventArgs e)
+        {
+            await PageNavigation.NavigateTo(nameof(EquipmentListPage)
+                                          , nameof(EquipmentListPage.ExerciseId)
+                                          , ExerciseId);
+        }
+
+        private void RemoveEquipment_OnClicked(object    sender
+                                             , EventArgs e)
+        {
+            var itemToDelete = (Button)sender;
+            ViewModel.DeleteExerciseEquipment(int.Parse(itemToDelete.Text));
+            
+            EquipmentCollectionView.ItemsSource      = ViewModel.EquipmentList;
         }
     }
 }

@@ -15,7 +15,7 @@ namespace PersonalTrainerWorkouts.ViewModels
             Exercise = DataAccessLayer.GetExercise(int.Parse(exerciseId));
         }
         
-        public void SaveExerciseType(string newTypeName)
+        public void SaveTypeOfExercise(string newTypeName)
         {
             if (newTypeName.IsNullEmptyOrWhitespace())
             {

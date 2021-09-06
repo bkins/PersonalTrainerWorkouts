@@ -14,7 +14,6 @@ using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEve
 
 namespace PersonalTrainerWorkouts.Views
 {
-    [XamlCompilation(XamlCompilationOptions.Compile)]
     [QueryProperty(nameof(ExerciseId), nameof(ExerciseId))]
     public partial class TypeOfExerciseListPage : IQueryAttributable
     {
@@ -94,7 +93,7 @@ namespace PersonalTrainerWorkouts.Views
 
                 try
                 {
-                    viewModel.SaveExerciseType(typeName);
+                    viewModel.SaveTypeOfExercise(typeName);
 
                     saved = true;
                 }
@@ -118,8 +117,6 @@ namespace PersonalTrainerWorkouts.Views
             try
             {
                 ViewModel.SaveExerciseType(int.Parse(ExerciseId));
-
-                await PageNavigation.NavigateBackwards();
             }
             catch (ExerciseTypeRelationAlreadyExistsException alreadyExistsException)
             {

@@ -107,7 +107,7 @@ namespace PersonalTrainerWorkouts.Data
 
             if (existingExerciseTypes.Any())
             {
-                throw new ApplicationExceptions.ExerciseTypeRelationAlreadyExistsException("You cannot add a Exercise Type that is already associated with this Exercise.\r\nPlease select different type.");
+                throw new ApplicationExceptions.ExerciseTypeRelationAlreadyExistsException("You cannot add an Exercise Type that is already associated with this Exercise.\r\nPlease select different type.");
             }
 
             Database.AddExerciseType(new ExerciseType
@@ -115,6 +115,25 @@ namespace PersonalTrainerWorkouts.Data
                                          ExerciseId = exerciseId
                                        , TypeId     = typeOfExerciseId
                                      });
+        }
+        
+        public void AddExerciseEquipment(int exerciseId
+                                       , int equipmentId)
+        {
+            var existingExerciseEquipment = Database.GetExerciseEquipments()
+                                                    .Where((field => field.ExerciseId == exerciseId 
+                                                                  && field.EquipmentId == equipmentId));
+
+            if (existingExerciseEquipment.Any())
+            {
+                throw new ApplicationExceptions.ExerciseTypeRelationAlreadyExistsException("You cannot add Equipment that is already associated with this Exercise.\r\nPlease select different equipment.");
+            }
+
+            Database.AddExerciseEquipment(new ExerciseEquipment
+                                          {
+                                              ExerciseId  = exerciseId
+                                            , EquipmentId = equipmentId
+                                          });
         }
 
         public int AddNewExercise(Exercise exercise)
@@ -238,6 +257,15 @@ namespace PersonalTrainerWorkouts.Data
             return Database.GetTypes() ?? new List<TypeOfExercise>();
         }
 
+        public IEnumerable<ExerciseEquipment> GetAllExerciseEquipment()
+        {
+            return Database.GetExerciseEquipments() ?? new List<ExerciseEquipment>();
+        }
+
+        public IEnumerable<Equipment> GetAllEquipment()
+        {
+            return Database.GetAllEquipment() ?? new List<Equipment>();
+        }
         public OpposingMuscleGroup GetOpposingMuscleGroupByMuscleGroup(int exerciseId)
         {
             return Database.GetOpposingMuscleGroupByMuscleGroup(exerciseId);
@@ -271,13 +299,24 @@ namespace PersonalTrainerWorkouts.Data
 
     #region Deletes
 
-        public void DeleteExerciseType(int exerciseId, int typeOfExerciseId)
+        public void DeleteExerciseType(int exerciseId
+                                     , int typeOfExerciseId)
         {
             var typeOfExerciseToDelete = Database.GetExerciseTypes()
                                                  .First(field => field.ExerciseId == exerciseId 
                                                               && field.TypeId == typeOfExerciseId);
 
             Database.DeleteExerciseType(ref typeOfExerciseToDelete);
+        }
+        
+        public void DeleteExerciseEquipment(int exerciseId
+                                          , int equipmentId)
+        {
+            var equipmentToDelete = Database.GetExerciseEquipments()
+                                            .First(field => field.ExerciseId == exerciseId 
+                                                         && field.EquipmentId == equipmentId);
+
+            Database.DeleteExerciseEquipment(ref equipmentToDelete);
         }
 
     #endregion

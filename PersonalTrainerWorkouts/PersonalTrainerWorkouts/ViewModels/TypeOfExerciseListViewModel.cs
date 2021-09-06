@@ -31,6 +31,11 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         public void SaveExerciseType(int exerciseId)
         {
+            if (SelectedTypeOfExercise == null)
+            {
+                return;
+            }
+
             DataAccessLayer.AddExerciseType(exerciseId
                                           , SelectedTypeOfExercise.Id);
         }
