@@ -140,20 +140,4 @@ namespace PersonalTrainerWorkouts.Views
                                           , tappedExercise.Exercise.Id.ToString());
         }
     }
-
-    public class SfPickerBehavior:Behavior<Syncfusion.SfPicker.XForms.SfPicker>
-    {
-        protected override void OnAttachedTo(Syncfusion.SfPicker.XForms.SfPicker bindable)
-        {
-            base.OnAttachedTo(bindable);
-        }
-        protected override void OnDetachingFrom(Syncfusion.SfPicker.XForms.SfPicker bindable)
-        {
-            if (Device.RuntimePlatform == Device.UWP)
-            {
-                bindable.Dispose();
-            }
-            base.OnDetachingFrom(bindable);
-        }
-    }
 }

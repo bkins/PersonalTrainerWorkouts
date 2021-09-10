@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Xamarin.Forms;
 
 namespace PersonalTrainerWorkouts.Utilities
@@ -14,7 +15,15 @@ namespace PersonalTrainerWorkouts.Utilities
                                           , string nameOfParameter1
                                           , string valueOfParameter1)
         {
-            await Navigate($"{nameOfPage}?{nameOfParameter1}={valueOfParameter1}");
+            try
+            {
+                await Navigate($"{nameOfPage}?{nameOfParameter1}={valueOfParameter1}");
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine($"Could not navigate to page: {nameOfPage}, because {e.Message}", Category.Error, e);
+                throw;
+            }
         }
 
         public static async Task NavigateTo(string nameOfPage

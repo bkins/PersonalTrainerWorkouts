@@ -55,7 +55,7 @@ namespace PersonalTrainerWorkouts.Utilities
             LogToToast(completeLogMessage);
         }
 
-        private static void LogToToast(string completeLogMessage)
+        private static  void LogToToast(string completeLogMessage)
         {
             if (WriteToToast)
             {
@@ -113,7 +113,7 @@ namespace PersonalTrainerWorkouts.Utilities
                 Log.AppendLine(ex.StackTrace);
             }
         }
-
+        
         public static LogLevel ConvertCategoryToLogLevel(Category category)
         {
             switch (category)

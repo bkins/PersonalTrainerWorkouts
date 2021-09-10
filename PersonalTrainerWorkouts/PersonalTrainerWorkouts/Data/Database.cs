@@ -35,18 +35,27 @@ namespace PersonalTrainerWorkouts.Data
 
         public void CreateTables()
         {
-            _database.CreateTable<Workout>();
-            _database.CreateTable<Exercise>();
-            _database.CreateTable<TypeOfExercise>();
-            _database.CreateTable<Equipment>();
-            _database.CreateTable<MuscleGroup>();
-            _database.CreateTable<OpposingMuscleGroup>();
+            try
+            {
+                _database.CreateTable<Workout>();
+                _database.CreateTable<Exercise>();
+                _database.CreateTable<TypeOfExercise>();
+                _database.CreateTable<Equipment>();
+                _database.CreateTable<MuscleGroup>();
+                _database.CreateTable<Synergist>();
+                _database.CreateTable<OpposingMuscleGroup>();
             
-            _database.CreateTable<ExerciseType>();
-            _database.CreateTable<ExerciseEquipment>();
-            _database.CreateTable<ExerciseMuscleGroup>();
-            _database.CreateTable<WorkoutExercise>();
-            _database.CreateTable<LinkedWorkoutsToExercises>();
+                _database.CreateTable<ExerciseType>();
+                _database.CreateTable<ExerciseEquipment>();
+                _database.CreateTable<ExerciseMuscleGroup>();
+                _database.CreateTable<WorkoutExercise>();
+                _database.CreateTable<LinkedWorkoutsToExercises>();
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(e.Message, Category.Error, e);
+                
+            }
         }
 
         public void DropTables()
@@ -56,6 +65,7 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<TypeOfExercise>();
             _database.DropTable<Equipment>();
             _database.DropTable<MuscleGroup>();
+            _database.DropTable<Synergist>();
             _database.DropTable<OpposingMuscleGroup>();
             
             _database.DropTable<ExerciseType>();
@@ -105,7 +115,7 @@ namespace PersonalTrainerWorkouts.Data
 
             return linkedWorkoutsExercises.Id;
         }
-        
+
         public int  AddWorkoutExercise          (WorkoutExercise workoutExercise)
         {
             var workoutExercisesInWorkout = GetWorkoutExercisesByWorkout(workoutExercise.WorkoutId).ToList();
@@ -121,39 +131,6 @@ namespace PersonalTrainerWorkouts.Data
             _database.Insert(workoutExercise);
 
             return workoutExercise.Id;
-        }
-
-        public void AddCompleteWorkout          (Workout workout)
-        {
-            foreach (var exercise in workout.Exercises)
-            {
-                foreach (var equipment in exercise.Equipment)
-                {
-                    AddEquipment(equipment);
-                }
-
-                foreach (var muscleGroup in exercise.MuscleGroups)
-                {
-                    AddMuscleGroups(muscleGroup);
-
-                    if (muscleGroup.OpposingMuscleGroup != null)
-                    {
-                        AddOpposingMuscleGroup(muscleGroup.Id, muscleGroup.OpposingMuscleGroup.Id);
-                    }
-                }
-
-                _database.Insert(exercise);
-            }
-
-            if (workout.Id > 0)
-            {
-                _database.UpdateWithChildren(workout);
-            }
-            else
-            {
-                _database.InsertWithChildren(workout);
-            }
-            
         }
         
         /// <summary>
@@ -180,20 +157,9 @@ namespace PersonalTrainerWorkouts.Data
                            0;  //Nothing was inserted
         }
         
-        public void AddMuscleGroupWithOpposing  (MuscleGroup muscleGroup
-                                               , MuscleGroup opposingMuscleGroup)
+        public void AddSynergist             (Synergist synergist)
         {
-            AddOpposingMuscleGroup(muscleGroup.Id, opposingMuscleGroup.Id);
-        }
-
-        public void AddMuscleGroupWithOpposing  (ExerciseMuscleGroup exerciseMuscleGroup)
-        {
-            _database.InsertWithChildren(exerciseMuscleGroup);
-        }
-
-        public void AddMuscleGroups             (MuscleGroup muscleGroup)
-        {
-            _database.InsertWithChildren(muscleGroup);
+            _database.InsertWithChildren(synergist);
         }
 
         public int  AddJustOneMuscleGroup       (MuscleGroup muscleGroup)
@@ -202,20 +168,7 @@ namespace PersonalTrainerWorkouts.Data
                            muscleGroup.Id :
                            0;
         }
-
-        public int  AddOpposingMuscleGroup      (int muscleGroupId, int opposingMuscleGroupId)
-        {
-            var newOpposingMuscleGroup = new OpposingMuscleGroup
-                                         {
-                                             MuscleGroupId         = muscleGroupId
-                                           , OpposingMuscleGroupId = opposingMuscleGroupId
-                                         };
-
-            return _database.Insert(newOpposingMuscleGroup) == 1 ?
-                           newOpposingMuscleGroup.Id :
-                           0;
-        }
-
+        
         public void AddExerciseType             (ExerciseType exerciseType)
         {
             _database.InsertWithChildren(exerciseType);
@@ -254,6 +207,11 @@ namespace PersonalTrainerWorkouts.Data
             return _database.Insert(equipment) == 1 ?
                            equipment.Id :
                            0;
+        }
+        
+        public void AddExerciseMuscleGroup(ExerciseMuscleGroup exerciseMuscleGroup)
+        {
+            _database.InsertWithChildren(exerciseMuscleGroup);
         }
 
         #endregion
@@ -732,6 +690,12 @@ namespace PersonalTrainerWorkouts.Data
             return _database.GetAllWithChildren<Exercise>()
                             .ToObservableCollection();
         }
+        
+        public IEnumerable<Synergist> GetSynergists(bool forceRefresh = false)
+        {
+            return _database.GetAllWithChildren<Synergist>();
+        }
+        
         public ExerciseMuscleGroup                      GetExerciseMuscleGroup(int exerciseMuscleGroupId)
         {
             try
@@ -811,15 +775,12 @@ namespace PersonalTrainerWorkouts.Data
         {
             return _database.GetAllWithChildren<MuscleGroup>();
         }
-
-        //BENDO:  GetOpposingMuscleGroupByMuscleGroup is not correct, or another method needs to be written:
-        //        1.  Should be GetOpposingMuscleGroupsByMuscleGroup (notice the 's' after 'GetOpposingMuscleGroup')
-        //        2.  Return all GetOpposingMuscleGroups, not just the First.
-        public OpposingMuscleGroup                      GetOpposingMuscleGroupByMuscleGroup(int muscleGroupId)
+        
+        public MuscleGroup                      GetOpposingMuscleGroupByMuscleGroup(int muscleGroupId)
         {
             try
             {
-                var opposingMuscleGroup = GetOpposingMuscleGroups().First(field => field.MuscleGroupId == muscleGroupId);
+                var opposingMuscleGroup = GetMuscleGroups().First(field => field.Id == muscleGroupId);
 
                 return opposingMuscleGroup;
             }
@@ -831,6 +792,7 @@ namespace PersonalTrainerWorkouts.Data
                                                             , operationException);
             }
         }
+
         public OpposingMuscleGroup                      GetOpposingMuscleGroup(int opposingMuscleGroupId)
         {
             try

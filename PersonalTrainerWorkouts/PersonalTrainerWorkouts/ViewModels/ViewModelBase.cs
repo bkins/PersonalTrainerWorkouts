@@ -10,7 +10,11 @@ namespace PersonalTrainerWorkouts.ViewModels
     {
         private static DataAccess _dataAccess;
 
-        protected DataAccess DataAccessLayer => _dataAccess = _dataAccess ?? new DataAccess(App.Database);
+        public DataAccess DataAccessLayer
+        {
+            get => _dataAccess = _dataAccess ?? new DataAccess(App.Database);
+            set => _dataAccess = value;
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

@@ -1,13 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+
+             xmlns:accordion="clr-namespace:Syncfusion.XForms.Accordion;assembly=Syncfusion.Expander.XForms"
+             xmlns:sfListView="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
-             xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
              xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
+             xmlns:converters="clr-namespace:PersonalTrainerWorkouts.Views.Converters;assembly=PersonalTrainerWorkouts"
+             xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
+
              x:Class="PersonalTrainerWorkouts.Views.ExerciseAddEditPage"
              x:DataType="viewmodels:ExerciseAddEditViewModel"
+
              Title="Add/Edit Exercise" >
-    <!--x:DataType="models:Exercise"-->
+    
+    <ContentPage.BindingContext>
+        <viewmodels:ExerciseAddEditViewModel/>
+    </ContentPage.BindingContext>
+
     <ContentPage.Resources>
         <!-- Implicit styles -->
         <Style TargetType="{x:Type Editor}">
@@ -29,12 +40,10 @@
                 </VisualStateGroupList>
             </Setter>
         </Style>
+        <ResourceDictionary>
+            <converters:HeightConverter x:TypeArguments="models:TypeOfExercise" x:Key="HeightConverter"/>
+        </ResourceDictionary>
     </ContentPage.Resources>
-
-    <!-- Add an item to the toolbar -->
-    <ContentPage.ToolbarItems>
-
-    </ContentPage.ToolbarItems>
 
     <!-- Layout children vertically -->
     <StackLayout Margin="{DynamicResource PageMargin}"
@@ -68,8 +77,8 @@
                 </Keyboard>
             </Editor.Keyboard>
         </Editor>
-        <Editor x:Name="LengthOfTimeEditor"
-                Placeholder="Default Length of time"
+        <Editor Placeholder="Default Length of time"
+                x:Name="LengthOfTimeEditor"
                 VerticalOptions="End"
                 HorizontalOptions="StartAndExpand"
                 AutoSize="TextChanges"
@@ -84,15 +93,16 @@
                     </x:Arguments>
                 </Keyboard>
             </Editor.Keyboard>
-        </Editor><Editor x:Name="RepsEditor"
-                         Placeholder="Default Reps"
-                         VerticalOptions="End"
-                         HorizontalOptions="StartAndExpand"
-                         AutoSize="TextChanges"
-                         Text="{Binding Reps}"
-                         TextColor="{DynamicResource TertiaryColor}"
-                         FontSize="Medium" 
-                         Unfocused="RepsEditor_OnUnfocused">
+        </Editor>
+        <Editor x:Name="RepsEditor"
+                Placeholder="Default Reps"
+                VerticalOptions="End"
+                HorizontalOptions="StartAndExpand"
+                AutoSize="TextChanges"
+                Text="{Binding Reps}"
+                TextColor="{DynamicResource TertiaryColor}"
+                FontSize="Medium" 
+                Unfocused="RepsEditor_OnUnfocused">
             <Editor.Keyboard>
                 <Keyboard x:FactoryMethod="Create">
                     <x:Arguments>
@@ -101,5 +111,269 @@
                 </Keyboard>
             </Editor.Keyboard>
         </Editor>
+        
+        <!--BENDO: Figure out how to make the side of the Accordion the size of one item in it times the number of items.
+            Their does not seem to be a property in the SFAccordion that does this.-->
+        <accordion:SfAccordion x:Name="Accordion" 
+                               ExpandMode="SingleOrNone"
+                               VerticalOptions="StartAndExpand"
+                               DynamicSizeMode="Content"
+        >
+          <accordion:SfAccordion.Items >
+             <accordion:AccordionItem >
+                
+                 <accordion:AccordionItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="25"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label x:Name="ExerciseTypesLabel"
+                               Grid.Column="0"
+                               BackgroundColor ="{StaticResource PrimaryBackColor}" 
+                               TextColor="{StaticResource PrimaryForeColor}" 
+                               Text="Types" 
+                               FontAttributes="Bold" 
+                               FontSize="Medium" 
+                               HeightRequest="{StaticResource AccordionHeight}" 
+                               VerticalTextAlignment="Center"
+                               HorizontalTextAlignment="Center"
+                               
+                        /> 
+                        <Button x:Name="AddExerciseTypesButton"
+                                Grid.Column="1"
+                                Text="+"
+                                FontAttributes="Bold" 
+                                FontSize="Small" 
+                                HeightRequest="{StaticResource AccordionHeight}" 
+                                VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand"
+                                Clicked="AddTypeOfExerciseButton_OnClicked"
+                        />
+                    </Grid>
+                </accordion:AccordionItem.Header>
+
+                <accordion:AccordionItem.Content>
+                    <CollectionView x:Name="TypeOfExerciseCollectionView"
+                                           x:DataType="viewmodels:ExerciseAddEditViewModel"
+                                           ItemsSource="{Binding TypeOfExercise.Name}" >
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical"
+                                               ItemSpacing="0" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0"
+                        x:DataType="models:TypeOfExercise">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <!--HACK: I needed a reference to the item being deleted.  I tried a few ways.  Nothing worked. So I am setting the Text of the button to the Id of the TypeOfExercise-->
+                        <Button Grid.Column="0"
+                                x:Name="RemoveType"
+                                Text="{Binding Id}"
+                                
+                                ImageSource="Delete.png"
+                                FontSize="Caption"
+                                BackgroundColor="Red"
+                                Padding="0"
+                                HeightRequest="{StaticResource AccordionItemHeight}" 
+                                WidthRequest="{StaticResource AccordionItemButtonWidth}"
+                                VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand"
+                                Clicked="RemoveType_OnClicked"
+                        />
+                        <Label Grid.Column="1"
+                               VerticalOptions="End"
+                               Text="{Binding Name}"
+                               FontSize="Medium" 
+                        />
+                        <!--Command="{Binding Source={RelativeSource AncestorType={x:Type models:TypeOfExercise}}, Path=DeleteCommand}"-->
+                        <!--
+                                HeightRequest="{StaticResource AccordionItemHeight}" 
+                                WidthRequest="{StaticResource AccordionItemButtonWidth}"
+                                
+                                HorizontalOptions="StartAndExpand"-->
+
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </accordion:AccordionItem.Content>
+
+             </accordion:AccordionItem>
+             <accordion:AccordionItem >
+                
+                 <accordion:AccordionItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="25"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label x:Name="EquipmentsLabel"
+                               Grid.Column="0"
+                               BackgroundColor ="{StaticResource PrimaryBackColor}" 
+                               TextColor="{StaticResource PrimaryForeColor}" 
+                               Text="Equipment" 
+                               FontAttributes="Bold" 
+                               FontSize="Medium" 
+                               HeightRequest="{StaticResource AccordionHeight}" 
+                               VerticalTextAlignment="Center"
+                               HorizontalTextAlignment="Center"
+                               
+                        /> 
+                        <Button x:Name="AddEquipmentButton"
+                                Grid.Column="1"
+                                Text="+"
+                                FontAttributes="Bold" 
+                                FontSize="Small" 
+                                HeightRequest="{StaticResource AccordionHeight}" 
+                                VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand"
+                                Clicked="AddEquipmentButton_OnClicked"
+                        />
+                    </Grid>
+                </accordion:AccordionItem.Header>
+
+                <accordion:AccordionItem.Content>
+                    <CollectionView x:Name="EquipmentCollectionView"
+                                           x:DataType="viewmodels:ExerciseAddEditViewModel"
+                                           ItemsSource="{Binding Equipment.Name}" >
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical"
+                                               ItemSpacing="0" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0"
+                        x:DataType="models:Equipment">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Button Grid.Column="0"
+                                x:Name="RemoveEquipment"
+                                Text="{Binding Id}"
+                                
+                                ImageSource="Delete.png"
+                                FontSize="Caption"
+                                BackgroundColor="Red"
+                                Padding="0"
+                                HeightRequest="{StaticResource AccordionItemHeight}" 
+                                WidthRequest="{StaticResource AccordionItemButtonWidth}"
+                                VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand"
+                                Clicked="RemoveEquipment_OnClicked"
+                        />
+                        <Label Grid.Column="1"
+                               VerticalOptions="End"
+                               Text="{Binding Name}"
+                               FontSize="Medium" 
+                        />
+                        
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </accordion:AccordionItem.Content>
+
+             </accordion:AccordionItem>
+
+             <accordion:AccordionItem >
+                
+                 <accordion:AccordionItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="25"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label x:Name="MuscleGroupLabel"
+                               Grid.Column="0"
+                               BackgroundColor ="{StaticResource PrimaryBackColor}" 
+                               TextColor="{StaticResource PrimaryForeColor}" 
+                               Text="Muscle Groups" 
+                               FontAttributes="Bold" 
+                               FontSize="Medium" 
+                               HeightRequest="{StaticResource AccordionHeight}" 
+                               VerticalTextAlignment="Center"
+                               HorizontalTextAlignment="Center"
+                               
+                        /> 
+                        <Button x:Name="AddMuscleGroupButton"
+                                Grid.Column="1"
+                                Text="+"
+                                FontAttributes="Bold" 
+                                FontSize="Small" 
+                                HeightRequest="{StaticResource AccordionHeight}" 
+                                VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand"
+                                Clicked="AddMuscleGroupButton_OnClicked"
+                        />
+                    </Grid>
+                </accordion:AccordionItem.Header>
+                 <!--ItemsSource="{Binding MuscleGroups}"-->
+                <accordion:AccordionItem.Content>
+                    <CollectionView x:Name="MuscleGroupCollectionView"
+                                           x:DataType="viewmodels:MuscleGroupViewModel"
+                    >
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical"
+                                               ItemSpacing="0" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0"
+                          x:DataType="viewmodels:ResolvedSynergistViewModel"
+                          >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <!---->
+                        <Button Grid.Column="0"
+                                x:Name="RemoveMuscleGroup"
+                                Text="{Binding Id}"
+                                
+                                ImageSource="Delete.png"
+                                FontSize="Caption"
+                                BackgroundColor="Red"
+                                Padding="0"
+                                HeightRequest="{StaticResource AccordionItemHeight}" 
+                                WidthRequest="{StaticResource AccordionItemButtonWidth}"
+                                VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand"
+                                Clicked="RemoveMuscleGroup_OnClicked"
+                        />
+                        <Label Grid.Column="1"
+                               VerticalOptions="End"
+                               Text="{Binding PrimaryMuscleGroup.Name}"
+                               FontSize="Medium" 
+                        />
+                        <Label Grid.Column="2"
+                               VerticalOptions="End"
+                               Text="&lt;Opposes&gt;"
+                               FontSize="Medium"
+                        />
+                        <Label Grid.Column="3"
+                               VerticalOptions="End"
+                               Text="{Binding OpposingMuscleGroup.Name}"
+                               FontSize="Medium"
+                        />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </accordion:AccordionItem.Content>
+
+             </accordion:AccordionItem>
+          </accordion:SfAccordion.Items>
+        </accordion:SfAccordion>
     </StackLayout>
 </ContentPage>

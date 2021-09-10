@@ -30,7 +30,7 @@ namespace PersonalTrainerWorkouts.Views
             }
             catch (Exception e)
             {
-                Logger.WriteLine("Failed to load Workout.", Category.Error, e);
+                Logger.WriteLine("Failed to load Exercises.", Category.Error, e);
                 //BENDO: consider implementing a page that shows exception details
             }
         }

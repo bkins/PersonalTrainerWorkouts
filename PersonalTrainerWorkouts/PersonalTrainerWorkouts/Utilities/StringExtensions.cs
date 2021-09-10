@@ -11,7 +11,7 @@ namespace PersonalTrainerWorkouts.Utilities
             return string.IsNullOrEmpty(value) 
                 || string.IsNullOrWhiteSpace(value);
         }
-
+        
         /// <summary>
         /// "HasValue" means the string is:
         ///     NOT Null,

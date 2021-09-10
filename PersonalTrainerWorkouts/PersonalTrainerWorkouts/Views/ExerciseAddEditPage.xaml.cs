@@ -1,12 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Web;
+using System.Windows.Input;
 using ApplicationExceptions;
 using Xamarin.Forms;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
+using Syncfusion.XForms.Accordion;
 
 namespace PersonalTrainerWorkouts.Views
 {
@@ -22,7 +25,9 @@ namespace PersonalTrainerWorkouts.Views
         public  string                   InitialLengthOfTime { get; set; }
         public  int                      InitialReps         { get; set; }
         private Entry                    NameEntry           { get; set; }
-        
+        public  List<TypeOfExercise>     TypesOfExerciseList { get; set; }
+        public  ICommand                 DeleteCommand       { get; }
+
         public void ApplyQueryAttributes(IDictionary<string, string> query)
         {
             try
@@ -49,16 +54,22 @@ namespace PersonalTrainerWorkouts.Views
             {
                 if (ViewModel != null)
                 {
-                    InitialName         = ViewModel.Exercise?.Name;
-                    InitialDescription  = ViewModel.Exercise?.Description;
-                    InitialLengthOfTime = ViewModel.Exercise?.LengthOfTime;
+                    InitialName              = ViewModel.Exercise?.Name;
+                    InitialDescription       = ViewModel.Exercise?.Description;
+                    InitialLengthOfTime      = ViewModel.Exercise?.LengthOfTime;
+                    TypesOfExerciseList      = ViewModel.TypesOfExerciseList;
 
-                    BindingContext = ViewModel;
+                    BindingContext                           = ViewModel;
+                    TypeOfExerciseCollectionView.ItemsSource = ViewModel.TypesOfExerciseList;
+                    EquipmentCollectionView.ItemsSource      = ViewModel.EquipmentList;
+                    
+                    var muscleGroupViewModel = new MuscleGroupViewModel(ExerciseId);
+                    MuscleGroupCollectionView.ItemsSource = muscleGroupViewModel.Synergists.Where(field=>field.Exercise.Id == int.Parse(ExerciseId));
                 }
             }
             catch (Exception e)
             {
-                Logger.WriteLine("Failed to load Workout.", Category.Error, e);
+                Logger.WriteLine("Failed to load Exercise.", Category.Error, e);
                 //BENDO: consider implementing a page that shows exception details
             }
         }
@@ -70,14 +81,21 @@ namespace PersonalTrainerWorkouts.Views
 
             ViewModel      = new ExerciseAddEditViewModel();
             BindingContext = ViewModel;
+            
         }
         
+        /// <summary>
+        /// Used to Update the Exercise anytime the Name, Description, LengthOfTime, or Reps are changed.
+        /// </summary>
         private void UpdateExercise()
         {
             ViewModel.Exercise = GetContextExercise();
             ViewModel.UpdateExercise();
         }
 
+        /// <summary>
+        /// Used to save a new Exercise
+        /// </summary>
         private void SaveExercise()
         {
             ViewModel.Exercise = GetContextExercise();
@@ -92,14 +110,16 @@ namespace PersonalTrainerWorkouts.Views
             catch (AttemptToAddDuplicateEntityException e)
             {
                 Logger.WriteLine($"An exercise with the name {ViewModel.Exercise.Name} already exists.  Please either add that exercise or use a different name."
-                               , Category.Warning
+                               , Category.Error
                                , e);
 
                 NameEntry.Focus();
             }
             catch (UnnamedEntityException e)
             {
-                Logger.WriteLine("An exercise must have a name to save.", Category.Warning, e);
+                Logger.WriteLine("An exercise must have a name to save.", Category.Error, e);
+                
+                NameEntry.Focus();
             }
         }
 
@@ -171,6 +191,57 @@ namespace PersonalTrainerWorkouts.Views
             }
 
             await PageNavigation.NavigateBackwards();
+        }
+
+        private async void AddTypeOfExerciseButton_OnClicked(object    sender
+                                                    , EventArgs e)
+        {
+            await PageNavigation.NavigateTo(nameof(TypeOfExerciseListPage)
+                                          , nameof(TypeOfExerciseListPage.ExerciseId)
+                                          , ExerciseId);
+        }
+
+        private void RemoveType_OnClicked(object    sender
+                                        , EventArgs e)
+        {
+            var itemToDelete = (Button)sender;
+            ViewModel.DeleteExerciseType(int.Parse(itemToDelete.Text));
+            
+            TypeOfExerciseCollectionView.ItemsSource = ViewModel.TypesOfExerciseList;
+        }
+
+        private async void AddEquipmentButton_OnClicked(object    sender
+                                                , EventArgs e)
+        {
+            await PageNavigation.NavigateTo(nameof(EquipmentListPage)
+                                          , nameof(EquipmentListPage.ExerciseId)
+                                          , ExerciseId);
+        }
+        
+        private async void AddMuscleGroupButton_OnClicked(object    sender
+                                                  , EventArgs e)
+        {
+            await PageNavigation.NavigateTo(nameof(MuscleGroupListPage)
+                                          , nameof(MuscleGroupListPage.ExerciseId)
+                                          , ExerciseId);
+        }
+
+        private void RemoveEquipment_OnClicked(object    sender
+                                             , EventArgs e)
+        {
+            var itemToDelete = (Button)sender;
+            ViewModel.DeleteExerciseEquipment(int.Parse(itemToDelete.Text));
+            
+            EquipmentCollectionView.ItemsSource      = ViewModel.EquipmentList;
+        }
+
+        private void RemoveMuscleGroup_OnClicked(object    sender
+                                               , EventArgs e)
+        {
+            var itemToDelete = (Button)sender;
+            ViewModel.DeleteExerciseMuscleGroup(int.Parse(itemToDelete.Text));
+
+            MuscleGroupCollectionView.ItemsSource = ViewModel.MuscleGroupsList;
         }
     }
 }
