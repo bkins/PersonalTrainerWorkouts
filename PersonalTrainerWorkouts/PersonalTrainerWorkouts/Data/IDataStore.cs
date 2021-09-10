@@ -8,12 +8,6 @@ namespace PersonalTrainerWorkouts.Data
     public interface IDataStore
     {
         //Adds
-        /// <summary>
-        /// Will attempt to look in the workout object for any children (Exercises, Types, MuscleGroups, OpposingMuscleGroups)
-        /// and insert those children into the database 
-        /// </summary>
-        /// <param name="workout"></param>
-        void AddCompleteWorkout    (Workout            workout);
         
         /// <summary>
         /// Will just add the workout passed in, not any children.
@@ -22,19 +16,15 @@ namespace PersonalTrainerWorkouts.Data
         int AddJustOneWorkout           (Workout                    workout);
         void AddExercise                (Exercise                   exercise);
         int  AddJustOneExercise         (Exercise                   exercise);
-        void AddMuscleGroupWithOpposing (MuscleGroup                muscleGroup
-                                       , MuscleGroup                opposingMuscleGroup);
-        void AddMuscleGroups            (MuscleGroup                muscleGroup);
+        void AddSynergist               (Synergist                  synergist);
         int  AddJustOneMuscleGroup      (MuscleGroup                muscleGroup);
-        int  AddOpposingMuscleGroup     (int                        muscleGroupId
-                                       , int                        opposingMuscleGroupId);
-        void AddMuscleGroupWithOpposing(ExerciseMuscleGroup         exerciseMuscleGroup);
         void AddExerciseType            (ExerciseType               exerciseType);
         int  AddJustOneTypeOfExercise   (TypeOfExercise             typeOfExercise);
         int  AddType                    (TypeOfExercise             exerciseType);
         void AddExerciseEquipment       (ExerciseEquipment          exerciseEquipment);
         int  AddEquipment               (Equipment                  equipment);
         int  AddJustOneEquipment        (Equipment                  equipment);
+        void AddExerciseMuscleGroup     (ExerciseMuscleGroup        exerciseMuscleGroup);
         int  AddWorkoutExercise         (WorkoutExercise            workoutExercise);
         int  AddLinkedWorkoutExercise   (LinkedWorkoutsToExercises  linkedWorkoutsExercises);
         
@@ -87,7 +77,8 @@ namespace PersonalTrainerWorkouts.Data
         MuscleGroup                      GetMuscleGroup                       (int  muscleGroupId);
         IEnumerable<MuscleGroup>         GetMuscleGroups                      (bool forceRefresh = false);
         OpposingMuscleGroup              GetOpposingMuscleGroup               (int  opposingMuscleGroupId);
-        OpposingMuscleGroup              GetOpposingMuscleGroupByMuscleGroup  (int exerciseId);
+        MuscleGroup                      GetOpposingMuscleGroupByMuscleGroup  (int  muscleGroupId);
+        IEnumerable<Synergist>           GetSynergists                        (bool forceRefresh = false);
         IEnumerable<OpposingMuscleGroup> GetOpposingMuscleGroups              (bool forceRefresh = false);
         TypeOfExercise                   GetTypeOfExercise                    (int  typeOfExerciseId);
         IEnumerable<ExerciseType>        GetExerciseTypes                     (bool forceRefresh = false);
@@ -103,6 +94,7 @@ namespace PersonalTrainerWorkouts.Data
 
         void                CreateTables();
         void                DropTables();
+
         
     }
 }

@@ -21,6 +21,7 @@ namespace PersonalTrainerWorkouts
             Routing.RegisterRoute(nameof(TypeOfExerciseEntryPage),   typeof(TypeOfExerciseEntryPage));
             Routing.RegisterRoute(nameof(TypeOfExerciseListPage),    typeof(TypeOfExerciseListPage));
             Routing.RegisterRoute(nameof(EquipmentListPage),         typeof(EquipmentListPage));
+            Routing.RegisterRoute(nameof(MuscleGroupListPage),       typeof(MuscleGroupListPage));
         }
 
     }

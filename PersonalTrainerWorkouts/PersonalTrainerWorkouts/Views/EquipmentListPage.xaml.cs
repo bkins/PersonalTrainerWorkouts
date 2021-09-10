@@ -68,7 +68,6 @@ namespace PersonalTrainerWorkouts.Views
                 ViewModel.SelectedEquipment = selected;
 
                 await TryToSaveExerciseEquipment();
-                
             }
         }
 
@@ -80,7 +79,7 @@ namespace PersonalTrainerWorkouts.Views
 
                 await PageNavigation.NavigateBackwards();
             }
-            catch (ExerciseTypeRelationAlreadyExistsException alreadyExistsException)
+            catch (EntityRelationAlreadyExistsException alreadyExistsException)
             {
                 await DisplayAlert(Category.Warning.ToString()
                                  , alreadyExistsException.Message

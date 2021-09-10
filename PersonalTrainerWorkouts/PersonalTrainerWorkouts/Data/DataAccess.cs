@@ -49,11 +49,11 @@ namespace PersonalTrainerWorkouts.Data
                 workout.Exercises.Add(GetExercise(workoutsToExercise.ExerciseId));
             }
 
-            bool exerciseHasAnyMuscleGroups = workout.Exercises.Any(field => field.MuscleGroups.Any());
+            bool exerciseHasAnySynergists = workout.Exercises.Any(field => field.Synergists.Any());
             bool exerciseHasAnyEquipment    = workout.Exercises.Any(field => ! field.Equipment.Any());
             bool exerciseHasAnyTypes        = workout.Exercises.Any(field => ! field.TypesOfExercise.Any());
 
-            if (! exerciseHasAnyMuscleGroups
+            if (! exerciseHasAnySynergists
              && ! exerciseHasAnyEquipment
              && ! exerciseHasAnyTypes)
             {
@@ -61,7 +61,7 @@ namespace PersonalTrainerWorkouts.Data
                 return workout;
             }
 
-            if (exerciseHasAnyMuscleGroups)
+            if (exerciseHasAnySynergists)
             {
                 var listOfExercisesWithMuscleGroups = new List<Exercise>();
                 foreach (var exercise in workout.Exercises)
@@ -107,7 +107,7 @@ namespace PersonalTrainerWorkouts.Data
 
             if (existingExerciseTypes.Any())
             {
-                throw new ApplicationExceptions.ExerciseTypeRelationAlreadyExistsException("You cannot add an Exercise Type that is already associated with this Exercise.\r\nPlease select different type.");
+                throw new ApplicationExceptions.EntityRelationAlreadyExistsException("You cannot add an Exercise Type that is already associated with this Exercise.\r\nPlease select different type.");
             }
 
             Database.AddExerciseType(new ExerciseType
@@ -121,12 +121,12 @@ namespace PersonalTrainerWorkouts.Data
                                        , int equipmentId)
         {
             var existingExerciseEquipment = Database.GetExerciseEquipments()
-                                                    .Where((field => field.ExerciseId == exerciseId 
-                                                                  && field.EquipmentId == equipmentId));
+                                                    .Where(field => field.ExerciseId  == exerciseId 
+                                                                 && field.EquipmentId == equipmentId);
 
             if (existingExerciseEquipment.Any())
             {
-                throw new ApplicationExceptions.ExerciseTypeRelationAlreadyExistsException("You cannot add Equipment that is already associated with this Exercise.\r\nPlease select different equipment.");
+                throw new ApplicationExceptions.EntityRelationAlreadyExistsException("You cannot add Equipment that is already associated with this Exercise.\r\nPlease select different equipment.");
             }
 
             Database.AddExerciseEquipment(new ExerciseEquipment
@@ -134,6 +134,25 @@ namespace PersonalTrainerWorkouts.Data
                                               ExerciseId  = exerciseId
                                             , EquipmentId = equipmentId
                                           });
+        }
+        
+        public void AddExerciseMuscleGroup(int exerciseId
+                                         , int muscleGroupId)
+        {
+            var existingExerciseMuscleGroup = Database.GetExerciseMuscleGroups()
+                                                      .Where(field => field.ExerciseId    == exerciseId 
+                                                                   && field.MuscleGroupId == muscleGroupId);
+
+            if (existingExerciseMuscleGroup.Any())
+            {
+                throw new ApplicationExceptions.EntityRelationAlreadyExistsException("You cannot add Muscle Group that is already associated with this Exercise.\r\nPlease select different muscle group.");
+            }
+
+            Database.AddExerciseMuscleGroup(new ExerciseMuscleGroup
+                                            {
+                                                ExerciseId    = exerciseId
+                                              , MuscleGroupId = muscleGroupId
+                                            });
         }
 
         public int AddNewExercise(Exercise exercise)
@@ -168,24 +187,25 @@ namespace PersonalTrainerWorkouts.Data
 
             return Database.AddJustOneMuscleGroup(muscleGroup);
         }
-
-        public int AddNewOpposingMuscleGroupRelationship(int muscleGroupId
-                                                       , int opposingMuscleGroupId)
+        
+        public void AddSynergist(Synergist newSynergist)
         {
-            return Database.AddOpposingMuscleGroup(muscleGroupId
-                                                 , opposingMuscleGroupId);
-        }
+            var existingSynergist = Database.GetSynergists()
+                                            .Where(field => field.ExerciseId == newSynergist.ExerciseId 
+                                                         && field.MuscleGroupId == newSynergist.MuscleGroupId 
+                                                         && field.OpposingMuscleGroupId == newSynergist.OpposingMuscleGroupId);
 
-        public int AddNewOpposingMuscleGroupRelationship(MuscleGroup muscleGroup
-                                                       , MuscleGroup opposingMuscleGroup)
-        {
-            
-            var muscleGroupId         = AddNewMuscleGroup(muscleGroup);
-            var opposingMuscleGroupId = AddNewMuscleGroup(opposingMuscleGroup);
+            if (existingSynergist.Any())
+            {
+                throw new ApplicationExceptions.EntityRelationAlreadyExistsException("You cannot add this Synergist.\r\nIt already exists in this Exercise\r\nPlease select/Add a different Synergist.");
+            }
 
-            return AddNewOpposingMuscleGroupRelationship(muscleGroupId
-                                                       , opposingMuscleGroupId);
-
+            Database.AddSynergist(new Synergist
+                                  {
+                                      ExerciseId            = newSynergist.ExerciseId
+                                    , MuscleGroupId         = newSynergist.MuscleGroupId
+                                    , OpposingMuscleGroupId = newSynergist.OpposingMuscleGroupId
+                                  });
         }
 
         public int AddWorkoutExercise(WorkoutExercise workoutExercise)
@@ -262,13 +282,28 @@ namespace PersonalTrainerWorkouts.Data
             return Database.GetExerciseEquipments() ?? new List<ExerciseEquipment>();
         }
 
+        public IEnumerable<Synergist> GetAllSynergists(bool forceRefresh = false)
+        {
+            return Database.GetSynergists() ?? new List<Synergist>();
+        }
+        public IEnumerable<ExerciseMuscleGroup> GetAllExerciseMuscleGroups()
+        {
+            return Database.GetExerciseMuscleGroups() ?? new List<ExerciseMuscleGroup>();
+        }
+
         public IEnumerable<Equipment> GetAllEquipment()
         {
             return Database.GetAllEquipment() ?? new List<Equipment>();
         }
-        public OpposingMuscleGroup GetOpposingMuscleGroupByMuscleGroup(int exerciseId)
+        
+        public IEnumerable<MuscleGroup> GetAllMuscleGroups()
         {
-            return Database.GetOpposingMuscleGroupByMuscleGroup(exerciseId);
+            return Database.GetMuscleGroups() ?? new List<MuscleGroup>();
+        }
+
+        public MuscleGroup GetOpposingMuscleGroupByMuscleGroup(int muscleGroupId)
+        {
+            return Database.GetOpposingMuscleGroupByMuscleGroup(muscleGroupId);
         }
 
     #endregion
@@ -317,6 +352,16 @@ namespace PersonalTrainerWorkouts.Data
                                                          && field.EquipmentId == equipmentId);
 
             Database.DeleteExerciseEquipment(ref equipmentToDelete);
+        }
+
+        public void DeleteExerciseMuscleGroup(int exerciseId
+                                            , int muscleGroupId)
+        {
+            var muscleGroupToDelete = Database.GetExerciseMuscleGroups()
+                                              .First(field => field.ExerciseId == exerciseId 
+                                                           && field.MuscleGroupId == muscleGroupId);
+
+            Database.DeleteExerciseMuscleGroup(ref muscleGroupToDelete);
         }
 
     #endregion

@@ -21,8 +21,7 @@ namespace PersonalTrainerWorkouts.Utilities
             }
             catch (Exception e)
             {
-                Console.WriteLine(e);
-
+                Logger.WriteLine($"Could not navigate to page: {nameOfPage}, because {e.Message}", Category.Error, e);
                 throw;
             }
         }

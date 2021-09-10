@@ -282,39 +282,97 @@
                 </accordion:AccordionItem.Content>
 
              </accordion:AccordionItem>
-             <accordion:AccordionItem>
-                  <accordion:AccordionItem.Header>
-                      <Grid>
-                          <Grid.ColumnDefinitions>
-                              <ColumnDefinition Width="*"/>
-                              <ColumnDefinition Width="25"/>
-                          </Grid.ColumnDefinitions>
-                          <Label x:Name="MuscleGroupsLabel"
-                                 Grid.Column="0"
-                                 BackgroundColor ="{StaticResource PrimaryBackColor}" 
-                                 TextColor="{StaticResource PrimaryForeColor}" 
-                                 Text="Muscle Groups" 
-                                 FontAttributes="Bold" 
-                                 FontSize="Medium" 
-                                 HeightRequest="{StaticResource AccordionHeight}" 
-                                 VerticalTextAlignment="Center"
-                                 HorizontalTextAlignment="Center"
-                          /> 
-                          <Button x:Name="AddMuscleGroupsButton"
-                                  Grid.Column="1"
-                                  Text="+"
-                                  FontAttributes="Bold" 
-                                  FontSize="Small" 
-                                  HeightRequest="{StaticResource AccordionHeight}" 
-                                  VerticalOptions="FillAndExpand"
-                                  HorizontalOptions="FillAndExpand"
-                          />
-                      </Grid>
-                  </accordion:AccordionItem.Header>
-                  <accordion:AccordionItem.Content>
-                      <Label Text="Muscle Group &lt;&gt; Opposing Muscle Group"/>
-                  </accordion:AccordionItem.Content>
-              </accordion:AccordionItem>
+
+             <accordion:AccordionItem >
+                
+                 <accordion:AccordionItem.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="25"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label x:Name="MuscleGroupLabel"
+                               Grid.Column="0"
+                               BackgroundColor ="{StaticResource PrimaryBackColor}" 
+                               TextColor="{StaticResource PrimaryForeColor}" 
+                               Text="Muscle Groups" 
+                               FontAttributes="Bold" 
+                               FontSize="Medium" 
+                               HeightRequest="{StaticResource AccordionHeight}" 
+                               VerticalTextAlignment="Center"
+                               HorizontalTextAlignment="Center"
+                               
+                        /> 
+                        <Button x:Name="AddMuscleGroupButton"
+                                Grid.Column="1"
+                                Text="+"
+                                FontAttributes="Bold" 
+                                FontSize="Small" 
+                                HeightRequest="{StaticResource AccordionHeight}" 
+                                VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand"
+                                Clicked="AddMuscleGroupButton_OnClicked"
+                        />
+                    </Grid>
+                </accordion:AccordionItem.Header>
+                 <!--ItemsSource="{Binding MuscleGroups}"-->
+                <accordion:AccordionItem.Content>
+                    <CollectionView x:Name="MuscleGroupCollectionView"
+                                           x:DataType="viewmodels:MuscleGroupViewModel"
+                    >
+                        <CollectionView.ItemsLayout>
+                            <LinearItemsLayout Orientation="Vertical"
+                                               ItemSpacing="0" />
+                        </CollectionView.ItemsLayout>
+                        <CollectionView.ItemTemplate>
+                <DataTemplate>
+                    <Grid Padding="0"
+                          x:DataType="viewmodels:ResolvedSynergistViewModel"
+                          >
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <!---->
+                        <Button Grid.Column="0"
+                                x:Name="RemoveMuscleGroup"
+                                Text="{Binding Id}"
+                                
+                                ImageSource="Delete.png"
+                                FontSize="Caption"
+                                BackgroundColor="Red"
+                                Padding="0"
+                                HeightRequest="{StaticResource AccordionItemHeight}" 
+                                WidthRequest="{StaticResource AccordionItemButtonWidth}"
+                                VerticalOptions="FillAndExpand"
+                                HorizontalOptions="FillAndExpand"
+                                Clicked="RemoveMuscleGroup_OnClicked"
+                        />
+                        <Label Grid.Column="1"
+                               VerticalOptions="End"
+                               Text="{Binding PrimaryMuscleGroup.Name}"
+                               FontSize="Medium" 
+                        />
+                        <Label Grid.Column="2"
+                               VerticalOptions="End"
+                               Text="&lt;Opposes&gt;"
+                               FontSize="Medium"
+                        />
+                        <Label Grid.Column="3"
+                               VerticalOptions="End"
+                               Text="{Binding OpposingMuscleGroup.Name}"
+                               FontSize="Medium"
+                        />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+                    </CollectionView>
+                </accordion:AccordionItem.Content>
+
+             </accordion:AccordionItem>
           </accordion:SfAccordion.Items>
         </accordion:SfAccordion>
     </StackLayout>

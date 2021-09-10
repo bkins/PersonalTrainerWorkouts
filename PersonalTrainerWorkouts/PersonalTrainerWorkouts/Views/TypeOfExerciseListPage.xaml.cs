@@ -118,7 +118,7 @@ namespace PersonalTrainerWorkouts.Views
             {
                 ViewModel.SaveExerciseType(int.Parse(ExerciseId));
             }
-            catch (ExerciseTypeRelationAlreadyExistsException alreadyExistsException)
+            catch (EntityRelationAlreadyExistsException alreadyExistsException)
             {
                 await DisplayAlert(Category.Warning.ToString()
                                  , alreadyExistsException.Message

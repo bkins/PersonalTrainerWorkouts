@@ -11,18 +11,16 @@ namespace PersonalTrainerWorkouts.Models
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
         
+        //public MuscleGroup OpposingMuscleGroup { get; set; }
+
         public MuscleGroup()
         {
-            Exercises = new List<Exercise>();
+            //Exercises = new List<Exercise>();
         }
         
-        [ManyToMany(typeof(ExerciseMuscleGroup), CascadeOperations = CascadeOperation.All)]
-        public List<Exercise> Exercises { get; set; }
+        //[ManyToMany(typeof(ExerciseMuscleGroup), CascadeOperations = CascadeOperation.All)]
+        //public List<Exercise> Exercises { get; set; }
         
-        [ForeignKey(typeof(OpposingMuscleGroup))]
-        public int OpposingMuscleGroupId { get; set; }
-        
-        [OneToOne]
-        public OpposingMuscleGroup OpposingMuscleGroup { get; set; }
+        //public MuscleGroup OpposingMuscleGroup { get; set; }
     }
 }

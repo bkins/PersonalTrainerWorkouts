@@ -25,7 +25,9 @@ namespace PersonalTrainerWorkouts.ViewModels
         public ObservableCollection<Equipment> Equipments    { get; set; }
         public List<Equipment>                 EquipmentList { get; set; }
 
-        public IEnumerable<MuscleGroup>        MuscleGroups  { get; set; }
+        public MuscleGroup                       MuscleGroup      { get; set; }
+        public ObservableCollection<MuscleGroup> MuscleGroups     { get; set; }
+        public List<MuscleGroup>                 MuscleGroupsList { get; set; }
 
         public ExerciseAddEditViewModel()
         {
@@ -45,48 +47,42 @@ namespace PersonalTrainerWorkouts.ViewModels
 
             LoadTheTypesOfExercise();
             LoadTheEquipment();
+            LoadTheMuscleGroups();
         }
 
         private void LoadTheEquipment()
         {
-            //var rack = new Equipment
-            //           {
-            //               Name = "Rack"
-            //           };
-
-            //var dumbBells = new Equipment
-            //                {
-            //                    Name = "Dumb Bells"
-            //                };
-
-            //var rackId      = DataAccessLayer.AddNewEquipment(rack);
-            //var dumbBellsId = DataAccessLayer.AddNewEquipment(dumbBells);
-
-            //var theRackToAdd = DataAccessLayer.GetAllEquipment()
-            //                                  .First(field => field.Id == rackId);
-
-            //var theDumbBellsToAdd = DataAccessLayer.GetAllEquipment()
-            //                                       .First(field => field.Id == dumbBellsId);
-
-            //Exercise.Equipment.Add(theRackToAdd);
-            //Exercise.Equipment.Add(theDumbBellsToAdd);
-
-            //DataAccessLayer.UpdateExercise(Exercise);
-
             var exerciseEquipment = DataAccessLayer.GetAllExerciseEquipment()
                                                    .Where(field => field.ExerciseId == Exercise.Id);
 
-            var allTEquipment = DataAccessLayer.GetAllEquipment();
+            var allEquipment = DataAccessLayer.GetAllEquipment();
 
             var equipment = new ObservableCollection<Equipment>
                                 (
-                                    exerciseEquipment.Select(oneEquipment => allTEquipment.First(field => field.Id == oneEquipment.EquipmentId))
+                                    exerciseEquipment.Select(oneEquipment => allEquipment.First(field => field.Id == oneEquipment.EquipmentId))
                                                      .ToList()
                                 );
 
             Equipments    = equipment;
             EquipmentList = equipment.ToList();
 
+        }
+
+        private void LoadTheMuscleGroups()
+        {
+            var exerciseMuscleGroup = DataAccessLayer.GetAllExerciseMuscleGroups()
+                                                     .Where(field => field.ExerciseId == Exercise.Id);
+
+            var allMuscleGroups = DataAccessLayer.GetAllMuscleGroups();
+
+            var muscleGroup = new ObservableCollection<MuscleGroup>
+                                  (
+                                      exerciseMuscleGroup.Select(oneMuscleGroup => allMuscleGroups.First(field => field.Id == oneMuscleGroup.MuscleGroupId))
+                                                         .ToList()
+                                  );
+
+            MuscleGroups     = muscleGroup;
+            MuscleGroupsList = muscleGroup.ToList();
         }
 
         private void LoadTheTypesOfExercise()
@@ -111,27 +107,19 @@ namespace PersonalTrainerWorkouts.ViewModels
             DataAccessLayer.UpdateExercise(Exercise);
         }
 
+        //BENDO: The workoutId, I would presume, is known (Workout property has an instance?). If that is the case, then instead of passing in the workoutId, get it from Workout.Id
         public void SaveExercise(int workoutId)
         {
-            try
-            {
-                if (string.IsNullOrWhiteSpace(Exercise.Name))
-                    throw new UnnamedEntityException($"{nameof(Exercise)} was not named.  Must be named before attempting to save.");
-                
-                AddExerciseToWorkout(workoutId);
+            if (string.IsNullOrWhiteSpace(Exercise.Name))
+                throw new UnnamedEntityException($"{nameof(Exercise)} was not named.  Must be named before attempting to save.");
+            
+            AddExerciseToWorkout(workoutId);
 
-                var workoutExercise = CreateNewWorkoutsToExercise(workoutId);
+            var workoutExercise = CreateNewWorkoutsToExercise(workoutId);
 
-                var workoutExerciseId = DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise);
+            var workoutExerciseId = DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise);
 
-                ValidateWorkoutsToExerciseWasAdded(workoutExerciseId);
-            }
-            catch (Exception e)
-            {
-                Logger.WriteLine(e.Message, Category.Error, e);
-
-                throw;
-            }
+            ValidateWorkoutsToExerciseWasAdded(workoutExerciseId);
         }
 
         private LinkedWorkoutsToExercises CreateNewWorkoutsToExercise(int workoutId)
@@ -173,6 +161,14 @@ namespace PersonalTrainerWorkouts.ViewModels
             DataAccessLayer.DeleteExerciseEquipment(Exercise.Id
                                                   , itemToDeleteId);
             LoadTheEquipment();
+        }
+
+        public void DeleteExerciseMuscleGroup(int itemToDeleteId)
+        {
+            DataAccessLayer.DeleteExerciseMuscleGroup(Exercise.Id
+                                                    , itemToDeleteId);
+
+            LoadTheMuscleGroups();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Web;
 using System.Windows.Input;
 using ApplicationExceptions;
@@ -61,6 +62,9 @@ namespace PersonalTrainerWorkouts.Views
                     BindingContext                           = ViewModel;
                     TypeOfExerciseCollectionView.ItemsSource = ViewModel.TypesOfExerciseList;
                     EquipmentCollectionView.ItemsSource      = ViewModel.EquipmentList;
+                    
+                    var muscleGroupViewModel = new MuscleGroupViewModel(ExerciseId);
+                    MuscleGroupCollectionView.ItemsSource = muscleGroupViewModel.Synergists.Where(field=>field.Exercise.Id == int.Parse(ExerciseId));
                 }
             }
             catch (Exception e)
@@ -80,12 +84,18 @@ namespace PersonalTrainerWorkouts.Views
             
         }
         
+        /// <summary>
+        /// Used to Update the Exercise anytime the Name, Description, LengthOfTime, or Reps are changed.
+        /// </summary>
         private void UpdateExercise()
         {
             ViewModel.Exercise = GetContextExercise();
             ViewModel.UpdateExercise();
         }
 
+        /// <summary>
+        /// Used to save a new Exercise
+        /// </summary>
         private void SaveExercise()
         {
             ViewModel.Exercise = GetContextExercise();
@@ -100,14 +110,16 @@ namespace PersonalTrainerWorkouts.Views
             catch (AttemptToAddDuplicateEntityException e)
             {
                 Logger.WriteLine($"An exercise with the name {ViewModel.Exercise.Name} already exists.  Please either add that exercise or use a different name."
-                               , Category.Warning
+                               , Category.Error
                                , e);
 
                 NameEntry.Focus();
             }
             catch (UnnamedEntityException e)
             {
-                Logger.WriteLine("An exercise must have a name to save.", Category.Warning, e);
+                Logger.WriteLine("An exercise must have a name to save.", Category.Error, e);
+                
+                NameEntry.Focus();
             }
         }
 
@@ -205,6 +217,14 @@ namespace PersonalTrainerWorkouts.Views
                                           , nameof(EquipmentListPage.ExerciseId)
                                           , ExerciseId);
         }
+        
+        private async void AddMuscleGroupButton_OnClicked(object    sender
+                                                  , EventArgs e)
+        {
+            await PageNavigation.NavigateTo(nameof(MuscleGroupListPage)
+                                          , nameof(MuscleGroupListPage.ExerciseId)
+                                          , ExerciseId);
+        }
 
         private void RemoveEquipment_OnClicked(object    sender
                                              , EventArgs e)
@@ -213,6 +233,15 @@ namespace PersonalTrainerWorkouts.Views
             ViewModel.DeleteExerciseEquipment(int.Parse(itemToDelete.Text));
             
             EquipmentCollectionView.ItemsSource      = ViewModel.EquipmentList;
+        }
+
+        private void RemoveMuscleGroup_OnClicked(object    sender
+                                               , EventArgs e)
+        {
+            var itemToDelete = (Button)sender;
+            ViewModel.DeleteExerciseMuscleGroup(int.Parse(itemToDelete.Text));
+
+            MuscleGroupCollectionView.ItemsSource = ViewModel.MuscleGroupsList;
         }
     }
 }
