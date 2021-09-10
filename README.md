@@ -12,7 +12,7 @@ General notes while viewing the code:
 
 General TODOs:
 
-Current state:  Most of the Viewing/Editing/Adding of Workouts and Exercises, and the relationship between them, is working.  I will have the user review and confirm.  
+Current state:  Most of the Viewing/Editing/Adding of Workouts, Exercises,  Exercise Types, Equipment, and Muscle Groups and the relationship between them, is working.  I will have the user review and confirm.  
 
  1. Since this is a learning project, there has been a lot of exploration.  So I have not followed my normal rules for myself.  Most of this has been rectified, but more to do.
 
