@@ -11,13 +11,12 @@ namespace PersonalTrainerWorkouts.ViewModels
     /// </summary>
     public class ExistingExerciseList : SfPicker
     {
-        public ObservableCollection<Exercise> ExercisesList       { get; set; }
-        public bool                           IsShowHeader        { get; set; }
-        public bool                           IsShowColumnHeader  { get; set; }
-        public bool                           IsEnableAutoReverse { get; set; }
-        public bool                           IsEnableBorderColor { get; set; }
+        public ObservableCollection<Exercise> ExercisesList              { get; set; }
+        public bool                           IsShowHeader               { get; set; }
+        public bool                           IsShowColumnHeader         { get; set; }
+        public bool                           IsEnableAutoReverse        { get; set; }
+        public bool                           IsEnableBorderColor        { get; set; }
         public ObservableCollection<string>   ColumnHeaderTextCollection { get; set; }
         public string                         Name                       { get; set; }
-
     }
 }

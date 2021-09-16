@@ -10,8 +10,11 @@ namespace PersonalTrainerWorkouts.ViewModels
         public string   Description       { get; set; }
         public string   LengthOfTime      { get; set; }
         public int      Reps              { get; set; }
-        
-        public ExerciseViewModel(int workoutExerciseId, int exerciseId, string lengthOfTime, int reps)
+
+        public ExerciseViewModel(int    workoutExerciseId
+                               , int    exerciseId
+                               , string lengthOfTime
+                               , int    reps)
         {
             WorkoutExerciseId = workoutExerciseId;
             Exercise          = DataAccessLayer.GetExercise(exerciseId);
@@ -20,6 +23,5 @@ namespace PersonalTrainerWorkouts.ViewModels
             LengthOfTime      = lengthOfTime;
             Reps              = reps;
         }
-        
     }
 }

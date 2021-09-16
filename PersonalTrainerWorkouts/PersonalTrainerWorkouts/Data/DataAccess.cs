@@ -13,7 +13,7 @@ namespace PersonalTrainerWorkouts.Data
         {
             Database = database;
         }
-        
+
         public void CreateTables()
         {
             Database.CreateTables();
@@ -24,6 +24,10 @@ namespace PersonalTrainerWorkouts.Data
             Database.DropTables();
         }
 
+        public string GetDatabasePath()
+        {
+            return Database.DbPath();
+        }
         //NotImplemented: This method is INCOMPLETE.
         //This method is to complete the Gets in the (Database class) that take the param of 'forceRefresh' that return a Workout
         //BENDO: Instead of having this method rebuild all object within the Workout, have a 'Refresh" method for each object that can be in
@@ -50,8 +54,8 @@ namespace PersonalTrainerWorkouts.Data
             }
 
             bool exerciseHasAnySynergists = workout.Exercises.Any(field => field.Synergists.Any());
-            bool exerciseHasAnyEquipment    = workout.Exercises.Any(field => ! field.Equipment.Any());
-            bool exerciseHasAnyTypes        = workout.Exercises.Any(field => ! field.TypesOfExercise.Any());
+            bool exerciseHasAnyEquipment  = workout.Exercises.Any(field => ! field.Equipment.Any());
+            bool exerciseHasAnyTypes      = workout.Exercises.Any(field => ! field.TypesOfExercise.Any());
 
             if (! exerciseHasAnySynergists
              && ! exerciseHasAnyEquipment
@@ -64,17 +68,17 @@ namespace PersonalTrainerWorkouts.Data
             if (exerciseHasAnySynergists)
             {
                 var listOfExercisesWithMuscleGroups = new List<Exercise>();
+
                 foreach (var exercise in workout.Exercises)
                 {
                     var opposingMuscleGroup = GetOpposingMuscleGroupByMuscleGroup(exercise.Id);
-                    
                 }
             }
 
             return null;
         }
 
-    #region Adds
+        #region Adds
 
         public int AddNewWorkout(Workout workout)
         {
@@ -97,13 +101,12 @@ namespace PersonalTrainerWorkouts.Data
 
             return Database.AddJustOneTypeOfExercise(typeOfExercise);
         }
-        
+
         public void AddExerciseType(int exerciseId
                                   , int typeOfExerciseId)
         {
             var existingExerciseTypes = Database.GetExerciseTypes()
-                                                .Where(field => field.ExerciseId == exerciseId 
-                                                             && field.TypeId == typeOfExerciseId);
+                                                .Where(field => field.ExerciseId == exerciseId && field.TypeId == typeOfExerciseId);
 
             if (existingExerciseTypes.Any())
             {
@@ -116,13 +119,12 @@ namespace PersonalTrainerWorkouts.Data
                                        , TypeId     = typeOfExerciseId
                                      });
         }
-        
+
         public void AddExerciseEquipment(int exerciseId
                                        , int equipmentId)
         {
             var existingExerciseEquipment = Database.GetExerciseEquipments()
-                                                    .Where(field => field.ExerciseId  == exerciseId 
-                                                                 && field.EquipmentId == equipmentId);
+                                                    .Where(field => field.ExerciseId == exerciseId && field.EquipmentId == equipmentId);
 
             if (existingExerciseEquipment.Any())
             {
@@ -135,13 +137,12 @@ namespace PersonalTrainerWorkouts.Data
                                             , EquipmentId = equipmentId
                                           });
         }
-        
+
         public void AddExerciseMuscleGroup(int exerciseId
                                          , int muscleGroupId)
         {
             var existingExerciseMuscleGroup = Database.GetExerciseMuscleGroups()
-                                                      .Where(field => field.ExerciseId    == exerciseId 
-                                                                   && field.MuscleGroupId == muscleGroupId);
+                                                      .Where(field => field.ExerciseId == exerciseId && field.MuscleGroupId == muscleGroupId);
 
             if (existingExerciseMuscleGroup.Any())
             {
@@ -179,6 +180,7 @@ namespace PersonalTrainerWorkouts.Data
 
         public int AddNewMuscleGroup(MuscleGroup muscleGroup)
         {
+            //Muscle is already in DB at this point
             var allMuscleGroups = Database.GetMuscleGroups();
 
             ValidateForNoDuplicatedNames(muscleGroup.Name
@@ -187,13 +189,11 @@ namespace PersonalTrainerWorkouts.Data
 
             return Database.AddJustOneMuscleGroup(muscleGroup);
         }
-        
+
         public void AddSynergist(Synergist newSynergist)
         {
             var existingSynergist = Database.GetSynergists()
-                                            .Where(field => field.ExerciseId == newSynergist.ExerciseId 
-                                                         && field.MuscleGroupId == newSynergist.MuscleGroupId 
-                                                         && field.OpposingMuscleGroupId == newSynergist.OpposingMuscleGroupId);
+                                            .Where(field => field.ExerciseId == newSynergist.ExerciseId && field.MuscleGroupId == newSynergist.MuscleGroupId && field.OpposingMuscleGroupId == newSynergist.OpposingMuscleGroupId);
 
             if (existingSynergist.Any())
             {
@@ -214,7 +214,7 @@ namespace PersonalTrainerWorkouts.Data
 
             return newWorkoutExerciseId;
         }
-        
+
         public int AddLinkedWorkoutsToExercises(LinkedWorkoutsToExercises linkedWorkoutsToExercises)
         {
             var newLinkedWorkoutsToExercises = Database.AddLinkedWorkoutExercise(linkedWorkoutsToExercises);
@@ -222,15 +222,15 @@ namespace PersonalTrainerWorkouts.Data
             return newLinkedWorkoutsToExercises;
         }
 
-    #endregion
+        #endregion
 
-    #region Gets
+        #region Gets
 
         public Workout GetWorkout(int workoutId)
         {
             return Database.GetWorkout(workoutId) ?? new Workout();
         }
-        
+
         public IEnumerable<Workout> GetWorkouts()
         {
             return Database.GetWorkouts() ?? new List<Workout>();
@@ -239,7 +239,7 @@ namespace PersonalTrainerWorkouts.Data
         public IEnumerable<WorkoutExercise> GetWorkoutExercises(int workoutId)
         {
             return Database.GetWorkoutExercisesByWorkout(workoutId)
-                           .OrderBy(field=>field.OrderBy);
+                           .OrderBy(field => field.OrderBy);
         }
 
         public IEnumerable<LinkedWorkoutsToExercises> GetLinkedWorkoutsToExercises(int workoutId)
@@ -259,14 +259,16 @@ namespace PersonalTrainerWorkouts.Data
 
         public Exercise GetExercise(int exerciseId)
         {
-            return Database.GetExercise(exerciseId) ?? new Exercise();
+            return exerciseId == 0 ?
+                           new Exercise() :
+                           Database.GetExercise(exerciseId);
         }
-        
+
         public IEnumerable<Exercise> GetExercises()
         {
             return Database.GetExercises() ?? new List<Exercise>();
         }
-        
+
         public IEnumerable<ExerciseType> GetAllExerciseTypes()
         {
             return Database.GetExerciseTypes() ?? new List<ExerciseType>();
@@ -286,6 +288,7 @@ namespace PersonalTrainerWorkouts.Data
         {
             return Database.GetSynergists() ?? new List<Synergist>();
         }
+
         public IEnumerable<ExerciseMuscleGroup> GetAllExerciseMuscleGroups()
         {
             return Database.GetExerciseMuscleGroups() ?? new List<ExerciseMuscleGroup>();
@@ -295,7 +298,7 @@ namespace PersonalTrainerWorkouts.Data
         {
             return Database.GetAllEquipment() ?? new List<Equipment>();
         }
-        
+
         public IEnumerable<MuscleGroup> GetAllMuscleGroups()
         {
             return Database.GetMuscleGroups() ?? new List<MuscleGroup>();
@@ -306,15 +309,15 @@ namespace PersonalTrainerWorkouts.Data
             return Database.GetOpposingMuscleGroupByMuscleGroup(muscleGroupId);
         }
 
-    #endregion
+        #endregion
 
-    #region Updates
-        
+        #region Updates
+
         public void UpdateWorkout(Workout workout)
         {
             Database.UpdateWorkout(workout);
         }
-        
+
         public void UpdateExercise(Exercise exercise)
         {
             Database.UpdateExercise(exercise);
@@ -330,26 +333,24 @@ namespace PersonalTrainerWorkouts.Data
             Database.UpdateLinkedWorkoutsToExercises(linkedWorkoutsToExercises);
         }
 
-    #endregion
+        #endregion
 
-    #region Deletes
+        #region Deletes
 
         public void DeleteExerciseType(int exerciseId
                                      , int typeOfExerciseId)
         {
             var typeOfExerciseToDelete = Database.GetExerciseTypes()
-                                                 .First(field => field.ExerciseId == exerciseId 
-                                                              && field.TypeId == typeOfExerciseId);
+                                                 .First(field => field.ExerciseId == exerciseId && field.TypeId == typeOfExerciseId);
 
             Database.DeleteExerciseType(ref typeOfExerciseToDelete);
         }
-        
+
         public void DeleteExerciseEquipment(int exerciseId
                                           , int equipmentId)
         {
             var equipmentToDelete = Database.GetExerciseEquipments()
-                                            .First(field => field.ExerciseId == exerciseId 
-                                                         && field.EquipmentId == equipmentId);
+                                            .First(field => field.ExerciseId == exerciseId && field.EquipmentId == equipmentId);
 
             Database.DeleteExerciseEquipment(ref equipmentToDelete);
         }
@@ -358,16 +359,15 @@ namespace PersonalTrainerWorkouts.Data
                                             , int muscleGroupId)
         {
             var muscleGroupToDelete = Database.GetExerciseMuscleGroups()
-                                              .First(field => field.ExerciseId == exerciseId 
-                                                           && field.MuscleGroupId == muscleGroupId);
+                                              .First(field => field.ExerciseId == exerciseId && field.MuscleGroupId == muscleGroupId);
 
             Database.DeleteExerciseMuscleGroup(ref muscleGroupToDelete);
         }
 
-    #endregion
-        
-    #region Helper methods
-        
+        #endregion
+
+        #region Helper methods
+
         public static void ValidateForNoDuplicatedNames(string                 potentialDuplicatedName
                                                       , IEnumerable<BaseModel> listOfModels
                                                       , string                 type)
@@ -382,7 +382,6 @@ namespace PersonalTrainerWorkouts.Data
             }
         }
 
-    #endregion
-
+        #endregion
     }
 }

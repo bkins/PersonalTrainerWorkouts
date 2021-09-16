@@ -15,17 +15,21 @@ namespace PersonalTrainerWorkouts.ViewModels
             get => _exercise;
             set
             {
-                SetValue(ref _exercise, value); 
+                SetValue(ref _exercise
+                       , value);
+
                 OnPropertyChanged(nameof(Exercise));
             }
         }
-        
+
         public LinkedWorkoutsToExercises WorkoutExercise
         {
             get => _workoutExercise;
             set
             {
-                SetValue(ref _workoutExercise, value);
+                SetValue(ref _workoutExercise
+                       , value);
+
                 OnPropertyChanged(nameof(WorkoutExercise));
             }
         }
@@ -35,7 +39,9 @@ namespace PersonalTrainerWorkouts.ViewModels
             get => _workout;
             set
             {
-                SetValue(ref _workout, value); 
+                SetValue(ref _workout
+                       , value);
+
                 OnPropertyChanged(nameof(Workout));
             }
         }
@@ -45,16 +51,18 @@ namespace PersonalTrainerWorkouts.ViewModels
             get => _exerciseForDebugging;
             set
             {
-                SetValue(ref _exerciseForDebugging, value); 
+                SetValue(ref _exerciseForDebugging
+                       , value);
+
                 OnPropertyChanged(nameof(ExerciseForDebugging));
             }
         }
-        
+
         public WorkoutExerciseWithChildren(int workoutId)
         {
             Workout = DataAccessLayer.GetWorkout(workoutId);
-
         }
+
         public void Save()
         {
             DataAccessLayer.UpdateLinkedWorkoutsToExercises(WorkoutExercise);

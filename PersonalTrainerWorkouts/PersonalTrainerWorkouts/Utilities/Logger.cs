@@ -10,14 +10,14 @@ namespace PersonalTrainerWorkouts.Utilities
     public static class Logger
     {
         //BENDO: Implement a settings page to handle the setting of these values (or at least the ones that are appropriate)
-        public static bool WriteToOutput   { get; set; }
-        public static bool WriteToConsole  { get; set; }
-        public static bool WriteToFile     { get; set; }
-        public static bool WriteToToast    { get; set; }
-        public static bool WriteToLogCat   { get; set; }
-        public static bool Verbose         { get; set; }
+        public static bool WriteToOutput  { get; set; }
+        public static bool WriteToConsole { get; set; }
+        public static bool WriteToFile    { get; set; }
+        public static bool WriteToToast   { get; set; }
+        public static bool WriteToLogCat  { get; set; }
+        public static bool Verbose        { get; set; }
 
-        public static  StringBuilder Log { get; }
+        public static StringBuilder Log { get; }
 
         public static string CompleteLog => Log.ToString();
 
@@ -33,10 +33,12 @@ namespace PersonalTrainerWorkouts.Utilities
             Verbose        = true;
         }
 
-        public static void WriteLine(string message, Category category, Exception ex = null)
+        public static void WriteLine(string    message
+                                   , Category  category
+                                   , Exception ex = null)
         {
             var completeLogMessage = $"{category}: {message}";
-            
+
             Log.AppendLine(completeLogMessage);
 
             LogVerboseInfo(ex);
@@ -55,7 +57,7 @@ namespace PersonalTrainerWorkouts.Utilities
             LogToToast(completeLogMessage);
         }
 
-        private static  void LogToToast(string completeLogMessage)
+        private static void LogToToast(string completeLogMessage)
         {
             if (WriteToToast)
             {
@@ -113,22 +115,26 @@ namespace PersonalTrainerWorkouts.Utilities
                 Log.AppendLine(ex.StackTrace);
             }
         }
-        
+
         public static LogLevel ConvertCategoryToLogLevel(Category category)
         {
             switch (category)
             {
                 case Category.Information:
+
                     return LogLevel.Info;
 
                 case Category.Error:
+
                     return LogLevel.Error;
 
                 case Category.Warning:
+
                     return LogLevel.Warn;
-                
+
                 case Category.Unknown:
                 default:
+
                     return LogLevel.Debug;
             }
         }
@@ -138,15 +144,19 @@ namespace PersonalTrainerWorkouts.Utilities
             switch (level.Name.ToLower())
             {
                 case "info":
+
                     return Category.Information;
 
                 case "error":
+
                     return Category.Error;
 
                 case "warn":
+
                     return Category.Warning;
 
                 default:
+
                     return Category.Unknown;
             }
         }
@@ -154,10 +164,9 @@ namespace PersonalTrainerWorkouts.Utilities
 
     public enum Category
     {
-          Error
-        , Warning
-        , Information
-        , Unknown
+        Error
+      , Warning
+      , Information
+      , Unknown
     }
-
 }

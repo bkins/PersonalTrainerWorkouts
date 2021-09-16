@@ -13,20 +13,24 @@ using Syncfusion.XForms.Accordion;
 
 namespace PersonalTrainerWorkouts.Views
 {
-    [QueryProperty(nameof(WorkoutId),  nameof(WorkoutId))]
-    [QueryProperty(nameof(ExerciseId), nameof(ExerciseId))]
+    [QueryProperty(nameof(WorkoutId)
+                 , nameof(WorkoutId))]
+    [QueryProperty(nameof(ExerciseId)
+                 , nameof(ExerciseId))]
     public partial class ExerciseAddEditPage : IQueryAttributable
     {
-        private ExerciseAddEditViewModel ViewModel           { get; set; }
-        public  string                   WorkoutId           { get; set; }
-        public  string                   ExerciseId          { get; set; }
-        public  string                   InitialName         { get; set; }
-        public  string                   InitialDescription  { get; set; }
-        public  string                   InitialLengthOfTime { get; set; }
-        public  int                      InitialReps         { get; set; }
-        private Entry                    NameEntry           { get; set; }
-        public  List<TypeOfExercise>     TypesOfExerciseList { get; set; }
-        public  ICommand                 DeleteCommand       { get; }
+        private ExerciseAddEditViewModel ViewModel             { get; set; }
+        private MuscleGroupViewModel     MuscleGroupsViewModel { get; set; }
+
+        public  string               WorkoutId           { get; set; }
+        public  string               ExerciseId          { get; set; }
+        public  string               InitialName         { get; set; }
+        public  string               InitialDescription  { get; set; }
+        public  string               InitialLengthOfTime { get; set; }
+        public  int                  InitialReps         { get; set; }
+        private Entry                NameEntry           { get; set; }
+        public  List<TypeOfExercise> TypesOfExerciseList { get; set; }
+        public  ICommand             DeleteCommand       { get; }
 
         public void ApplyQueryAttributes(IDictionary<string, string> query)
         {
@@ -38,11 +42,15 @@ namespace PersonalTrainerWorkouts.Views
 
                 ViewModel = new ExerciseAddEditViewModel(int.Parse(WorkoutId)
                                                        , int.Parse(ExerciseId));
+
+                MuscleGroupsViewModel = new MuscleGroupViewModel(ExerciseId);
                 LoadData();
             }
             catch (Exception e)
             {
-                Logger.WriteLine("Failed initiate ExerciseAddEditPage.", Category.Error, e);
+                Logger.WriteLine("Failed initiate ExerciseAddEditPage."
+                               , Category.Error
+                               , e);
 
                 throw;
             }
@@ -52,28 +60,29 @@ namespace PersonalTrainerWorkouts.Views
         {
             try
             {
-                if (ViewModel != null)
+                if (ExerciseId != "0")
                 {
-                    InitialName              = ViewModel.Exercise?.Name;
-                    InitialDescription       = ViewModel.Exercise?.Description;
-                    InitialLengthOfTime      = ViewModel.Exercise?.LengthOfTime;
-                    TypesOfExerciseList      = ViewModel.TypesOfExerciseList;
+                    InitialName         = ViewModel.Exercise?.Name;
+                    InitialDescription  = ViewModel.Exercise?.Description;
+                    InitialLengthOfTime = ViewModel.Exercise?.LengthOfTime;
+                    TypesOfExerciseList = ViewModel.TypesOfExerciseList;
 
                     BindingContext                           = ViewModel;
                     TypeOfExerciseCollectionView.ItemsSource = ViewModel.TypesOfExerciseList;
                     EquipmentCollectionView.ItemsSource      = ViewModel.EquipmentList;
-                    
-                    var muscleGroupViewModel = new MuscleGroupViewModel(ExerciseId);
-                    MuscleGroupCollectionView.ItemsSource = muscleGroupViewModel.Synergists.Where(field=>field.Exercise.Id == int.Parse(ExerciseId));
+
+                    MuscleGroupCollectionView.ItemsSource = MuscleGroupsViewModel.Synergists.Where(field => field.Exercise.Id == int.Parse(ExerciseId));
                 }
             }
             catch (Exception e)
             {
-                Logger.WriteLine("Failed to load Exercise.", Category.Error, e);
+                Logger.WriteLine("Failed to load Exercise."
+                               , Category.Error
+                               , e);
+
                 //BENDO: consider implementing a page that shows exception details
             }
         }
-        
 
         public ExerciseAddEditPage()
         {
@@ -81,9 +90,8 @@ namespace PersonalTrainerWorkouts.Views
 
             ViewModel      = new ExerciseAddEditViewModel();
             BindingContext = ViewModel;
-            
         }
-        
+
         /// <summary>
         /// Used to Update the Exercise anytime the Name, Description, LengthOfTime, or Reps are changed.
         /// </summary>
@@ -103,6 +111,7 @@ namespace PersonalTrainerWorkouts.Views
             try
             {
                 ViewModel.SaveExercise(int.Parse(WorkoutId));
+                ExerciseId          = ViewModel.Exercise.Id.ToString();
                 InitialName         = ViewModel.Exercise.Name;
                 InitialDescription  = ViewModel.Exercise?.Description;
                 InitialLengthOfTime = ViewModel.Exercise?.LengthOfTime;
@@ -117,8 +126,10 @@ namespace PersonalTrainerWorkouts.Views
             }
             catch (UnnamedEntityException e)
             {
-                Logger.WriteLine("An exercise must have a name to save.", Category.Error, e);
-                
+                Logger.WriteLine("An exercise must have a name to save."
+                               , Category.Error
+                               , e);
+
                 NameEntry.Focus();
             }
         }
@@ -131,22 +142,27 @@ namespace PersonalTrainerWorkouts.Views
         /// <returns></returns>
         private Exercise GetContextExercise()
         {
-            var exercise = (ExerciseAddEditViewModel) BindingContext;
-            
-            if (exercise.Exercise == null)
+            var exercise = (ExerciseAddEditViewModel)BindingContext;
+
+            if (exercise.Exercise    == null
+             || exercise.Exercise.Id == 0)
             {
-                exercise.Exercise = new Exercise{Name = NameEntry.Text};
+                exercise.Exercise = new Exercise
+                                    {
+                                        Name = NameEntry.Text
+                                    };
             }
+
             exercise.Exercise.LengthOfTime = exercise.LengthOfTime ?? "00:00";
             exercise.Exercise.Reps         = exercise.Reps         ?? 0;
 
             return exercise.Exercise;
         }
-        
+
         private void Name_OnUnfocused(object         sender
                                     , FocusEventArgs e)
         {
-            NameEntry = (Entry) sender;
+            NameEntry = (Entry)sender;
 
             if (string.IsNullOrEmpty(InitialName))
             {
@@ -161,7 +177,7 @@ namespace PersonalTrainerWorkouts.Views
         private void Description_OnUnfocused(object         sender
                                            , FocusEventArgs e)
         {
-            var description = (Editor) sender;
+            var description = (Editor)sender;
 
             if (InitialDescription != description.Text)
             {
@@ -170,9 +186,9 @@ namespace PersonalTrainerWorkouts.Views
         }
 
         private void LengthOfTimeEditor_OnUnfocused(object         sender
-                                                        , FocusEventArgs e)
+                                                  , FocusEventArgs e)
         {
-            var lengthOfTime = (Editor) sender;
+            var lengthOfTime = (Editor)sender;
 
             if (InitialLengthOfTime != lengthOfTime.Text)
             {
@@ -180,25 +196,25 @@ namespace PersonalTrainerWorkouts.Views
             }
         }
 
-        private async void RepsEditor_OnUnfocused(object         sender
-                                                , FocusEventArgs e)
+        private void RepsEditor_OnUnfocused(object         sender
+                                          , FocusEventArgs e)
         {
-            var reps = (Editor) sender;
+            var reps = (Editor)sender;
 
             if (InitialReps != int.Parse(reps.Text))
             {
                 UpdateExercise();
             }
-
-            await PageNavigation.NavigateBackwards();
         }
 
         private async void AddTypeOfExerciseButton_OnClicked(object    sender
-                                                    , EventArgs e)
+                                                           , EventArgs e)
         {
             await PageNavigation.NavigateTo(nameof(TypeOfExerciseListPage)
+                                          , nameof(TypeOfExerciseListPage.WorkoutId)
+                                          , ViewModel.Workout.Id.ToString()
                                           , nameof(TypeOfExerciseListPage.ExerciseId)
-                                          , ExerciseId);
+                                          , ViewModel.Exercise.Id.ToString());
         }
 
         private void RemoveType_OnClicked(object    sender
@@ -206,24 +222,26 @@ namespace PersonalTrainerWorkouts.Views
         {
             var itemToDelete = (Button)sender;
             ViewModel.DeleteExerciseType(int.Parse(itemToDelete.Text));
-            
+
             TypeOfExerciseCollectionView.ItemsSource = ViewModel.TypesOfExerciseList;
         }
 
         private async void AddEquipmentButton_OnClicked(object    sender
-                                                , EventArgs e)
+                                                      , EventArgs e)
         {
             await PageNavigation.NavigateTo(nameof(EquipmentListPage)
                                           , nameof(EquipmentListPage.ExerciseId)
                                           , ExerciseId);
         }
-        
+
         private async void AddMuscleGroupButton_OnClicked(object    sender
-                                                  , EventArgs e)
+                                                        , EventArgs e)
         {
             await PageNavigation.NavigateTo(nameof(MuscleGroupListPage)
                                           , nameof(MuscleGroupListPage.ExerciseId)
-                                          , ExerciseId);
+                                          , ExerciseId
+                                          , nameof(MuscleGroupListPage.WorkoutId)
+                                          , WorkoutId);
         }
 
         private void RemoveEquipment_OnClicked(object    sender
@@ -231,8 +249,8 @@ namespace PersonalTrainerWorkouts.Views
         {
             var itemToDelete = (Button)sender;
             ViewModel.DeleteExerciseEquipment(int.Parse(itemToDelete.Text));
-            
-            EquipmentCollectionView.ItemsSource      = ViewModel.EquipmentList;
+
+            EquipmentCollectionView.ItemsSource = ViewModel.EquipmentList;
         }
 
         private void RemoveMuscleGroup_OnClicked(object    sender
@@ -241,7 +259,7 @@ namespace PersonalTrainerWorkouts.Views
             var itemToDelete = (Button)sender;
             ViewModel.DeleteExerciseMuscleGroup(int.Parse(itemToDelete.Text));
 
-            MuscleGroupCollectionView.ItemsSource = ViewModel.MuscleGroupsList;
+            MuscleGroupCollectionView.ItemsSource = MuscleGroupsViewModel.Synergists.Where(field => field.Exercise.Id == int.Parse(ExerciseId));
         }
     }
 }

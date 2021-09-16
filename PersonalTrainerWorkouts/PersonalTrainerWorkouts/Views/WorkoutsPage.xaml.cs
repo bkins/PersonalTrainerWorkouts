@@ -12,22 +12,26 @@ namespace PersonalTrainerWorkouts.Views
     {
         public WorkoutsPage()
         {
-            var pageService  = new PageService();
+            var pageService = new PageService();
 
             ViewModel = new WorkoutsPageViewModel(App.Database
                                                 , pageService);
 
             InitializeComponent();
         }
+
         protected override void OnAppearing()
         {
             ViewModel.LoadDataCommand.Execute(null);
             base.OnAppearing();
         }
-        void OnContactSelected(object sender, SelectedItemChangedEventArgs e)
+
+        void OnContactSelected(object                       sender
+                             , SelectedItemChangedEventArgs e)
         {
             ViewModel.SelectWorkoutCommand.Execute(e.SelectedItem);
         }
+
         public WorkoutsPageViewModel ViewModel
         {
             get => BindingContext as WorkoutsPageViewModel;

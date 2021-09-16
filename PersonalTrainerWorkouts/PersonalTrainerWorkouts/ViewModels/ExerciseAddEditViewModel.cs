@@ -10,12 +10,12 @@ using PersonalTrainerWorkouts.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
-    public class ExerciseAddEditViewModel  : ViewModelBase 
+    public class ExerciseAddEditViewModel : ViewModelBase
     {
-        public Exercise                             Exercise            { get; set; }
-        public Workout                              Workout             { get; set; }
-        public string                               LengthOfTime        { get; set; }
-        public int?                                 Reps                { get; set; }
+        public Exercise Exercise     { get; set; }
+        public Workout  Workout      { get; set; }
+        public string   LengthOfTime { get; set; }
+        public int?     Reps         { get; set; }
 
         public TypeOfExercise                       TypeOfExercise      { get; set; }
         public ObservableCollection<TypeOfExercise> TypesOfExercise     { get; set; }
@@ -25,9 +25,9 @@ namespace PersonalTrainerWorkouts.ViewModels
         public ObservableCollection<Equipment> Equipments    { get; set; }
         public List<Equipment>                 EquipmentList { get; set; }
 
-        public MuscleGroup                       MuscleGroup      { get; set; }
-        public ObservableCollection<MuscleGroup> MuscleGroups     { get; set; }
-        public List<MuscleGroup>                 MuscleGroupsList { get; set; }
+        //public MuscleGroup                       MuscleGroup      { get; set; }
+        //public ObservableCollection<MuscleGroup> MuscleGroups     { get; set; }
+        //public List<MuscleGroup>                 MuscleGroupsList { get; set; }
 
         public ExerciseAddEditViewModel()
         {
@@ -35,7 +35,8 @@ namespace PersonalTrainerWorkouts.ViewModels
             Exercise = new Exercise();
         }
 
-        public ExerciseAddEditViewModel(int workoutId, int exerciseId)
+        public ExerciseAddEditViewModel(int workoutId
+                                      , int exerciseId)
         {
             Workout  = DataAccessLayer.GetWorkout(workoutId);
             Exercise = Workout.Exercises.FirstOrDefault(e => e.Id == exerciseId) ?? new Exercise();
@@ -47,7 +48,8 @@ namespace PersonalTrainerWorkouts.ViewModels
 
             LoadTheTypesOfExercise();
             LoadTheEquipment();
-            LoadTheMuscleGroups();
+
+            //LoadTheMuscleGroups();
         }
 
         private void LoadTheEquipment()
@@ -57,46 +59,40 @@ namespace PersonalTrainerWorkouts.ViewModels
 
             var allEquipment = DataAccessLayer.GetAllEquipment();
 
-            var equipment = new ObservableCollection<Equipment>
-                                (
-                                    exerciseEquipment.Select(oneEquipment => allEquipment.First(field => field.Id == oneEquipment.EquipmentId))
-                                                     .ToList()
-                                );
+            var equipment = new ObservableCollection<Equipment>(exerciseEquipment.Select(oneEquipment => allEquipment.First(field => field.Id == oneEquipment.EquipmentId))
+                                                                                 .ToList());
 
             Equipments    = equipment;
             EquipmentList = equipment.ToList();
-
         }
 
-        private void LoadTheMuscleGroups()
-        {
-            var exerciseMuscleGroup = DataAccessLayer.GetAllExerciseMuscleGroups()
-                                                     .Where(field => field.ExerciseId == Exercise.Id);
+        //private void LoadTheMuscleGroups()
+        //{
+        //    //There are no ExerciseMuscleGroups?
+        //    var exerciseMuscleGroup = DataAccessLayer.GetAllExerciseMuscleGroups()
+        //                                             .Where(field => field.ExerciseId == Exercise.Id);
 
-            var allMuscleGroups = DataAccessLayer.GetAllMuscleGroups();
+        //    var allMuscleGroups = DataAccessLayer.GetAllMuscleGroups();
 
-            var muscleGroup = new ObservableCollection<MuscleGroup>
-                                  (
-                                      exerciseMuscleGroup.Select(oneMuscleGroup => allMuscleGroups.First(field => field.Id == oneMuscleGroup.MuscleGroupId))
-                                                         .ToList()
-                                  );
+        //    var muscleGroup = new ObservableCollection<MuscleGroup>
+        //                          (
+        //                              exerciseMuscleGroup.Select(oneMuscleGroup => allMuscleGroups.First(field => field.Id == oneMuscleGroup.MuscleGroupId))
+        //                                                 .ToList()
+        //                          );
 
-            MuscleGroups     = muscleGroup;
-            MuscleGroupsList = muscleGroup.ToList();
-        }
+        //    MuscleGroups     = muscleGroup;
+        //    MuscleGroupsList = muscleGroup.ToList();
+        //}
 
         private void LoadTheTypesOfExercise()
         {
-            var exerciseTypes   = DataAccessLayer.GetAllExerciseTypes()
-                                                 .Where(field => field.ExerciseId == Exercise.Id);
+            var exerciseTypes = DataAccessLayer.GetAllExerciseTypes()
+                                               .Where(field => field.ExerciseId == Exercise.Id);
 
-            var allTypes        = DataAccessLayer.GetAllTypesOfExercise();
+            var allTypes = DataAccessLayer.GetAllTypesOfExercise();
 
-            var typesOfExercise = new ObservableCollection<TypeOfExercise>
-                                      (
-                                        exerciseTypes.Select(exerciseType => allTypes.First(field => field.Id == exerciseType.TypeId))
-                                                     .ToList()
-                                      );
+            var typesOfExercise = new ObservableCollection<TypeOfExercise>(exerciseTypes.Select(exerciseType => allTypes.First(field => field.Id == exerciseType.TypeId))
+                                                                                        .ToList());
 
             TypesOfExercise     = typesOfExercise;
             TypesOfExerciseList = typesOfExercise.ToList();
@@ -112,7 +108,7 @@ namespace PersonalTrainerWorkouts.ViewModels
         {
             if (string.IsNullOrWhiteSpace(Exercise.Name))
                 throw new UnnamedEntityException($"{nameof(Exercise)} was not named.  Must be named before attempting to save.");
-            
+
             AddExerciseToWorkout(workoutId);
 
             var workoutExercise = CreateNewWorkoutsToExercise(workoutId);
@@ -152,7 +148,9 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         public void DeleteExerciseType(int itemToDeleteId)
         {
-            DataAccessLayer.DeleteExerciseType(Exercise.Id, itemToDeleteId);
+            DataAccessLayer.DeleteExerciseType(Exercise.Id
+                                             , itemToDeleteId);
+
             LoadTheTypesOfExercise();
         }
 
@@ -160,6 +158,7 @@ namespace PersonalTrainerWorkouts.ViewModels
         {
             DataAccessLayer.DeleteExerciseEquipment(Exercise.Id
                                                   , itemToDeleteId);
+
             LoadTheEquipment();
         }
 
@@ -168,7 +167,7 @@ namespace PersonalTrainerWorkouts.ViewModels
             DataAccessLayer.DeleteExerciseMuscleGroup(Exercise.Id
                                                     , itemToDeleteId);
 
-            LoadTheMuscleGroups();
+            //LoadTheMuscleGroups();
         }
     }
 }

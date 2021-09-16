@@ -5,7 +5,7 @@ namespace PersonalTrainerWorkouts.Services
 {
     public interface IPageService
     {
-        Task       PushAsync(Page page);
+        Task PushAsync(Page page);
 
         Task<Page> PopAsync();
 

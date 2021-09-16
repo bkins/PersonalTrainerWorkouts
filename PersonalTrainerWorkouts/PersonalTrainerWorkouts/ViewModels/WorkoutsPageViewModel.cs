@@ -20,16 +20,15 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         private bool _isDataLoaded;
 
-        public ObservableCollection<Workout> Workouts { get; } 
-            = new ObservableCollection<Workout>();
+        public ObservableCollection<Workout> Workouts { get; } = new ObservableCollection<Workout>();
 
         public WorkoutViewModel SelectedWorkout
         {
             get => _selectedWorkout;
-            set => SetValue(ref _selectedWorkout, value);
+            set => SetValue(ref _selectedWorkout
+                          , value);
         }
 
-        
         public ICommand LoadDataCommand      { get; }
         public ICommand SelectWorkoutCommand { get; }
         public ICommand DeleteWorkoutCommand { get; }
@@ -40,26 +39,25 @@ namespace PersonalTrainerWorkouts.ViewModels
             _dataStore   = dataStore;
             _pageService = pageService;
 
-            LoadDataCommand      = new Command( LoadData);
-            SelectWorkoutCommand = new Command<Workout>( SelectWorkout ); 
-            DeleteWorkoutCommand = new Command<Workout>( async viewModel => await DeleteWorkout(viewModel));
-
+            LoadDataCommand      = new Command(LoadData);
+            SelectWorkoutCommand = new Command<Workout>(SelectWorkout);
+            DeleteWorkoutCommand = new Command<Workout>(async viewModel => await DeleteWorkout(viewModel));
         }
 
-        private  void LoadData()
+        private void LoadData()
         {
             if (_isDataLoaded)
                 return;
 
             _isDataLoaded = true;
-            var workouts =  _dataStore.GetWorkouts();
+            var workouts = _dataStore.GetWorkouts();
 
             foreach (var workout in workouts)
             {
                 Workouts.Add(workout);
             }
         }
-        
+
         private void SelectWorkout(Workout workoutViewModel)
         {
             if (workoutViewModel == null)
@@ -67,10 +65,13 @@ namespace PersonalTrainerWorkouts.ViewModels
 
             SelectedWorkout = null;
         }
-        
+
         private async Task DeleteWorkout(Workout workoutViewModel)
         {
-            if (await _pageService.DisplayAlert("Warning", $"Are you sure you want to delete {workoutViewModel.Name}?", "Yes", "No"))
+            if (await _pageService.DisplayAlert("Warning"
+                                              , $"Are you sure you want to delete {workoutViewModel.Name}?"
+                                              , "Yes"
+                                              , "No"))
             {
                 Workouts.Remove(workoutViewModel);
 

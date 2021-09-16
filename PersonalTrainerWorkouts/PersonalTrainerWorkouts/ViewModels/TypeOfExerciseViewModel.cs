@@ -12,9 +12,15 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         public TypeOfExerciseViewModel(string exerciseId)
         {
+            Logger.WriteLine($"Getting ExerciseId: {exerciseId}"
+                           , Category.Information);
+
             Exercise = DataAccessLayer.GetExercise(int.Parse(exerciseId));
+
+            Logger.WriteLine($"Got Exercise: {Exercise.Name} ({Exercise.Id})"
+                           , Category.Information);
         }
-        
+
         public void SaveTypeOfExercise(string newTypeName)
         {
             if (newTypeName.IsNullEmptyOrWhitespace())
@@ -28,6 +34,13 @@ namespace PersonalTrainerWorkouts.ViewModels
                           };
 
             DataAccessLayer.AddNewTypeOfExercise(newType);
+
+            Logger.WriteLine($"New Type {newType} ({newType.Id}) added."
+                           , Category.Information);
+
+            Logger.WriteLine($"Adding Exercise Type: ExerciseId: {Exercise.Id}; TypeId: {newType.Id}."
+                           , Category.Information);
+
             DataAccessLayer.AddExerciseType(Exercise.Id
                                           , newType.Id);
         }

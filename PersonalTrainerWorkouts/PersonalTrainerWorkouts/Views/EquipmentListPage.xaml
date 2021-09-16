@@ -1,19 +1,19 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    
+
              xmlns:xForms="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
              xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
 
              x:Class="PersonalTrainerWorkouts.Views.EquipmentListPage"
-             
+
              x:DataType="viewModels:EquipmentListViewModel"
-             Title="Add Equipment to Exercise"
->
-    
+             Title="Add Equipment to Exercise">
+
     <ContentPage.Content>
         <StackLayout>
-            
+
             <xForms:SfPicker x:Name="EquipmentPicker"
                              ItemsSource="{Binding ListOfAllExerciseEquipment}"
                              DisplayMemberPath="Name"
@@ -22,10 +22,7 @@
                              ShowHeader="False"
                              OkButtonClicked="EquipmentPicker_OnOkButtonClicked"
                              CancelButtonClicked="EquipmentPicker_OnCancelButtonClicked"
-                             ShowFooter="True"
-            >
-            
-            </xForms:SfPicker>
+                             ShowFooter="True" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

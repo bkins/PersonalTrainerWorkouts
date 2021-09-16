@@ -10,7 +10,7 @@ namespace PersonalTrainerWorkouts.ViewModels
     public class ExerciseNewEntryViewModel : ViewModelBase
     {
         public Exercise NewExercise { get; set; }
-        
+
         public ExerciseNewEntryViewModel()
         {
             NewExercise = new Exercise();
@@ -27,10 +27,10 @@ namespace PersonalTrainerWorkouts.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(NewExercise.Name))
                     throw new UnnamedEntityException($"{nameof(Exercise)} was not named.  Must be named before attempting to save.");
-                
+
                 var workout    = DataAccessLayer.GetWorkout(workoutId);
                 var exerciseId = DataAccessLayer.AddNewExercise(NewExercise);
-                
+
                 workout.Exercises.Add(NewExercise);
 
                 var workoutExercise = new LinkedWorkoutsToExercises
@@ -39,17 +39,19 @@ namespace PersonalTrainerWorkouts.ViewModels
                                         , WorkoutId    = workoutId
                                         , LengthOfTime = NewExercise.LengthOfTime
                                       };
-                
+
                 var workoutExerciseId = DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise);
 
-                if (workoutExerciseId==0)
+                if (workoutExerciseId == 0)
                 {
                     throw new Exception("LinkedWorkoutsToExercises not added");
                 }
             }
             catch (Exception e)
             {
-                Logger.WriteLine(e.Message, Category.Error, e);
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
 
                 throw;
             }

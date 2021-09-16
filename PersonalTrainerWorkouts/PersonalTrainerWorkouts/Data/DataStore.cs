@@ -30,41 +30,41 @@ namespace PersonalTrainerWorkouts.Data
         }
 
         public WorkoutExercise GetWorkoutExercise(int workoutId
-                                                 , int exerciseId)
+                                                , int exerciseId)
         {
             return GetAllWorkoutExercises()
-                   .FirstOrDefault( workoutExercise => workoutExercise.WorkoutId == workoutId && workoutExercise.ExerciseId == exerciseId );
+                   .FirstOrDefault(workoutExercise => workoutExercise.WorkoutId == workoutId && workoutExercise.ExerciseId == exerciseId);
         }
 
         public Workout GetWorkout(int workoutId)
         {
             return GetAllWorkouts()
-                   .FirstOrDefault( workout => workout.Id == workoutId );
+                   .FirstOrDefault(workout => workout.Id == workoutId);
         }
 
         public Exercise GetExercise(int exerciseId)
         {
             return GetAllExercises()
-                   .FirstOrDefault( exercise => exercise.Id == exerciseId );
+                   .FirstOrDefault(exercise => exercise.Id == exerciseId);
         }
 
         public void InsertWorkout(Workout workout)
         {
-            WorkingAsyncDatabase.SaveWorkoutAsync( workout );
+            WorkingAsyncDatabase.SaveWorkoutAsync(workout);
         }
 
         public void InsertWorkout(Workout  workout
                                 , Exercise exercise)
         {
-            workout.Exercises.Add( exercise );
-            WorkingAsyncDatabase.SaveWorkoutAsync( workout );
+            workout.Exercises.Add(exercise);
+            WorkingAsyncDatabase.SaveWorkoutAsync(workout);
         }
 
         public void InsertWorkout(Workout        workout
                                 , List<Exercise> exercises)
         {
             workout.Exercises = exercises;
-            WorkingAsyncDatabase.SaveWorkoutAsync( workout );
+            WorkingAsyncDatabase.SaveWorkoutAsync(workout);
         }
     }
 }

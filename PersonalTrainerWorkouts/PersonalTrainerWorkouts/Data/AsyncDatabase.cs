@@ -24,7 +24,7 @@ namespace PersonalTrainerWorkouts.Data
         public AsyncDatabase(string dbPath)
         {
             _asyncDatabase = new SQLiteAsyncConnection(dbPath);
-            
+
             CreateTables();
 
             FillModels();
@@ -32,34 +32,52 @@ namespace PersonalTrainerWorkouts.Data
 
         public void DropTables()
         {
-            _asyncDatabase.DropTableAsync<Workout>().Wait();
-            _asyncDatabase.DropTableAsync<Exercise>().Wait();
-            _asyncDatabase.DropTableAsync<WorkoutExercise>().Wait();
+            _asyncDatabase.DropTableAsync<Workout>()
+                          .Wait();
 
-            Logger.WriteLine("Tables dropped", Category.Information);
+            _asyncDatabase.DropTableAsync<Exercise>()
+                          .Wait();
+
+            _asyncDatabase.DropTableAsync<WorkoutExercise>()
+                          .Wait();
+
+            Logger.WriteLine("Tables dropped"
+                           , Category.Information);
         }
 
         public void CreateTables()
         {
-            _asyncDatabase.CreateTableAsync<Workout>().Wait();
-            _asyncDatabase.CreateTableAsync<Exercise>().Wait();
-            _asyncDatabase.CreateTableAsync<WorkoutExercise>().Wait();
+            _asyncDatabase.CreateTableAsync<Workout>()
+                          .Wait();
 
-            Logger.WriteLine("Tables created", Category.Information);
+            _asyncDatabase.CreateTableAsync<Exercise>()
+                          .Wait();
+
+            _asyncDatabase.CreateTableAsync<WorkoutExercise>()
+                          .Wait();
+
+            Logger.WriteLine("Tables created"
+                           , Category.Information);
         }
 
         public async void FillModels()
         {
             //I was having issues with getting values in and related to the WorkoutExercises
             //My workaround is to try to load the data into lists and access those lists
-            Workouts         = await _asyncDatabase.Table<Workout>().ToListAsync();
-            Exercises        = await _asyncDatabase.Table<Exercise>().ToListAsync();
-            WorkoutExercises = await _asyncDatabase.Table<WorkoutExercise>().ToListAsync();
+            Workouts = await _asyncDatabase.Table<Workout>()
+                                           .ToListAsync();
+
+            Exercises = await _asyncDatabase.Table<Exercise>()
+                                            .ToListAsync();
+
+            WorkoutExercises = await _asyncDatabase.Table<WorkoutExercise>()
+                                                   .ToListAsync();
         }
-        
+
         public Task<List<Workout>> GetWorkoutsAsync()
         {
-            return _asyncDatabase.Table<Workout>().ToListAsync();
+            return _asyncDatabase.Table<Workout>()
+                                 .ToListAsync();
         }
 
         public async Task<Workout> GetWorkoutsAsync(string id)
@@ -71,16 +89,22 @@ namespace PersonalTrainerWorkouts.Data
         {
             try
             {
-                var workoutsWithChildren = _asyncDatabase.GetWithChildrenAsync<Workout>(id).GetAwaiter().GetResult();
+                var workoutsWithChildren = _asyncDatabase.GetWithChildrenAsync<Workout>(id)
+                                                         .GetAwaiter()
+                                                         .GetResult();
+
                 return workoutsWithChildren;
             }
             catch (Exception e)
             {
-                Logger.WriteLine(e.Message, Category.Error, e);
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
+
                 return new Workout();
             }
         }
-        
+
         public Task<List<Exercise>> GetExercisesInWorkoutAsync(string workoutId)
         {
             return GetExercisesInWorkoutAsync(Convert.ToInt32(workoutId));
@@ -90,30 +114,40 @@ namespace PersonalTrainerWorkouts.Data
         {
             try
             {
-                var workoutsWithChildren = _asyncDatabase.GetWithChildrenAsync<Workout>(workoutId).GetAwaiter().GetResult();
-                
+                var workoutsWithChildren = _asyncDatabase.GetWithChildrenAsync<Workout>(workoutId)
+                                                         .GetAwaiter()
+                                                         .GetResult();
+
                 return workoutsWithChildren.Exercises;
             }
             catch (Exception e)
             {
-                Logger.WriteLine(e.Message, Category.Error, e);
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
+
                 return null;
             }
         }
-        
-        public async Task<WorkoutExercise> GetExercise(int workoutId, int exerciseId)
+
+        public async Task<WorkoutExercise> GetExercise(int workoutId
+                                                     , int exerciseId)
         {
             try
             {
                 var allWorkoutExercises = await _asyncDatabase.GetAllWithChildrenAsync<WorkoutExercise>();
 
-                var workoutExercise = allWorkoutExercises.Where(wo => wo.WorkoutId == workoutId)
+                var workoutExercise = allWorkoutExercises.Where(wo => wo.WorkoutId           == workoutId)
                                                          .FirstOrDefault(we => we.ExerciseId == exerciseId);
+
                 return workoutExercise;
             }
             catch (Exception e)
             {
-                Logger.WriteLine(e.Message, Category.Error, e);
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
+
                 return null;
             }
         }
@@ -121,64 +155,82 @@ namespace PersonalTrainerWorkouts.Data
         public async Task<ObservableCollection<Exercise>> GetObservableCollectionOfExercisesAsync()
         {
             var exerciseList = await GetListOfExercisesAsync();
+
             return new ObservableCollection<Exercise>(exerciseList);
+
             //return new ObservableCollection<Exercises>(exerciseList.Where(field => field.Name == "Exercise 2" || field.Name == "1 Exercise"));
         }
+
         public async Task<List<Exercise>> GetListOfExercisesAsync()
         {
             try
             {
                 //BENDO: I think this defeats the purpose of async.  Put it back after debugging
                 var exercises = _asyncDatabase.Table<Exercise>();
+
                 return await exercises.ToListAsync(); //.ToListAsync();
             }
             catch (Exception e)
             {
-                Logger.WriteLine(e.Message, Category.Error, e);
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
+
                 return null;
             }
         }
+
         public async Task<Exercise[]> GetAllExercisesAsync()
         {
             try
             {
                 //BENDO: Why is this an array? Why not return a list?  Looks like I tried, but changed it to an array
                 var exercises = _asyncDatabase.Table<Exercise>();
+
                 return await exercises.ToArrayAsync(); //.ToListAsync();
             }
             catch (Exception e)
             {
-                Logger.WriteLine(e.Message, Category.Error, e);
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
+
                 return null;
             }
         }
 
-        public Task<WorkoutExercise> GetWorkoutExercise(string workoutId,
-                                                                     string exerciseId)
+        public Task<WorkoutExercise> GetWorkoutExercise(string workoutId
+                                                      , string exerciseId)
         {
-            return GetWorkoutExercise(Convert.ToInt32(workoutId), Convert.ToInt32(exerciseId));
+            return GetWorkoutExercise(Convert.ToInt32(workoutId)
+                                    , Convert.ToInt32(exerciseId));
         }
-        
+
         public Task<WorkoutExercise> GetWorkoutExercisesById(int id)
         {
             //return await _asyncDatabase.Table<WorkoutExercises>().Where(fields => fields.WorkoutId == workoutId).ToListAsync();
-            return _asyncDatabase.Table<WorkoutExercise>().Where(fields => fields.Id == id).FirstOrDefaultAsync();
+            return _asyncDatabase.Table<WorkoutExercise>()
+                                 .Where(fields => fields.Id == id)
+                                 .FirstOrDefaultAsync();
         }
 
         public Task<List<WorkoutExercise>> GetAllWorkoutExercisesByWorkout(int workoutId)
         {
             //return await _asyncDatabase.Table<WorkoutExercises>().Where(fields => fields.WorkoutId == workoutId).ToListAsync();
-            return _asyncDatabase.Table<WorkoutExercise>().Where(fields => fields.WorkoutId == workoutId).ToListAsync();
+            return _asyncDatabase.Table<WorkoutExercise>()
+                                 .Where(fields => fields.WorkoutId == workoutId)
+                                 .ToListAsync();
         }
 
-        public async Task<WorkoutExercise> GetWorkoutExercise(int workoutId,
-                                                                           int exerciseId)
+        public async Task<WorkoutExercise> GetWorkoutExercise(int workoutId
+                                                            , int exerciseId)
         {
-            var workoutExercises = await _asyncDatabase.Table<WorkoutExercise>().ToListAsync();
+            var workoutExercises = await _asyncDatabase.Table<WorkoutExercise>()
+                                                       .ToListAsync();
+
             if (workoutExercises != null)
             {
                 return workoutExercises.FirstOrDefault(item => item.WorkoutId == workoutId & item.ExerciseId == exerciseId);
-                
             }
 
             return new WorkoutExercise();
@@ -199,10 +251,14 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Logger.WriteLine(e.Message, Category.Error, e);
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
+
                 return null;
             }
         }
+
         public async Task<Exercise> GetExerciseByName(string exerciseName)
         {
             try
@@ -213,7 +269,10 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Logger.WriteLine(e.Message, Category.Error, e);
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
+
                 return null;
             }
         }
@@ -226,6 +285,7 @@ namespace PersonalTrainerWorkouts.Data
 
                 return insertTask;
             }
+
             Task updateTask = _asyncDatabase.UpdateAsync(exercise);
 
             return updateTask;
@@ -243,13 +303,16 @@ namespace PersonalTrainerWorkouts.Data
             }
             catch (Exception e)
             {
-                Logger.WriteLine(e.Message, Category.Error, e);
-                
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
+
                 throw;
             }
 
             return workout;
         }
+
         public Task<Workout> GetWorkoutByNameAsync(string name)
         {
             return _asyncDatabase.Table<Workout>()
@@ -261,14 +324,14 @@ namespace PersonalTrainerWorkouts.Data
         public Task SaveWorkoutAsync(Workout workout)
         {
             //BENDO:  Refactor to reduce nesting, and make it do one thing
-            
+
             //Is this a new workout?
             if (workout.Id == 0)
             {
                 //if (workout.Exercises.Count > 0)
                 //{
                 //    _asyncDatabase.InsertAsync(workout);
-                    
+
                 //    var exercises = workout.Exercises;
 
                 //    _asyncDatabase.InsertAsync(exercises).Wait();
@@ -276,7 +339,7 @@ namespace PersonalTrainerWorkouts.Data
                 //    return _asyncDatabase.UpdateAsync(_asyncDatabase);
                 //}
                 var task = _asyncDatabase.InsertAsync(workout);
-                
+
                 return task;
             }
 
@@ -287,7 +350,7 @@ namespace PersonalTrainerWorkouts.Data
             //        SaveExerciseAsync(exercise);
             //    }
             //}
-            
+
             //_asyncDatabase.UpdateAsync(workout).Wait();
 
             //This is an existing workout.  Are there exercises associated with it?
@@ -358,7 +421,5 @@ namespace PersonalTrainerWorkouts.Data
         {
             return _asyncDatabase.DeleteAsync(exercise);
         }
-
     }
-    
 }
