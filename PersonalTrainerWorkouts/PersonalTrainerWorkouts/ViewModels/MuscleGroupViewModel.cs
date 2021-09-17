@@ -43,7 +43,6 @@ namespace PersonalTrainerWorkouts.ViewModels
 
             //SetSynergistsNotInExerciseWhenExerciseHasSynergists is NOT working
             SetSynergistsNotInExerciseWhenExerciseHasSynergists(listOfResolvedSynergist);
-            
         }
 
         private void SetSynergistsNotInExerciseWhenExerciseHasSynergists(List<ResolvedSynergistViewModel> listOfResolvedSynergist)
@@ -69,29 +68,40 @@ namespace PersonalTrainerWorkouts.ViewModels
                                                        && field.OpposingMuscleGroup.Id == dbSynergist.OpposingMuscleGroup.Id));
         }
 
-        private bool SetSynergistsNotInExerciseWhenExerciseHasNone(List<ResolvedSynergistViewModel> listOfResolvedSynergist)
+        private bool SetSynergistsNotInExerciseWhenExerciseHasNone(IEnumerable<ResolvedSynergistViewModel> listOfResolvedSynergist)
         {
-            if (! Synergists.Any())
+            if (Synergists.Any())
             {
-                foreach (var dbSynergist in listOfResolvedSynergist)
-                {
-                    //The Exercise does not have any synergist assigned to it.
-                    //Then get a distinct list of all synergists from the DB
-                    var synergistToAdd = new ResolvedSynergistViewModel(0
-                                                                      , 0
-                                                                      , dbSynergist.PrimaryMuscleGroup.Id
-                                                                      , dbSynergist.OpposingMuscleGroup.Id);
-
-                    if (! SynergistsNotInExercise.Any(field => field.PrimaryMuscleGroup == synergistToAdd.PrimaryMuscleGroup && field.OpposingMuscleGroup == synergistToAdd.OpposingMuscleGroup))
-                    {
-                        SynergistsNotInExercise.Add(synergistToAdd);
-                    }
-                }
-                
-                return true;
+                return false;
             }
 
-            return false;
+            foreach (var synergistToAdd in 
+                     listOfResolvedSynergist.Select
+                                             (
+                                                dbSynergist => new ResolvedSynergistViewModel
+                                                               (
+                                                                  0
+                                                                , 0
+                                                                , dbSynergist.PrimaryMuscleGroup.Id
+                                                                , dbSynergist.OpposingMuscleGroup.Id
+                                                               )
+                                             )
+                                            .Where
+                                             (
+                                                synergistToAdd => ! SynergistsNotInExercise.Any
+                                                                                            (
+                                                                                                field => 
+                                                                                                field.PrimaryMuscleGroup == synergistToAdd.PrimaryMuscleGroup 
+                                                                                             && field.OpposingMuscleGroup == synergistToAdd.OpposingMuscleGroup
+                                                                                            )
+                                             )
+                    )
+            {
+                SynergistsNotInExercise.Add(synergistToAdd);
+            }
+
+            return true;
+
         }
 
         private void SetSynergistsInExercise(string exerciseId)
