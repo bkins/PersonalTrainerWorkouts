@@ -9,9 +9,10 @@ namespace PersonalTrainerWorkouts.Models
     public class Equipment : BaseModel
     {
         [PrimaryKey, AutoIncrement]
-        public int Id { get;      set; }
-        
-        [ManyToMany(typeof(ExerciseEquipment), CascadeOperations = CascadeOperation.All)]
+        public int Id { get; set; }
+
+        [ManyToMany(typeof(ExerciseEquipment)
+                  , CascadeOperations = CascadeOperation.All)]
         public List<Exercise> Exercises { get; set; }
     }
 }

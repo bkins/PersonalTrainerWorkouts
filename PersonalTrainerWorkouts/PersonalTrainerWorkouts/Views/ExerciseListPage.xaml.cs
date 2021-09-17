@@ -9,7 +9,8 @@ using ItemTappedEventArgs = Syncfusion.ListView.XForms.ItemTappedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views
 {
-    [QueryProperty(nameof(WorkoutId), nameof(WorkoutId))]
+    [QueryProperty(nameof(WorkoutId)
+                 , nameof(WorkoutId))]
     public partial class ExerciseListPage
     {
         private string                      _workoutId = "0";
@@ -21,7 +22,7 @@ namespace PersonalTrainerWorkouts.Views
             get => _workoutId;
             set => LoadExercises(value);
         }
-        
+
         private void LoadExercises(string itemId)
         {
             try
@@ -35,7 +36,10 @@ namespace PersonalTrainerWorkouts.Views
             }
             catch (Exception ex)
             {
-                Logger.WriteLine("Failed to load Exercises.", Category.Error, ex);
+                Logger.WriteLine("Failed to load Exercises."
+                               , Category.Error
+                               , ex);
+
                 //BENDO: consider implementing a page that shows exception details
             }
         }
@@ -77,62 +81,69 @@ namespace PersonalTrainerWorkouts.Views
                                           , WorkoutId);
         }
 
-        private async void OnSelectionChanged(object                    sender,
-                                              SelectionChangedEventArgs e)
+        private async void OnSelectionChanged(object                    sender
+                                            , SelectionChangedEventArgs e)
         {
             await PageNavigation.NavigateTo(nameof(ExerciseExistingEntryPage)
                                           , nameof(ExerciseExistingEntryPage.WorkoutId)
                                           , WorkoutId);
         }
-        
+
         private async void ExerciseList_OnItemDragging(object                sender
                                                      , ItemDraggingEventArgs e)
         {
             switch (e.Action)
             {
                 case DragAction.Start:
-                    
-                    _drugExercise = (WorkoutExerciseWithChildren) e.ItemData;
+
+                    _drugExercise = (WorkoutExerciseWithChildren)e.ItemData;
 
                     break;
 
                 case DragAction.Dragging:
 
                     break;
-                
+
                 case DragAction.Drop:
 
                     await Task.Delay(100);
                     MoveItem(e);
-                    
+
                     break;
 
                 default:
 
-                    Logger.WriteLine($"While dragging the Exercise, something went terribly wrong.  Please try again.", Category.Warning);
+                    Logger.WriteLine($"While dragging the Exercise, something went terribly wrong.  Please try again."
+                                   , Category.Warning);
+
                     break;
             }
         }
 
-        public  void MoveItem(ItemDraggingEventArgs itemMoved)
+        public void MoveItem(ItemDraggingEventArgs itemMoved)
         {
-            ViewModel.LinkWorkoutExercises.MoveTo(itemMoved.OldIndex, itemMoved.NewIndex);
+            ViewModel.LinkWorkoutExercises.MoveTo(itemMoved.OldIndex
+                                                , itemMoved.NewIndex);
+
             for (var i = 0; i < ViewModel.LinkWorkoutExercises.Count; i++)
             {
-                ViewModel.LinkWorkoutExercises[i].WorkoutExercise.OrderBy = i;
-                ViewModel.LinkWorkoutExercises[i].Save();
+                ViewModel.LinkWorkoutExercises[i]
+                         .WorkoutExercise.OrderBy = i;
+
+                ViewModel.LinkWorkoutExercises[i]
+                         .Save();
             }
-            
+
             ViewModel.RefreshData();
-            
+
             ExerciseList.ItemsSource = ViewModel.LinkWorkoutExercises;
         }
 
         private async void ExerciseList_OnItemTapped(object              sender
                                                    , ItemTappedEventArgs e)
         {
-            var tappedExercise = (WorkoutExerciseWithChildren) e.ItemData;
-            
+            var tappedExercise = (WorkoutExerciseWithChildren)e.ItemData;
+
             await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
                                           , nameof(ExerciseAddEditPage.WorkoutId)
                                           , tappedExercise.Workout.Id.ToString()

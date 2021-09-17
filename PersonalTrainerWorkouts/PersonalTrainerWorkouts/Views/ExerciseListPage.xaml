@@ -1,16 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             
+
              xmlns:dataSource="clr-namespace:Syncfusion.DataSource;assembly=Syncfusion.DataSource.Portable"
              xmlns:listview="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
              xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
-             
-             x:Class="PersonalTrainerWorkouts.Views.ExerciseListPage" 
+
+             x:Class="PersonalTrainerWorkouts.Views.ExerciseListPage"
              x:DataType="viewmodels:ExerciseListViewModel"
              Title="Exercise List">
 
-    <ContentPage.Resources> 
+    <ContentPage.Resources>
         <Style TargetType="{x:Type Editor}">
             <Setter Property="BackgroundColor"
                     Value="{DynamicResource AppBackgroundColor}" />
@@ -49,13 +50,13 @@
                          DragStartMode="OnHold,OnDragIndicator"
                          IsStickyGroupHeader="false"
                          SelectionMode="None"
-                         ItemDragging ="ExerciseList_OnItemDragging"
+                         ItemDragging="ExerciseList_OnItemDragging"
                          ItemTapped="ExerciseList_OnItemTapped">
         <listview:SfListView.DataSource>
             <dataSource:DataSource>
                 <dataSource:DataSource.SortDescriptors>
-                    <dataSource:SortDescriptor PropertyName="WorkoutExercise.OrderBy" 
-                                               Direction="Ascending"/>
+                    <dataSource:SortDescriptor PropertyName="WorkoutExercise.OrderBy"
+                                               Direction="Ascending" />
                 </dataSource:DataSource.SortDescriptors>
             </dataSource:DataSource>
         </listview:SfListView.DataSource>
@@ -63,8 +64,8 @@
         <listview:SfListView.ItemTemplate>
             <DataTemplate>
 
-                <Frame HasShadow="True" 
-                       BackgroundColor="White" 
+                <Frame HasShadow="True"
+                       BackgroundColor="White"
                        Padding="0"
                        InputTransparent="{OnPlatform Default=false, 
                                                      Android=true}">
@@ -75,7 +76,7 @@
                             <ColumnDefinition Width="*" />
                         </Grid.ColumnDefinitions>
 
-                        <Label x:Name="textLabel" 
+                        <Label x:Name="textLabel"
                                Text="{Binding Exercise.Name}"
                                Grid.Column="0"
                                FontSize="15"
@@ -86,20 +87,19 @@
 
                         <listview:DragIndicatorView Grid.Column="1"
                                                     ListView="{x:Reference ExerciseList}"
-                                                    HorizontalOptions="End" 
+                                                    HorizontalOptions="End"
                                                     VerticalOptions="Center">
                             <Grid Padding="0,20,0,20">
-                                <Label VerticalOptions="Center" 
-                                       HeightRequest="40" 
+                                <Label VerticalOptions="Center"
+                                       HeightRequest="40"
                                        WidthRequest="40"
                                        HorizontalOptions="End"
-                                       Text="&#xe71b;" 
-                                       FontSize="Medium" 
+                                       Text="&#xe71b;"
+                                       FontSize="Medium"
                                        TextColor="#6F7771"
                                        FontFamily="{OnPlatform Android=Sync FontIcons.ttf#, 
                                                                UWP=Sync FontIcons.ttf#,
-                                                               iOS=Sync FontIcons.ttf#}"
-                                        />
+                                                               iOS=Sync FontIcons.ttf#}" />
                             </Grid>
                         </listview:DragIndicatorView>
                     </Grid>

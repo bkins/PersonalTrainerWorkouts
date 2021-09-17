@@ -5,14 +5,14 @@ using SQLiteNetExtensions.Attributes;
 
 namespace PersonalTrainerWorkouts.Models
 {
-    [Table( "Types")]
+    [Table("Types")]
     public class TypeOfExercise : BaseModel
     {
         [PrimaryKey, AutoIncrement]
-        public int Id { get;      set; }
-        
-        [ManyToMany( typeof(ExerciseType), CascadeOperations = CascadeOperation.All)]
-        public List<Exercise> Exercises { get; set; }
+        public int Id { get; set; }
 
+        [ManyToMany(typeof(ExerciseType)
+                  , CascadeOperations = CascadeOperation.All)]
+        public List<Exercise> Exercises { get; set; }
     }
 }

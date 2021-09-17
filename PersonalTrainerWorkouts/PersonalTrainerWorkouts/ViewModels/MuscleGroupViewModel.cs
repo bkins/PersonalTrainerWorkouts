@@ -10,44 +10,124 @@ namespace PersonalTrainerWorkouts.ViewModels
 {
     public class MuscleGroupViewModel : ViewModelBase
     {
-        private Exercise                 Exercise          { get; }
-        public  IList<ResolvedSynergistViewModel> Synergists        { get; set; }
-        public  ResolvedSynergistViewModel        SelectedSynergist { get; set; }
+        private Exercise                          Exercise                { get; set; }
+        public  IList<ResolvedSynergistViewModel> Synergists              { get; set; }
+        public  ResolvedSynergistViewModel        SelectedSynergist       { get; set; }
+        public  IList<ResolvedSynergistViewModel> SynergistsNotInExercise { get; set; }
 
         public MuscleGroupViewModel(string exerciseId)
         {
             //Use the Exercise to assign the selected Synergist to.
-            Exercise   = DataAccessLayer.GetExercise(int.Parse(exerciseId));
+            SetSynergistsInExercise(exerciseId);
 
-            Synergists = new List<ResolvedSynergistViewModel>();
-            var synergistsFromDb = DataAccessLayer.GetAllSynergists() 
+            //BENDO: Not sure if the '.Distinct' in this Get is doing what I intend
+            var synergistsFromDb = DataAccessLayer.GetAllSynergists()
+                                                  .Distinct()
                                                   .ToList();
 
-            var listOfSynergists = new List<ResolvedSynergistViewModel>();
+            //1. Resolved each synergist in synergistsFromDb
+            //BENDO: do I need to resolve these??
+            //       Maybe, if I resolve these then I will be comparing apples (ResolvedSynergistViewModel) to apple (ResolvedSynergistViewModel))
+            //       It might make it easier, but probably not necessary.
 
-            foreach (var synergist in synergistsFromDb)
+            var listOfResolvedSynergist = synergistsFromDb.Select(synergist => new ResolvedSynergistViewModel(synergist)).ToList();
+            
+            SynergistsNotInExercise = new List<ResolvedSynergistViewModel>();
+
+            //BENDO: Can SetSynergistsNotInExerciseWhenExerciseHasNone & SetSynergistsNotInExerciseWhenExerciseHasSynergists be combine into 1 method and streamlined?
+            //SetSynergistsNotInExerciseWhenExerciseHasNone works as expected
+            if (SetSynergistsNotInExerciseWhenExerciseHasNone(listOfResolvedSynergist))
             {
-                Synergists.Add(new ResolvedSynergistViewModel(synergist.Id
-                                                   , synergist.ExerciseId
-                                                   , synergist.MuscleGroupId
-                                                   , synergist.OpposingMuscleGroupId));
-            } 
+                return;
+            }
+
+            //SetSynergistsNotInExerciseWhenExerciseHasSynergists is NOT working
+            SetSynergistsNotInExerciseWhenExerciseHasSynergists(listOfResolvedSynergist);
+            
         }
 
-        public void SaveNewSynergist(string muscleGroupName, string opposingMuscleGroupName)
+        private void SetSynergistsNotInExerciseWhenExerciseHasSynergists(List<ResolvedSynergistViewModel> listOfResolvedSynergist)
         {
+            //Synergists has items
+            foreach (var dbSynergist in from dbSynergist in listOfResolvedSynergist
+                                        from exerciseSynergists in Synergists.Where(exerciseSynergists => SynergistIsNotInExercise(dbSynergist
+                                                                                                                                 , exerciseSynergists))
+                                        select dbSynergist)
+            {
+                SynergistsNotInExercise.Add(dbSynergist);
+            }
+        }
 
+        private bool SynergistIsNotInExercise(ResolvedSynergistViewModel dbSynergist
+                                            , ResolvedSynergistViewModel exerciseSynergists)
+        {
+            return ! (dbSynergist.Exercise.Id == exerciseSynergists.Exercise.Id
+                   || (dbSynergist.PrimaryMuscleGroup.Id  == exerciseSynergists.PrimaryMuscleGroup.Id 
+                    && dbSynergist.OpposingMuscleGroup.Id == exerciseSynergists.OpposingMuscleGroup.Id)
+                   || SynergistsNotInExercise.Any(field=>
+                                                          field.PrimaryMuscleGroup.Id  == dbSynergist.PrimaryMuscleGroup.Id 
+                                                       && field.OpposingMuscleGroup.Id == dbSynergist.OpposingMuscleGroup.Id));
+        }
+
+        private bool SetSynergistsNotInExerciseWhenExerciseHasNone(List<ResolvedSynergistViewModel> listOfResolvedSynergist)
+        {
+            if (! Synergists.Any())
+            {
+                foreach (var dbSynergist in listOfResolvedSynergist)
+                {
+                    //The Exercise does not have any synergist assigned to it.
+                    //Then get a distinct list of all synergists from the DB
+                    var synergistToAdd = new ResolvedSynergistViewModel(0
+                                                                      , 0
+                                                                      , dbSynergist.PrimaryMuscleGroup.Id
+                                                                      , dbSynergist.OpposingMuscleGroup.Id);
+
+                    if (! SynergistsNotInExercise.Any(field => field.PrimaryMuscleGroup == synergistToAdd.PrimaryMuscleGroup && field.OpposingMuscleGroup == synergistToAdd.OpposingMuscleGroup))
+                    {
+                        SynergistsNotInExercise.Add(synergistToAdd);
+                    }
+                }
+                
+                return true;
+            }
+
+            return false;
+        }
+
+        private void SetSynergistsInExercise(string exerciseId)
+        {
+            Exercise   = DataAccessLayer.GetExercise(int.Parse(exerciseId));
+            Synergists = new List<ResolvedSynergistViewModel>();
+
+            if (Exercise.Synergists.Any())
+            {
+                var exerciseSynergists = Exercise.Synergists;
+
+                foreach (var synergist in exerciseSynergists)
+                {
+                    Synergists.Add(new ResolvedSynergistViewModel(synergist.Id
+                                                                , synergist.ExerciseId
+                                                                , synergist.MuscleGroupId
+                                                                , synergist.OpposingMuscleGroupId));
+                }
+            }
+        }
+
+        public void SaveNewSynergist(string muscleGroupName
+                                   , string opposingMuscleGroupName)
+        {
             if (muscleGroupName.IsNullEmptyOrWhitespace()
-            || Exercise.Id == 0)
+             || Exercise.Id == 0)
             {
                 Logger.WriteLine("Either the muscle does not have a name or the Exercise has not been defined. Synergist was not saved"
                                , Category.Warning);
+
                 return;
             }
 
             var newPrimaryMuscleGroupId  = SaveNewMuscleGroup(muscleGroupName);
             var newOpposingMuscleGroupId = SaveNewMuscleGroup(opposingMuscleGroupName);
-            
+
             DataAccessLayer.AddSynergist(new Synergist
                                          {
                                              ExerciseId            = Exercise.Id
@@ -55,12 +135,18 @@ namespace PersonalTrainerWorkouts.ViewModels
                                            , OpposingMuscleGroupId = newOpposingMuscleGroupId
                                          });
         }
-        
+
         public void SaveOppositeSynergist(string muscleGroupName
                                         , string opposingMuscleGroupName)
         {
-            var allMuscleGroups     = DataAccessLayer.GetAllMuscleGroups().ToList();
-            
+            if (opposingMuscleGroupName.IsNullEmptyOrWhitespace())
+            {
+                return; //Don't add the opposite synergist if no opposing muscle group is defined
+            }
+
+            var allMuscleGroups = DataAccessLayer.GetAllMuscleGroups()
+                                                 .ToList();
+
             //Make the Primary Muscle the opposing muscle group and via versa
             var primaryMuscleGroup  = allMuscleGroups.First(field => field.Name == opposingMuscleGroupName);
             var opposingMuscleGroup = allMuscleGroups.First(field => field.Name == muscleGroupName);
@@ -76,11 +162,16 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         public int SaveNewMuscleGroup(string newMuscleGroupName)
         {
+            if (newMuscleGroupName.IsNullEmptyOrWhitespace())
+            {
+                return 0;
+            }
+
             var newMuscleGroup = new MuscleGroup
                                  {
                                      Name = newMuscleGroupName
                                  };
-            
+
             return DataAccessLayer.AddNewMuscleGroup(newMuscleGroup);
         }
 
@@ -88,7 +179,9 @@ namespace PersonalTrainerWorkouts.ViewModels
         {
             if (Exercise.Id == 0)
             {
-                Logger.WriteLine("The Exercise was not defined.  Synergist was not saved.", Category.Warning);
+                Logger.WriteLine("The Exercise was not defined.  Synergist was not saved."
+                               , Category.Warning);
+
                 return;
             }
 
@@ -99,6 +192,5 @@ namespace PersonalTrainerWorkouts.ViewModels
                                            , OpposingMuscleGroupId = SelectedSynergist.OpposingMuscleGroup.Id
                                          });
         }
-
     }
 }

@@ -26,6 +26,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                                };
 
             DataAccessLayer.AddNewEquipment(newEquipment);
+
             DataAccessLayer.AddExerciseEquipment(Exercise.Id
                                                , newEquipment.Id);
         }

@@ -11,19 +11,18 @@ namespace PersonalTrainerWorkouts.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        
+
         public string   Description    { get; set; }
         public int      Difficulty     { get; set; }
         public DateTime CreateDateTime { get; set; }
 
-        public Workout() 
+        public Workout()
         {
             Exercises = new List<Exercise>();
         }
 
-        [ManyToMany(typeof(WorkoutExercise), CascadeOperations = CascadeOperation.All)] 
+        [ManyToMany(typeof(WorkoutExercise)
+                  , CascadeOperations = CascadeOperation.All)]
         public List<Exercise> Exercises { get; set; }
-
-        
     }
 }

@@ -9,11 +9,10 @@ using SwipeEndedEventArgs = Syncfusion.ListView.XForms.SwipeEndedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views
 {
-    
     public partial class WorkoutListPage : ContentPage
     {
-        public int                  SwipedItem     { get; set; }
-        public WorkoutListViewModel ViewModel      { get; set; }
+        public int                  SwipedItem { get; set; }
+        public WorkoutListViewModel ViewModel  { get; set; }
 
         public WorkoutListPage()
         {
@@ -24,23 +23,23 @@ namespace PersonalTrainerWorkouts.Views
         protected override void OnAppearing()
         {
             base.OnAppearing();
-            
+
             ListView.ItemsSource = ViewModel.ListOfWorkouts;
         }
-        
-        async void OnAddClicked(object    sender,
-                                EventArgs e)
+
+        async void OnAddClicked(object    sender
+                              , EventArgs e)
         {
             await PageNavigation.NavigateTo(nameof(WorkoutEntryPage));
         }
 
-        async void OnSelectionChanged(object                        sender,
-                                      ItemSelectionChangedEventArgs e)
+        async void OnSelectionChanged(object                        sender
+                                    , ItemSelectionChangedEventArgs e)
         {
             if (e.AddedItems != null)
             {
                 var workout = (Workout)e.AddedItems.FirstOrDefault();
-                
+
                 if (workout == null)
                 {
                     return;
@@ -57,35 +56,34 @@ namespace PersonalTrainerWorkouts.Views
         {
             if (sender is Image deleteImage)
             {
-                (deleteImage.Parent as View)?.GestureRecognizers.Add
-                        (
-                            new TapGestureRecognizer
-                            {
-                                Command = new Command(Delete)
-                            }
-                        );
+                (deleteImage.Parent as View)?.GestureRecognizers.Add(new TapGestureRecognizer
+                                                                     {
+                                                                         Command = new Command(Delete)
+                                                                     });
             }
         }
-        
-        private void ListView_SwipeEnded(object sender, SwipeEndedEventArgs swipeEndedEventArgs)
+
+        private void ListView_SwipeEnded(object              sender
+                                       , SwipeEndedEventArgs swipeEndedEventArgs)
         {
             SwipedItem = swipeEndedEventArgs.ItemIndex;
         }
 
         private void Delete()
         {
-            
             var itemDeleted = ViewModel.Delete(SwipedItem);
 
             if (itemDeleted == string.Empty)
             {
-                Logger.WriteLine("Workout could not be deleted.  Please try again.", Category.Warning);
+                Logger.WriteLine("Workout could not be deleted.  Please try again."
+                               , Category.Warning);
             }
 
             ListView.ItemsSource = ViewModel.ListOfWorkouts;
 
-            Logger.WriteLine($"Deleted Workout: {itemDeleted} deleted.", Category.Information);
-            
+            Logger.WriteLine($"Deleted Workout: {itemDeleted} deleted."
+                           , Category.Information);
+
             ListView.ResetSwipe();
         }
     }

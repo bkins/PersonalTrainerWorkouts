@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Forms;
@@ -18,20 +17,20 @@ namespace PersonalTrainerWorkouts.Views
             ViewModel = new ConfigurationViewModel();
         }
 
-        private void DropTablesButtonClicked(object    sender,
-                                             EventArgs e)
+        private void DropTablesButtonClicked(object    sender
+                                           , EventArgs e)
         {
             ViewModel.DropTables();
         }
 
-        private void CreateTablesButtonClicked(object    sender,
-                                               EventArgs e)
+        private void CreateTablesButtonClicked(object    sender
+                                             , EventArgs e)
         {
             ViewModel.CreateTables();
         }
 
-        private async void ViewLogButtonClicked(object    sender,
-                                                EventArgs e)
+        private async void ViewLogButtonClicked(object    sender
+                                              , EventArgs e)
         {
             await PageNavigation.NavigateTo(nameof(MessageLog));
         }

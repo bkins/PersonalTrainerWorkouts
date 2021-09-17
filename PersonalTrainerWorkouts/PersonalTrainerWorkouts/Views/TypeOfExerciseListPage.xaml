@@ -1,17 +1,17 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             
+
              xmlns:picker="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
              xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
 
-             x:Class="PersonalTrainerWorkouts.Views.TypeOfExerciseListPage" 
+             x:Class="PersonalTrainerWorkouts.Views.TypeOfExerciseListPage"
              x:DataType="viewModels:TypeOfExerciseListViewModel"
-             Title="Add Type to Exercise"
->
+             Title="Add Type to Exercise">
     <ContentPage.Content>
         <StackLayout>
-            
+
             <picker:SfPicker x:Name="TypeOfExercisePicker"
                              ItemsSource="{Binding ListOfAllExerciseTypes}"
                              DisplayMemberPath="Name"
@@ -20,10 +20,7 @@
                              ShowHeader="False"
                              OkButtonClicked="TypeOfExercisePicker_OnOkButtonClicked"
                              CancelButtonClicked="TypeOfExercisePicker_OnCancelButtonClicked"
-                             ShowFooter="True"
-            >
-            
-            </picker:SfPicker>
+                             ShowFooter="True" />
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

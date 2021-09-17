@@ -8,11 +8,12 @@ using PersonalTrainerWorkouts.Utilities;
 namespace PersonalTrainerWorkouts.ViewModels
 {
     public class ExerciseItemViewModel : ViewModelBase
-    {   
+    {
         public IEnumerable<Exercise> AllExercises { get; set; }
 
         private Exercise _selectedExercise;
-        public  Exercise SelectedExercise
+
+        public Exercise SelectedExercise
         {
             get => _selectedExercise;
             set
@@ -24,7 +25,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 }
             }
         }
-        
+
         public ExerciseItemViewModel()
         {
             AllExercises = DataAccessLayer.GetExercises();
@@ -36,14 +37,14 @@ namespace PersonalTrainerWorkouts.ViewModels
             {
                 if (string.IsNullOrWhiteSpace(_selectedExercise.Name))
                     throw new UnnamedEntityException($"{nameof(Exercise)} was not named.  Must be named before attempting to save.");
-                
+
                 var workoutExercise = new LinkedWorkoutsToExercises
                                       {
                                           ExerciseId   = _selectedExercise.Id
                                         , WorkoutId    = workoutId
                                         , LengthOfTime = _selectedExercise.LengthOfTime
                                       };
-                
+
                 var workoutExerciseId = DataAccessLayer.AddLinkedWorkoutsToExercises(workoutExercise);
 
                 if (workoutExerciseId == 0)
@@ -53,11 +54,12 @@ namespace PersonalTrainerWorkouts.ViewModels
             }
             catch (Exception e)
             {
-                Logger.WriteLine(e.Message, Category.Error, e);
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
 
                 throw;
             }
         }
     }
-    
 }

@@ -8,10 +8,11 @@ namespace PersonalTrainerWorkouts.Views
     public partial class MessageLog : ContentPage
     {
         public MessageLogViewModel PageDate { get; set; }
+
         public MessageLog()
         {
             InitializeComponent();
-            
+
             BindingContext = new MessageLogViewModel();
         }
     }

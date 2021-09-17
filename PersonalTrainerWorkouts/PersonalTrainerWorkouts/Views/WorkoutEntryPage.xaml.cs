@@ -10,8 +10,8 @@ namespace PersonalTrainerWorkouts.Views
 {
     public partial class WorkoutEntryPage : ContentPage
     {
-        private WorkoutEntryViewModel ViewModel          { get; set; }
-        private Entry                 NameEntry          { get; set; }
+        private WorkoutEntryViewModel ViewModel { get; set; }
+        private Entry                 NameEntry { get; set; }
 
         public WorkoutEntryPage()
         {
@@ -23,10 +23,11 @@ namespace PersonalTrainerWorkouts.Views
 
             DifficultyEditor.Text = string.Empty;
         }
+
         //https://docs.microsoft.com/en-us/xamarin/get-started/quickstarts/database?pivots=windows
-        
-        private async void OnSelectionChanged(object                    sender,
-                                              SelectionChangedEventArgs e)
+
+        private async void OnSelectionChanged(object                    sender
+                                            , SelectionChangedEventArgs e)
         {
             var exercise = (Exercise)e.CurrentSelection.FirstOrDefault();
 
@@ -41,15 +42,15 @@ namespace PersonalTrainerWorkouts.Views
                                           , nameof(ExerciseAddEditPage.ExerciseId)
                                           , exercise.Id.ToString());
         }
-        
-        async void OnManageExercisesClicked(object    sender,
-                                            EventArgs e)
+
+        async void OnManageExercisesClicked(object    sender
+                                          , EventArgs e)
         {
             await PageNavigation.NavigateTo(nameof(ExerciseListPage)
                                           , nameof(ExerciseListPage.WorkoutId)
                                           , ViewModel.NewWorkout.Id.ToString());
         }
-        
+
         private void SaveWorkout()
         {
             var context = (WorkoutEntryViewModel)BindingContext;
@@ -70,40 +71,42 @@ namespace PersonalTrainerWorkouts.Views
             catch (UnnamedEntityException e)
             {
                 NameEntry.Focus();
-                Logger.WriteLine("Please name the workout before continuing.", Category.Warning, e);
-            }
 
+                Logger.WriteLine("Please name the workout before continuing."
+                               , Category.Warning
+                               , e);
+            }
         }
 
         private void Name_OnUnfocused(object         sender
                                     , FocusEventArgs e)
         {
-            NameEntry = (Entry) sender;
+            NameEntry = (Entry)sender;
 
             SaveWorkout();
         }
 
-        private void Description_OnUnfocused(object           sender
+        private void Description_OnUnfocused(object         sender
                                            , FocusEventArgs e)
         {
-            var description = (Editor) sender;
+            var description = (Editor)sender;
 
             if (description.Text.HasValue())
             {
                 SaveWorkout();
             }
-            
         }
 
         private async void Difficulty_OnUnfocused(object         sender
                                                 , FocusEventArgs e)
         {
-            var difficulty = (Entry) sender;
+            var difficulty = (Entry)sender;
 
             if (difficulty.Text.HasValue())
             {
                 SaveWorkout();
             }
+
             await PageNavigation.NavigateBackwards();
         }
     }

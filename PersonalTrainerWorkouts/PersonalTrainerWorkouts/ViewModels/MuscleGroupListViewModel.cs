@@ -7,14 +7,10 @@ namespace PersonalTrainerWorkouts.ViewModels
 {
     public class MuscleGroupListViewModel : ViewModelBase
     {
-        
         public IEnumerable<MuscleGroup> ListOfAllExerciseMuscleGroup => DataAccessLayer.GetAllMuscleGroups();
         public MuscleGroup              SelectedMuscleGroup          { get; set; }
 
-        public MuscleGroupListViewModel()
-        {
-
-        }
+        public MuscleGroupListViewModel() { }
 
         public void SaveExerciseMuscleGroup(int exerciseId)
         {

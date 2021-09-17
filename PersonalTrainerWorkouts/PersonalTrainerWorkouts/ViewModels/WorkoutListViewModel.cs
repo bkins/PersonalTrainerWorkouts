@@ -3,7 +3,7 @@ using PersonalTrainerWorkouts.Models;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
-    public class WorkoutListViewModel: ViewModelBase
+    public class WorkoutListViewModel : ViewModelBase
     {
         public ObservableCollection<Workout> ListOfWorkouts
         {
@@ -32,7 +32,7 @@ namespace PersonalTrainerWorkouts.ViewModels
 
             //Delete the Workout from the database
             App.Database.DeleteWorkout(ref workoutToDelete);
-            
+
             ListOfWorkouts = new ObservableCollection<Workout>(DataAccessLayer.GetWorkouts());
 
             return workoutName;

@@ -10,7 +10,7 @@ namespace PersonalTrainerWorkouts.Utilities
         {
             await Navigate($"{nameOfPage}");
         }
-        
+
         public static async Task NavigateTo(string nameOfPage
                                           , string nameOfParameter1
                                           , string valueOfParameter1)
@@ -21,7 +21,10 @@ namespace PersonalTrainerWorkouts.Utilities
             }
             catch (Exception e)
             {
-                Logger.WriteLine($"Could not navigate to page: {nameOfPage}, because {e.Message}", Category.Error, e);
+                Logger.WriteLine($"Could not navigate to page: {nameOfPage}, because {e.Message}"
+                               , Category.Error
+                               , e);
+
                 throw;
             }
         }
@@ -33,13 +36,16 @@ namespace PersonalTrainerWorkouts.Utilities
                                           , string valueOfParameter2)
         {
             await Navigate($"{nameOfPage}?{nameOfParameter1}={valueOfParameter1}&{nameOfParameter2}={valueOfParameter2}");
-         
         }
 
         private static async Task Navigate(string path)
         {
+            Logger.WriteLine($"Navigating to: {path}."
+                           , Category.Information);
+
             await Shell.Current.GoToAsync(path);
         }
+
         public static async Task NavigateBackwards()
         {
             await Shell.Current.GoToAsync("..");

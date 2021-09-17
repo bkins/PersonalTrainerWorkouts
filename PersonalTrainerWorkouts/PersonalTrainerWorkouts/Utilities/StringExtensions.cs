@@ -8,10 +8,9 @@ namespace PersonalTrainerWorkouts.Utilities
 
         public static bool IsNullEmptyOrWhitespace(this string value)
         {
-            return string.IsNullOrEmpty(value) 
-                || string.IsNullOrWhiteSpace(value);
+            return string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value);
         }
-        
+
         /// <summary>
         /// "HasValue" means the string is:
         ///     NOT Null,
@@ -30,18 +29,22 @@ namespace PersonalTrainerWorkouts.Utilities
             //No value, return a new TimeSpan
             if (timeAsString.IsNullEmptyOrWhitespace())
             {
-                return new TimeSpan(0, 0, 0, 0);
+                return new TimeSpan(0
+                                  , 0
+                                  , 0
+                                  , 0);
             }
 
             //Value is a whole number, return TimeSpan in minutes
-            if (int.TryParse(timeAsString, out var number))
+            if (int.TryParse(timeAsString
+                           , out var number))
             {
                 return new TimeSpan(0
                                   , 0
                                   , number
                                   , 0);
             }
-            
+
             //Value is not in a time format (there is no ':' in string), throw error  
             if (! timeAsString.Contains(":"))
                 throw new FormatException(BAD_TIME_FORMAT_MESSAGE);
@@ -51,13 +54,13 @@ namespace PersonalTrainerWorkouts.Utilities
             switch (timeParts.Length)
             {
                 case 2: //00:00
-                    
+
                     return TryToGetTimeInMinutesAndSeconds(timeParts);
-                    
-                case 3://00:00:00
-                    
+
+                case 3: //00:00:00
+
                     return TryToGetTimeInHoursMinutesAndSeconds(timeParts);
-                    
+
                 default:
 
                     throw new FormatException(BAD_TIME_FORMAT_MESSAGE);
@@ -94,9 +97,9 @@ namespace PersonalTrainerWorkouts.Utilities
                            , out var seconds))
             {
                 time = new TimeSpan(0
-                                         , 0
-                                         , minutes
-                                         , seconds);
+                                  , 0
+                                  , minutes
+                                  , seconds);
             }
 
             return time;
@@ -105,6 +108,7 @@ namespace PersonalTrainerWorkouts.Utilities
         public static string ToShortForm(this TimeSpan t)
         {
             string shortForm = "";
+
             if (t.Hours > 0)
             {
                 shortForm += $"{t.Hours}:";
@@ -112,7 +116,7 @@ namespace PersonalTrainerWorkouts.Utilities
 
             //Add leading zeroes to minutes and seconds
             shortForm += $"{t.Minutes.ToString().PadLeft(2, '0')}:{t.Seconds.ToString().PadLeft(2, '0')}";
-            
+
             return shortForm;
         }
     }

@@ -9,16 +9,19 @@ namespace PersonalTrainerWorkouts.ViewModels
     {
         public  int                                               WorkoutId { get; set; }
         private ObservableCollection<WorkoutExerciseWithChildren> _linkWorkoutExercises;
-        public  ObservableCollection<WorkoutExerciseWithChildren> LinkWorkoutExercises
+
+        public ObservableCollection<WorkoutExerciseWithChildren> LinkWorkoutExercises
         {
             get => _linkWorkoutExercises;
             set
             {
-                SetValue(ref _linkWorkoutExercises, value); 
+                SetValue(ref _linkWorkoutExercises
+                       , value);
+
                 OnPropertyChanged(nameof(LinkWorkoutExercises));
             }
         }
-        
+
         public ExerciseListViewModel(int workoutId)
         {
             WorkoutId = workoutId;
@@ -28,15 +31,17 @@ namespace PersonalTrainerWorkouts.ViewModels
         public void RefreshData()
         {
             LinkWorkoutExercises = new ObservableCollection<WorkoutExerciseWithChildren>();
-            
+
             var workoutExercisesAssociatedWithWorkout = DataAccessLayer.GetLinkedWorkoutsToExercises(WorkoutId);
-            var workoutExercisesWithChildren          = GetWorkoutExerciseWithChildren(WorkoutId
-                                                                                     , workoutExercisesAssociatedWithWorkout);
+
+            var workoutExercisesWithChildren = GetWorkoutExerciseWithChildren(WorkoutId
+                                                                            , workoutExercisesAssociatedWithWorkout);
 
             foreach (var workoutExerciseWithChildren in workoutExercisesWithChildren)
             {
                 LinkWorkoutExercises.Add(workoutExerciseWithChildren);
             }
+
             ReorderWorkoutExercises();
         }
 
@@ -45,13 +50,12 @@ namespace PersonalTrainerWorkouts.ViewModels
         {
             var exercisesAssociatedWithWorkout = workoutExercisesAssociatedWithWorkout.ToList();
 
-            foreach (var newRecord in exercisesAssociatedWithWorkout
-                                        .Select(workoutExercise => new WorkoutExerciseWithChildren(workoutId)
-                                                                   {
-                                                                       WorkoutExercise = workoutExercise
-                                                                     , Exercise        = DataAccessLayer.GetExercise(workoutExercise.ExerciseId)
-                                                                     , Workout         = DataAccessLayer.GetWorkout(workoutId)
-                                                                   }))
+            foreach (var newRecord in exercisesAssociatedWithWorkout.Select(workoutExercise => new WorkoutExerciseWithChildren(workoutId)
+                                                                                               {
+                                                                                                   WorkoutExercise = workoutExercise
+                                                                                                 , Exercise        = DataAccessLayer.GetExercise(workoutExercise.ExerciseId)
+                                                                                                 , Workout         = DataAccessLayer.GetWorkout(workoutId)
+                                                                                               }))
             {
                 newRecord.ExerciseForDebugging = $"{newRecord.Exercise.Name} ({newRecord.WorkoutExercise.OrderBy})";
 

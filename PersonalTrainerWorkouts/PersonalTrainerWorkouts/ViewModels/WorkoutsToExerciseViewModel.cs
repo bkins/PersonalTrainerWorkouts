@@ -20,11 +20,15 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         private TimeSpan GetTotalTime()
         {
-            var total = new TimeSpan(0, 0, 0, 0);
+            var total = new TimeSpan(0
+                                   , 0
+                                   , 0
+                                   , 0);
 
             return ExercisesWithIntermediateFields.Select(exerciseLengthOfTime => exerciseLengthOfTime.LengthOfTime.ToTime())
                                                   .Aggregate(total
-                                                           , (current, exerciseLengthOfTimeAsTime) => current.Add(exerciseLengthOfTimeAsTime));
+                                                           , (current
+                                                            , exerciseLengthOfTimeAsTime) => current.Add(exerciseLengthOfTimeAsTime));
         }
 
         private int GetTotalReps()
@@ -53,7 +57,9 @@ namespace PersonalTrainerWorkouts.ViewModels
             }
             catch (Exception e)
             {
-                Logger.WriteLine("Failed to initialize the WorkoutsToExerciseViewModel", Category.Error, e);
+                Logger.WriteLine("Failed to initialize the WorkoutsToExerciseViewModel"
+                               , Category.Error
+                               , e);
             }
         }
 
@@ -67,9 +73,11 @@ namespace PersonalTrainerWorkouts.ViewModels
                 var resolvedWorkoutsToExercise = new ResolvedWorkoutsToExercise(workoutsToExercise.Id);
                 ResolvedWorkoutToExercisesList.Add(resolvedWorkoutsToExercise);
 
-                var exerciseToAdd     = DataAccessLayer.GetExercise(workoutsToExercise.ExerciseId);
+                var exerciseToAdd = DataAccessLayer.GetExercise(workoutsToExercise.ExerciseId);
+
                 var lengthOfTimeToUse = GetLengthOfTimeToUse(exerciseToAdd
-                                                           , workoutsToExercise).ToShortForm();
+                                                           , workoutsToExercise)
+                       .ToShortForm();
 
                 var repsToUse = GetRepsToUse(exerciseToAdd
                                            , workoutsToExercise);
@@ -102,21 +110,30 @@ namespace PersonalTrainerWorkouts.ViewModels
             var defaultLengthOfTime                = exerciseToAdd.LengthOfTime.ToTime();
             var lengthOfTimeFromWorkoutToExercises = workoutsToExercise.LengthOfTime.ToTime();
 
-            if (lengthOfTimeFromWorkoutToExercises != new TimeSpan(0, 0, 0, 0))
+            if (lengthOfTimeFromWorkoutToExercises
+             != new TimeSpan(0
+                           , 0
+                           , 0
+                           , 0))
             {
                 defaultLengthOfTime = lengthOfTimeFromWorkoutToExercises;
             }
 
             return defaultLengthOfTime;
         }
-        
+
         public void SaveWorkoutsToExercise(LinkedWorkoutsToExercises workoutsToExercise)
         {
-            if (workoutsToExercise.LengthOfTime.ToTime() > new TimeSpan(0, 1, 0, 0))
+            if (workoutsToExercise.LengthOfTime.ToTime()
+              > new TimeSpan(0
+                           , 1
+                           , 0
+                           , 0))
             {
                 throw new ValueTooLargeException(nameof(workoutsToExercise.LengthOfTime)
                                                , workoutsToExercise.LengthOfTime
-                                               , workoutsToExercise.LengthOfTime.GetType().ToString()
+                                               , workoutsToExercise.LengthOfTime.GetType()
+                                                                   .ToString()
                                                , workoutsToExercise.LengthOfTime
                                                , "it is great than 1 hour.");
             }

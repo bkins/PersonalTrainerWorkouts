@@ -8,12 +8,14 @@ using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEve
 
 namespace PersonalTrainerWorkouts.Views
 {
-    [QueryProperty(nameof(WorkoutId), nameof(WorkoutId))]
+    [QueryProperty(nameof(WorkoutId)
+                 , nameof(WorkoutId))]
     public partial class ExerciseExistingEntryPage
     {
         private ExerciseItemViewModel ItemViewModel { get; set; }
 
         private string _workoutId = "0";
+
         public string WorkoutId
         {
             get => _workoutId;
@@ -30,7 +32,10 @@ namespace PersonalTrainerWorkouts.Views
             }
             catch (Exception e)
             {
-                Logger.WriteLine("Failed to load Exercises.", Category.Error, e);
+                Logger.WriteLine("Failed to load Exercises."
+                               , Category.Error
+                               , e);
+
                 //BENDO: consider implementing a page that shows exception details
             }
         }
@@ -40,14 +45,20 @@ namespace PersonalTrainerWorkouts.Views
             InitializeComponent();
             ItemViewModel = new ExerciseItemViewModel();
         }
-        
+
         private async void ExercisePicker_OnOkButtonClicked(object                    sender
                                                           , SelectionChangedEventArgs e)
         {
-            ItemViewModel.SelectedExercise = (Exercise) ExercisePicker.SelectedItem;
+            ItemViewModel.SelectedExercise = (Exercise)ExercisePicker.SelectedItem;
 
             ItemViewModel.SaveExercise(int.Parse(WorkoutId));
 
+            await PageNavigation.NavigateBackwards();
+        }
+
+        private async void ExercisePicker_OnCancelButtonClicked(object                    sender
+                                                              , SelectionChangedEventArgs e)
+        {
             await PageNavigation.NavigateBackwards();
         }
     }

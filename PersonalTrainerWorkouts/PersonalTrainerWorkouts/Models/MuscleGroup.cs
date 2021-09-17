@@ -10,17 +10,17 @@ namespace PersonalTrainerWorkouts.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        
+
         //public MuscleGroup OpposingMuscleGroup { get; set; }
 
         public MuscleGroup()
         {
             //Exercises = new List<Exercise>();
         }
-        
+
         //[ManyToMany(typeof(ExerciseMuscleGroup), CascadeOperations = CascadeOperation.All)]
         //public List<Exercise> Exercises { get; set; }
-        
+
         //public MuscleGroup OpposingMuscleGroup { get; set; }
     }
 }

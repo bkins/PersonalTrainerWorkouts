@@ -1,13 +1,14 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
              xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.WorkoutEntryPage"
              x:DataType="viewmodels:WorkoutEntryViewModel"
-             Title="Add Workout" >
-             <!---->
-             <!--x:DataType="models:Workout"-->
+             Title="Add Workout">
+    <!---->
+    <!--x:DataType="models:Workout"-->
     <ContentPage.Resources>
         <!-- Implicit styles -->
         <Style TargetType="{x:Type Editor}">
@@ -31,26 +32,16 @@
         </Style>
     </ContentPage.Resources>
 
-    <!-- Add an item to the toolbar -->
-    <ContentPage.ToolbarItems>
-        <ToolbarItem Name="ManageExerciseToolBarItem"
-                     Text="Manage Exercises"
-                     Clicked="OnManageExercisesClicked" 
-                     IsEnabled="{Binding ManageExerciseToolBarItemIsEnabled}"
-                     /><!---->
-    </ContentPage.ToolbarItems>
-
-    <!-- Layout children vertically -->
     <StackLayout Margin="{DynamicResource PageMargin}">
-        
-        <Entry   
-                Placeholder="Name"
-                Text="{Binding NewWorkout.Name}"
-                HeightRequest="50" 
-                IsTabStop="True"
-                ReturnType="Next"
-                TabIndex="1"
-                Unfocused="Name_OnUnfocused">
+
+        <Entry
+            Placeholder="Name"
+            Text="{Binding NewWorkout.Name}"
+            HeightRequest="50"
+            IsTabStop="True"
+            ReturnType="Next"
+            TabIndex="1"
+            Unfocused="Name_OnUnfocused">
             <Entry.Keyboard>
                 <Keyboard x:FactoryMethod="Create">
                     <x:Arguments>
@@ -59,7 +50,7 @@
                 </Keyboard>
             </Entry.Keyboard>
         </Entry>
-                
+
         <Editor Placeholder="Description"
                 Text="{Binding NewWorkout.Description}"
                 AutoSize="TextChanges"
@@ -74,17 +65,17 @@
             </Editor.Keyboard>
         </Editor>
         <Entry x:Name="DifficultyEditor"
-                Placeholder="Difficulty"
-                Text="{Binding NewWorkout.Difficulty}"
-                Keyboard="Numeric"
-                TabIndex="3"
-                Unfocused="Difficulty_OnUnfocused"/>
+               Placeholder="Difficulty"
+               Text="{Binding NewWorkout.Difficulty}"
+               Keyboard="Numeric"
+               TabIndex="3"
+               Unfocused="Difficulty_OnUnfocused" />
 
-        <BoxView   VerticalOptions="Center"
-                   HorizontalOptions="Center"
-                   HeightRequest="1"
-                   WidthRequest="200"  
-                   Color="Gray"/>
+        <BoxView VerticalOptions="Center"
+                 HorizontalOptions="Center"
+                 HeightRequest="1"
+                 WidthRequest="200"
+                 Color="Gray" />
 
         <!--BENDO: Might be better/easier combine the functionality of this page with the WorkoutExercisePage
                    So the user would edit and add Workouts using the same page-->

@@ -10,10 +10,9 @@ namespace PersonalTrainerWorkouts.Models
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
-        
+
         //pseudo Foreign Keys
-        public int  MuscleGroupId         { get; set; }
-        public int  OpposingMuscleGroupId { get; set; }
-        
+        public int MuscleGroupId         { get; set; }
+        public int OpposingMuscleGroupId { get; set; }
     }
 }

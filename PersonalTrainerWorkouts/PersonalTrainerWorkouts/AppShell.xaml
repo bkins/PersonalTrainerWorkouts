@@ -1,22 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <Shell xmlns="http://xamarin.com/schemas/2014/forms"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views"
        x:Class="PersonalTrainerWorkouts.AppShell">
 
-    <TabBar >
-        
+    <TabBar>
+
         <!--<ShellContent Title="Home"
                       Icon= "icon_feed.png"
                       ContentTemplate="{DataTemplate views:WorkoutsPage}" />-->
         <ShellContent Title="Home"
-                      Icon= "icon_feed.png"
+                      Icon="icon_feed.png"
                       ContentTemplate="{DataTemplate views:WorkoutListPage}" />
         <ShellContent Title="Sync"
-                      Icon= "Sync.ico"
+                      Icon="Sync.ico"
                       ContentTemplate="{DataTemplate views:SyncPage}" />
         <ShellContent Title="Configuration"
-                      Icon= "Settings.ico"
+                      Icon="Settings.ico"
                       ContentTemplate="{DataTemplate views:ConfigurationPage}" />
         <ShellContent Title="About"
                       Icon="icon_about.png"

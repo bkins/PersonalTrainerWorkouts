@@ -9,10 +9,10 @@ namespace PersonalTrainerWorkouts.Models.Intermediates
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        [ForeignKey( typeof(Exercise) )]
+        [ForeignKey(typeof(Exercise))]
         public int ExerciseId { get; set; }
 
-        [ForeignKey( typeof(TypeOfExercise) )]
-        public int TypeId     { get; set; }
+        [ForeignKey(typeof(TypeOfExercise))]
+        public int TypeId { get; set; }
     }
 }

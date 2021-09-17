@@ -15,50 +15,58 @@ using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEve
 
 namespace PersonalTrainerWorkouts.Views
 {
-    [QueryProperty(nameof(ExerciseId), nameof(ExerciseId))]
-    public partial class MuscleGroupListPage : ContentPage, IQueryAttributable
+    [QueryProperty(nameof(ExerciseId)
+                 , nameof(ExerciseId))]
+    [QueryProperty(nameof(WorkoutId)
+                 , nameof(WorkoutId))]
+    public partial class MuscleGroupListPage : ContentPage
+                                             , IQueryAttributable
     {
         private MuscleGroupListViewModel OldViewModel { get; set; }
-        private MuscleGroupViewModel ViewModel  { get; set; }
-        public  string               ExerciseId { get; set; }
+        private MuscleGroupViewModel     ViewModel    { get; set; }
+        public  string                   ExerciseId   { get; set; }
+        public  string                   WorkoutId    { get; set; }
+
         public void ApplyQueryAttributes(IDictionary<string, string> query)
         {
             try
             {
                 // The query parameter requires URL decoding.
                 ExerciseId = HttpUtility.UrlDecode(query[nameof(ExerciseId)]);
-                
+                WorkoutId  = HttpUtility.UrlDecode(query[nameof(WorkoutId)]);
+
                 OldViewModel = new MuscleGroupListViewModel();
-                ViewModel = new MuscleGroupViewModel(ExerciseId);
+                ViewModel    = new MuscleGroupViewModel(ExerciseId);
                 LoadData();
             }
             catch (Exception e)
             {
-                Logger.WriteLine("Failed initiate ExerciseAddEditPage.", Category.Error, e);
+                Logger.WriteLine("Failed initiate ExerciseAddEditPage."
+                               , Category.Error
+                               , e);
 
                 throw;
             }
         }
+
         public MuscleGroupListPage()
         {
             InitializeComponent();
         }
 
-        
         private void LoadData()
         {
-            //Set the list of Synergists, plus the "Add New", to the ItmeSource
-            MuscleGroupPicker.ItemsSource = ViewModel.Synergists
-                                                     .Concat
-                                                        (
-                                                            new []
-                                                            {
-                                                                new ResolvedSynergistViewModel()
-                                                            }
-                                                        ).OrderBy(field=>field.Id).ToList();
+            //Set the list of Synergists, plus the "Add New", to the ItemSource
+            MuscleGroupPicker.ItemsSource = ViewModel.SynergistsNotInExercise.Concat(new[]
+                                                                                    {
+                                                                                        new ResolvedSynergistViewModel()
+                                                                                    })
+                                                     .OrderBy(field => field.DisplayedSynergist)
+                                                     .ToList();
         }
+
         private async void MuscleGroupPicker_OnOkButtonClicked(object                    sender
-                                                       , SelectionChangedEventArgs e)
+                                                             , SelectionChangedEventArgs e)
         {
             var selected = (ResolvedSynergistViewModel)MuscleGroupPicker.SelectedItem;
 
@@ -80,7 +88,11 @@ namespace PersonalTrainerWorkouts.Views
             {
                 ViewModel.SaveSynergistToExercise();
 
-                await PageNavigation.NavigateBackwards();
+                await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+                                              , nameof(ExerciseAddEditPage.ExerciseId)
+                                              , ExerciseId
+                                              , nameof(ExerciseAddEditPage.WorkoutId)
+                                              , WorkoutId);
             }
             catch (EntityRelationAlreadyExistsException alreadyExistsException)
             {
@@ -115,11 +127,13 @@ namespace PersonalTrainerWorkouts.Views
                                                                  , -1
                                                                  , Keyboard.Create(KeyboardFlags.CapitalizeWord)
                                                                  , "");
+
             var viewModel = new MuscleGroupViewModel(ExerciseId);
 
             try
             {
-                viewModel.SaveNewSynergist(muscleGroupName, opposingMuscleGroupName);
+                viewModel.SaveNewSynergist(muscleGroupName
+                                         , opposingMuscleGroupName);
 
                 //if (await DisplayAlert("Add Opposite Synergist?"
                 //                     , $"Would you like to add the opposite of this? i.e. Add {opposingMuscleGroupName} opposes {muscleGroupName}?"
@@ -128,15 +142,17 @@ namespace PersonalTrainerWorkouts.Views
                 //{
                 //    viewModel.SaveOppositeSynergist(muscleGroupName, opposingMuscleGroupName);
                 //}
-                
+
                 //BENDO: I think it is best to just add the opposite muscle group relationship, instead of asking the user.
                 //However, if Owen want to be asked to add the opposite instead of doing automatically, then uncomment the above.
                 //Furthermore, as it is currently written, if the user says No to the question above, there is not way to add the opposite afterwards.
-                viewModel.SaveOppositeSynergist(muscleGroupName, opposingMuscleGroupName);
+                
+                viewModel.SaveOppositeSynergist(muscleGroupName
+                                              , opposingMuscleGroupName);
 
                 await PageNavigation.NavigateBackwards();
             }
-            catch (AttemptToAddDuplicateEntityException)
+            catch (AttemptToAddDuplicateEntityException e)
             {
                 await DisplayAlert("Muscle Group Already Exists"
                                  , $"The Muscle Group '{muscleGroupName}' already exists.  Name the Muscle Group with a different name."
@@ -149,7 +165,7 @@ namespace PersonalTrainerWorkouts.Views
                                , ex);
             }
         }
-        
+
         private async void MuscleGroupPicker_OnCancelButtonClicked(object                    sender
                                                                  , SelectionChangedEventArgs e)
         {

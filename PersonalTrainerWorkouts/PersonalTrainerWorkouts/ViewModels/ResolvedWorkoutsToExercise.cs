@@ -22,7 +22,7 @@ namespace PersonalTrainerWorkouts.ViewModels
             {
                 Id                           = workoutsToExerciseId;
                 TheLinkedWorkoutsToExercises = DataAccessLayer.GetLinkedWorkoutsToExercise(workoutsToExerciseId);
-                
+
                 Workout      = DataAccessLayer.GetWorkout(TheLinkedWorkoutsToExercises.WorkoutId);
                 Exercise     = DataAccessLayer.GetExercise(TheLinkedWorkoutsToExercises.ExerciseId);
                 LengthOfTime = TheLinkedWorkoutsToExercises.LengthOfTime;
@@ -31,7 +31,10 @@ namespace PersonalTrainerWorkouts.ViewModels
             }
             catch (Exception e)
             {
-                Logger.WriteLine(e.Message, Category.Error, e);
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
+
                 throw;
             }
         }

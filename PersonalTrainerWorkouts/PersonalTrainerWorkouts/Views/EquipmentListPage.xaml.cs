@@ -14,41 +14,48 @@ using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEve
 
 namespace PersonalTrainerWorkouts.Views
 {
-    [QueryProperty(nameof(ExerciseId), nameof(ExerciseId))]
-    public partial class EquipmentListPage : ContentPage, IQueryAttributable
+    [QueryProperty(nameof(ExerciseId)
+                 , nameof(ExerciseId))]
+    public partial class EquipmentListPage : ContentPage
+                                           , IQueryAttributable
     {
         private EquipmentListViewModel ViewModel { get; set; }
 
         public string ExerciseId { get; set; }
+
         public void ApplyQueryAttributes(IDictionary<string, string> query)
         {
             try
             {
                 // The query parameter requires URL decoding.
                 ExerciseId = HttpUtility.UrlDecode(query[nameof(ExerciseId)]);
-                
+
                 ViewModel = new EquipmentListViewModel();
 
                 LoadData();
             }
             catch (Exception e)
             {
-                Logger.WriteLine("Failed initiate ExerciseAddEditPage.", Category.Error, e);
+                Logger.WriteLine("Failed initiate ExerciseAddEditPage."
+                               , Category.Error
+                               , e);
 
                 throw;
             }
         }
-        
+
         private void LoadData()
         {
-            EquipmentPicker.ItemsSource = ViewModel.ListOfAllExerciseEquipment.Concat(new []
-                                                                                       {
-                                                                                           new Equipment()
-                                                                                           {
-                                                                                               Name = "<New>"
-                                                                                           }
-                                                                                       }).OrderBy(field=>field.Id);
+            EquipmentPicker.ItemsSource = ViewModel.ListOfAllExerciseEquipment.Concat(new[]
+                                                                                      {
+                                                                                          new Equipment()
+                                                                                          {
+                                                                                              Name = "<New>"
+                                                                                          }
+                                                                                      })
+                                                   .OrderBy(field => field.Id);
         }
+
         public EquipmentListPage()
         {
             InitializeComponent();
