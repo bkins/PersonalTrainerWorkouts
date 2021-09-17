@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Linq;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Utilities;
@@ -24,7 +25,7 @@ namespace PersonalTrainerWorkouts.Views
         {
             base.OnAppearing();
 
-            ListView.ItemsSource = ViewModel.ListOfWorkouts;
+            ListView.ItemsSource = ViewModel.ObservableListOfWorkouts;
         }
 
         async void OnAddClicked(object    sender
@@ -79,12 +80,20 @@ namespace PersonalTrainerWorkouts.Views
                                , Category.Warning);
             }
 
-            ListView.ItemsSource = ViewModel.ListOfWorkouts;
+            ListView.ItemsSource = ViewModel.ObservableListOfWorkouts;
 
             Logger.WriteLine($"Deleted Workout: {itemDeleted} deleted."
                            , Category.Information);
 
             ListView.ResetSwipe();
         }
+
+        private void WorkoutFilter_OnTextChanged(object               sender
+                                               , TextChangedEventArgs e)
+        {
+            ListView.ItemsSource = ViewModel.SearchWorkouts(WorkoutFilter.Text);
+        }
+
+        
     }
 }

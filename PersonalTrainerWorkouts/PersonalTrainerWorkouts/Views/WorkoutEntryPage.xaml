@@ -55,7 +55,7 @@
                 Text="{Binding NewWorkout.Description}"
                 AutoSize="TextChanges"
                 TabIndex="2"
-                Unfocused="Description_OnUnfocused">
+                Unfocused="Description_OnUnfocused">    
             <Editor.Keyboard>
                 <Keyboard x:FactoryMethod="Create">
                     <x:Arguments>

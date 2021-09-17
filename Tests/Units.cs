@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using ApplicationExceptions;
@@ -316,9 +317,9 @@ namespace Tests
             RefreshDatabase();
 
             var viewModel = LoadExerciseListViewModel(out var exerciseOne
-                                                , out var exerciseTwo
-                                                , out var exerciseThree
-                                                , out var exerciseFour);
+                                                    , out var exerciseTwo
+                                                    , out var exerciseThree
+                                                    , out var exerciseFour);
 
             Assert.True(exerciseOne.WorkoutExercise.OrderBy   < exerciseTwo.WorkoutExercise.OrderBy);
             Assert.True(exerciseTwo.WorkoutExercise.OrderBy   < exerciseThree.WorkoutExercise.OrderBy);
@@ -364,7 +365,7 @@ namespace Tests
             var viewModel = LoadWorkoutExerciseViewModel();
             var totalReps = viewModel.TotalReps;
 
-            //Why am I using the Count of the list?  Because I added 4 exercies with 1 rep each
+            //Why am I using the Count of the list?  Because I added 4 exercises with 1 rep each
             Assert.Equal(viewModel.ExercisesWithIntermediateFields.Count, totalReps);
 
             var totalRepsFromDb = 0;
@@ -419,7 +420,79 @@ namespace Tests
         }
 
 #endregion
-        
+
+#region Other units
+
+        [Theory]
+        [InlineData("",     0)]
+        [InlineData("d=3",  1)]
+        [InlineData("d>1",  3)]
+        [InlineData("d>=2", 3)]
+        [InlineData("d<3",  2)]
+        [InlineData("d<=3", 3)]
+        public void TestSearchDifficulty(string searchText, int expectedCount)
+        {
+            //Arrange
+            RefreshDatabase();
+
+            var viewModel = GetLoadedWorkoutListViewModel();
+            
+            //Act
+            var listOfWorkouts = viewModel.SearchByDifficulty(searchText);
+
+            //Assert
+            Assert.Equal(expectedCount, listOfWorkouts.Count);
+        }
+
+        [Theory]
+        [InlineData("", 4)]
+        [InlineData("Econ", 1)]
+        [InlineData("cess", 1)]
+        [InlineData("etc.", 1)]
+        [InlineData("or ", 2)]
+        [InlineData(".", 4)]
+        public void TestSearchNameAndDescription(string searchText
+                                               , int    expectedCount)
+        {
+            //Arrange
+            RefreshDatabase();
+
+            var viewModel = GetLoadedWorkoutListViewModel();
+            
+            //Act
+            var listOfWorkouts = viewModel.SearchByNameAndDescription(searchText);
+
+            //Assert
+            Assert.Equal(expectedCount, listOfWorkouts.Count);
+        }
+
+        [Theory]
+        [InlineData("",     4)]
+        [InlineData("Econ", 1)]
+        [InlineData("cess", 1)]
+        [InlineData("etc.", 1)]
+        [InlineData("or ",  2)]
+        [InlineData(".",    4)]
+        [InlineData("d=3",  1)]
+        [InlineData("d>1",  3)]
+        [InlineData("d>=2", 3)]
+        [InlineData("d<3",  2)]
+        [InlineData("d<=3", 3)]
+        public void TestSearchWorkouts(string searchText
+                                     , int    expectedCount)
+        {
+            //Arrange
+            RefreshDatabase();
+
+            var viewModel = GetLoadedWorkoutListViewModel();
+            
+            //Act
+            var listOfWorkouts = viewModel.SearchWorkouts(searchText);
+
+            //Assert
+            Assert.Equal(expectedCount, listOfWorkouts.Count);
+        }
+#endregion
         
 #region Helper Methods
 
@@ -660,6 +733,46 @@ namespace Tests
             exerciseThree = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise3.Name);
             exerciseFour  = viewModel.LinkWorkoutExercises.First(field => field.Exercise.Name == exercise4.Name);
 
+            return viewModel;
+        }
+
+        private WorkoutListViewModel GetLoadedWorkoutListViewModel()
+        {
+            var workout1 = new Workout
+                           {
+                               Name        = "Economics"
+                             , Description = "the branch of knowledge concerned with the production, consumption, and transfer of wealth."
+                             , Difficulty  = 1
+                           };
+
+            var workout2 = new Workout
+                           {
+                               Name        = "Success"
+                             , Description = "the accomplishment of an aim or purpose."
+                             , Difficulty  = 2
+                           };
+            
+            var workout3 = new Workout
+                           {
+                               Name        = "Warning"
+                             , Description = "a statement or event that indicates a possible or impending danger, problem, or other unpleasant situation."
+                             , Difficulty  = 3
+                           };
+            
+            var workout4 = new Workout
+                           {
+                               Name        = "Organization"
+                             , Description = "an organized body of people with a particular purpose, especially a business, society, association, etc."
+                             , Difficulty  = 4
+                           };
+
+            var viewModel = new WorkoutListViewModel(new List<Workout>()
+                                                     {
+                                                         workout1
+                                                       , workout2
+                                                       , workout3
+                                                       , workout4
+                                                     });
             return viewModel;
         }
 

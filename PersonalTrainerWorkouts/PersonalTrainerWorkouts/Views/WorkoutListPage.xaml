@@ -56,41 +56,49 @@
         <ToolbarItem Text="Add"
                      Clicked="OnAddClicked" />
     </ContentPage.ToolbarItems>
+    <StackLayout VerticalOptions="StartAndExpand">
+        
+        <Entry x:Name="WorkoutFilter" 
+               Placeholder="Search Workouts (try d=1 or d>5)"
+               TextChanged="WorkoutFilter_OnTextChanged">
+        </Entry>
 
-    <xForms:SfListView x:Name="ListView"
-                       HeightRequest="100"
-                       AutoFitMode="DynamicHeight"
-                       SelectionMode="Single"
-                       AllowSwiping="True"
-                       SelectionChanged="OnSelectionChanged"
-                       SwipeEnded="ListView_SwipeEnded"
-                       ItemTemplate="{StaticResource ItemTemplate}">
-        <xForms:SfListView.LeftSwipeTemplate>
-            <DataTemplate x:Name="LeftSwipeTemplate">
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
-                    </Grid.ColumnDefinitions>
-                    <Grid Grid.Column="0"
-                          BackgroundColor="#DC595F"
-                          HorizontalOptions="Fill"
-                          VerticalOptions="Fill">
-                        <Grid VerticalOptions="Center"
-                              HorizontalOptions="Center">
-                            <Image x:Name="DeleteImage"
-                                   Grid.Column="0"
-                                   Grid.Row="0"
-                                   BackgroundColor="Transparent"
-                                   HeightRequest="35"
-                                   WidthRequest="35"
-                                   BindingContextChanged="LeftImage_BindingContextChanged"
+        <xForms:SfListView x:Name="ListView"
+                           VerticalOptions="StartAndExpand"
+                           AutoFitMode="DynamicHeight"
+                           SelectionMode="Single"
+                           AllowSwiping="True"
+                           SelectionChanged="OnSelectionChanged"
+                           SwipeEnded="ListView_SwipeEnded"
+                           ItemTemplate="{StaticResource ItemTemplate}">
+            
+            <xForms:SfListView.LeftSwipeTemplate >
+                <DataTemplate x:Name="LeftSwipeTemplate">
+                    <Grid VerticalOptions="CenterAndExpand">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0"
+                              BackgroundColor="#DC595F"
+                              HorizontalOptions="Fill"
+                              VerticalOptions="Fill">
+                            <Grid VerticalOptions="CenterAndExpand"
+                                  HorizontalOptions="Center">
+                                <Image x:Name="DeleteImage"
+                                       Grid.Column="0"
+                                       Grid.Row="0"
+                                       BackgroundColor="Transparent"
+                                       HeightRequest="35"
+                                       WidthRequest="35"
+                                       BindingContextChanged="LeftImage_BindingContextChanged"
 
-                                   Source="Delete.png" />
+                                       Source="Delete.png" />
+                            </Grid>
                         </Grid>
                     </Grid>
-                </Grid>
 
-            </DataTemplate>
-        </xForms:SfListView.LeftSwipeTemplate>
-    </xForms:SfListView>
+                </DataTemplate>
+            </xForms:SfListView.LeftSwipeTemplate>
+        </xForms:SfListView>
+    </StackLayout>
 </ContentPage>
