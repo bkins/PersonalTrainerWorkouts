@@ -49,23 +49,24 @@ namespace PersonalTrainerWorkouts.ViewModels
         private void SetSynergistsNotInExerciseWhenExerciseHasSynergists(List<ResolvedSynergistViewModel> listOfResolvedSynergist)
         {
             //Synergists has items
-            foreach (var dbSynergist in listOfResolvedSynergist)
+            foreach (var dbSynergist in from dbSynergist in listOfResolvedSynergist
+                                        from exerciseSynergists in Synergists.Where(exerciseSynergists => SynergistIsNotInExercise(dbSynergist
+                                                                                                                                 , exerciseSynergists))
+                                        select dbSynergist)
             {
-                //The Exercise has synergists assigned to it
-                //Then only get a distinct list of synergist that the Exercise does not have
-                foreach (var exerciseSynergists in Synergists)
-                {
-                    if (dbSynergist.Exercise.Id == exerciseSynergists.Exercise.Id
-                     || (dbSynergist.PrimaryMuscleGroup.Id == exerciseSynergists.PrimaryMuscleGroup.Id && dbSynergist.OpposingMuscleGroup.Id == exerciseSynergists.OpposingMuscleGroup.Id))
-                    {
-                        //exclude
-                    }
-                    else
-                    {
-                        SynergistsNotInExercise.Add(dbSynergist);
-                    }
-                }
+                SynergistsNotInExercise.Add(dbSynergist);
             }
+        }
+
+        private bool SynergistIsNotInExercise(ResolvedSynergistViewModel dbSynergist
+                                            , ResolvedSynergistViewModel exerciseSynergists)
+        {
+            return ! (dbSynergist.Exercise.Id == exerciseSynergists.Exercise.Id
+                   || (dbSynergist.PrimaryMuscleGroup.Id  == exerciseSynergists.PrimaryMuscleGroup.Id 
+                    && dbSynergist.OpposingMuscleGroup.Id == exerciseSynergists.OpposingMuscleGroup.Id)
+                   || SynergistsNotInExercise.Any(field=>
+                                                          field.PrimaryMuscleGroup.Id  == dbSynergist.PrimaryMuscleGroup.Id 
+                                                       && field.OpposingMuscleGroup.Id == dbSynergist.OpposingMuscleGroup.Id));
         }
 
         private bool SetSynergistsNotInExerciseWhenExerciseHasNone(List<ResolvedSynergistViewModel> listOfResolvedSynergist)
