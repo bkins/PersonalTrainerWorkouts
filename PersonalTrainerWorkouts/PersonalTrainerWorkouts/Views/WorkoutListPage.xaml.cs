@@ -25,6 +25,8 @@ namespace PersonalTrainerWorkouts.Views
         {
             base.OnAppearing();
 
+            ViewModel = new WorkoutListViewModel();
+
             ListView.ItemsSource = ViewModel.ObservableListOfWorkouts;
         }
 
@@ -45,6 +47,7 @@ namespace PersonalTrainerWorkouts.Views
                 {
                     return;
                 }
+                ListView.SelectedItems.Clear();
 
                 await PageNavigation.NavigateTo(nameof(WorkoutExercisePage)
                                               , nameof(WorkoutExercisePage.WorkoutId)

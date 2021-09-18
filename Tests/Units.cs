@@ -47,7 +47,7 @@ namespace Tests
     #region Simple Adds
     
         [Fact]
-        public void AddNewWorkout()
+        public void TestAddNewWorkout()
         {
                     
             var workout = new Workout
@@ -65,7 +65,7 @@ namespace Tests
         }
         
         [Fact]
-        public void AddNewExercise()
+        public void TestAddNewExercise()
         {
             var exercise = new Exercise
                            {
@@ -445,6 +445,46 @@ namespace Tests
         }
 
         [Theory]
+        [InlineData("TR=150", 1)]
+        [InlineData("TR<71",  2)]
+        [InlineData("TR<=70", 2)]
+        [InlineData("TR>70",  2)]
+        [InlineData("TR>=70", 3)]
+        public void TestSearchTotalReps(string searchText
+                                      , int    expectedCount)
+        {
+            //Arrange
+            RefreshDatabase();
+
+            var viewModel = GetLoadedWorkoutListViewModel();
+
+            //Act
+            var listOfWorkouts = viewModel.SearchByTotalReps(searchText);
+
+            //Assert
+            Assert.Equal(expectedCount
+                       , listOfWorkouts.Count);
+        }
+
+        [Theory]
+        [InlineData("TT=1:00", 1)]
+        public void TestSearchTotalTime(string searchText
+                                      , int    expectedCount)
+        {
+            //Arrange
+            //RefreshDatabase();
+
+            //var viewModel = GetLoadedWorkoutListViewModel();
+
+            ////Act
+            //ObservableCollection<Workout> listOfWorkouts = viewModel.SearchByTotalTime(searchText);
+
+            ////Assert
+            //Assert.Equal(expectedCount
+            //           , listOfWorkouts.Count);
+        }
+
+        [Theory]
         [InlineData("", 4)]
         [InlineData("Econ", 1)]
         [InlineData("cess", 1)]
@@ -467,17 +507,22 @@ namespace Tests
         }
 
         [Theory]
-        [InlineData("",     4)]
-        [InlineData("Econ", 1)]
-        [InlineData("cess", 1)]
-        [InlineData("etc.", 1)]
-        [InlineData("or ",  2)]
-        [InlineData(".",    4)]
-        [InlineData("d=3",  1)]
-        [InlineData("d>1",  3)]
-        [InlineData("d>=2", 3)]
-        [InlineData("d<3",  2)]
-        [InlineData("d<=3", 3)]
+        [InlineData("",       4)]
+        [InlineData("Econ",   1)]
+        [InlineData("cess",   1)]
+        [InlineData("etc.",   1)]
+        [InlineData("or ",    2)]
+        [InlineData(".",      4)]
+        [InlineData("d=3",    1)]
+        [InlineData("d>1",    3)]
+        [InlineData("d>=2",   3)]
+        [InlineData("d<3",    2)]
+        [InlineData("d<=3",   3)]
+        [InlineData("TR=150", 1)]
+        [InlineData("TR<71",  2)]
+        [InlineData("TR<=70", 2)]
+        [InlineData("TR>70",  2)]
+        [InlineData("TR>=70", 3)]
         public void TestSearchWorkouts(string searchText
                                      , int    expectedCount)
         {
@@ -488,7 +533,7 @@ namespace Tests
             
             //Act
             var listOfWorkouts = viewModel.SearchWorkouts(searchText);
-
+            
             //Assert
             Assert.Equal(expectedCount, listOfWorkouts.Count);
         }
@@ -738,33 +783,125 @@ namespace Tests
 
         private WorkoutListViewModel GetLoadedWorkoutListViewModel()
         {
-            var workout1 = new Workout
-                           {
-                               Name        = "Economics"
-                             , Description = "the branch of knowledge concerned with the production, consumption, and transfer of wealth."
-                             , Difficulty  = 1
-                           };
+            var workout1 = AddNewWorkout("Economics"
+                                         , "the branch of knowledge concerned with the production, consumption, and transfer of wealth."
+                                         , 1);
 
-            var workout2 = new Workout
-                           {
-                               Name        = "Success"
-                             , Description = "the accomplishment of an aim or purpose."
-                             , Difficulty  = 2
-                           };
+            var workout2 = AddNewWorkout("Success"
+                                       , "the accomplishment of an aim or purpose."
+                                       , 2);
+
+            var workout3 = AddNewWorkout("Warning"
+                                       , "a statement or event that indicates a possible or impending danger, problem, or other unpleasant situation."
+                                       , 3);
+
+            var workout4 = AddNewWorkout("Organization"
+                                       , "an organized body of people with a particular purpose, especially a business, society, association, etc."
+                                       , 4);
+
+            var exercise1 = AddNewExercise("Exercise 1"
+                                         , "E1 description"
+                                         , "1:00"
+                                         , 10);
+
+            var exercise2 = AddNewExercise("Exercise 2"
+                                         , "E2 Description"
+                                         , "2:00"
+                                         , 20);
             
-            var workout3 = new Workout
-                           {
-                               Name        = "Warning"
-                             , Description = "a statement or event that indicates a possible or impending danger, problem, or other unpleasant situation."
-                             , Difficulty  = 3
-                           };
+            var exercise3 = AddNewExercise("Exercise 3"
+                                         , "E3 Description"
+                                         , "3:00"
+                                         , 30);
             
-            var workout4 = new Workout
-                           {
-                               Name        = "Organization"
-                             , Description = "an organized body of people with a particular purpose, especially a business, society, association, etc."
-                             , Difficulty  = 4
-                           };
+            var exercise4 = AddNewExercise("Exercise 4"
+                                         , "E4 Description"
+                                         , "4:00"
+                                         , 40);
+            
+            var exercise5 = AddNewExercise("Exercise 5"
+                                         , "E5 Description"
+                                         , "5:00"
+                                         , 50);
+            
+            var exercise6 = AddNewExercise("Exercise 6"
+                                         , "E6 Description"
+                                         , "6:00"
+                                         , 60);
+            
+            var exercise7 = AddNewExercise("Exercise 7"
+                                         , "E7 Description"
+                                         , "7:00"
+                                         , 70);
+            
+            var exercise8 = AddNewExercise("Exercise 8"
+                                         , "E8 Description"
+                                         , "8:00"
+                                         , 80);
+
+            DataAccessLayer.AddLinkedWorkoutsToExercises(new LinkedWorkoutsToExercises
+                                                         {
+                                                             WorkoutId    = workout1.Id
+                                                           , ExerciseId   = exercise1.Id
+                                                           , LengthOfTime = exercise1.LengthOfTime
+                                                           , Reps         = exercise1.Reps
+                                                         });
+            
+            DataAccessLayer.AddLinkedWorkoutsToExercises(new LinkedWorkoutsToExercises
+                                                         {
+                                                             WorkoutId    = workout1.Id
+                                                           , ExerciseId   = exercise2.Id
+                                                           , LengthOfTime = exercise2.LengthOfTime
+                                                           , Reps         = exercise2.Reps
+                                                         });
+            
+            DataAccessLayer.AddLinkedWorkoutsToExercises(new LinkedWorkoutsToExercises
+                                                         {
+                                                             WorkoutId    = workout2.Id
+                                                           , ExerciseId   = exercise3.Id
+                                                           , LengthOfTime = exercise3.LengthOfTime
+                                                           , Reps         = exercise3.Reps
+                                                         });
+            
+            DataAccessLayer.AddLinkedWorkoutsToExercises(new LinkedWorkoutsToExercises
+                                                         {
+                                                             WorkoutId    = workout2.Id
+                                                           , ExerciseId   = exercise4.Id
+                                                           , LengthOfTime = exercise4.LengthOfTime
+                                                           , Reps         = exercise4.Reps
+                                                         });
+            
+            DataAccessLayer.AddLinkedWorkoutsToExercises(new LinkedWorkoutsToExercises
+                                                         {
+                                                             WorkoutId    = workout3.Id
+                                                           , ExerciseId   = exercise5.Id
+                                                           , LengthOfTime = exercise5.LengthOfTime
+                                                           , Reps         = exercise5.Reps
+                                                         });
+            
+            DataAccessLayer.AddLinkedWorkoutsToExercises(new LinkedWorkoutsToExercises
+                                                         {
+                                                             WorkoutId    = workout3.Id
+                                                           , ExerciseId   = exercise6.Id
+                                                           , LengthOfTime = exercise6.LengthOfTime
+                                                           , Reps         = exercise6.Reps
+                                                         });
+            
+            DataAccessLayer.AddLinkedWorkoutsToExercises(new LinkedWorkoutsToExercises
+                                                         {
+                                                             WorkoutId    = workout4.Id
+                                                           , ExerciseId   = exercise7.Id
+                                                           , LengthOfTime = exercise7.LengthOfTime
+                                                           , Reps         = exercise7.Reps
+                                                         });
+            
+            DataAccessLayer.AddLinkedWorkoutsToExercises(new LinkedWorkoutsToExercises
+                                                         {
+                                                             WorkoutId    = workout4.Id
+                                                           , ExerciseId   = exercise8.Id
+                                                           , LengthOfTime = exercise8.LengthOfTime
+                                                           , Reps         = exercise8.Reps
+                                                         });
 
             var viewModel = new WorkoutListViewModel(new List<Workout>()
                                                      {
@@ -772,10 +909,44 @@ namespace Tests
                                                        , workout2
                                                        , workout3
                                                        , workout4
-                                                     });
+                                                     }
+                                                   , DataAccessLayer);
+            
             return viewModel;
         }
 
+        private Exercise AddNewExercise(string name
+                                      , string description
+                                      , string lengthOfTime
+                                      , int reps)
+        {
+            var exercise = new Exercise
+                            {
+                                Name         = name
+                              , Description  = description
+                              , LengthOfTime = lengthOfTime
+                              , Reps         = reps
+                            };
+
+            DataAccessLayer.AddNewExercise(exercise);
+
+            return exercise;
+        }
+
+        private Workout AddNewWorkout(string name, string description, int difficulty)
+        {
+            var workout = new Workout
+                           {
+                               Name        = name
+                             , Description = description
+                             , Difficulty  = difficulty
+                           };
+
+            DataAccessLayer.AddNewWorkout(workout);
+
+            return workout;
+        }
+        
 #endregion
 
 

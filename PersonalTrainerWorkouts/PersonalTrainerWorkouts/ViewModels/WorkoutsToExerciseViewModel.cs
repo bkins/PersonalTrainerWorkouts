@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using ApplicationExceptions;
+using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
 using PersonalTrainerWorkouts.Utilities;
@@ -34,6 +35,13 @@ namespace PersonalTrainerWorkouts.ViewModels
         private int GetTotalReps()
         {
             return ExercisesWithIntermediateFields.Sum(exercise => exercise.Reps);
+        }
+
+        public WorkoutsToExerciseViewModel(string     workoutId
+                                         , DataAccess dbAccessLayer)
+        {
+            DataAccessLayer = dbAccessLayer;
+            Initialize(workoutId);
         }
 
         public WorkoutsToExerciseViewModel(string workoutId)
@@ -76,8 +84,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 var exerciseToAdd = DataAccessLayer.GetExercise(workoutsToExercise.ExerciseId);
 
                 var lengthOfTimeToUse = GetLengthOfTimeToUse(exerciseToAdd
-                                                           , workoutsToExercise)
-                       .ToShortForm();
+                                                           , workoutsToExercise).ToShortForm();
 
                 var repsToUse = GetRepsToUse(exerciseToAdd
                                            , workoutsToExercise);
@@ -124,18 +131,17 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         public void SaveWorkoutsToExercise(LinkedWorkoutsToExercises workoutsToExercise)
         {
-            if (workoutsToExercise.LengthOfTime.ToTime()
-              > new TimeSpan(0
-                           , 1
-                           , 0
-                           , 0))
+            if (workoutsToExercise.LengthOfTime.ToTime() > new TimeSpan(0
+                                                                      , 1
+                                                                      , 0
+                                                                      , 0))
             {
                 throw new ValueTooLargeException(nameof(workoutsToExercise.LengthOfTime)
                                                , workoutsToExercise.LengthOfTime
                                                , workoutsToExercise.LengthOfTime.GetType()
                                                                    .ToString()
                                                , workoutsToExercise.LengthOfTime
-                                               , "it is great than 1 hour.");
+                                               , "it is greater than 1 hour.");
             }
 
             DataAccessLayer.UpdateLinkedWorkoutsToExercises(workoutsToExercise);

@@ -143,7 +143,7 @@ namespace PersonalTrainerWorkouts.Views
         {
             var itemData = (Button)sender;
 
-            if (! (itemData.CommandParameter is ExerciseViewModel selectedWorkoutExercise))
+            if ( ! (itemData.CommandParameter is ExerciseViewModel selectedWorkoutExercise))
                 return;
 
             var workoutsToExercise = BuildWorkoutToExerciseFromSelected(selectedWorkoutExercise);

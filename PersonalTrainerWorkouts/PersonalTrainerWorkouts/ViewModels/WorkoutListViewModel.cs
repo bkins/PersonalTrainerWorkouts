@@ -1,28 +1,56 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
     public class WorkoutListViewModel : ViewModelBase
     {
-        public List<Workout> ListOfWorkouts { get; set; }
-
-        public ObservableCollection<Workout> ObservableListOfWorkouts { get; set; }
-
+        public ObservableCollection<Workout>     ObservableListOfWorkouts { get; set; }
+        public List<WorkoutsToExerciseViewModel> ListOfWorkoutsWithTotals { get; set; }
+        
         public WorkoutListViewModel()
         {
-            ObservableListOfWorkouts = new ObservableCollection<Workout>(DataAccessLayer.GetWorkouts());
+            LoadData(DataAccessLayer.GetWorkouts());
+
+            //ObservableListOfWorkouts = new ObservableCollection<Workout>(DataAccessLayer.GetWorkouts());
+            //ListOfWorkoutsWithTotals = new List<WorkoutsToExerciseViewModel>();
+
+            //foreach (var workout in ObservableListOfWorkouts)
+            //{
+            //    ListOfWorkoutsWithTotals.Add(new WorkoutsToExerciseViewModel(workout.Id.ToString()));
+            //}
         }
 
-        public WorkoutListViewModel(List<Workout> aListOfWorkouts) //: this()
+        public WorkoutListViewModel(List<Workout> aListOfWorkouts, DataAccess dbAccessLayer)
         {
-            ObservableCollection<Workout> testCollection = new ObservableCollection<Workout>(aListOfWorkouts);
-            ObservableListOfWorkouts = new ObservableCollection<Workout>(aListOfWorkouts);
+            DataAccessLayer          = dbAccessLayer;
+            LoadData(aListOfWorkouts);
+
+            //ObservableListOfWorkouts = new ObservableCollection<Workout>(aListOfWorkouts);
+            //ListOfWorkoutsWithTotals = new List<WorkoutsToExerciseViewModel>();
+
+            //foreach (var workout in ObservableListOfWorkouts)
+            //{
+            //    ListOfWorkoutsWithTotals.Add(new WorkoutsToExerciseViewModel(workout.Id.ToString(), DataAccessLayer));
+            //}
         }
 
+        public void LoadData(IEnumerable<Workout> workoutData)
+        {
+            
+            ObservableListOfWorkouts = new ObservableCollection<Workout>(workoutData);
+            ListOfWorkoutsWithTotals = new List<WorkoutsToExerciseViewModel>();
+
+            foreach (var workout in ObservableListOfWorkouts)
+            {
+                ListOfWorkoutsWithTotals.Add(new WorkoutsToExerciseViewModel(workout.Id.ToString(), DataAccessLayer));
+            }
+        }
         public string Delete(int index)
         {
             if (index > ObservableListOfWorkouts.Count - 1)
@@ -54,27 +82,17 @@ namespace PersonalTrainerWorkouts.ViewModels
             {
                 return new ObservableCollection<Workout>();
             }
-
-            //Examples:
-            // * d=1    (3 chars)
-            // * d<2    (3 chars)
-            // * d<=3   (4 chars)
-            // * d>=10  (5 chars)
-
+            
             var firstChar  = searchText.ToUpper()[0];
             var secondChar = searchText.ToUpper()[1];
             var thirdChar  = searchText.ToUpper()[2];
-
-            //1.  Is first char 'D'
-            //2.  Is second char either '=', '>', or '<'
-            //3.  Is third char either '>', or '<'
-            //    Or is it a number
-            //4.  If the third is either '>', or '<', is the fourth a number, then take the rest of the string and int.Parse
-
+            
             if ( ! ValidateSearchByDifficultyText(firstChar
                                                , secondChar
                                                , thirdChar))
+            {
                 return new ObservableCollection<Workout>();
+            }
 
             if (secondChar == '=')
             {
@@ -114,14 +132,113 @@ namespace PersonalTrainerWorkouts.ViewModels
             return new ObservableCollection<Workout>();
         }
 
+        public ObservableCollection<Workout> SearchByTotalReps(string searchText)
+        {
+            searchText = searchText.Replace(" "
+                                          , "");
+            
+            if (searchText.Length < 4)
+            {
+                return new ObservableCollection<Workout>();
+            }
+            
+            var thirdChar = searchText.ToUpper()[2];
+            var forthChar = searchText.ToUpper()[3];
+            
+            if ( ! ValidateSearchByTotalReps(new string(searchText.Take(2).ToArray())
+                                           , thirdChar
+                                           , forthChar))
+            {
+                return new ObservableCollection<Workout>();
+            }
+
+            if (thirdChar == '=')
+            {
+                var theNumber = int.Parse(searchText.Remove(0
+                                                          , 3));
+
+                var foundWorkouts  = ListOfWorkoutsWithTotals.Where(field => field.TotalReps == theNumber);
+                var returnWorkouts = foundWorkouts.Select(foundWorkout => foundWorkout.Workout)
+                                                  .ToList();
+
+                return new ObservableCollection<Workout>(returnWorkouts);
+            }
+
+            if (thirdChar == '<'
+             && forthChar == '=')
+            {
+                var theNumber = int.Parse(searchText.Remove(0
+                                                          , 4));
+
+                var foundWorkouts = ListOfWorkoutsWithTotals.Where(field => field.TotalReps <= theNumber);
+                var returnWorkouts = foundWorkouts.Select(foundWorkout => foundWorkout.Workout)
+                                                  .ToList();
+
+                return new ObservableCollection<Workout>(returnWorkouts);
+            }
+                
+            if (thirdChar == '>'
+             && forthChar == '=')
+            {
+                var theNumber = int.Parse(searchText.Remove(0
+                                                          , 4));
+
+                var foundWorkouts = ListOfWorkoutsWithTotals.Where(field => field.TotalReps >= theNumber);
+                var returnWorkouts = foundWorkouts.Select(foundWorkout => foundWorkout.Workout)
+                                                  .ToList();
+
+                return new ObservableCollection<Workout>(returnWorkouts);
+            }
+                
+            if (thirdChar == '<')
+            {
+                var theNumber = int.Parse(searchText.Remove(0
+                                                          , 3));
+
+                var foundWorkouts = ListOfWorkoutsWithTotals.Where(field => field.TotalReps < theNumber);
+                var returnWorkouts = foundWorkouts.Select(foundWorkout => foundWorkout.Workout)
+                                                  .ToList();
+
+                return new ObservableCollection<Workout>(returnWorkouts);
+            }
+                
+            if (thirdChar == '>')
+            {
+                var theNumber = int.Parse(searchText.Remove(0
+                                                          , 3));
+
+                var foundWorkouts = ListOfWorkoutsWithTotals.Where(field => field.TotalReps > theNumber);
+                var returnWorkouts = foundWorkouts.Select(foundWorkout => foundWorkout.Workout)
+                                                  .ToList();
+
+                return new ObservableCollection<Workout>(returnWorkouts);
+            }
+            return new ObservableCollection<Workout>();
+        }
 
         private bool ValidateSearchByDifficultyText(char firstChar, char secondChar, char thirdChar)
         {
             return firstChar.Equals('D')
                 && 
                    (
-                       (secondChar == '=' || secondChar == '<' || secondChar == '>')
-                    && (int.TryParse(thirdChar.ToString(), out _) || thirdChar  == '=')
+                       (secondChar == '=' 
+                     || secondChar == '<' 
+                     || secondChar == '>')
+                    && (int.TryParse(thirdChar.ToString(), out _) 
+                     || thirdChar  == '=')
+                   );
+        }
+        
+        private bool ValidateSearchByTotalReps(string firstTwoChars, char thirdChar, char forthChar)
+        {
+            return firstTwoChars.Equals("TR", StringComparison.CurrentCultureIgnoreCase)
+                && 
+                   (
+                       (thirdChar == '='
+                     || thirdChar == '<' 
+                     || thirdChar == '>')
+                    && (int.TryParse(forthChar.ToString(), out _) 
+                     || forthChar  == '=')
                    );
         }
 
@@ -146,7 +263,15 @@ namespace PersonalTrainerWorkouts.ViewModels
                 return foundWorkouts;
             }
 
+            foundWorkouts = SearchByTotalReps(workoutFilterText);
+
+            if (foundWorkouts.Any())
+            {
+                return foundWorkouts;
+            }
+
             return SearchByNameAndDescription(workoutFilterText);
         }
     }
+    
 }

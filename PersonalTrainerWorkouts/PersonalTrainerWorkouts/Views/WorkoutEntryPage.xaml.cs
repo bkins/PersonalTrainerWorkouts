@@ -107,7 +107,7 @@ namespace PersonalTrainerWorkouts.Views
                 SaveWorkout();
             }
 
-            await PageNavigation.NavigateBackwards();
+            await PageNavigation.NavigateTo(nameof(WorkoutListPage));
         }
     }
 }

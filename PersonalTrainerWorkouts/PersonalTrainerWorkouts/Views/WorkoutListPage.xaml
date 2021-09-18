@@ -42,9 +42,10 @@
                     <Label Text="{Binding Description}"
                            Grid.Row="1"
                            FontSize="Medium"
+                           FontAttributes="Italic"
                            LineBreakMode="TailTruncation"
-                           Margin="10, 0, 0, 0" />
-
+                           Margin="15, -4, 0, 0" />
+                    <!--<object Margin="left,top,right,bottom"/>-->
                 </Grid>
 
             </DataTemplate>
