@@ -86,47 +86,47 @@ namespace PersonalTrainerWorkouts.ViewModels
             var firstChar  = searchText.ToUpper()[0];
             var secondChar = searchText.ToUpper()[1];
             var thirdChar  = searchText.ToUpper()[2];
-            
+
             if ( ! ValidateSearchByDifficultyText(firstChar
-                                               , secondChar
-                                               , thirdChar))
+                                                , secondChar
+                                                , thirdChar))
             {
                 return new ObservableCollection<Workout>();
             }
 
-            if (secondChar == '=')
+            if (secondChar == '='
+            && int.TryParse(thirdChar.ToString(), out var theNumber))
             {
-                var theNumber = int.Parse(thirdChar.ToString());
                 return new ObservableCollection<Workout>(ObservableListOfWorkouts.Where(field => field.Difficulty.Equals(theNumber)));
             }
 
             if (secondChar == '<'
-             && thirdChar  == '=')
+            &&  thirdChar  == '='
+            &&  int.TryParse(searchText.Remove(0, 3)
+                           , out theNumber))
             {
-                var theNumber = int.Parse(searchText.Remove(0
-                                                          , 3));
                 return new ObservableCollection<Workout>(ObservableListOfWorkouts.Where(field => field.Difficulty <= theNumber));
             }
                 
             if (secondChar == '>'
-             && thirdChar  == '=')
+             && thirdChar  == '='
+             && int.TryParse(searchText.Remove(0, 3)
+                           , out theNumber))
             {
-                var theNumber = int.Parse(searchText.Remove(0
-                                                          , 3));
                 return new ObservableCollection<Workout>(ObservableListOfWorkouts.Where(field => field.Difficulty >= theNumber));
             }
                 
-            if (secondChar == '<')
+            if (secondChar == '<'
+            && int.TryParse(searchText.Remove(0, 2)
+                          , out theNumber))
             {
-                var theNumber = int.Parse(searchText.Remove(0
-                                                          , 2));
                 return new ObservableCollection<Workout>(ObservableListOfWorkouts.Where(field => field.Difficulty < theNumber));
             }
                 
-            if (secondChar == '>')
+            if (secondChar == '>'
+            && int.TryParse(searchText.Remove(0, 2)
+                          , out theNumber))
             {
-                var theNumber = int.Parse(searchText.Remove(0
-                                                          , 2));
                 return new ObservableCollection<Workout>(ObservableListOfWorkouts.Where(field => field.Difficulty > theNumber));
             }
             return new ObservableCollection<Workout>();
@@ -147,7 +147,8 @@ namespace PersonalTrainerWorkouts.ViewModels
             
             if ( ! ValidateSearchByTotalReps(new string(searchText.Take(2).ToArray())
                                            , thirdChar
-                                           , forthChar))
+                                           , forthChar
+                                           , searchText[searchText.Length-1]))
             {
                 return new ObservableCollection<Workout>();
             }
@@ -229,7 +230,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                    );
         }
         
-        private bool ValidateSearchByTotalReps(string firstTwoChars, char thirdChar, char forthChar)
+        private bool ValidateSearchByTotalReps(string firstTwoChars, char thirdChar, char forthChar, char lastChar)
         {
             return firstTwoChars.Equals("TR", StringComparison.CurrentCultureIgnoreCase)
                 && 
@@ -239,7 +240,8 @@ namespace PersonalTrainerWorkouts.ViewModels
                      || thirdChar == '>')
                     && (int.TryParse(forthChar.ToString(), out _) 
                      || forthChar  == '=')
-                   );
+                   )
+                && int.TryParse(lastChar.ToString(), out _);
         }
 
         public ObservableCollection<Workout> SearchByNameAndDescription(string workoutFilterText)

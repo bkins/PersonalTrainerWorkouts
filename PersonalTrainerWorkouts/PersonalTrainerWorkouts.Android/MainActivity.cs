@@ -1,8 +1,11 @@
-﻿using Android.App;
+﻿using Android;
+using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.Runtime;
 using Android.OS;
+using AndroidX.Core.App;
+using AndroidX.Core.Content;
 using PersonalTrainerWorkouts.Services;
 
 namespace PersonalTrainerWorkouts.Droid
@@ -38,6 +41,15 @@ namespace PersonalTrainerWorkouts.Droid
     {
         protected override void OnCreate(Bundle savedInstanceState)
         {
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
+            {
+                if (!(CheckPermissionGranted(Manifest.Permission.ReadExternalStorage) 
+                  &&  !CheckPermissionGranted(Manifest.Permission.WriteExternalStorage)))
+                {
+                    RequestPermission();
+                }
+            }
+
             base.OnCreate(savedInstanceState);
 
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
@@ -73,5 +85,28 @@ namespace PersonalTrainerWorkouts.Droid
             }
             base.OnNewIntent(intent);
         }
+        
+        private void RequestPermission()
+        {
+            ActivityCompat.RequestPermissions(this
+                                            , new[]
+                                              {
+                                                  Manifest.Permission.ReadExternalStorage
+                                                , Manifest.Permission.WriteExternalStorage
+                                              }
+                                            , 0);
+        }
+
+        public bool CheckPermissionGranted(string permissions)
+        {
+            // Check if the permission is already available.
+            if (ContextCompat.CheckSelfPermission(this, permissions) != Permission.Granted)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
     }
 }

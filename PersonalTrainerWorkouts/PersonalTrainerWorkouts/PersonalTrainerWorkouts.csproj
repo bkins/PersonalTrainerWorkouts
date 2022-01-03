@@ -12,20 +12,21 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Google.Apis.Auth" Version="1.55.0" />
-    <PackageReference Include="Google.Apis.Drive.v3" Version="1.55.0.2397" />
-    <PackageReference Include="NLog" Version="4.7.10" />
-    <PackageReference Include="sqlite-net-pcl" Version="1.7.335" />
+    <PackageReference Include="Google.Apis.Drive.v3" Version="1.55.0.2502" />
+    <PackageReference Include="NLog" Version="4.7.13" />
+    <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
     <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
-    <PackageReference Include="Syncfusion.Xamarin.Expander" Version="19.2.0.57" />
-    <PackageReference Include="Syncfusion.Xamarin.SfListView" Version="19.2.0.51" />
-    <PackageReference Include="Syncfusion.Xamarin.SfPicker" Version="19.2.0.51" />
+    <PackageReference Include="Syncfusion.Xamarin.Expander" Version="19.4.0.40" />
+    <PackageReference Include="Syncfusion.Xamarin.SfListView" Version="19.4.0.40" />
+    <PackageReference Include="Syncfusion.Xamarin.SfPicker" Version="19.4.0.40" />
     <PackageReference Include="Xamarin.Auth" Version="1.7.0" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2083" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2291" />
     <PackageReference Include="Xamarin.Essentials" Version="1.7.0" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Avails\Avails\Avails.csproj" />
     <ProjectReference Include="..\..\ApplicationExceptions\ApplicationExceptions.csproj" />
   </ItemGroup>
 

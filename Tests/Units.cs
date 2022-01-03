@@ -445,11 +445,21 @@ namespace Tests
         }
 
         [Theory]
-        [InlineData("TR=150", 1)]
-        [InlineData("TR<71",  2)]
-        [InlineData("TR<=70", 2)]
-        [InlineData("TR>70",  2)]
-        [InlineData("TR>=70", 3)]
+        [InlineData("",           0)]
+        [InlineData("TR=0",       0)]
+        [InlineData("TR=-1",      0)]
+        [InlineData("TR=9999999", 0)]
+        [InlineData("TR<9999999", 4)]
+        [InlineData("TR=150",     1)]
+        [InlineData("TR<71",      2)]
+        [InlineData("TR<=70",     2)]
+        [InlineData("TR>70",      2)]
+        [InlineData("TR>=70",     3)]
+        [InlineData("TR>",        0)]
+        [InlineData("TR<",        0)]
+        [InlineData("TR=",        0)]
+        [InlineData("TR>=",       0)]
+        [InlineData("TR<=",       0)]
         public void TestSearchTotalReps(string searchText
                                       , int    expectedCount)
         {

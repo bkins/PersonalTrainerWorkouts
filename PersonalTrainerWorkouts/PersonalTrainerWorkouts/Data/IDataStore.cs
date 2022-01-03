@@ -99,7 +99,9 @@ namespace PersonalTrainerWorkouts.Data
         int  SaveExercise(Exercise exercise);
         void SaveWorkout(Workout   workout);
 
-        void CreateTables();
-        void DropTables();
+        void   CreateTables();
+        void   DropTables();
+        string GetFilePath();
+        string GetFileName();
     }
 }

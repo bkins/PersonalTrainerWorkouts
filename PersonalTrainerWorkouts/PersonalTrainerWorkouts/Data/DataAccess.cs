@@ -7,7 +7,19 @@ namespace PersonalTrainerWorkouts.Data
 {
     public class DataAccess
     {
-        private IDataStore Database { get; set; }
+        private IDataStore Database         { get; set; }
+        public  string     DatabaseLocation => GetDatabaseLocation();
+        public  string     DatabaseFileName => GetDatabaseFileName();
+
+        private string GetDatabaseLocation()
+        {
+            return Database.GetFilePath();
+        }
+
+        private string GetDatabaseFileName()
+        {
+            return Database.GetFileName();
+        }
 
         public DataAccess(IDataStore database)
         {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using ApplicationExceptions;
 using PersonalTrainerWorkouts.Models;
@@ -19,11 +20,16 @@ namespace PersonalTrainerWorkouts.Data
         //BENDO:  Implement the use of forceRefresh in methods that use it
         //(and add to methods that it makes sense to add it to)
         private readonly SQLiteConnection _database;
+        
+        private readonly string _path;
 
         public Database(string dbPath)
         {
             _database = new SQLiteConnection(dbPath);
+            _path     = dbPath;
+
             var databaseVersion = GetDatabaseVersion();
+
             CreateTables();
             Check();
         }
@@ -37,6 +43,7 @@ namespace PersonalTrainerWorkouts.Data
         {
             return _database.DatabasePath;
         }
+
         public void CreateTables()
         {
             try
@@ -78,6 +85,18 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<ExerciseMuscleGroup>();
             _database.DropTable<WorkoutExercise>();
             _database.DropTable<LinkedWorkoutsToExercises>();
+        }
+
+        public string GetFilePath()
+        {
+            return _path;
+        }
+
+        public string GetFileName()
+        {
+            var fileName = new FileInfo(_path).Name;
+
+            return fileName;
         }
 
         public bool Check()

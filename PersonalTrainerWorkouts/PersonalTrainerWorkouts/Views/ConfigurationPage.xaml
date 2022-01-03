@@ -2,7 +2,8 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="PersonalTrainerWorkouts.Views.ConfigurationPage">
+             x:Class="PersonalTrainerWorkouts.Views.ConfigurationPage"
+             >
     <ContentPage.Content>
         <StackLayout>
 
@@ -11,28 +12,43 @@
                      HorizontalOptions="Center"
                      HeightRequest="1"
                      WidthRequest="200"
-                     Color="Gray" />
+                     Color="Gray" 
+                     />
 
             <Button Text="Drop Tables"
-                    Clicked="DropTablesButtonClicked" />
+                    Clicked="DropTablesButtonClicked" 
+                    />
 
             <Button Text="Create Tables"
-                    Clicked="CreateTablesButtonClicked" />
+                    Clicked="CreateTablesButtonClicked" 
+                    />
 
             <BoxView VerticalOptions="Center"
                      HorizontalOptions="Center"
                      HeightRequest="1"
                      WidthRequest="200"
-                     Color="Gray" />
+                     Color="Gray" 
+                     />
 
             <Button Text="View Log"
-                    Clicked="ViewLogButtonClicked" />
+                    Clicked="ViewLogButtonClicked" 
+                    />
 
             <BoxView VerticalOptions="Center"
                      HorizontalOptions="Center"
                      HeightRequest="1"
                      WidthRequest="200"
-                     Color="Gray" />
+                     Color="Gray" 
+                     />
+
+            <Button x:Name="BackupDatabaseButton"
+                    Text="Backup Database"
+                    Clicked="BackupDatabaseButton_OnClicked"
+                    />
+
+            <Button x:Name="RestoreDatabaseButton"
+                    Text="Restore Database"
+                    Clicked="RestoreDatabaseButton_OnClicked"/>
 
         </StackLayout>
     </ContentPage.Content>
