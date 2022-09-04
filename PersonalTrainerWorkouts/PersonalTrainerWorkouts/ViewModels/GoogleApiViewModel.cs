@@ -64,57 +64,57 @@ namespace PersonalTrainerWorkouts.ViewModels
         private async void OnAuthOnCompleted(object                          sender
                                            , AuthenticatorCompletedEventArgs e)
         {
-            if (e.IsAuthenticated)
-            {
-                var initializer = new GoogleAuthorizationCodeFlow.Initializer
-                                  {
-                                      ClientSecrets = new ClientSecrets()
-                                                      {
-                                                          ClientId = CLIENT_ID
-                                                         ,
-                                                      }
-                                     ,
-                                      Scopes = new[]
-                                               {
-                                                   SCOPE
-                                               }
-                                     ,
-                                      DataStore = new FileDataStore("Google.Apis.Auth")
-                                  };
+            if ( ! e.IsAuthenticated)
+                return;
 
-                var codeFlow = new GoogleAuthorizationCodeFlow(initializer);
-                var userId     = "DriveTest";
+            var initializer = new GoogleAuthorizationCodeFlow.Initializer
+                              {
+                                  ClientSecrets = new ClientSecrets()
+                                                  {
+                                                      ClientId = CLIENT_ID
+                                                     ,
+                                                  }
+                                 ,
+                                  Scopes = new[]
+                                           {
+                                               SCOPE
+                                           }
+                                 ,
+                                  DataStore = new FileDataStore("Google.Apis.Auth")
+                              };
 
-                var token = new TokenResponse()
-                            {
-                                AccessToken      = e.Account.Properties["access_token"]
-                              , ExpiresInSeconds = Convert.ToInt64(e.Account.Properties["expires_in"])
-                              , RefreshToken     = e.Account.Properties["refresh_token"]
-                              , Scope            = e.Account.Properties["scope"]
-                              , TokenType        = e.Account.Properties["token_type"]
-                            };
+            var codeFlow = new GoogleAuthorizationCodeFlow(initializer);
+            var userId   = "DriveTest";
 
-                var userCredential = new UserCredential(codeFlow
-                                                      , userId
-                                                      , token);
+            var token = new TokenResponse()
+                        {
+                            AccessToken      = e.Account.Properties["access_token"]
+                          , ExpiresInSeconds = Convert.ToInt64(e.Account.Properties["expires_in"])
+                          , RefreshToken     = e.Account.Properties["refresh_token"]
+                          , Scope            = e.Account.Properties["scope"]
+                          , TokenType        = e.Account.Properties["token_type"]
+                        };
 
-                var driveService = new DriveService(new BaseClientService.Initializer()
-                                                    {
-                                                        HttpClientInitializer = userCredential
-                                                      , ApplicationName       = "PersonalTrainerWorkouts"
-                                                       ,
-                                                    });
+            var userCredential = new UserCredential(codeFlow
+                                                  , userId
+                                                  , token);
 
-                //test google drive
-                var service = new GoogleDriveService(driveService);
-                var fileId  = await service.CreateFile();
+            var driveService = new DriveService(new BaseClientService.Initializer()
+                                                {
+                                                    HttpClientInitializer = userCredential
+                                                  , ApplicationName       = "PersonalTrainerWorkouts"
+                                                   ,
+                                                });
 
-                await service.SaveFile(fileId
-                                    , "testFileName"
-                                    , "test content");
+            //test google drive
+            var service = new GoogleDriveService(driveService);
+            var fileId  = await service.CreateFile();
 
-                var content = await service.ReadFile(fileId);
-            }
+            await service.SaveFile(fileId
+                                 , "testFileName"
+                                 , "test content");
+
+            var content = await service.ReadFile(fileId);
         }
     }
 

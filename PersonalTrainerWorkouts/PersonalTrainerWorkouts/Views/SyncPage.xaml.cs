@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Windows.Input;
 using PersonalTrainerWorkouts.Services;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Essentials;
@@ -11,6 +12,7 @@ namespace PersonalTrainerWorkouts.Views
     public partial class SyncPage : ContentPage
     {
         public GoogleApiViewModel ViewModel { get; set; }
+        
         public SyncPage()
         {
             InitializeComponent();
@@ -20,7 +22,7 @@ namespace PersonalTrainerWorkouts.Views
         private void ExportButton_OnClicked(object    sender
                                           , EventArgs e)
         {
-            
+            ViewModel.TestDriveCommand.Execute(null);
         }
 
         private void TestGoogleDriveButton_OnClicked(object    sender
@@ -31,7 +33,7 @@ namespace PersonalTrainerWorkouts.Views
             
             Launcher.OpenAsync(new Uri(oauthRequest));
 
-            //ViewModel.LoginAuthenticator();
+            ViewModel.LoginAuthenticator();
         }
     }
 }

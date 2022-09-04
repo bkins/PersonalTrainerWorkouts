@@ -1,6 +1,7 @@
 ﻿using Android.App;
 using Android.Widget;
 using System;
+using System.Threading.Tasks;
 using PersonalTrainerWorkouts.Droid.Utilities;
 using NLog;
 using PersonalTrainerWorkouts.Utilities.Interfaces;
@@ -420,6 +421,20 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         {
             throw new NotImplementedException();
         }
+
+        public void Swallow(Task                                       task)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SwallowAsync(Task                                  task) => throw new NotImplementedException();
+
+        public Task SwallowAsync(Func<Task>                            asyncAction) => throw new NotImplementedException();
+
+        public Task<TResult> SwallowAsync<TResult>(Func<Task<TResult>> asyncFunc) => throw new NotImplementedException();
+
+        public Task<TResult> SwallowAsync<TResult>(Func<Task<TResult>>  asyncFunc
+                                                 , TResult fallback) => throw new NotImplementedException();
 
         public void Trace(object value)
         {

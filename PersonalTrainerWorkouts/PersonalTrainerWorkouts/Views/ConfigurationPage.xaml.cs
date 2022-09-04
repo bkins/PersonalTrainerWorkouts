@@ -8,6 +8,7 @@ using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
+
 namespace PersonalTrainerWorkouts.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
@@ -20,12 +21,14 @@ namespace PersonalTrainerWorkouts.Views
 
         private static string GetBackupDestinationPath()
         {
-            var backupFolder = Path.Combine("storage"
-                                          , "emulated"
-                                          , "0"
-                                          , "Downloads"
-                                          , "BackupDb");
-
+            //var backupFolder = Path.Combine("storage"
+            //                              , "emulated"
+            //                              , "0"
+            //                              , "Downloads"
+            //                              , "BackupDb");
+            string backupFolder = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments)
+                                             , "BackupDb");
+            
             if ( ! Directory.Exists(backupFolder))
             {
                 Directory.CreateDirectory(backupFolder);
@@ -68,10 +71,16 @@ namespace PersonalTrainerWorkouts.Views
         private async void BackupDatabase()
         {
             var backedUpFileNameAndPath = BackupViewModel.Backup();
-            
-            await DisplayAlert("DB Backed Up"
-                             , GetBackedUpMessageText(backedUpFileNameAndPath)
-                             , "OK");
+
+            var emailFile = await DisplayAlert("DB Backed Up"
+                                             , GetBackedUpMessageText(backedUpFileNameAndPath)
+                                             , "Yes"
+                                             , "No");
+
+            if (emailFile)
+            {
+                //BENDO: Look Is & Os for example of sending files as attachments
+            }
         }
         
         private static string GetBackedUpMessageText(string backedUpFileNameAndPath)
@@ -79,6 +88,8 @@ namespace PersonalTrainerWorkouts.Views
             var message = new StringBuilder();
             message.AppendLine("The database was backed up to:");
             message.AppendLine(backedUpFileNameAndPath);
+            message.AppendFormat(string.Empty);
+            message.AppendLine("Would you like to email the backup file?");
             
             return message.ToString();
         }
