@@ -2,9 +2,9 @@
 using Android.Widget;
 using System;
 using System.Threading.Tasks;
+using Avails.Xamarin.Interfaces;
 using PersonalTrainerWorkouts.Droid.Utilities;
 using NLog;
-using PersonalTrainerWorkouts.Utilities.Interfaces;
 using Logger = NLog.Logger;
 using LogManager = NLog.LogManager;
 

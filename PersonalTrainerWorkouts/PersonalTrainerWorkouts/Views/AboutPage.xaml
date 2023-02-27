@@ -14,19 +14,31 @@
         <StackLayout Grid.Row="1"
                      Margin="20"
                      Spacing="20">
-            <Label FontSize="22">
-                <Label.FormattedText>
-                    <FormattedString>
-                        <FormattedString.Spans>
-                            <Span Text="Personal Trainer Workouts"
-                                  FontAttributes="Bold"
-                                  FontSize="22" />
-                            <Span Text=" v1.0" />
-                        </FormattedString.Spans>
-                    </FormattedString>
-                </Label.FormattedText>
+            <Label x:Name="TableHeaderLabel" 
+                   Text="Table Info"
+                   >
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TableHeaderLabel_OnTapped"/>
+                </Label.GestureRecognizers>
             </Label>
-            <Label Text="This app is written in XAML and C# with the Xamarin Platform." />
+            <ScrollView x:Name="TableLabelScrollView"
+                        IsVisible="False">
+                
+                <!-- <Label FontSize="22"> -->
+                <!--     <Label.FormattedText> -->
+                <!--         <FormattedString> -->
+                <!--             <FormattedString.Spans> -->
+                <!--                 <Span Text="Personal Trainer Workouts" -->
+                <!--                       FontAttributes="Bold" -->
+                <!--                       FontSize="22" /> -->
+                <!--                 <Span Text=" v1.0" /> -->
+                <!--             </FormattedString.Spans> -->
+                <!--         </FormattedString> -->
+                <!--     </Label.FormattedText> -->
+                <!-- </Label> -->
+                <Label x:Name="TablesLabel" />    
+            </ScrollView>
+            
             <Button Text="View Website"
                     Clicked="OnButtonClicked" />
         </StackLayout>

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using PersonalTrainerWorkouts.Models;
 
 namespace PersonalTrainerWorkouts.ViewModels
@@ -18,8 +17,6 @@ namespace PersonalTrainerWorkouts.ViewModels
             {
                 return;
             }
-
-            throw new NotImplementedException();
 
             DataAccessLayer.AddExerciseEquipment(exerciseId
                                                , SelectedMuscleGroup.Id);

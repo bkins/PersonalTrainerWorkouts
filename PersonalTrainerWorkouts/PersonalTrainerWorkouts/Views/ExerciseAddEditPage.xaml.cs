@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Web;
 using System.Windows.Input;
 using ApplicationExceptions;
+using Avails.D_Flat.Exceptions;
+using Avails.Xamarin;
+using Avails.Xamarin.Logger;
 using Xamarin.Forms;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
-using Syncfusion.XForms.Accordion;
 
 namespace PersonalTrainerWorkouts.Views
 {
@@ -207,10 +207,10 @@ namespace PersonalTrainerWorkouts.Views
             }
         }
 
-        private async void AddTypeOfExerciseButton_OnClicked(object    sender
+        private void AddTypeOfExerciseButton_OnClicked(object    sender
                                                            , EventArgs e)
         {
-            await PageNavigation.NavigateTo(nameof(TypeOfExerciseListPage)
+            PageNavigation.NavigateTo(nameof(TypeOfExerciseListPage)
                                           , nameof(TypeOfExerciseListPage.WorkoutId)
                                           , ViewModel.Workout.Id.ToString()
                                           , nameof(TypeOfExerciseListPage.ExerciseId)
@@ -226,18 +226,18 @@ namespace PersonalTrainerWorkouts.Views
             TypeOfExerciseCollectionView.ItemsSource = ViewModel.TypesOfExerciseList;
         }
 
-        private async void AddEquipmentButton_OnClicked(object    sender
+        private void AddEquipmentButton_OnClicked(object    sender
                                                       , EventArgs e)
         {
-            await PageNavigation.NavigateTo(nameof(EquipmentListPage)
+            PageNavigation.NavigateTo(nameof(EquipmentListPage)
                                           , nameof(EquipmentListPage.ExerciseId)
                                           , ExerciseId);
         }
 
-        private async void AddMuscleGroupButton_OnClicked(object    sender
+        private void AddMuscleGroupButton_OnClicked(object    sender
                                                         , EventArgs e)
         {
-            await PageNavigation.NavigateTo(nameof(MuscleGroupListPage)
+            PageNavigation.NavigateTo(nameof(MuscleGroupListPage)
                                           , nameof(MuscleGroupListPage.ExerciseId)
                                           , ExerciseId
                                           , nameof(MuscleGroupListPage.WorkoutId)

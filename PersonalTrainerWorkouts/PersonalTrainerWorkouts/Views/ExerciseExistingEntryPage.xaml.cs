@@ -1,8 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
+using Avails.Xamarin;
+using Avails.Xamarin.Logger;
 using Xamarin.Forms;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
 using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;
 
@@ -46,20 +46,20 @@ namespace PersonalTrainerWorkouts.Views
             ItemViewModel = new ExerciseItemViewModel();
         }
 
-        private async void ExercisePicker_OnOkButtonClicked(object                    sender
+        private void ExercisePicker_OnOkButtonClicked(object                    sender
                                                           , SelectionChangedEventArgs e)
         {
             ItemViewModel.SelectedExercise = (Exercise)ExercisePicker.SelectedItem;
 
             ItemViewModel.SaveExercise(int.Parse(WorkoutId));
 
-            await PageNavigation.NavigateBackwards();
+            PageNavigation.NavigateBackwards();
         }
 
-        private async void ExercisePicker_OnCancelButtonClicked(object                    sender
+        private void ExercisePicker_OnCancelButtonClicked(object                    sender
                                                               , SelectionChangedEventArgs e)
         {
-            await PageNavigation.NavigateBackwards();
+            PageNavigation.NavigateBackwards();
         }
     }
 }

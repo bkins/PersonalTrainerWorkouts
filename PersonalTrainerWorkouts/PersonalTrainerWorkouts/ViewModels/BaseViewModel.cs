@@ -8,14 +8,22 @@ namespace PersonalTrainerWorkouts.ViewModels
 {
     public class BaseViewModel
     {
-        public DataAccess DataAccess;
+        private DataAccess _dataAccess;
     
         public DataAccess DataAccessLayer
         {
-            get => DataAccess = DataAccess ?? new DataAccess(App.Database);
-            set => DataAccess = value;
+            get => _dataAccess = _dataAccess ?? new DataAccess(App.Database);
+            set => _dataAccess = value;
         }
 
+        private ContactsDataAccess _contactsDataAccess;
+
+        public ContactsDataAccess ContactsDataAccess
+        {
+            get => _contactsDataAccess = _contactsDataAccess ?? new ContactsDataAccess(App.ContactDataStore);
+            set => _contactsDataAccess = value;
+        }
+        
         private bool _isBusy;
         public bool IsBusy
         {

@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
+             xmlns:xForms="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             x:Class="PersonalTrainerWorkouts.Views.ClientListPage"
+             Title="Clients">
+
+
+    <ContentPage.Resources>
+        <!-- Define a visual state for the Selected state of the CollectionView -->
+        <Style TargetType="StackLayout">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="{DynamicResource AppPrimaryColor}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+
+        <ResourceDictionary>
+            <DataTemplate x:Name="ItemTemplate"
+                          x:Key="ItemTemplate" >
+                
+                <Grid x:Name="grid" ColumnDefinitions="*,*">
+                    
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    
+                    <Label Text="{Binding DisplayName}"
+                           Grid.Column="0"
+                           Grid.Row="0"
+                           FontSize="Medium"
+                           FontAttributes="Bold"
+                           Margin="10, 0, 0, 0" />
+                    
+                    <Label Text="{Binding MainNumber}"
+                           Grid.Column="1"
+                           Grid.Row="0"
+                           FontSize="Medium"
+                           Margin="10, 0, 0, 0" />
+                    
+                    <!--<object Margin="left,top,right,bottom"/>-->
+                </Grid>
+
+            </DataTemplate>
+        </ResourceDictionary>
+    </ContentPage.Resources>
+
+    <!-- Add an item to the toolbar -->
+    <ContentPage.ToolbarItems>
+        
+        <ToolbarItem x:Name="AddToolbarItem" 
+                     Text="Add"
+                     IconImageSource="baseline_add_circle_outline_black_48.png"
+                     Clicked="AddToolbarItem_OnClicked" 
+                     />
+        <ToolbarItem x:Name="SearchToolbarItem"
+                     Text="Search"
+                     IconImageSource="baseline_search_black_48.png"
+                     Clicked="SearchToolbarItem_OnClicked"
+                     />
+        
+    </ContentPage.ToolbarItems>
+    
+    <StackLayout VerticalOptions="StartAndExpand">
+        
+        <Entry x:Name="Filter" 
+               Placeholder="Search Clients (try d=1 or d>5)"
+               IsVisible="False"
+               TextChanged="Filter_OnTextChanged">
+        </Entry>
+
+        <xForms:SfListView x:Name="ListView"
+                           VerticalOptions="StartAndExpand"
+                           AutoFitMode="DynamicHeight"
+                           SelectionMode="Single"
+                           AllowSwiping="True"
+                           SelectionChanged="OnSelectionChanged"
+                           SwipeEnded="ListView_SwipeEnded"
+                           ItemTemplate="{StaticResource ItemTemplate}">
+            
+            <xForms:SfListView.LeftSwipeTemplate >
+                <DataTemplate x:Name="LeftSwipeTemplate">
+                    <Grid VerticalOptions="CenterAndExpand">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0"
+                              BackgroundColor="#DC595F"
+                              HorizontalOptions="Fill"
+                              VerticalOptions="Fill">
+                            <Grid VerticalOptions="CenterAndExpand"
+                                  HorizontalOptions="Center">
+                                <Image x:Name="DeleteImage"
+                                       Grid.Column="0"
+                                       Grid.Row="0"
+                                       BackgroundColor="Transparent"
+                                       HeightRequest="35"
+                                       WidthRequest="35"
+                                       BindingContextChanged="LeftImage_BindingContextChanged"
+
+                                       Source="Delete.png" />
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                </DataTemplate>
+            </xForms:SfListView.LeftSwipeTemplate>
+        </xForms:SfListView>
+    </StackLayout>
+</ContentPage>

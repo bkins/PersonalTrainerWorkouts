@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ApplicationExceptions;
+﻿using System.Collections.Generic;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {

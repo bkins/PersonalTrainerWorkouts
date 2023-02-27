@@ -3,7 +3,12 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <ProduceReferenceAssembly>true</ProduceReferenceAssembly>
+    <LangVersion>latest</LangVersion>
 
+  </PropertyGroup>
+
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <WarningLevel>2</WarningLevel>
   </PropertyGroup>
 
   <ItemGroup>
@@ -17,17 +22,14 @@
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
     <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
-    <PackageReference Include="Syncfusion.Xamarin.Expander" Version="19.4.0.40" />
-    <PackageReference Include="Syncfusion.Xamarin.SfListView" Version="19.4.0.40" />
-    <PackageReference Include="Syncfusion.Xamarin.SfPicker" Version="20.2.0.44" />
+    <PackageReference Include="Syncfusion.Xamarin.Buttons" Version="20.4.0.41" />
+    <PackageReference Include="Syncfusion.Xamarin.Expander" Version="20.4.0.41" />
+    <PackageReference Include="Syncfusion.Xamarin.SfListView" Version="20.4.0.41" />
+    <PackageReference Include="Syncfusion.Xamarin.SfPicker" Version="20.4.0.41" />
+    <PackageReference Include="Syncfusion.Xamarin.SfRichTextEditor" Version="20.4.0.41" />
     <PackageReference Include="Xamarin.Auth" Version="1.7.0" />
-    <PackageReference Include="Xamarin.Essentials" Version="1.7.3" />
-    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2291" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\..\Avails\Avails\Avails.csproj" />
-    <ProjectReference Include="..\..\ApplicationExceptions\ApplicationExceptions.csproj" />
+    <PackageReference Include="Xamarin.Essentials" Version="1.7.5" />
+    <PackageReference Include="Xamarin.Forms" Version="5.0.0.2515" />
   </ItemGroup>
 
   <ItemGroup>
@@ -66,6 +68,10 @@
     </Compile>
     <Compile Update="Views\WorkoutExercisePage.xaml.cs">
       <DependentUpon>WorkoutExercisePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="Views\HomePage.xaml.cs">
+      <DependentUpon>HomePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
 
@@ -113,5 +119,13 @@
 
   <ItemGroup>
     <Service Include="{508349b6-6b84-4df5-91f0-309beebad82d}" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="ApplicationExceptions" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Avails\Avails\Avails.csproj" />
   </ItemGroup>
 </Project>

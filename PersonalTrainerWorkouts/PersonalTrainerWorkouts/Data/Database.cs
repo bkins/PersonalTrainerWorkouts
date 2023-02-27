@@ -1,27 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Data;
 using System.IO;
 using System.Linq;
-using ApplicationExceptions;
+using System.Transactions;
+using InvalidOperationException = System.InvalidOperationException;
+
+using Avails.Xamarin.Logger;
+using PersonalTrainerWorkouts.Data.Interfaces;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
-using PersonalTrainerWorkouts.Utilities;
+
 using SQLite;
 using SQLiteNetExtensions.Extensions;
 using Syncfusion.DataSource.Extensions;
-using InvalidOperationException = System.InvalidOperationException;
+
+using SequenceContainsNoElementsException = Avails.D_Flat.Exceptions.SequenceContainsNoElementsException;
 using TypeOfExercise = PersonalTrainerWorkouts.Models.TypeOfExercise;
 
 namespace PersonalTrainerWorkouts.Data
 {
-    public class Database : IDataStore
+    public partial class Database : IDataStore
     {
         //BENDO:  Implement the use of forceRefresh in methods that use it
         //(and add to methods that it makes sense to add it to)
         private readonly SQLiteConnection _database;
-        
-        private readonly string _path;
+        private readonly string           _path;
 
         public Database(string dbPath)
         {
@@ -56,6 +61,13 @@ namespace PersonalTrainerWorkouts.Data
                 _database.CreateTable<Synergist>();
                 _database.CreateTable<OpposingMuscleGroup>();
 
+                _database.CreateTable<Client>();
+                _database.CreateTable<Session>();
+                _database.CreateTable<Address>();
+                _database.CreateTable<PhoneNumber>();
+                _database.CreateTable<Measurable>();
+                _database.CreateTable<Goal>();
+                
                 _database.CreateTable<ExerciseType>();
                 _database.CreateTable<ExerciseEquipment>();
                 _database.CreateTable<ExerciseMuscleGroup>();
@@ -80,11 +92,36 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<Synergist>();
             _database.DropTable<OpposingMuscleGroup>();
 
+            _database.DropTable<Client>();
+            _database.DropTable<Session>();
+            _database.DropTable<Address>();
+            _database.DropTable<PhoneNumber>();
+            _database.DropTable<Measurable>();
+            _database.DropTable<Goal>();
+
             _database.DropTable<ExerciseType>();
             _database.DropTable<ExerciseEquipment>();
             _database.DropTable<ExerciseMuscleGroup>();
             _database.DropTable<WorkoutExercise>();
             _database.DropTable<LinkedWorkoutsToExercises>();
+        }
+
+        public void CreateContactTables()
+        {
+            _database.CreateTable<Client>();
+            _database.CreateTable<Session>();
+            _database.CreateTable<Address>();
+            _database.CreateTable<PhoneNumber>();
+            _database.CreateTable<Measurable>();
+        }
+
+        public void DropContactTables()
+        {
+            _database.DropTable<Client>();
+            _database.DropTable<Session>();
+            _database.DropTable<Address>();
+            _database.DropTable<PhoneNumber>();
+            _database.DropTable<Measurable>();
         }
 
         public string GetFilePath()
@@ -118,289 +155,83 @@ namespace PersonalTrainerWorkouts.Data
             ////        + " INSERT INTO _Variables(id)VALUES(1); ");
         }
 
-        #region Adds
-
-        public void AddWorkoutWithExercises(Workout workout)
+        
+        
+        public List<string> GetTables()
         {
-            _database.InsertWithChildren(workout);
-        }
+            // const string query = "SELECT name FROM sqlite_master " +
+            //                      "WHERE type = 'table'" +
+            //                      "ORDER BY 1";
 
-        public int AddLinkedWorkoutExercise(LinkedWorkoutsToExercises linkedWorkoutsExercises)
-        {
-            var linkedWorkoutExercisesInWorkout = GetLinkedWorkoutsToExercisesByWorkouts(linkedWorkoutsExercises.WorkoutId)
-                   .ToList();
-
-            var maxOrderBy = -1;
-
-            if (linkedWorkoutExercisesInWorkout.Any())
+            var result = new List<string>();
+            
+            try
             {
-                maxOrderBy = linkedWorkoutExercisesInWorkout.Max(field => field.OrderBy);
+                result = _database.GetAllWithChildren<Table>().ToList().ConvertAll(table => table.ToString());
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine("Could not get values from sqlite_master.", Category.Error, e);
             }
 
-            linkedWorkoutsExercises.OrderBy = maxOrderBy + 1;
-            _database.Insert(linkedWorkoutsExercises);
-
-            return linkedWorkoutsExercises.Id;
+            return result;
         }
 
-        public int AddWorkoutExercise(WorkoutExercise workoutExercise)
+        private static string GetNoElementsExceptionMessage(string nameOfIdVariable
+                                                          , int    valueOfVariable)
         {
-            var workoutExercisesInWorkout = GetWorkoutExercisesByWorkout(workoutExercise.WorkoutId)
-                   .ToList();
+            return $"Record(s) could not be found. No records with {nameOfIdVariable} of {valueOfVariable}.";
+        }
 
-            var maxOrderBy = -1;
+        private static string GetNoElementsExceptionMessage(string nameOfFirstIdVariable
+                                                          , string nameOfSecondIdVariable
+                                                          , int    valueOfFirstIdVariable
+                                                          , int    valueOfSecondIdVariable
+                                                          , char   pluralChar = '\0')
+        {
+            return $"Record{pluralChar} could not be found. No record{pluralChar} with {nameOfFirstIdVariable} of {valueOfFirstIdVariable} and {nameOfSecondIdVariable} of {valueOfSecondIdVariable}.";
+        }
 
-            if (workoutExercisesInWorkout.Any())
+    }
+
+    public partial class Database //Gets
+    {
+        public IEnumerable<PhoneNumber> GetAllPhoneNumbers(bool forceRefresh = false) => throw new NotImplementedException();
+
+        public IEnumerable<Address> GetAllAddresses(bool forceRefresh = false) => throw new NotImplementedException();
+
+        public Address GetAddress(int addressId) => throw new NotImplementedException();
+
+        public Address GetPhoneNumber(int phoneNumberId) => throw new NotImplementedException();
+
+        public IEnumerable<Measurable> GetAllMeasurables(bool forceRefresh = false) => throw new NotImplementedException();
+
+        public Address GetMeasurable(int measurableId) => throw new NotImplementedException();
+
+        public Client GetClient(int clientId)
+        {
+            try
             {
-                maxOrderBy = workoutExercisesInWorkout.Max(field => field.OrderBy);
+                var client = _database.GetWithChildren<Client>(clientId);
+
+                return client;
             }
+            catch (InvalidOperationException operationException)
+            {
+                throw new SequenceContainsNoElementsException(GetNoElementsExceptionMessage(nameof(clientId)
+                                                                , clientId)
+                                                            , typeof(Client).ToString()
+                                                            , operationException);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
 
-            workoutExercise.OrderBy = maxOrderBy + 1;
-
-            _database.Insert(workoutExercise);
-
-            return workoutExercise.Id;
+                throw;
+            }
         }
-
-        /// <summary>
-        /// Adds just one Workout without any children.
-        /// Use case:  Add new workout -> SaveWorkoutsToExercise -> Add exercise
-        /// </summary>
-        /// <param name="workout"></param>
-        public int AddJustOneWorkout(Workout workout)
-        {
-            return _database.Insert(workout) == 1 ?
-                           workout.Id :
-                           0; //Nothing was inserted
-        }
-
-        public void AddExercise(Exercise exercise)
-        {
-            _database.InsertWithChildren(exercise);
-        }
-
-        public int AddJustOneExercise(Exercise exercise)
-        {
-            return _database.Insert(exercise) == 1 ?
-                           exercise.Id :
-                           0; //Nothing was inserted
-        }
-
-        public void AddSynergist(Synergist synergist)
-        {
-            _database.InsertWithChildren(synergist);
-        }
-
-        public int AddJustOneMuscleGroup(MuscleGroup muscleGroup)
-        {
-            return _database.Insert(muscleGroup) == 1 ?
-                           muscleGroup.Id :
-                           0;
-        }
-
-        public void AddExerciseType(ExerciseType exerciseType)
-        {
-            _database.InsertWithChildren(exerciseType);
-        }
-
-        public int AddJustOneTypeOfExercise(TypeOfExercise typeOfExercise)
-        {
-            return _database.Insert(typeOfExercise) == 1 ?
-                           typeOfExercise.Id :
-                           0;
-        }
-
-        public int AddType(TypeOfExercise exerciseType)
-        {
-            return _database.Insert(exerciseType) == 1 ?
-                           exerciseType.Id :
-                           0;
-        }
-
-        public void AddExerciseEquipment(ExerciseEquipment exerciseEquipment)
-        {
-            _database.InsertWithChildren(exerciseEquipment);
-        }
-
-        public int AddEquipment(Equipment equipment)
-        {
-            return _database.Insert(equipment) == 1 ?
-                           equipment.Id :
-                           0;
-        }
-
-        //BENDO: The method above (AddEquipment) is the same as the one below (AddJustOneEquipment)
-        //        But both have references.  Remove one and referencing code to the one that is left
-        public int AddJustOneEquipment(Equipment equipment)
-        {
-            return _database.Insert(equipment) == 1 ?
-                           equipment.Id :
-                           0;
-        }
-
-        public void AddExerciseMuscleGroup(ExerciseMuscleGroup exerciseMuscleGroup)
-        {
-            _database.InsertWithChildren(exerciseMuscleGroup);
-        }
-
-        #endregion
-
-        #region Updates
-
-        public void UpdateWorkout(Workout workout)
-        {
-            _database.UpdateWithChildren(workout);
-
-            //_database.Commit();
-        }
-
-        public void UpdateWorkoutExercises(WorkoutExercise workoutExercise)
-        {
-            _database.UpdateWithChildren(workoutExercise);
-        }
-
-        public void UpdateLinkedWorkoutsToExercises(LinkedWorkoutsToExercises linkedWorkoutsToExercises)
-        {
-            _database.Update(linkedWorkoutsToExercises);
-        }
-
-        public void UpdateExercise(Exercise exercise)
-        {
-            _database.UpdateWithChildren(exercise);
-        }
-
-        public void UpdateExerciseMuscleGroup(ExerciseMuscleGroup exerciseMuscleGroup)
-        {
-            _database.UpdateWithChildren(exerciseMuscleGroup);
-        }
-
-        public void UpdateMuscleGroups(MuscleGroup muscleGroup)
-        {
-            _database.UpdateWithChildren(muscleGroup);
-            _database.Commit();
-        }
-
-        public int UpdateOpposingMuscleGroup(OpposingMuscleGroup opposingMuscleGroup)
-        {
-            return _database.Update(opposingMuscleGroup);
-        }
-
-        public void UpdateExerciseType(ExerciseType exerciseType)
-        {
-            _database.UpdateWithChildren(exerciseType);
-        }
-
-        public int UpdateType(TypeOfExercise exerciseType)
-        {
-            return _database.Update(exerciseType);
-        }
-
-        public void UpdateExerciseEquipment(ExerciseEquipment exerciseEquipment)
-        {
-            _database.UpdateWithChildren(exerciseEquipment);
-        }
-
-        public int UpdateEquipment(Equipment equipment)
-        {
-            return _database.Insert(equipment);
-        }
-
-        #endregion
-
-        #region Deletes
-
-        public int DeleteWorkout(ref Workout workout)
-        {
-            var workoutId = _database.Delete(workout);
-            workout = null;
-
-            return workoutId;
-        }
-
-        public int DeleteWorkoutExercises(ref WorkoutExercise workoutExercise)
-        {
-            var workoutExerciseId = _database.Delete(workoutExercise);
-            workoutExercise = null;
-
-            return workoutExerciseId;
-        }
-
-        public int DeleteLinkedWorkoutsToExercises(ref LinkedWorkoutsToExercises linkedWorkoutsToExercises)
-        {
-            var linkedWorkoutsToExercisesId = _database.Delete(linkedWorkoutsToExercises);
-            linkedWorkoutsToExercises = null;
-
-            return linkedWorkoutsToExercisesId;
-        }
-
-        public int DeleteExercise(ref Exercise exercise)
-        {
-            var exerciseId = _database.Delete(exercise);
-            exercise = null;
-
-            return exerciseId;
-        }
-
-        public int DeleteExerciseMuscleGroup(ref ExerciseMuscleGroup exerciseMuscleGroup)
-        {
-            var exerciseMuscleGroupId = _database.Delete(exerciseMuscleGroup);
-            exerciseMuscleGroup = null;
-
-            return exerciseMuscleGroupId;
-        }
-
-        public int DeleteMuscleGroups(ref MuscleGroup muscleGroup)
-        {
-            var muscleGroupId = _database.Delete(muscleGroup);
-            muscleGroup = null;
-
-            return muscleGroupId;
-        }
-
-        public int DeleteOpposingMuscleGroup(ref OpposingMuscleGroup opposingMuscleGroup)
-        {
-            var opposingMuscleGroupId = _database.Delete(opposingMuscleGroup);
-            opposingMuscleGroup = null;
-
-            return opposingMuscleGroupId;
-        }
-
-        public int DeleteExerciseType(ref ExerciseType exerciseType)
-        {
-            var exerciseTypeId = _database.Delete(exerciseType);
-            exerciseType = null;
-
-            return exerciseTypeId;
-        }
-
-        public int DeleteType(ref TypeOfExercise exerciseType)
-        {
-            var typeId = _database.Delete(exerciseType);
-            exerciseType = null;
-
-            return typeId;
-        }
-
-        public int DeleteExerciseEquipment(ref ExerciseEquipment exerciseEquipment)
-        {
-            var exerciseEquipmentId = _database.Delete(exerciseEquipment);
-            exerciseEquipment = null;
-
-            return exerciseEquipmentId;
-        }
-
-        public int DeleteEquipment(ref Equipment equipment)
-        {
-            var equipmentId = _database.Delete(equipment);
-            equipment = null;
-
-            return equipmentId;
-        }
-
-        #endregion
-
-        #region Gets
-
         //BENDO: For all methods that take forceRefresh, call method that will rebuild the object by calling the database to get current values
         //       necessary to fill the object.
         public Workout GetWorkout(int workoutId)
@@ -437,6 +268,16 @@ namespace PersonalTrainerWorkouts.Data
         public IEnumerable<Workout> GetWorkouts(bool forceRefresh = false)
         {
             return _database.GetAllWithChildren<Workout>();
+        }
+
+        public IEnumerable<Session> GetSessions(bool forceRefresh = false)
+        {
+            return _database.GetAllWithChildren<Session>();
+        }
+
+        public IEnumerable<Client> GetClients(bool forceRefresh = false)
+        {
+            return _database.GetAllWithChildren<Client>();
         }
 
         public LinkedWorkoutsToExercises GetLinkedWorkoutsToExercise(int linkedWorkoutsToExercisesId)
@@ -753,86 +594,19 @@ namespace PersonalTrainerWorkouts.Data
         {
             return _database.GetAllWithChildren<Synergist>();
         }
-
-        public ExerciseMuscleGroup GetExerciseMuscleGroup(int exerciseMuscleGroupId)
-        {
-            try
-            {
-                var exerciseMuscleGroup = _database.GetWithChildren<ExerciseMuscleGroup>(exerciseMuscleGroupId);
-
-                return exerciseMuscleGroup;
-            }
-            catch (InvalidOperationException operationException)
-            {
-                throw new SequenceContainsNoElementsException(GetNoElementsExceptionMessage(nameof(exerciseMuscleGroupId)
-                                                                                          , exerciseMuscleGroupId)
-                                                            , nameof(ExerciseEquipment)
-                                                            , operationException);
-            }
-            catch (Exception e)
-            {
-                Logger.WriteLine(e.Message
-                               , Category.Error
-                               , e);
-
-                throw;
-            }
-        }
-
+        
         public IEnumerable<ExerciseMuscleGroup> GetExerciseMuscleGroups(bool forceRefresh = false)
         {
-            return _database.GetAllWithChildren<ExerciseMuscleGroup>();
-        }
+            var exerciseMuscleGroups = _database.GetAllWithChildren<ExerciseMuscleGroup>();
 
-        public IEnumerable<ExerciseMuscleGroup> GetExerciseMuscleGroupsByExercise(int exerciseId)
-        {
-            try
+            if ( ! exerciseMuscleGroups.Any())
             {
-                var exerciseMuscleGroups = _database.GetAllWithChildren<ExerciseMuscleGroup>()
-                                                    .Where(item => item.ExerciseId == exerciseId);
-
-                return exerciseMuscleGroups;
+                throw new SequenceContainsNoElementsException($"No {nameof(ExerciseMuscleGroup)} founds.  No Records in the table '{nameof(ExerciseMuscleGroup)}'."
+                                                            , nameof(ExerciseMuscleGroup)
+                                                            , null);
             }
-            catch (InvalidOperationException operationException)
-            {
-                throw new SequenceContainsNoElementsException(GetNoElementsExceptionMessage(nameof(exerciseId)
-                                                                                          , exerciseId)
-                                                            , nameof(ExerciseEquipment)
-                                                            , operationException);
-            }
-            catch (Exception e)
-            {
-                Logger.WriteLine(e.Message
-                               , Category.Error
-                               , e);
-
-                throw;
-            }
-        }
-
-        public MuscleGroup GetMuscleGroup(int muscleGroupId)
-        {
-            try
-            {
-                var muscleGroup = _database.GetWithChildren<MuscleGroup>(muscleGroupId);
-
-                return muscleGroup;
-            }
-            catch (InvalidOperationException operationException)
-            {
-                throw new SequenceContainsNoElementsException(GetNoElementsExceptionMessage(nameof(muscleGroupId)
-                                                                                          , muscleGroupId)
-                                                            , nameof(ExerciseEquipment)
-                                                            , operationException);
-            }
-            catch (Exception e)
-            {
-                Logger.WriteLine(e.Message
-                               , Category.Error
-                               , e);
-
-                throw;
-            }
+            
+            return exerciseMuscleGroups;
         }
 
         public IEnumerable<MuscleGroup> GetMuscleGroups(bool forceRefresh = false)
@@ -856,36 +630,6 @@ namespace PersonalTrainerWorkouts.Data
                                                             , nameof(ExerciseEquipment)
                                                             , operationException);
             }
-        }
-
-        public OpposingMuscleGroup GetOpposingMuscleGroup(int opposingMuscleGroupId)
-        {
-            try
-            {
-                var opposingMuscleGroup = _database.GetWithChildren<OpposingMuscleGroup>(opposingMuscleGroupId);
-
-                return opposingMuscleGroup;
-            }
-            catch (InvalidOperationException operationException)
-            {
-                throw new SequenceContainsNoElementsException(GetNoElementsExceptionMessage(nameof(opposingMuscleGroupId)
-                                                                                          , opposingMuscleGroupId)
-                                                            , nameof(ExerciseEquipment)
-                                                            , operationException);
-            }
-            catch (Exception e)
-            {
-                Logger.WriteLine(e.Message
-                               , Category.Error
-                               , e);
-
-                throw;
-            }
-        }
-
-        public IEnumerable<OpposingMuscleGroup> GetOpposingMuscleGroups(bool forceRefresh = false)
-        {
-            return _database.GetAllWithChildren<OpposingMuscleGroup>();
         }
 
         public TypeOfExercise GetTypeOfExercise(int typeOfExerciseId)
@@ -1008,24 +752,189 @@ namespace PersonalTrainerWorkouts.Data
             return _database.Table<Equipment>()
                             .ToList();
         }
-
-        #endregion
-
-        private static string GetNoElementsExceptionMessage(string nameOfIdVariable
-                                                          , int    valueOfVariable)
+    }
+    
+    public partial  class Database //Deletes
+    {
+        public int DeleteClient(ref Client client)
         {
-            return $"Record(s) could not be found. No records with {nameOfIdVariable} of {valueOfVariable}.";
+            var numberDeleted = _database.Delete(client);
+            client = null;
+
+            return numberDeleted;
+        }
+        
+        /// <summary>
+        /// Generic Delete TODO: Need to test to ensure it works as intended.
+        /// </summary>
+        /// <param name="record">An instance of the type (T) that is being deleted</param>
+        /// <typeparam name="T">The type of the instance being deleted</typeparam>
+        /// <returns>The number of records affected</returns>
+        public int Delete<T>(ref T record)
+        {
+            var numberDeleted = _database.Delete<T>(record);
+            record = default(T);
+
+            return numberDeleted;
+        }
+        
+        
+        public int DeleteWorkout(ref Workout workout)
+        {
+            var numberDeleted = _database.Delete(workout);
+            workout = null;
+
+            return numberDeleted;
         }
 
-        private string GetNoElementsExceptionMessage(string nameOfFirstIdVariable
-                                                   , string nameOfSecondIdVariable
-                                                   , int    valueOfFirstIdVariable
-                                                   , int    valueOfSecondIdVariable
-                                                   , char   pluralChar = '\0')
+        public int DeleteSession(ref Session session)
         {
-            return $"Record{pluralChar} could not be found. No record{pluralChar} with {nameOfFirstIdVariable} of {valueOfFirstIdVariable} and {nameOfSecondIdVariable} of {valueOfSecondIdVariable}.";
+            var numberAffected = _database.Delete(session);
+            session = null;
+
+            return numberAffected;
+        }
+        public int DeleteWorkoutExercises(ref WorkoutExercise workoutExercise)
+        {
+            var workoutExerciseId = _database.Delete(workoutExercise);
+            workoutExercise = null;
+
+            return workoutExerciseId;
         }
 
+        public int DeleteLinkedWorkoutsToExercises(ref LinkedWorkoutsToExercises linkedWorkoutsToExercises)
+        {
+            var linkedWorkoutsToExercisesId = _database.Delete(linkedWorkoutsToExercises);
+            linkedWorkoutsToExercises = null;
+
+            return linkedWorkoutsToExercisesId;
+        }
+
+        public int DeleteExercise(ref Exercise exercise)
+        {
+            var exerciseId = _database.Delete(exercise);
+            exercise = null;
+
+            return exerciseId;
+        }
+
+        public int DeleteExerciseMuscleGroup(ref ExerciseMuscleGroup exerciseMuscleGroup)
+        {
+            var exerciseMuscleGroupId = _database.Delete(exerciseMuscleGroup);
+            exerciseMuscleGroup = null;
+
+            return exerciseMuscleGroupId;
+        }
+
+        public int DeleteExerciseType(ref ExerciseType exerciseType)
+        {
+            var exerciseTypeId = _database.Delete(exerciseType);
+            exerciseType = null;
+
+            return exerciseTypeId;
+        }
+
+        public int DeleteType(ref TypeOfExercise exerciseType)
+        {
+            var typeId = _database.Delete(exerciseType);
+            exerciseType = null;
+
+            return typeId;
+        }
+
+        public int DeleteExerciseEquipment(ref ExerciseEquipment exerciseEquipment)
+        {
+            var exerciseEquipmentId = _database.Delete(exerciseEquipment);
+            exerciseEquipment = null;
+
+            return exerciseEquipmentId;
+        }
+
+        public int DeleteEquipment(ref Equipment equipment)
+        {
+            var equipmentId = _database.Delete(equipment);
+            equipment = null;
+
+            return equipmentId;
+        }
+    }
+
+    public partial class Database //Updates
+    {
+        public int UpdateMeasurable(Measurable measurable) => throw new NotImplementedException();
+
+        public int DeleteAddress(ref Address address) => throw new NotImplementedException();
+
+        public int DeletePhoneNumber(ref PhoneNumber phoneNumber) => throw new NotImplementedException();
+
+        public int DeleteMeasurable(ref Measurable measurable) => throw new NotImplementedException();
+
+        public int UpdateAddress(Address address)
+        {
+            return _database.Update(address);
+        }
+        
+        public int UpdatePhoneNumber(PhoneNumber phoneNumber)
+        {
+            return _database.Update(phoneNumber);
+        }
+        
+        public void UpdateSession(Session session)
+        {
+            _database.UpdateWithChildren(session);
+        }
+        
+        public void UpdateClient(Client client)
+        {
+            _database.UpdateWithChildren(client);
+        }
+        
+        public void UpdateWorkout(Workout workout)
+        {
+            _database.UpdateWithChildren(workout);
+        }
+
+        public void UpdateSion(Session session)
+        {
+            _database.UpdateWithChildren(session);
+        }
+        
+        public void UpdateWorkoutExercises(WorkoutExercise workoutExercise)
+        {
+            _database.UpdateWithChildren(workoutExercise);
+        }
+
+        public void UpdateLinkedWorkoutsToExercises(LinkedWorkoutsToExercises linkedWorkoutsToExercises)
+        {
+            _database.Update(linkedWorkoutsToExercises);
+        }
+
+        public void UpdateExercise(Exercise exercise)
+        {
+            _database.UpdateWithChildren(exercise);
+        }
+
+        public void UpdateMuscleGroups(MuscleGroup muscleGroup)
+        {
+            _database.UpdateWithChildren(muscleGroup);
+            _database.Commit();
+        }
+
+        public void UpdateType(TypeOfExercise exerciseType)
+        {
+            _database.UpdateWithChildren(exerciseType);
+        }
+
+        public void UpdateExerciseEquipment(ExerciseEquipment exerciseEquipment)
+        {
+            _database.UpdateWithChildren(exerciseEquipment);
+        }
+
+        public int UpdateEquipment(Equipment equipment)
+        {
+            return _database.Insert(equipment);
+        }
+        
         public int SaveExercise(Exercise exercise)
         {
             if (exercise.Id == 0)
@@ -1065,4 +974,191 @@ namespace PersonalTrainerWorkouts.Data
             _database.Update(workout);
         }
     }
+    
+    public partial class Database //Adds
+    {
+        public int AddAddress(Address address) => throw new NotImplementedException();
+
+        public int AddPhoneNumber(PhoneNumber phoneNumber) => throw new NotImplementedException();
+
+        public int AddMeasurable(Measurable measurable) => throw new NotImplementedException();
+
+        public void AddWorkoutWithExercises(Workout workout)
+        {
+            _database.InsertWithChildren(workout);
+        }
+
+        public int AddLinkedWorkoutExercise(LinkedWorkoutsToExercises linkedWorkoutsExercises)
+        {
+            var linkedWorkoutExercisesInWorkout = GetLinkedWorkoutsToExercisesByWorkouts(linkedWorkoutsExercises.WorkoutId)
+            .ToList();
+
+            var maxOrderBy = -1;
+
+            if (linkedWorkoutExercisesInWorkout.Any())
+            {
+                maxOrderBy = linkedWorkoutExercisesInWorkout.Max(field => field.OrderBy);
+            }
+
+            linkedWorkoutsExercises.OrderBy = maxOrderBy + 1;
+            _database.Insert(linkedWorkoutsExercises);
+
+            return linkedWorkoutsExercises.Id;
+        }
+
+        public int AddWorkoutExercise(WorkoutExercise workoutExercise)
+        {
+            var workoutExercisesInWorkout = GetWorkoutExercisesByWorkout(workoutExercise.WorkoutId)
+            .ToList();
+
+            var maxOrderBy = -1;
+
+            if (workoutExercisesInWorkout.Any())
+            {
+                maxOrderBy = workoutExercisesInWorkout.Max(field => field.OrderBy);
+            }
+
+            workoutExercise.OrderBy = maxOrderBy + 1;
+
+            _database.Insert(workoutExercise);
+
+            return workoutExercise.Id;
+        }
+
+        /// <summary>
+        /// Adds just one Workout without any children.
+        /// Use case:  Add new workout -> SaveWorkoutsToExercise -> Add exercise
+        /// </summary>
+        /// <param name="workout"></param>
+        public int AddJustOneWorkout(Workout workout)
+        {
+            return _database.Insert(workout) == 1
+            ? workout.Id
+            : 0; //Nothing was inserted
+        }
+
+        public int AddJustOneSession(Session session)
+        {
+            return _database.Insert(session) == 1
+            ? session.Id
+            : 0;
+        }
+
+        public int AddJustOneClient(Client client)
+        {
+            return _database.Insert(client) == 1
+            ? client.ClientId
+            : 0;
+        }
+
+        public void AddExercise(Exercise exercise)
+        {
+            _database.InsertWithChildren(exercise);
+        }
+
+        public int AddJustOneExercise(Exercise exercise)
+        {
+            return _database.Insert(exercise) == 1 ?
+            exercise.Id :
+            0; //Nothing was inserted
+        }
+
+        public void AddSynergist(Synergist synergist)
+        {
+            _database.InsertWithChildren(synergist);
+        }
+
+        public int AddJustOneMuscleGroup(MuscleGroup muscleGroup)
+        {
+            return _database.Insert(muscleGroup) == 1 ?
+            muscleGroup.Id :
+            0;
+        }
+
+        public void AddExerciseType(ExerciseType exerciseType)
+        {
+            _database.InsertWithChildren(exerciseType);
+        }
+
+        public int AddJustOneTypeOfExercise(TypeOfExercise typeOfExercise)
+        {
+            return _database.Insert(typeOfExercise) == 1
+            ? typeOfExercise.Id
+            : 0;
+        }
+
+        public int AddType(TypeOfExercise exerciseType)
+        {
+            return _database.Insert(exerciseType) == 1 ?
+            exerciseType.Id :
+            0;
+        }
+
+        public void AddExerciseEquipment(ExerciseEquipment exerciseEquipment)
+        {
+            _database.InsertWithChildren(exerciseEquipment);
+        }
+
+        public int AddEquipment(Equipment equipment)
+        {
+            return _database.Insert(equipment) == 1 ?
+            equipment.Id :
+            0;
+        }
+
+        //BENDO: The method above (AddEquipment) is the same as the one below (AddJustOneEquipment)
+        //        But both have references.  Remove one and referencing code to the one that is left
+        public int AddJustOneEquipment(Equipment equipment)
+        {
+            return _database.Insert(equipment) == 1 ?
+            equipment.Id :
+            0;
+        }
+
+        public void AddClient(Client            client
+                            , List<Address>     addresses    = null
+                            , List<PhoneNumber> phoneNumbers = null)
+        {
+            _database.Insert(client);
+
+            client.Addresses    = addresses ?? new List<Address>();
+            client.PhoneNumbers = phoneNumbers ?? new List<PhoneNumber>();
+
+            UpdateClient(client);
+        }
+
+        public void AddSession(Session       session
+                             , Client        client
+                             , List<Workout> workouts = null)
+        {
+            _database.Insert(session);
+
+            session.Client   = client;
+            session.Workouts = workouts ?? new List<Workout>();
+
+            UpdateSession(session);
+        }
+
+        public void AddPhoneNumber(PhoneNumber phoneNumber
+                                 , Client      client)
+        {
+            _database.Insert(phoneNumber);
+
+            client.PhoneNumbers.Add(phoneNumber);
+
+            UpdateClient(client);
+        }
+
+        public void AddAddress(Address address
+                             , Client  client)
+        {
+            _database.Insert(address);
+
+            client.Addresses.Add(address);
+
+            UpdateClient(client);
+        }
+
+    }
+
 }

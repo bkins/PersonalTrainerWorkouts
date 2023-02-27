@@ -1,5 +1,4 @@
-﻿using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Views;
+﻿using PersonalTrainerWorkouts.Views;
 using Xamarin.Forms;
 using WorkoutExercisePage = PersonalTrainerWorkouts.Views.WorkoutExercisePage;
 
@@ -26,8 +25,11 @@ namespace PersonalTrainerWorkouts
             Routing.RegisterRoute(nameof(ExerciseListPage)
                                 , typeof(ExerciseListPage));
 
-            Routing.RegisterRoute(nameof(MessageLog)
-                                , typeof(MessageLog));
+            // Routing.RegisterRoute(nameof(MessageLog)
+            //                     , typeof(MessageLog));
+
+            Routing.RegisterRoute(nameof(Avails.Xamarin.Views.LoggingPage.MessageLog)
+                                , typeof(Avails.Xamarin.Views.LoggingPage.MessageLog));
 
             Routing.RegisterRoute(nameof(WorkoutExercisePage)
                                 , typeof(WorkoutExercisePage));
@@ -43,6 +45,12 @@ namespace PersonalTrainerWorkouts
 
             Routing.RegisterRoute(nameof(MuscleGroupListPage)
                                 , typeof(MuscleGroupListPage));
+            
+            Routing.RegisterRoute(nameof(SessionListPage), typeof(SessionListPage));
+            Routing.RegisterRoute(nameof(SessionEditPage), typeof(SessionEditPage));
+            
+            Routing.RegisterRoute(nameof(ClientListPage), typeof(ClientListPage));
+            Routing.RegisterRoute(nameof(ClientEditPage), typeof(ClientEditPage));
         }
     }
 }

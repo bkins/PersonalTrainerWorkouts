@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using PersonalTrainerWorkouts.Models.Intermediates;
-using SQLite;
-using SQLiteNetExtensions.Attributes;
+﻿using SQLite;
 
 namespace PersonalTrainerWorkouts.Models
 {

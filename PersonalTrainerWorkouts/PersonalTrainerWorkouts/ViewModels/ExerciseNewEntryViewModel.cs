@@ -1,8 +1,9 @@
 ﻿using System;
 using ApplicationExceptions;
+using Avails.D_Flat.Exceptions;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
-using PersonalTrainerWorkouts.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {

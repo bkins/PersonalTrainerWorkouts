@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Avails.Xamarin;
+using Avails.Xamarin.Logger;
 using Xamarin.Forms;
-using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
 using Syncfusion.DataSource.Extensions;
 using Syncfusion.ListView.XForms;
@@ -63,28 +64,28 @@ namespace PersonalTrainerWorkouts.Views
             }
         }
 
-        private async void OnAddNewClicked(object    sender
+        private void OnAddNewClicked(object    sender
                                          , EventArgs e)
         {
-            await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+            PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
                                           , nameof(ExerciseAddEditPage.WorkoutId)
                                           , WorkoutId
                                           , nameof(ExerciseAddEditPage.ExerciseId)
                                           , "0");
         }
 
-        private async void OnAddExistingClicked(object    sender
+        private void OnAddExistingClicked(object    sender
                                               , EventArgs e)
         {
-            await PageNavigation.NavigateTo(nameof(ExerciseExistingEntryPage)
+            PageNavigation.NavigateTo(nameof(ExerciseExistingEntryPage)
                                           , nameof(ExerciseExistingEntryPage.WorkoutId)
                                           , WorkoutId);
         }
 
-        private async void OnSelectionChanged(object                    sender
+        private void OnSelectionChanged(object                    sender
                                             , SelectionChangedEventArgs e)
         {
-            await PageNavigation.NavigateTo(nameof(ExerciseExistingEntryPage)
+            PageNavigation.NavigateTo(nameof(ExerciseExistingEntryPage)
                                           , nameof(ExerciseExistingEntryPage.WorkoutId)
                                           , WorkoutId);
         }
@@ -139,12 +140,12 @@ namespace PersonalTrainerWorkouts.Views
             ExerciseList.ItemsSource = ViewModel.LinkWorkoutExercises;
         }
 
-        private async void ExerciseList_OnItemTapped(object              sender
+        private void ExerciseList_OnItemTapped(object              sender
                                                    , ItemTappedEventArgs e)
         {
             var tappedExercise = (WorkoutExerciseWithChildren)e.ItemData;
 
-            await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+            PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
                                           , nameof(ExerciseAddEditPage.WorkoutId)
                                           , tappedExercise.Workout.Id.ToString()
                                           , nameof(ExerciseAddEditPage.ExerciseId)

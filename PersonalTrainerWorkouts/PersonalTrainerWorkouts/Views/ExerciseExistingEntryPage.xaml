@@ -29,5 +29,6 @@
             </picker:SfPicker.Behaviors>
 
         </picker:SfPicker>
+        
     </StackLayout>
 </ContentPage>

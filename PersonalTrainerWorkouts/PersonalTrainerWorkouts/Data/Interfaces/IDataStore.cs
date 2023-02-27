@@ -3,20 +3,19 @@ using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
 using TypeOfExercise = PersonalTrainerWorkouts.Models.TypeOfExercise;
 
-namespace PersonalTrainerWorkouts.Data
+namespace PersonalTrainerWorkouts.Data.Interfaces
 {
     public interface IDataStore
     {
         string DbPath();
-
-        //Adds
 
         /// <summary>
         /// Will just add the workout passed in, not any children.
         /// </summary>
         /// <param name="workout"></param>
         int AddJustOneWorkout(Workout workout);
-
+        int AddJustOneSession(Session                           session);
+        int AddJustOneClient(Client                             client);
         void AddExercise(Exercise                               exercise);
         int  AddJustOneExercise(Exercise                        exercise);
         void AddSynergist(Synergist                             synergist);
@@ -27,31 +26,29 @@ namespace PersonalTrainerWorkouts.Data
         void AddExerciseEquipment(ExerciseEquipment             exerciseEquipment);
         int  AddEquipment(Equipment                             equipment);
         int  AddJustOneEquipment(Equipment                      equipment);
-        void AddExerciseMuscleGroup(ExerciseMuscleGroup         exerciseMuscleGroup);
         int  AddWorkoutExercise(WorkoutExercise                 workoutExercise);
         int  AddLinkedWorkoutExercise(LinkedWorkoutsToExercises linkedWorkoutsExercises);
 
         //Updates
         void UpdateWorkout(Workout                                     workout);
+        void UpdateSession(Session                                     session);
+        void UpdateClient(Client                                       client);
         void UpdateWorkoutExercises(WorkoutExercise                    workoutExercise);
         void UpdateLinkedWorkoutsToExercises(LinkedWorkoutsToExercises linkedWorkoutsToExercises);
         void UpdateExercise(Exercise                                   exercise);
-        void UpdateExerciseMuscleGroup(ExerciseMuscleGroup             exerciseMuscleGroup);
         void UpdateMuscleGroups(MuscleGroup                            muscleGroup);
-        int  UpdateOpposingMuscleGroup(OpposingMuscleGroup             opposingMuscleGroup);
-        void UpdateExerciseType(ExerciseType                           exerciseType);
-        int  UpdateType(TypeOfExercise                                 exerciseType);
+        void  UpdateType(TypeOfExercise                                exerciseType);
         void UpdateExerciseEquipment(ExerciseEquipment                 exerciseEquipment);
         int  UpdateEquipment(Equipment                                 equipment);
 
         //Deletes
         int DeleteWorkout(ref                   Workout                   workout);
+        int DeleteSession(ref                   Session                   session);
+        int DeleteClient(ref                    Client                    client);
         int DeleteWorkoutExercises(ref          WorkoutExercise           workoutExercise);
         int DeleteLinkedWorkoutsToExercises(ref LinkedWorkoutsToExercises linkedWorkoutsToExercises);
         int DeleteExercise(ref                  Exercise                  exercise);
         int DeleteExerciseMuscleGroup(ref       ExerciseMuscleGroup       exerciseMuscleGroup);
-        int DeleteMuscleGroups(ref              MuscleGroup               muscleGroup);
-        int DeleteOpposingMuscleGroup(ref       OpposingMuscleGroup       opposingMuscleGroup);
         int DeleteExerciseType(ref              ExerciseType              exerciseType);
         int DeleteType(ref                      TypeOfExercise            exerciseType);
         int DeleteExerciseEquipment(ref         ExerciseEquipment         exerciseEquipment);
@@ -59,7 +56,9 @@ namespace PersonalTrainerWorkouts.Data
 
         //Gets
         Workout                                GetWorkout(int                       workoutId);
-        IEnumerable<Workout>                   GetWorkouts(bool                     forceRefresh = false);
+        IEnumerable<Workout>                   GetWorkouts(bool forceRefresh = false);
+        IEnumerable<Session>                   GetSessions(bool forceRefresh = false);
+        IEnumerable<Client>                    GetClients(bool forceRefresh = false);
         LinkedWorkoutsToExercises              GetLinkedWorkoutsToExercise(int      linkedWorkoutsToExercisesId);
         IEnumerable<LinkedWorkoutsToExercises> GetAllLinkedWorkoutsToExercises(bool forceRefresh = false);
         IEnumerable<LinkedWorkoutsToExercises> GetAllLinkedWorkoutsToExercises(int  workoutId);
@@ -78,15 +77,10 @@ namespace PersonalTrainerWorkouts.Data
         IEnumerable<WorkoutExercise>     GetWorkoutExercisesByExercise(int       exerciseId);
         Exercise                         GetExercise(int                         exerciseId);
         IEnumerable<Exercise>            GetExercises(bool                       forceRefresh = false);
-        ExerciseMuscleGroup              GetExerciseMuscleGroup(int              exerciseMuscleGroupId);
         IEnumerable<ExerciseMuscleGroup> GetExerciseMuscleGroups(bool            forceRefresh = false);
-        IEnumerable<ExerciseMuscleGroup> GetExerciseMuscleGroupsByExercise(int   exerciseId);
-        MuscleGroup                      GetMuscleGroup(int                      muscleGroupId);
         IEnumerable<MuscleGroup>         GetMuscleGroups(bool                    forceRefresh = false);
-        OpposingMuscleGroup              GetOpposingMuscleGroup(int              opposingMuscleGroupId);
         MuscleGroup                      GetOpposingMuscleGroupByMuscleGroup(int muscleGroupId);
         IEnumerable<Synergist>           GetSynergists(bool                      forceRefresh = false);
-        IEnumerable<OpposingMuscleGroup> GetOpposingMuscleGroups(bool            forceRefresh = false);
         TypeOfExercise                   GetTypeOfExercise(int                   typeOfExerciseId);
         IEnumerable<ExerciseType>        GetExerciseTypes(bool                   forceRefresh = false);
         TypeOfExercise                   GetType(int                             typeId);
@@ -96,6 +90,24 @@ namespace PersonalTrainerWorkouts.Data
         Equipment                        GetEquipment(int                        equipmentId);
         IEnumerable<Equipment>           GetAllEquipment(bool                    forceRefresh = false);
 
+        IEnumerable<Address> GetAllAddresses(bool forceRefresh = false);
+        Address GetAddress(int                    addressId);
+        int DeleteAddress(ref Address             address);
+        int  UpdateAddress(Address                address);
+        int  AddAddress(Address                   address);
+        
+        IEnumerable<PhoneNumber> GetAllPhoneNumbers(bool forceRefresh = false);
+        Address GetPhoneNumber(int                       phoneNumberId);
+        int DeletePhoneNumber(ref PhoneNumber            phoneNumber);
+        int  UpdatePhoneNumber(PhoneNumber               phoneNumber);
+        int  AddPhoneNumber(PhoneNumber                  phoneNumber);
+
+        IEnumerable<Measurable> GetAllMeasurables(bool forceRefresh = false);
+        Address GetMeasurable(int                      measurableId);
+        int DeleteMeasurable(ref Measurable            measurable);
+        int  UpdateMeasurable(Measurable               measurable);
+        int  AddMeasurable(Measurable                  measurable);
+
         int  SaveExercise(Exercise exercise);
         void SaveWorkout(Workout   workout);
 
@@ -103,5 +115,9 @@ namespace PersonalTrainerWorkouts.Data
         void   DropTables();
         string GetFilePath();
         string GetFileName();
+
+        List<string> GetTables();
+        void DropContactTables();
+        void CreateContactTables();
     }
 }

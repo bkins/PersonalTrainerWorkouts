@@ -1,17 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using ApplicationExceptions;
+using Avails.D_Flat.Exceptions;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Data;
+using PersonalTrainerWorkouts.Data.Interfaces;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
-using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
 using Syncfusion.DataSource.Extensions;
 using Xunit;
 using Xunit.Abstractions;
+using SequenceContainsNoElementsException = ApplicationExceptions.SequenceContainsNoElementsException;
 
 namespace Tests
 {

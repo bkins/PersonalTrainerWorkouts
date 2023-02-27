@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Linq;
+using System.Threading.Tasks;
+using Avails.Xamarin;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
 using Syncfusion.ListView.XForms;
 using Xamarin.Forms;
@@ -18,7 +19,6 @@ namespace PersonalTrainerWorkouts.Views
         public WorkoutListPage()
         {
             InitializeComponent();
-            ViewModel = new WorkoutListViewModel();
         }
 
         protected override void OnAppearing()
@@ -30,29 +30,30 @@ namespace PersonalTrainerWorkouts.Views
             ListView.ItemsSource = ViewModel.ObservableListOfWorkouts;
         }
 
-        async void OnAddClicked(object    sender
-                              , EventArgs e)
-        {
-            await PageNavigation.NavigateTo(nameof(WorkoutEntryPage));
-        }
+        // async Task OnAddClicked(object    sender
+        //                       , EventArgs e)
+        // {
+        //     await PageNavigation.NavigateTo(nameof(WorkoutEntryPage));
+        // }
 
-        async void OnSelectionChanged(object                        sender
-                                    , ItemSelectionChangedEventArgs e)
+        void OnSelectionChanged(object                        sender
+                              , ItemSelectionChangedEventArgs e)
         {
-            if (e.AddedItems != null)
+            if (e.AddedItems == null)
+                return;
+
+            var workout = (Workout)e.AddedItems.FirstOrDefault();
+
+            if (workout == null)
             {
-                var workout = (Workout)e.AddedItems.FirstOrDefault();
-
-                if (workout == null)
-                {
-                    return;
-                }
-                ListView.SelectedItems.Clear();
-
-                await PageNavigation.NavigateTo(nameof(WorkoutExercisePage)
-                                              , nameof(WorkoutExercisePage.WorkoutId)
-                                              , workout.Id.ToString());
+                return;
             }
+
+            ListView.SelectedItems.Clear();
+
+            PageNavigation.NavigateTo(nameof(WorkoutExercisePage)
+                                    , nameof(WorkoutExercisePage.WorkoutId)
+                                    , workout.Id.ToString());
         }
 
         private void LeftImage_BindingContextChanged(object    sender
@@ -97,6 +98,16 @@ namespace PersonalTrainerWorkouts.Views
             ListView.ItemsSource = ViewModel.SearchWorkouts(WorkoutFilter.Text);
         }
 
-        
+        private void SearchToolbarItem_OnClicked(object    sender
+                                               , EventArgs e)
+        {
+            WorkoutFilter.IsVisible = ! WorkoutFilter.IsVisible;
+        }
+
+        private void AddToolbarItem_OnClicked(object    sender
+                                                  , EventArgs e)
+        {
+            PageNavigation.NavigateTo(nameof(WorkoutEntryPage));
+        }
     }
 }

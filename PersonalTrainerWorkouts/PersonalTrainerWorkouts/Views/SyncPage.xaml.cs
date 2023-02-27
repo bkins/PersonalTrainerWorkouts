@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Windows.Input;
 using PersonalTrainerWorkouts.Services;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Essentials;

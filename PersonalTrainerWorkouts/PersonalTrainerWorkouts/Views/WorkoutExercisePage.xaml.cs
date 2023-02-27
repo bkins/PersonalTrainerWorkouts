@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using ApplicationExceptions;
+using Avails.D_Flat.Exceptions;
+using Avails.D_Flat.Extensions;
+using Avails.Xamarin;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
-using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Forms;
 
@@ -37,7 +41,7 @@ namespace PersonalTrainerWorkouts.Views
                 var exercises = ViewModel.ExercisesWithIntermediateFields;
 
                 BindingContext             = ViewModel;
-                CollectionView.ItemsSource = exercises;
+                ExerciseCollectionView2.ItemsSource = exercises;
                 TotalWorkoutTime           = ViewModel.TotalTime.ToShortForm();
             }
             catch (Exception ex)
@@ -74,7 +78,7 @@ namespace PersonalTrainerWorkouts.Views
             }
         }
 
-        private async void OnSelectionChanged(object                    sender
+        private void OnSelectionChanged(object                    sender
                                             , SelectionChangedEventArgs e)
         {
             var exercise = (ExerciseViewModel)e.CurrentSelection.FirstOrDefault();
@@ -85,17 +89,17 @@ namespace PersonalTrainerWorkouts.Views
                 return;
             }
 
-            await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+            PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
                                           , nameof(ExerciseAddEditPage.WorkoutId)
                                           , WorkoutId
                                           , nameof(ExerciseAddEditPage.ExerciseId)
                                           , exercise.Exercise.Id.ToString());
         }
 
-        async void OnToolbarManageExercisesClicked(object    sender
-                                                 , EventArgs e)
+        void OnToolbarManageExercisesClicked(object    sender
+                                           , EventArgs e)
         {
-            await PageNavigation.NavigateTo(nameof(ExerciseListPage)
+             PageNavigation.NavigateTo(nameof(ExerciseListPage)
                                           , nameof(ExerciseListPage.WorkoutId)
                                           , WorkoutId);
         }

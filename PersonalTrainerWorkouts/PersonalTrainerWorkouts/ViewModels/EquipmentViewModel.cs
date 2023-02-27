@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Avails.D_Flat.Extensions;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {

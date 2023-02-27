@@ -1,7 +1,7 @@
 ﻿using System;
+using Avails.Xamarin.Interfaces;
 using Microsoft.Toolkit.Uwp.Notifications;
 using NLog;
-using PersonalTrainerWorkouts.Utilities.Interfaces;
 
 namespace PersonalTrainerWorkouts.UWP.Utilities
 {

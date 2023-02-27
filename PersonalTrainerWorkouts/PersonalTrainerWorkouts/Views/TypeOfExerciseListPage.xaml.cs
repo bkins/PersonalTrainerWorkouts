@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using ApplicationExceptions;
+using Avails.D_Flat.Exceptions;
+using Avails.Xamarin;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views
@@ -65,29 +65,24 @@ namespace PersonalTrainerWorkouts.Views
             InitializeComponent();
         }
 
-        private async void TypeOfExercisePicker_OnOkButtonClicked(object                    sender
+        private void TypeOfExercisePicker_OnOkButtonClicked(object                    sender
                                                                 , SelectionChangedEventArgs e)
         {
-            Logger.WriteLine("TypeOfExercisePicker_OnOkButtonClicked"
-                           , Category.Information);
-
             var selected = (TypeOfExercise)TypeOfExercisePicker.SelectedItem;
-
-            Logger.WriteLine($"Selected: {selected.Name}"
-                           , Category.Information);
-
+            var name     = selected.Name == string.Empty ? "<TypeOfExercise.Name is empty>" : selected.Name;
+            
             if (selected.Name == "<New>")
             {
-                await SaveNewExerciseType();
+                SaveNewExerciseType();
             }
             else if (_exerciseId != "0")
             {
                 ViewModel.SelectedTypeOfExercise = selected;
 
-                await TryToSaveExerciseType();
+                TryToSaveExerciseType();
             }
 
-            await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+            PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
                                           , nameof(ExerciseAddEditPage.WorkoutId)
                                           , WorkoutId
                                           , nameof(ExerciseAddEditPage.ExerciseId)
@@ -126,12 +121,12 @@ namespace PersonalTrainerWorkouts.Views
                     Logger.WriteLine("New type saved."
                                    , Category.Information);
                 }
-                catch (AttemptToAddDuplicateEntityException)
-                {
-                    await DisplayAlert("Type Already Exists"
-                                     , $"The Type '{typeName}' already exists.  Name the Type with a different name."
-                                     , "OK");
-                }
+                // catch (AttemptToAddDuplicateEntityException)
+                // {
+                //     await DisplayAlert("Type Already Exists"
+                //                      , $"The Type '{typeName}' already exists.  Name the Type with a different name."
+                //                      , "OK");
+                // }
                 catch (Exception ex)
                 {
                     Logger.WriteLine("Something went wrong while trying to save the Type.  View the log for more details"
@@ -161,10 +156,10 @@ namespace PersonalTrainerWorkouts.Views
             }
         }
 
-        private async void TypeOfExercisePicker_OnCancelButtonClicked(object                    sender
+        private void TypeOfExercisePicker_OnCancelButtonClicked(object                    sender
                                                                     , SelectionChangedEventArgs e)
         {
-            await PageNavigation.NavigateBackwards();
+            PageNavigation.NavigateBackwards();
         }
     }
 }
