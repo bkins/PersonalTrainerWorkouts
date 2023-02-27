@@ -11,5 +11,15 @@
         {
             DataAccessLayer.DropTables();
         }
+
+        public void CreateContactTables()
+        {
+            DataAccessLayer.CreateContactTables();
+        }
+        
+        public void DropContactTables()
+        {
+            DataAccessLayer.DropContactTables();
+        }
     }
 }

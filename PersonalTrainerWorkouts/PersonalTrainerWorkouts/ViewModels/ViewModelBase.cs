@@ -15,6 +15,14 @@ namespace PersonalTrainerWorkouts.ViewModels
             set => _dataAccess = value;
         }
 
+        private ContactsDataAccess _contactsDataAccess;
+
+        public ContactsDataAccess ContactsDataAccess
+        {
+            get => _contactsDataAccess = _contactsDataAccess ?? new ContactsDataAccess(App.ContactDataStore);
+            set => _contactsDataAccess = value;
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

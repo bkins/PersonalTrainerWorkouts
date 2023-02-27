@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using ApplicationExceptions;
+using Avails.D_Flat.Exceptions;
 using Xunit.Abstractions;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;

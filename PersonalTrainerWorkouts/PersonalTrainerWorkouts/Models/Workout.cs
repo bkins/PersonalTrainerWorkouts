@@ -24,5 +24,8 @@ namespace PersonalTrainerWorkouts.Models
         [ManyToMany(typeof(WorkoutExercise)
                   , CascadeOperations = CascadeOperation.All)]
         public List<Exercise> Exercises { get; set; }
+        
+        [ForeignKey(typeof(Session))]
+        public int SessionId { get; set; }
     }
 }

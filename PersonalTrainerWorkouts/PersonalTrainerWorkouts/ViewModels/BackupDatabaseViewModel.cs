@@ -1,5 +1,4 @@
-﻿using System;
-using Avails.Xamarin;
+﻿using Avails.Xamarin;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {

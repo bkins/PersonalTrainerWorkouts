@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:rte="clr-namespace:Syncfusion.XForms.RichTextEditor;assembly=Syncfusion.SfRichTextEditor.XForms"
+             xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             x:Class="PersonalTrainerWorkouts.Views.ClientEditPage"
+             x:DataType="viewModels:ClientViewModel"
+             >
+    <ContentPage.Resources>
+        <!-- Implicit styles -->
+        <Style TargetType="{x:Type Editor}">
+            <Setter Property="BackgroundColor"
+                    Value="{DynamicResource AppBackgroundColor}" />
+        </Style>
+        <Style TargetType="StackLayout">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="{DynamicResource AppPrimaryColor}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+    
+    <ContentPage.ToolbarItems>
+        
+        <ToolbarItem x:Name="SaveToolbarItem"
+                     Text="Save"
+                     IconImageSource="save_black_48.png"
+                     Clicked="SaveButton_OnClicked"
+        />
+        <!---->
+        <ToolbarItem x:Name="LinkContactToolbarItem"
+                     Text="Link to Contact"
+                     IconImageSource="contact_page_black_48.png"
+                     Clicked="LinkContactToolbarItem_OnClicked"
+        />
+    </ContentPage.ToolbarItems>
+    
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid ColumnDefinitions="Auto,*"
+                  RowDefinitions="Auto,Auto">
+                
+                <Label x:Name="ClientNameLabel"
+                       Grid.Column="0"
+                       Grid.Row="0"
+                       VerticalTextAlignment="Center"
+                       FontSize="Small"
+                       Text="Name:" 
+                       />
+                
+                <Entry x:Name="ClientNameEntry"
+                       Grid.Column="1"
+                       Grid.Row="0"
+                       FontSize="Small"
+                       Placeholder="Client fullname"
+                       Text="{Binding Client.DisplayName}"/>
+                
+                <Label x:Name="ClientMainPhoneLabel"
+                       Grid.Column="0"
+                       Grid.Row="1"
+                       VerticalTextAlignment="Center"
+                       FontSize="Small"
+                       Text="Main Number:" 
+                />
+                
+                <Entry x:Name="ClientMainPhoneEntry"
+                       Grid.Column="1"
+                       Grid.Row="1"
+                       FontSize="Small"
+                       Placeholder="Main Number"
+                       Text="{Binding Client.MainNumber}"/>
+
+            </Grid>
+            
+            <!-- <Grid x:Name="RteGrid" -->
+            <!--       ColumnDefinitions="*" -->
+            <!--       VerticalOptions="FillAndExpand" -->
+            <!--       HorizontalOptions="FillAndExpand"> -->
+            <!--     <rte:SfRichTextEditor x:Name="SessionNotesRtEditor" -->
+            <!--                           VerticalOptions="FillAndExpand" -->
+            <!--                           HorizontalOptions="FillAndExpand" -->
+            <!--                           Text="{Binding Client.Note}"/> -->
+            <!-- </Grid> -->
+            
+            
+            <!-- <Button x:Name="SaveButton" -->
+            <!--         Text="Save" -->
+            <!--         Clicked="SaveButton_OnClicked"/> -->
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

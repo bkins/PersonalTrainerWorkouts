@@ -1,4 +1,3 @@
-using System;
 using System.Collections.ObjectModel;
 using PersonalTrainerWorkouts.Models;
 using Syncfusion.SfPicker.XForms;

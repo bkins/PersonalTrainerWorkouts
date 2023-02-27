@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using ApplicationExceptions;
+using Avails.D_Flat.Exceptions;
+using Avails.Xamarin;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views
@@ -84,13 +84,13 @@ namespace PersonalTrainerWorkouts.Views
             {
                 ViewModel.SaveExerciseEquipment(int.Parse(ExerciseId));
 
-                await PageNavigation.NavigateBackwards();
+                PageNavigation.NavigateBackwards();
             }
             catch (EntityRelationAlreadyExistsException alreadyExistsException)
             {
                 await DisplayAlert(Category.Warning.ToString()
                                  , alreadyExistsException.Message
-                                 , "OK");
+                                 , "OK").ConfigureAwait(false);
             }
             catch (Exception exception)
             {
@@ -123,7 +123,7 @@ namespace PersonalTrainerWorkouts.Views
 
                     saved = true;
 
-                    await PageNavigation.NavigateBackwards();
+                    PageNavigation.NavigateBackwards();
                 }
                 catch (AttemptToAddDuplicateEntityException)
                 {
@@ -140,10 +140,10 @@ namespace PersonalTrainerWorkouts.Views
             }
         }
 
-        private async void EquipmentPicker_OnCancelButtonClicked(object                    sender
+        private void EquipmentPicker_OnCancelButtonClicked(object                    sender
                                                                , SelectionChangedEventArgs e)
         {
-            await PageNavigation.NavigateBackwards();
+            PageNavigation.NavigateBackwards();
         }
     }
 }

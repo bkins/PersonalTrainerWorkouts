@@ -54,13 +54,25 @@
 
     <!-- Add an item to the toolbar -->
     <ContentPage.ToolbarItems>
-        <ToolbarItem Text="Add"
-                     Clicked="OnAddClicked" />
+        
+        <ToolbarItem x:Name="AddToolbarItem" 
+                     Text="Add"
+                     IconImageSource="baseline_add_circle_outline_black_48.png"
+                     Clicked="AddToolbarItem_OnClicked" 
+                     />
+        <ToolbarItem x:Name="SearchToolbarItem"
+                     Text="Search"
+                     IconImageSource="baseline_search_black_48.png"
+                     Clicked="SearchToolbarItem_OnClicked"
+                     />
+        
     </ContentPage.ToolbarItems>
+    
     <StackLayout VerticalOptions="StartAndExpand">
         
         <Entry x:Name="WorkoutFilter" 
                Placeholder="Search Workouts (try d=1 or d>5)"
+               IsVisible="False"
                TextChanged="WorkoutFilter_OnTextChanged">
         </Entry>
 

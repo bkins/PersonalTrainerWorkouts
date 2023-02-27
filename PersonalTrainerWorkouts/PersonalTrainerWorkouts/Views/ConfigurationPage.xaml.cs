@@ -2,7 +2,8 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
-using PersonalTrainerWorkouts.Utilities;
+using Avails.Xamarin;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -56,10 +57,36 @@ namespace PersonalTrainerWorkouts.Views
             ViewModel.CreateTables();
         }
 
-        private async void ViewLogButtonClicked(object    sender
+        private void CreateContactTablesButton_OnClicked(object    sender
+                                                       , EventArgs e)
+        {
+            ViewModel.CreateContactTables();
+        }
+
+        private void DropContactTablesButton_OnClicked(object    sender
+                                                     , EventArgs e)
+        {
+            ViewModel.DropContactTables();
+        }
+        
+        private void ViewLogButtonClicked(object    sender
                                               , EventArgs e)
         {
-            await PageNavigation.NavigateTo(nameof(MessageLog));
+            //await PageNavigation.NavigateTo(nameof(MessageLog));
+            
+            var pageName = nameof(Avails.Xamarin.Views.LoggingPage.MessageLog);
+            try
+            {
+                Logger.Verbose = true;
+                PageNavigation.NavigateTo(pageName);
+            }
+            catch (Exception exception)
+            {
+                Logger.WriteLineToToastForced($"Could not open page {pageName}"
+                                            , Category.Error
+                                            , exception);
+                Logger.Verbose = false;
+            }
         }
 
         private void BackupDatabaseButton_OnClicked(object    sender

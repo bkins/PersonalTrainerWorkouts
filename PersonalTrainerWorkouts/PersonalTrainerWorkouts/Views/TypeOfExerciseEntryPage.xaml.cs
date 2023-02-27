@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Utilities;
+using Avails.Xamarin;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
-using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views
 {
@@ -64,14 +59,14 @@ namespace PersonalTrainerWorkouts.Views
             InitializeComponent();
         }
 
-        private async void Name_OnUnfocused(object         sender
+        private void Name_OnUnfocused(object         sender
                                           , FocusEventArgs e)
         {
             var nameEntry = (Entry)sender;
 
             ViewModel.SaveTypeOfExercise(nameEntry.Text);
 
-            await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+            PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
                                           , nameof(ExerciseAddEditPage.WorkoutId)
                                           , WorkoutId
                                           , nameof(ExerciseAddEditPage.ExerciseId)

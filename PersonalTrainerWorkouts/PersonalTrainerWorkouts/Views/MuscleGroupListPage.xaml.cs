@@ -1,16 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using ApplicationExceptions;
-using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Models.Intermediates;
-using PersonalTrainerWorkouts.Utilities;
+using Avails.D_Flat.Exceptions;
+using Avails.Xamarin;
+using Avails.Xamarin.Logger;
+using NLog.Fluent;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Forms;
-using Xamarin.Forms.Xaml;
 using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views
@@ -88,7 +87,7 @@ namespace PersonalTrainerWorkouts.Views
             {
                 ViewModel.SaveSynergistToExercise();
 
-                await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+                PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
                                               , nameof(ExerciseAddEditPage.ExerciseId)
                                               , ExerciseId
                                               , nameof(ExerciseAddEditPage.WorkoutId)
@@ -150,13 +149,15 @@ namespace PersonalTrainerWorkouts.Views
                 viewModel.SaveOppositeSynergist(muscleGroupName
                                               , opposingMuscleGroupName);
 
-                await PageNavigation.NavigateBackwards();
+                PageNavigation.NavigateBackwards();
             }
             catch (AttemptToAddDuplicateEntityException e)
             {
+                var message = $"The Muscle Group '{muscleGroupName}' already exists.  Name the Muscle Group with a different name.";
                 await DisplayAlert("Muscle Group Already Exists"
-                                 , $"The Muscle Group '{muscleGroupName}' already exists.  Name the Muscle Group with a different name."
+                                 , message
                                  , "OK");
+                Logger.WriteLine(message, Category.Error, e);
             }
             catch (Exception ex)
             {
@@ -166,10 +167,10 @@ namespace PersonalTrainerWorkouts.Views
             }
         }
 
-        private async void MuscleGroupPicker_OnCancelButtonClicked(object                    sender
+        private void MuscleGroupPicker_OnCancelButtonClicked(object                    sender
                                                                  , SelectionChangedEventArgs e)
         {
-            await PageNavigation.NavigateBackwards();
+            PageNavigation.NavigateBackwards();
         }
     }
 }

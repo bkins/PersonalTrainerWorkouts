@@ -10,15 +10,23 @@
         <!--<ShellContent Title="Home"
                       Icon= "icon_feed.png"
                       ContentTemplate="{DataTemplate views:WorkoutsPage}" />-->
-        <ShellContent Title="Home"
-                      Icon="icon_feed.png"
-                      ContentTemplate="{DataTemplate views:WorkoutListPage}" />
+        <ShellContent Title="Sessions"
+                      Icon="calendar_month_black_48.png"
+                      ContentTemplate="{DataTemplate views:SessionListPage}"/>
+        <ShellContent Title="Clients"
+                      Icon="groups_black_48.png"
+                      ContentTemplate="{DataTemplate views:ClientListPage}"/>
+        <ShellContent Title="Workouts"
+                      Icon="fitness_center_black_48.png"
+                      ContentTemplate="{DataTemplate views:WorkoutListPage}"/>
+        
+        <ShellContent Title="Settings &amp; Tools"
+                      Icon="settings_black_48.png"
+                      ContentTemplate="{DataTemplate views:ConfigurationPage}" 
+                      />
         <ShellContent Title="Sync"
-                      Icon="Sync.ico"
+                      Icon="sync_black_48.png"
                       ContentTemplate="{DataTemplate views:SyncPage}" />
-        <ShellContent Title="Configuration"
-                      Icon="Settings.ico"
-                      ContentTemplate="{DataTemplate views:ConfigurationPage}" />
         <ShellContent Title="About"
                       Icon="icon_about.png"
                       ContentTemplate="{DataTemplate views:AboutPage}" />

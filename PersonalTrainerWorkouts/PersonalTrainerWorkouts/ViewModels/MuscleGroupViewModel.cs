@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Avails.D_Flat.Extensions;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
-using PersonalTrainerWorkouts.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
@@ -48,10 +47,14 @@ namespace PersonalTrainerWorkouts.ViewModels
         private void SetSynergistsNotInExerciseWhenExerciseHasSynergists(List<ResolvedSynergistViewModel> listOfResolvedSynergist)
         {
             //Synergists has items
-            foreach (var dbSynergist in from dbSynergist in listOfResolvedSynergist
-                                        from exerciseSynergists in Synergists.Where(exerciseSynergists => SynergistIsNotInExercise(dbSynergist
-                                                                                                                                 , exerciseSynergists))
-                                        select dbSynergist)
+            var synergists =
+                (from dbSynergist
+                    in listOfResolvedSynergist
+                from exerciseSynergists
+                    in Synergists.Where(exerciseSynergists => SynergistIsNotInExercise(dbSynergist, exerciseSynergists))
+                select dbSynergist).ToList();
+            
+            foreach (var dbSynergist in synergists)
             {
                 SynergistsNotInExercise.Add(dbSynergist);
             }
@@ -61,10 +64,9 @@ namespace PersonalTrainerWorkouts.ViewModels
                                             , ResolvedSynergistViewModel exerciseSynergists)
         {
             return ! (dbSynergist.Exercise.Id == exerciseSynergists.Exercise.Id
-                   || (dbSynergist.PrimaryMuscleGroup.Id  == exerciseSynergists.PrimaryMuscleGroup.Id 
-                    && dbSynergist.OpposingMuscleGroup.Id == exerciseSynergists.OpposingMuscleGroup.Id)
-                   || SynergistsNotInExercise.Any(field=>
-                                                          field.PrimaryMuscleGroup.Id  == dbSynergist.PrimaryMuscleGroup.Id 
+                   || (   dbSynergist.PrimaryMuscleGroup.Id  == exerciseSynergists.PrimaryMuscleGroup.Id 
+                       && dbSynergist.OpposingMuscleGroup.Id == exerciseSynergists.OpposingMuscleGroup.Id)
+                   || SynergistsNotInExercise.Any(field=> field.PrimaryMuscleGroup.Id  == dbSynergist.PrimaryMuscleGroup.Id 
                                                        && field.OpposingMuscleGroup.Id == dbSynergist.OpposingMuscleGroup.Id));
         }
 
@@ -75,27 +77,26 @@ namespace PersonalTrainerWorkouts.ViewModels
                 return false;
             }
 
-            foreach (var synergistToAdd in 
-                     listOfResolvedSynergist.Select
-                                             (
-                                                dbSynergist => new ResolvedSynergistViewModel
-                                                               (
-                                                                  0
-                                                                , 0
-                                                                , dbSynergist.PrimaryMuscleGroup.Id
-                                                                , dbSynergist.OpposingMuscleGroup.Id
-                                                               )
-                                             )
-                                            .Where
-                                             (
-                                                synergistToAdd => ! SynergistsNotInExercise.Any
-                                                                                            (
-                                                                                                field => 
-                                                                                                field.PrimaryMuscleGroup == synergistToAdd.PrimaryMuscleGroup 
-                                                                                             && field.OpposingMuscleGroup == synergistToAdd.OpposingMuscleGroup
-                                                                                            )
-                                             )
-                    )
+            var synergistsToAdd = listOfResolvedSynergist.Select
+                                                         (
+                                                             dbSynergist => new ResolvedSynergistViewModel(
+                                                                 0
+                                                               , 0
+                                                               , dbSynergist.PrimaryMuscleGroup.Id
+                                                               , dbSynergist.OpposingMuscleGroup.Id
+                                                             )
+                                                         )
+                                                         .Where
+                                                         (
+                                                             synergistToAdd => ! SynergistsNotInExercise.Any
+                                                             (
+                                                                 field =>
+                                                                     field.PrimaryMuscleGroup == synergistToAdd.PrimaryMuscleGroup
+                                                                  && field.OpposingMuscleGroup == synergistToAdd.OpposingMuscleGroup
+                                                             )
+                                                         ).ToList();
+            
+            foreach (var synergistToAdd in synergistsToAdd)
             {
                 SynergistsNotInExercise.Add(synergistToAdd);
             }

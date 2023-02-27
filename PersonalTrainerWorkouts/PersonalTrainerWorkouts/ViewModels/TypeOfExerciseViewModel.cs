@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Avails.D_Flat.Extensions;
+using Avails.Xamarin.Logger;
+using NLog.Fluent;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
@@ -33,8 +32,14 @@ namespace PersonalTrainerWorkouts.ViewModels
                               Name = newTypeName
                           };
 
-            DataAccessLayer.AddNewTypeOfExercise(newType);
+            var newTypeOfExerciseId = DataAccessLayer.AddNewTypeOfExercise(newType);
 
+            if (newTypeOfExerciseId == -1)
+            {
+                Logger.WriteLineToToastForced("Could not add new type.", Category.Error);
+                return;
+            }
+            
             Logger.WriteLine($"New Type {newType} ({newType.Id}) added."
                            , Category.Information);
 

@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using ApplicationExceptions;
+using Avails.D_Flat.Exceptions;
+using Avails.D_Flat.Extensions;
+using Avails.Xamarin;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.ViewModels;
-using PersonalTrainerWorkouts.Utilities;
 using Xamarin.Forms;
 
 namespace PersonalTrainerWorkouts.Views
@@ -26,7 +30,7 @@ namespace PersonalTrainerWorkouts.Views
 
         //https://docs.microsoft.com/en-us/xamarin/get-started/quickstarts/database?pivots=windows
 
-        private async void OnSelectionChanged(object                    sender
+        private void OnSelectionChanged(object                    sender
                                             , SelectionChangedEventArgs e)
         {
             var exercise = (Exercise)e.CurrentSelection.FirstOrDefault();
@@ -36,17 +40,17 @@ namespace PersonalTrainerWorkouts.Views
                 return;
             }
 
-            await PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
+            PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
                                           , nameof(ExerciseAddEditPage.WorkoutId)
                                           , ViewModel.NewWorkout.Id.ToString()
                                           , nameof(ExerciseAddEditPage.ExerciseId)
                                           , exercise.Id.ToString());
         }
 
-        async void OnManageExercisesClicked(object    sender
+        void OnManageExercisesClicked(object    sender
                                           , EventArgs e)
         {
-            await PageNavigation.NavigateTo(nameof(ExerciseListPage)
+            PageNavigation.NavigateTo(nameof(ExerciseListPage)
                                           , nameof(ExerciseListPage.WorkoutId)
                                           , ViewModel.NewWorkout.Id.ToString());
         }
@@ -97,7 +101,7 @@ namespace PersonalTrainerWorkouts.Views
             }
         }
 
-        private async void Difficulty_OnUnfocused(object         sender
+        private void Difficulty_OnUnfocused(object         sender
                                                 , FocusEventArgs e)
         {
             var difficulty = (Entry)sender;
@@ -107,7 +111,7 @@ namespace PersonalTrainerWorkouts.Views
                 SaveWorkout();
             }
 
-            await PageNavigation.NavigateTo(nameof(WorkoutListPage));
+            PageNavigation.NavigateTo(nameof(WorkoutListPage));
         }
     }
 }

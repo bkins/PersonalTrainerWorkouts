@@ -42,7 +42,8 @@
             </Setter>
         </Style>
         <ResourceDictionary>
-            <converters:HeightConverter x:TypeArguments="models:TypeOfExercise" x:Key="HeightConverter" />
+            <converters:HeightConverter x:TypeArguments="models:TypeOfExercise" 
+                                        x:Key="HeightConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -148,10 +149,12 @@
                         <CollectionView x:Name="TypeOfExerciseCollectionView"
                                         x:DataType="viewmodels:ExerciseAddEditViewModel"
                                         ItemsSource="{Binding TypeOfExercise.Name}">
+                            
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout Orientation="Vertical"
                                                    ItemSpacing="0" />
                             </CollectionView.ItemsLayout>
+                            
                             <CollectionView.ItemTemplate>
                                 <DataTemplate>
                                     <Grid Padding="0"

@@ -6,7 +6,6 @@ using Android.Runtime;
 using Android.OS;
 using AndroidX.Core.App;
 using AndroidX.Core.Content;
-using PersonalTrainerWorkouts.Services;
 
 namespace PersonalTrainerWorkouts.Droid
 {
@@ -43,8 +42,9 @@ namespace PersonalTrainerWorkouts.Droid
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
             {
-                if (!(CheckPermissionGranted(Manifest.Permission.ReadExternalStorage) 
-                  &&  !CheckPermissionGranted(Manifest.Permission.WriteExternalStorage)))
+                if ( ! CheckPermissionGranted(Manifest.Permission.ReadExternalStorage) 
+                  || ! CheckPermissionGranted(Manifest.Permission.WriteExternalStorage)
+                  || ! CheckPermissionGranted(Manifest.Permission.ReadContacts))
                 {
                     RequestPermission();
                 }
@@ -55,7 +55,7 @@ namespace PersonalTrainerWorkouts.Droid
             Xamarin.Essentials.Platform.Init(this, savedInstanceState);
             Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
-            global::Xamarin.Auth.Presenters.XamarinAndroid.AuthenticationConfiguration.Init(this, savedInstanceState);
+            Xamarin.Auth.Presenters.XamarinAndroid.AuthenticationConfiguration.Init(this, savedInstanceState);
             
             LoadApplication(new App());
         }
@@ -93,6 +93,7 @@ namespace PersonalTrainerWorkouts.Droid
                                               {
                                                   Manifest.Permission.ReadExternalStorage
                                                 , Manifest.Permission.WriteExternalStorage
+                                                , Manifest.Permission.ReadContacts
                                               }
                                             , 0);
         }

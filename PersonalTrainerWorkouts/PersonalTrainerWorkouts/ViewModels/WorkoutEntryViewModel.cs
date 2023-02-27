@@ -1,5 +1,6 @@
 ﻿using ApplicationExceptions;
-using PersonalTrainerWorkouts.Data;
+using Avails.D_Flat.Exceptions;
+using Avails.D_Flat.Extensions;
 using PersonalTrainerWorkouts.Models;
 
 namespace PersonalTrainerWorkouts.ViewModels
@@ -20,9 +21,9 @@ namespace PersonalTrainerWorkouts.ViewModels
         {
             if (Id == 0)
             {
-                Id = ! string.IsNullOrWhiteSpace(NewWorkout.Name) ?
-                             DataAccessLayer.AddNewWorkout(NewWorkout) :
-                             throw new UnnamedEntityException($"{nameof(Workout)} was not named.  Must be named before attempting to save.");
+                Id = NewWorkout.Name.HasValue() 
+                        ? DataAccessLayer.AddNewWorkout(NewWorkout) 
+                        : throw new UnnamedEntityException($"{nameof(Workout)} was not named.  Must be named before attempting to save.");
             }
             else
             {
