@@ -1,14 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
-using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.ViewModels;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
@@ -17,7 +12,7 @@ namespace PersonalTrainerWorkouts.Views
     [QueryProperty(nameof(ClientId)
                  , nameof(ClientId))]
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ClientEditPage : ContentPage, IQueryAttributable
+    public partial class ClientEditPage : IQueryAttributable
     {
         public string          ClientId  { get; set; }
         public ClientViewModel ViewModel { get; set; }
@@ -55,16 +50,27 @@ namespace PersonalTrainerWorkouts.Views
                                         , EventArgs e)
         {
             //ViewModel.Client.DisplayName = ClientNameEntry.Text;
+            var displayName = ViewModel.Client.ToString();
             //TODO: Update properties unique to the Client class, not in Contact
-            ViewModel.Save();
+            try
+            {
+                ViewModel.Save();
+            }
+            catch (Exception exception)
+            {
+                Logger.WriteLine("Client could not be saved"
+                               , Category.Error
+                               , exception
+                               , $"Client: {displayName}");
+            }
             
             PageNavigation.NavigateBackwards();
         }
 
         private void LinkContactToolbarItem_OnClicked(object    sender
-                                                    , EventArgs e)
+                                                          , EventArgs e)
         {
-            ViewModel.LinkContactToClient();
+            ViewModel.LinkContactToClient().ConfigureAwait(false);
         }
     }
 }

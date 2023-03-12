@@ -18,9 +18,9 @@ namespace PersonalTrainerWorkouts.ViewModels
 {
     public class GoogleApiViewModel : INotifyPropertyChanged
     {
-        private const string SCOPE        = "https://www.googleapis.com/auth/drive.file";
-        private const string CLIENT_ID    = "365524202742-vvf78896mt59p7l64s70udj71rfghvmm.apps.googleusercontent.com";
-        private const string REDIRECT_URL = "com.companyname.personaltrainerworkouts:/oauth2redirect";
+        private const string Scope        = "https://www.googleapis.com/auth/drive.file";
+        private const string ClientId    = "365524202742-vvf78896mt59p7l64s70udj71rfghvmm.apps.googleusercontent.com";
+        private const string RedirectUrl = "com.companyname.personaltrainerworkouts:/oauth2redirect";
 
         private OAuth2Authenticator              Authenticator { get; set; }
         public event PropertyChangedEventHandler PropertyChanged;
@@ -33,7 +33,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                                 (
                                     GoogleServices.ClientId,
                                     string.Empty,
-                                    SCOPE,
+                                    Scope,
                                     new Uri("https://accounts.google.com/o/oauth2/v2/auth"),
                                     new Uri(GoogleServices.RedirectUrl),
                                     new Uri("https://www.googleapis.com/oauth2/v4/token"),
@@ -43,7 +43,7 @@ namespace PersonalTrainerWorkouts.ViewModels
             AuthenticatorHelper.OAuth2Authenticator =  Authenticator;
             Authenticator.Completed                 += OnAuthOnCompleted;
 
-            Authenticator.Error += (sender, e) =>
+            Authenticator.Error += (_, _) =>
                                    {
 
                                    };
@@ -71,13 +71,13 @@ namespace PersonalTrainerWorkouts.ViewModels
                               {
                                   ClientSecrets = new ClientSecrets()
                                                   {
-                                                      ClientId = CLIENT_ID
+                                                      ClientId = ClientId
                                                      ,
                                                   }
                                  ,
                                   Scopes = new[]
                                            {
-                                               SCOPE
+                                               Scope
                                            }
                                  ,
                                   DataStore = new FileDataStore("Google.Apis.Auth")

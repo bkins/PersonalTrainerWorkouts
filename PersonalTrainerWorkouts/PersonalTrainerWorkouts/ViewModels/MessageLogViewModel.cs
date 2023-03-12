@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
+﻿using System.Collections.ObjectModel;
 using Avails.Xamarin.Logger;
 
 namespace PersonalTrainerWorkouts.ViewModels

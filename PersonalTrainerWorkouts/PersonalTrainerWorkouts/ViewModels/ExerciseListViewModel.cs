@@ -7,7 +7,8 @@ namespace PersonalTrainerWorkouts.ViewModels
 {
     public class ExerciseListViewModel : ViewModelBase
     {
-        public  int                                               WorkoutId { get; set; }
+        public int WorkoutId { get; set; }
+
         private ObservableCollection<WorkoutExerciseWithChildren> _linkWorkoutExercises;
 
         public ObservableCollection<WorkoutExerciseWithChildren> LinkWorkoutExercises
@@ -18,7 +19,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 SetValue(ref _linkWorkoutExercises
                        , value);
 
-                OnPropertyChanged(nameof(LinkWorkoutExercises));
+                OnPropertyChanged();
             }
         }
 

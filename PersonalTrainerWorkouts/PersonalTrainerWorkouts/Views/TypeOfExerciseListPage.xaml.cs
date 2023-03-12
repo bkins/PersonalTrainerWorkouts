@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using ApplicationExceptions;
 using Avails.D_Flat.Exceptions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
@@ -69,17 +68,16 @@ namespace PersonalTrainerWorkouts.Views
                                                                 , SelectionChangedEventArgs e)
         {
             var selected = (TypeOfExercise)TypeOfExercisePicker.SelectedItem;
-            var name     = selected.Name == string.Empty ? "<TypeOfExercise.Name is empty>" : selected.Name;
             
             if (selected.Name == "<New>")
             {
-                SaveNewExerciseType();
+                SaveNewExerciseType().ConfigureAwait(false);
             }
             else if (_exerciseId != "0")
             {
                 ViewModel.SelectedTypeOfExercise = selected;
 
-                TryToSaveExerciseType();
+                TryToSaveExerciseType().ConfigureAwait(false);
             }
 
             PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)

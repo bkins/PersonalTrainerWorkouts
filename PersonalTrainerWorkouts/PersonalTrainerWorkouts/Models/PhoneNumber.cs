@@ -1,6 +1,5 @@
 ﻿using SQLite;
 using SQLiteNetExtensions.Attributes;
-using Xamarin.Essentials;
 
 namespace PersonalTrainerWorkouts.Models
 {

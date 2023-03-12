@@ -7,24 +7,7 @@ namespace PersonalTrainerWorkouts.ViewModels
     {
         public IEnumerable<TypeOfExercise> ListOfAllExerciseTypes => DataAccessLayer.GetAllTypesOfExercise();
         public TypeOfExercise              SelectedTypeOfExercise { get; set; }
-
-        public TypeOfExerciseListViewModel()
-        {
-            //BENDO:  Just for testing, until I wire up the adding of TypeOfExercises. But remember you cannot add duplicate Names
-            //So only execute these lines if the data is erased.
-            //DataAccessLayer.AddNewTypeOfExercise(new TypeOfExercise
-            //                                     {
-            //                                         Name = "Push"
-            //                                     });
-
-            //DataAccessLayer.AddNewTypeOfExercise(new TypeOfExercise
-            //                                     {
-            //                                         Name = "Pull"
-            //                                     });
-
-            //ListOfAllExerciseTypes = DataAccessLayer.GetAllTypesOfExercise();
-        }
-
+        
         public void SaveExerciseType(int exerciseId)
         {
             if (SelectedTypeOfExercise == null)

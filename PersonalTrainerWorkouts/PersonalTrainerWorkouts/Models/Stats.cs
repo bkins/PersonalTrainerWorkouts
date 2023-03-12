@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace PersonalTrainerWorkouts.Models
+﻿namespace PersonalTrainerWorkouts.Models
 {
     public class Stats
     {

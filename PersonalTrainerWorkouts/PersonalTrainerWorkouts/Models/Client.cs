@@ -30,9 +30,9 @@ namespace PersonalTrainerWorkouts.Models
                 
                 _contact = value;
 
-                
                 var contactPhones = _contact.Phones
-                                            .Where(phone => PhoneNumbers.All(numbers => numbers.Number != phone.PhoneNumber));
+                                            .Where(phone => PhoneNumbers.All(numbers => numbers.Number 
+                                                                                     != phone.PhoneNumber));
                 
                 foreach (var phone in contactPhones)
                 {
@@ -51,19 +51,19 @@ namespace PersonalTrainerWorkouts.Models
             private set => _displayName = value;
         }
 
-        [OneToMany]
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<PhoneNumber> PhoneNumbers { get; set; } = new ();
 
-        [OneToMany]
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<Address> Addresses { get; set; } = new ();
 
-        [OneToMany]
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<Measurable> Measurements { get; set; } = new ();
 
-        [OneToMany]
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<Measurable> Maxes { get; set; } = new ();
 
-        [OneToMany]
+        [OneToMany(CascadeOperations = CascadeOperation.All)]
         public List<Goal> Goals { get; set; } = new ();
         
         [Ignore]

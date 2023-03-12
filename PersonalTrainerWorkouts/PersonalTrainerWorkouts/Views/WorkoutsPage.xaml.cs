@@ -8,7 +8,7 @@ namespace PersonalTrainerWorkouts.Views
 {
     [Obsolete("This View and the WorkoutsPageViewModel are an incomplete trial of a different approach I would like to explore more later.  For now they are not used.")]
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class WorkoutsPage : ContentPage
+    public partial class WorkoutsPage
     {
         public WorkoutsPage()
         {

@@ -2,7 +2,6 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:rte="clr-namespace:Syncfusion.XForms.RichTextEditor;assembly=Syncfusion.SfRichTextEditor.XForms"
              xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.ClientEditPage"
              x:DataType="viewModels:ClientViewModel"

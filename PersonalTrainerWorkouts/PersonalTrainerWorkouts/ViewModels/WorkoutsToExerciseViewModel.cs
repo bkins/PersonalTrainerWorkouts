@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using ApplicationExceptions;
 using Avails.D_Flat.Exceptions;
 using Avails.D_Flat.Extensions;
 using Avails.Xamarin.Logger;

@@ -10,11 +10,6 @@ namespace PersonalTrainerWorkouts.Models
 
         //public MuscleGroup OpposingMuscleGroup { get; set; }
 
-        public MuscleGroup()
-        {
-            //Exercises = new List<Exercise>();
-        }
-
         //[ManyToMany(typeof(ExerciseMuscleGroup), CascadeOperations = CascadeOperation.All)]
         //public List<Exercise> Exercises { get; set; }
 

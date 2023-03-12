@@ -9,7 +9,7 @@ namespace PersonalTrainerWorkouts.Services;
 
 public sealed class MergedClientsAndContacts
 {
-    private static MergedClientsAndContacts _instance = null;
+    private static MergedClientsAndContacts _instance;
     public static MergedClientsAndContacts Instance
     {
         get => _instance ??= new ();
@@ -78,12 +78,12 @@ public sealed class MergedClientsAndContacts
         {
             return contact;
         }
-        
-        contact = CachedContacts.FirstOrDefault(contact => contact.Id
-                                                        == client.ContactId);
+
+        contact = CachedContacts.FirstOrDefault(cachedContact => cachedContact.Id
+                                                              == client.ContactId);
         if (contact is null)
         {
-            Logger.WriteLine($"A Client (ClientId = {client.ClientId}) has a ContactId ({client.ContactId}) that connot be found. Was a Contact removed from the phone?", Category.Warning);
+            Logger.WriteLine($"A Client (ClientId = {client.ClientId}) has a ContactId ({client.ContactId}) that cannot be found. Was a Contact removed from the phone?", Category.Warning);
         }
         
         return contact;
@@ -91,18 +91,24 @@ public sealed class MergedClientsAndContacts
 
     private void DefaultPhoneNumbersIsMain(Client client)
     {
-        if (client is null 
-         || client.PhoneNumbers.Any(numbers => numbers.IsMain))
+        if (NoNeedToUpdateIsMain(client))
             return;
 
         client.PhoneNumbers
               .FirstOrDefault()
-              .IsMain = true;
+              !.IsMain = true;
             
         DataAccessLayer.UpdateClient(client);
     }
 
-    public async void ForceUpdateContacts()
+    private static bool NoNeedToUpdateIsMain(Client client)
+    {
+        return client is null 
+            || ! client.PhoneNumbers.Any()
+            || client.PhoneNumbers.Any(numbers => numbers.IsMain);
+    }
+
+    public void ForceUpdateContacts()
     {
         CachedContacts = ContactsDataAccessLayer.GetContacts();
         UpdateAll(forceRefresh: false);
@@ -111,6 +117,17 @@ public sealed class MergedClientsAndContacts
     public void ForceUpdateClients()
     {
         CachedClients = DataAccessLayer.GetClients();
-        UpdateAll(forceRefresh: false);
+        
+        if (CachedClients is null) return;
+        
+        foreach (var client in CachedClients)
+        {
+            var contact = GetContact(client);
+
+            client.Contact = contact;
+
+            DefaultPhoneNumbersIsMain(client);
+        }
+        //UpdateAll(forceRefresh: false);
     }
 }

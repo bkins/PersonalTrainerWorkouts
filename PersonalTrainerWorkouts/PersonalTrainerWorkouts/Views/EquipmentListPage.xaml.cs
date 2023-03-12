@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using ApplicationExceptions;
 using Avails.D_Flat.Exceptions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
@@ -16,8 +15,7 @@ namespace PersonalTrainerWorkouts.Views
 {
     [QueryProperty(nameof(ExerciseId)
                  , nameof(ExerciseId))]
-    public partial class EquipmentListPage : ContentPage
-                                           , IQueryAttributable
+    public partial class EquipmentListPage : IQueryAttributable
     {
         private EquipmentListViewModel ViewModel { get; set; }
 

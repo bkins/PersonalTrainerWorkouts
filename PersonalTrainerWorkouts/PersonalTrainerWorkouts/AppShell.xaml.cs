@@ -4,7 +4,7 @@ using WorkoutExercisePage = PersonalTrainerWorkouts.Views.WorkoutExercisePage;
 
 namespace PersonalTrainerWorkouts
 {
-    public partial class AppShell : Shell
+    public partial class AppShell
     {
         public AppShell()
         {

@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using ApplicationExceptions;
 using Avails.D_Flat.Exceptions;
 using Avails.D_Flat.Extensions;
 using Avails.Xamarin;
@@ -15,12 +13,10 @@ namespace PersonalTrainerWorkouts.Views
 {
     [QueryProperty(nameof(WorkoutId)
                  , nameof(WorkoutId))]
-    public partial class WorkoutExercisePage : ContentPage
+    public partial class WorkoutExercisePage
     {
         public WorkoutsToExerciseViewModel ViewModel;
         public string                      TotalWorkoutTime { get; set; }
-
-        private ExerciseViewModel SelectedExerciseViewModel { get; set; }
 
         private string _workoutId = "0";
 
@@ -40,9 +36,9 @@ namespace PersonalTrainerWorkouts.Views
 
                 var exercises = ViewModel.ExercisesWithIntermediateFields;
 
-                BindingContext             = ViewModel;
+                BindingContext                      = ViewModel;
                 ExerciseCollectionView2.ItemsSource = exercises;
-                TotalWorkoutTime           = ViewModel.TotalTime.ToShortForm();
+                TotalWorkoutTime                    = ViewModel.TotalTime.ToShortForm();
             }
             catch (Exception ex)
             {
@@ -82,7 +78,6 @@ namespace PersonalTrainerWorkouts.Views
                                             , SelectionChangedEventArgs e)
         {
             var exercise = (ExerciseViewModel)e.CurrentSelection.FirstOrDefault();
-            SelectedExerciseViewModel = exercise;
 
             if (exercise == null)
             {

@@ -79,7 +79,7 @@ namespace PersonalTrainerWorkouts.Droid
             {
                 var data = intent.Data;
 
-                var queryParameter = data.GetQueryParameter("code");
+                var queryParameter = data?.GetQueryParameter("code");
                 //https://accounts.google.com/signin/oauth/consent?authuser=0&part=AJi8hAMLDzceWgMwh61fV45B0UFnWrDLV4msoFYcZs2gE6WovPjlBF0gKyKmodOVsotlCkmUHxoLMvvKjO-0p1fKYtGPajvTTVDQUQFPCBqpDqyfCdrOpaKOONMeExJkR-5TmBs_ky8L98NUOOzDqK-t_zcxFM2gbeMHbLjS7FZlZAlVxGF5Z9RvQMoDkLXhZI-gYnxHOdS9oPFcWYO8JrQo_H2jl2Ny_Sa4oouUYbe5CpKTLI5K7cB4926LtCtescMR_qD1wiG41UxDPB0fQrJLWfho3aho81dE3PuHFz0Ypy4ohQLhEEW4Y01CNSUfrLUMXV-UiUlYFNCWBYvSXrjtMwQqkvH0GU9WY2DrhqpiWe1kjTm_DPo-CD2l-_hi8J4JumzjWLtKhIrntLftk3sTHl02DhGxFQ&as=S-1676832930%3A1631559198923021&pli=1&rapt=AEjHL4MEIF0d8cMISvK8bmv8Dv4gdxpZhvLeMeLOfk3hFaTea76nFe2ZxUTXKNyiDLHbaD4Q3tHldUzO7_7nr7wju_ym4pCcdg#
 
             }

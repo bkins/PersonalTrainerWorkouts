@@ -2,13 +2,12 @@
 using PersonalTrainerWorkouts.Services;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Essentials;
-using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 namespace PersonalTrainerWorkouts.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SyncPage : ContentPage
+    public partial class SyncPage
     {
         public GoogleApiViewModel ViewModel { get; set; }
         

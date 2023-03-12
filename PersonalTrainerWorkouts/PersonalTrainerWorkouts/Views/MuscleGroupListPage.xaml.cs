@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using ApplicationExceptions;
 using Avails.D_Flat.Exceptions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
-using NLog.Fluent;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Forms;
 using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;
@@ -18,10 +16,8 @@ namespace PersonalTrainerWorkouts.Views
                  , nameof(ExerciseId))]
     [QueryProperty(nameof(WorkoutId)
                  , nameof(WorkoutId))]
-    public partial class MuscleGroupListPage : ContentPage
-                                             , IQueryAttributable
+    public partial class MuscleGroupListPage : IQueryAttributable
     {
-        private MuscleGroupListViewModel OldViewModel { get; set; }
         private MuscleGroupViewModel     ViewModel    { get; set; }
         public  string                   ExerciseId   { get; set; }
         public  string                   WorkoutId    { get; set; }
@@ -34,7 +30,6 @@ namespace PersonalTrainerWorkouts.Views
                 ExerciseId = HttpUtility.UrlDecode(query[nameof(ExerciseId)]);
                 WorkoutId  = HttpUtility.UrlDecode(query[nameof(WorkoutId)]);
 
-                OldViewModel = new MuscleGroupListViewModel();
                 ViewModel    = new MuscleGroupViewModel(ExerciseId);
                 LoadData();
             }

@@ -1,5 +1,4 @@
 ﻿using System;
-using PersonalTrainerWorkouts.ViewModels;
 using SQLite;
 
 namespace PersonalTrainerWorkouts.Models
@@ -11,13 +10,14 @@ namespace PersonalTrainerWorkouts.Models
         public new string Name { get; set; }
 
         public string Type     { get; set; }
+        // ReSharper disable once InconsistentNaming
         public string Tbl_Name { get; set; }
         public int    RootPage { get; set; }
         public string Sql      { get; set; }
 
         public override string ToString()
         {
-            return string.Format("{1}{2}\t{3}: {4}{2}\t{5}: {6}{2}\t{7}: {8}{2}\t{9}: {10}{2}"
+            return string.Format("{1}{2}\t{0}: {3}{2}\t{4}: {5}{2}\t{6}: {7}{2}\t{8}: {9}{10}"
                                , nameof(Name)        //0
                                , Name                //1
                                , Environment.NewLine //2

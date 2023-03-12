@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
@@ -11,7 +10,7 @@ using SwipeEndedEventArgs = Syncfusion.ListView.XForms.SwipeEndedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views
 {
-    public partial class WorkoutListPage : ContentPage
+    public partial class WorkoutListPage
     {
         public int                  SwipedItem { get; set; }
         public WorkoutListViewModel ViewModel  { get; set; }
