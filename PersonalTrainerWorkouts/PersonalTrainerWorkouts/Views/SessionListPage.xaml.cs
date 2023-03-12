@@ -1,8 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
@@ -15,7 +12,7 @@ using SwipeEndedEventArgs = Syncfusion.ListView.XForms.SwipeEndedEventArgs;
 namespace PersonalTrainerWorkouts.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SessionListPage : ContentPage
+    public partial class SessionListPage
     {
         public int                  SwipedItem { get; set; }
         public SessionListViewModel ViewModel  { get; set; }

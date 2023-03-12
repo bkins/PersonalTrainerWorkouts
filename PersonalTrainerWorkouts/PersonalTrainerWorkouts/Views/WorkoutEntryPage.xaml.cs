@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Threading.Tasks;
-using ApplicationExceptions;
 using Avails.D_Flat.Exceptions;
 using Avails.D_Flat.Extensions;
 using Avails.Xamarin;
@@ -12,7 +10,7 @@ using Xamarin.Forms;
 
 namespace PersonalTrainerWorkouts.Views
 {
-    public partial class WorkoutEntryPage : ContentPage
+    public partial class WorkoutEntryPage
     {
         private WorkoutEntryViewModel ViewModel { get; set; }
         private Entry                 NameEntry { get; set; }

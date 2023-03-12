@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using System.Windows.Input;
-using ApplicationExceptions;
 using Avails.D_Flat.Exceptions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
@@ -30,7 +28,7 @@ namespace PersonalTrainerWorkouts.Views
         public  int                  InitialReps         { get; set; }
         private Entry                NameEntry           { get; set; }
         public  List<TypeOfExercise> TypesOfExerciseList { get; set; }
-        public  ICommand             DeleteCommand       { get; }
+        //public  ICommand             DeleteCommand       { get; }
 
         public void ApplyQueryAttributes(IDictionary<string, string> query)
         {

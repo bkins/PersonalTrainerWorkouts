@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Avails.D_Flat.Exceptions;
-using Avails.D_Flat.Extensions;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Data.Interfaces;
 using PersonalTrainerWorkouts.Models;
@@ -356,6 +354,11 @@ namespace PersonalTrainerWorkouts.Data
             return Database.AddJustOneClient(client);
         }
 
+        public void AddNewClientWithChildren(Client client)
+        {
+            Database.AddJustOneClientWithChildren(client);
+        }
+        
         public int AddNewTypeOfExercise(TypeOfExercise typeOfExercise)
         {
             //BENDO: Refactor...ugly!

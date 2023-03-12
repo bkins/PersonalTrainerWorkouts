@@ -27,10 +27,8 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-
-            handler?.Invoke(this
-                          , new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this
+                                  , new PropertyChangedEventArgs(propertyName));
         }
 
         protected void SetValue<T>(ref T                     backingField

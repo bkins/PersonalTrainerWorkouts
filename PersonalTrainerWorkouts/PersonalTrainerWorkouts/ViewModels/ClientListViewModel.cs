@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Avails.Xamarin.Logger;
-using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Services;
 using Xamarin.Essentials;
@@ -32,7 +32,7 @@ namespace PersonalTrainerWorkouts.ViewModels
         {
             ObservableClients = new ObservableCollection<Client>(MergedClientsAndContacts.Instance.CachedClients);
 
-            Clients = ObservableClients;
+            Clients = ObservableClients.ToList();
         }
         
         public (string item, bool success) Delete(int index)
@@ -42,14 +42,14 @@ namespace PersonalTrainerWorkouts.ViewModels
                 return (string.Empty, false);
             }
 
-            //Get the workout to be deleted
+            //Get the client to be deleted
             var itemToDelete = ObservableClients[index];
             var name         = itemToDelete.DisplayName;
 
-            //Remove the workout from the source list
+            //Remove the client from the source list
             ObservableClients.RemoveAt(index);
 
-            //Delete the Workout from the database
+            //Delete the client from the database
             var numberAffected = App.Database.DeleteClient(ref itemToDelete);
 
             ObservableClients = new ObservableCollection<Client>(DataAccessLayer.GetClients());
@@ -72,17 +72,17 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         public ObservableCollection<Client> SearchClients(string filterText)
         {
-            
             return SearchByClientName(filterText);
         }
 
         public async void SyncContacts()
         {
-            var contacts = await GetAllContactsFromPhone().ConfigureAwait(false);
-
+            var contacts           = await GetAllContactsFromPhone().ConfigureAwait(false);
+            var enumeratedContacts = contacts.ToList();
+            
             foreach (var client in Clients)
             {
-                var clientContactInfo = contacts.FirstOrDefault(contact => contact.Id == client.ContactId);
+                var clientContactInfo = enumeratedContacts.FirstOrDefault(contact => contact.Id == client.ContactId);
                 
                 //Setting of the values from Contacts to Client.Contact is in the setter of Client.Contact
                 client.Contact = clientContactInfo;  
@@ -112,7 +112,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 var newClient = new Client(contact);
                 
                 DataAccessLayer.AddNewClient(newClient);
-                MergedClientsAndContacts.Instance.UpdateAll(true);
+                MergedClientsAndContacts.Instance.ForceUpdateClients();
                 
                 LoadData();
             }
@@ -122,7 +122,7 @@ namespace PersonalTrainerWorkouts.ViewModels
 
                 return false;
             }
-
+            
             return true;
         }
     }

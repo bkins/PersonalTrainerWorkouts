@@ -18,7 +18,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 SetValue(ref _name
                        , value);
 
-                OnPropertyChanged(nameof(Name));
+                OnPropertyChanged();
             }
         }
 
@@ -32,7 +32,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 SetValue(ref _description
                        , value);
 
-                OnPropertyChanged(nameof(Description));
+                OnPropertyChanged();
             }
         }
 
@@ -46,7 +46,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 SetValue(ref _difficulty
                        , value);
 
-                OnPropertyChanged(nameof(Difficulty));
+                OnPropertyChanged();
             }
         }
 

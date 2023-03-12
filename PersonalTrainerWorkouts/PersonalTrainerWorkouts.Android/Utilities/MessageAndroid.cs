@@ -5,15 +5,41 @@ using System.Threading.Tasks;
 using Avails.Xamarin.Interfaces;
 using PersonalTrainerWorkouts.Droid.Utilities;
 using NLog;
-using Logger = NLog.Logger;
 using LogManager = NLog.LogManager;
 
 [assembly: Xamarin.Forms.Dependency(typeof(MessageAndroid))]
-[assembly: Xamarin.Forms.Dependency(typeof(NLog.ILogger))]
+[assembly: Xamarin.Forms.Dependency(typeof(ILogger))]
 namespace PersonalTrainerWorkouts.Droid.Utilities
 {
     public class MessageAndroid : IMessage, ILogger
     {
+        public string Name { get; }
+
+        public LogFactory Factory { get; }
+
+        public bool IsTraceEnabled { get; }
+
+        public bool IsDebugEnabled { get; }
+
+        public bool IsInfoEnabled { get; }
+
+        public bool IsWarnEnabled { get; }
+
+        public bool IsErrorEnabled { get; }
+
+        public bool IsFatalEnabled { get; }
+        
+        public MessageAndroid ()
+        {
+            IsDebugEnabled = true;
+            IsInfoEnabled  = true;
+            IsWarnEnabled  = true;
+            IsErrorEnabled = true;
+            IsFatalEnabled = true;
+            IsTraceEnabled = true;
+            Name           = string.Empty;
+            Factory        = new LogFactory();
+        }
         public void LongAlert(string message)
         {
             Toast.MakeText(Application.Context, message, ToastLength.Long)
@@ -32,8 +58,8 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
                        , string    message
                        , Exception ex)
         {
-            Logger catLog = LogManager.GetCurrentClassLogger();
-            catLog.SetProperty("Tag", "~~~~~~~~MyApp~~~~~~~~");
+            var catLog = LogManager.GetCurrentClassLogger();
+            catLog.WithProperty("Tag", "~~~~~~~~MyApp~~~~~~~~");
             if (ex is null)
             {
                 catLog.Info(message);
@@ -399,10 +425,6 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         {
             throw new NotImplementedException();
         }
-
-        public string Name { get; }
-
-        public LogFactory Factory { get; }
 
         public event EventHandler<EventArgs> LoggerReconfigured;
 
@@ -2278,16 +2300,5 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public bool IsTraceEnabled { get; }
-
-        public bool IsDebugEnabled { get; }
-
-        public bool IsInfoEnabled { get; }
-
-        public bool IsWarnEnabled { get; }
-
-        public bool IsErrorEnabled { get; }
-
-        public bool IsFatalEnabled { get; }
     }
 }

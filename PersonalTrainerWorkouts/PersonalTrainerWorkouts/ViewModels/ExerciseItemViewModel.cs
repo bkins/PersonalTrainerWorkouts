@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using ApplicationExceptions;
 using Avails.D_Flat.Exceptions;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;

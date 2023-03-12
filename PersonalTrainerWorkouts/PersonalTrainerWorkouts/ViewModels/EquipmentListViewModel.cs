@@ -8,8 +8,6 @@ namespace PersonalTrainerWorkouts.ViewModels
         public IEnumerable<Equipment> ListOfAllExerciseEquipment => DataAccessLayer.GetAllEquipment();
         public Equipment              SelectedEquipment          { get; set; }
 
-        public EquipmentListViewModel() { }
-
         public void SaveExerciseEquipment(int exerciseId)
         {
             if (SelectedEquipment == null)

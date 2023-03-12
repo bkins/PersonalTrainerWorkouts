@@ -24,32 +24,14 @@ namespace PersonalTrainerWorkouts.Views.Behaviors
             {
                 case "DbFunctions":
 
-                    App.Current.MainPage.DisplayAlert("Waring!"
+                    Application.Current.MainPage.DisplayAlert("Waring!"
                                                     , "Use these features at your own risk"
                                                     , "OK");
                     break;
                 
                 case "Item1":
 
-                    App.Current.MainPage.DisplayAlert("Information", "Accordion Item1 Expanded", "Ok");
-
-                    break;
-
-                case "Item2":
-
-                    App.Current.MainPage.DisplayAlert("Information", "Accordion Item2 Expanded", "Ok");
-
-                    break;
-
-                case "Item3":
-
-                    App.Current.MainPage.DisplayAlert("Information", "Accordion Item3 Expanded", "Ok");
-
-                    break;
-
-                case "Item4":
-
-                    App.Current.MainPage.DisplayAlert("Information", "Accordion Item4 Expanded", "Ok");
+                    Application.Current.MainPage.DisplayAlert("Information", $"Accordion {item.ClassId} Expanded", "Ok");
 
                     break;
             }

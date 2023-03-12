@@ -2,8 +2,8 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
              xmlns:xForms="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.SessionListPage"
              Title="Sessions">
 
@@ -29,7 +29,7 @@
         <ResourceDictionary>
             <DataTemplate x:Name="ItemTemplate"
                           x:Key="ItemTemplate">
-                <Grid x:Name="grid">
+                <Grid x:Name="grid" x:DataType="models:Session">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />

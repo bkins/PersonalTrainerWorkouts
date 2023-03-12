@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Windows.Web.AtomPub;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 

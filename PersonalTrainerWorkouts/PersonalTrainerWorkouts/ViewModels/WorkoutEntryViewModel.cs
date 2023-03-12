@@ -1,5 +1,4 @@
-﻿using ApplicationExceptions;
-using Avails.D_Flat.Exceptions;
+﻿using Avails.D_Flat.Exceptions;
 using Avails.D_Flat.Extensions;
 using PersonalTrainerWorkouts.Models;
 

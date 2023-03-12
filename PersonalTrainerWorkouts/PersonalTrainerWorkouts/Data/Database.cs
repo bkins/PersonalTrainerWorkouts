@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data;
 using System.IO;
 using System.Linq;
-using System.Transactions;
 using InvalidOperationException = System.InvalidOperationException;
 
 using Avails.Xamarin.Logger;
@@ -463,9 +461,6 @@ namespace PersonalTrainerWorkouts.Data
         {
             try
             {
-                var allWorkoutExercises = _database.GetAllWithChildren<LinkedWorkoutsToExercises>()
-                                                   .Where(field => field.WorkoutId == workoutId);
-
                 var linkedWorkoutExercises = _database.GetAllWithChildren<LinkedWorkoutsToExercises>()
                                                       .Where(field => field.WorkoutId == workoutId);
 
@@ -494,8 +489,7 @@ namespace PersonalTrainerWorkouts.Data
             {
                 var allWorkoutExercises = _database.GetAllWithChildren<WorkoutExercise>();
 
-                var workoutExercises = _database.GetAllWithChildren<WorkoutExercise>()
-                                                .Where(item => item.WorkoutId == workoutId);
+                var workoutExercises = allWorkoutExercises.Where(item => item.WorkoutId == workoutId);
                 /*
                 //BENDO:  Build a complete Workout by following the example in ThingsToRemember: SetJournalsEntriesWithMoods(journal);
                 //Get all entities that are associated with this (workoutId) journal
@@ -957,7 +951,7 @@ namespace PersonalTrainerWorkouts.Data
             //Is this a new workout?
             if (workout.Id == 0)
             {
-                var insertedId = _database.Insert(workout);
+                _database.Insert(workout);
 
                 return;
             }
@@ -1051,6 +1045,11 @@ namespace PersonalTrainerWorkouts.Data
             : 0;
         }
 
+        public void AddJustOneClientWithChildren(Client client)
+        {
+            _database.InsertWithChildren(client);
+        }
+        
         public void AddExercise(Exercise exercise)
         {
             _database.InsertWithChildren(exercise);

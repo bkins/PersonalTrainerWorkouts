@@ -2,9 +2,8 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:PersonalTrainerWorkouts.Views;assembly=PersonalTrainerWorkouts"
              xmlns:xForms="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
-             xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.ClientListPage"
              Title="Clients">
 
@@ -31,7 +30,8 @@
             <DataTemplate x:Name="ItemTemplate"
                           x:Key="ItemTemplate" >
                 
-                <Grid x:Name="grid" ColumnDefinitions="*,*">
+                <Grid x:Name="grid" ColumnDefinitions="*,*" 
+                      x:DataType="models:Client">
                     
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
@@ -78,8 +78,7 @@
         <Entry x:Name="Filter" 
                Placeholder="Search Clients (try d=1 or d>5)"
                IsVisible="False"
-               TextChanged="Filter_OnTextChanged">
-        </Entry>
+               TextChanged="Filter_OnTextChanged" />
 
         <xForms:SfListView x:Name="ListView"
                            VerticalOptions="StartAndExpand"

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using ApplicationExceptions;
 using Avails.D_Flat.Exceptions;
 using Xunit.Abstractions;
 using PersonalTrainerWorkouts.Data;
@@ -230,12 +229,12 @@ namespace Tests
 
             // 3. Create the new Opposing Muscle Group and add it to the database
             //Database.AddMuscleGroups(new MuscleGroup{Name = "Opposing Muscle Group"});
-            MuscleGroup opposingMuscleGroup = Database.GetMuscleGroups().First(field => field.Name == "Opposing Muscle Group");
+            var opposingMuscleGroup = Database.GetMuscleGroups().First(field => field.Name == "Opposing Muscle Group");
             
             // 4. Insert the relationship between the Muscle Group and Opposing Muscle Group in the OpposingMuscleGroup table
             //Database.AddOpposingMuscleGroup(muscleGroupId, opposingMuscleGroup.Id);
 
-            var testMuscleGroup         = Database.GetMuscleGroups();
+            var testMuscleGroup = Database.GetMuscleGroups();
             //var newOpposingMuscleGroups = Database.GetOpposingMuscleGroupByMuscleGroup(muscleGroupId);
 
             // 5. SaveWorkoutsToExercise that newly created relationship in the object and the database.
@@ -304,12 +303,12 @@ namespace Tests
 
             // 3. Create the new Opposing Muscle Group and add it to the database
             //Database.AddMuscleGroups(new MuscleGroup{Name = "Opposing Muscle Group"});
-            MuscleGroup opposingMuscleGroup = Database.GetMuscleGroups().First(field => field.Name == "Opposing Muscle Group");
+            var opposingMuscleGroup = Database.GetMuscleGroups().First(field => field.Name == "Opposing Muscle Group");
             
             // 4. Insert the relationship between the Muscle Group and Opposing Muscle Group in the OpposingMuscleGroup table
             //Database.AddOpposingMuscleGroup(muscleGroupId, opposingMuscleGroup.Id);
 
-            var testMuscleGroup         = Database.GetMuscleGroups();
+            var testMuscleGroup = Database.GetMuscleGroups();
             //var newOpposingMuscleGroups = Database.GetOpposingMuscleGroupByMuscleGroup(muscleGroupId);
 
             // 5. SaveWorkoutsToExercise that newly created relationship in the object and the database.

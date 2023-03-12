@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,7 +7,6 @@ using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.ViewModels;
 using Syncfusion.ListView.XForms;
-using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using SwipeEndedEventArgs = Syncfusion.ListView.XForms.SwipeEndedEventArgs;
@@ -16,7 +14,7 @@ using SwipeEndedEventArgs = Syncfusion.ListView.XForms.SwipeEndedEventArgs;
 namespace PersonalTrainerWorkouts.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ClientListPage : ContentPage
+    public partial class ClientListPage
     {
         public int                 SwipedItem { get; set; }
         public ClientListViewModel ViewModel  { get; set; }
@@ -29,18 +27,48 @@ namespace PersonalTrainerWorkouts.Views
         protected override void OnAppearing()
         {
             //ViewModel.SyncContacts();
-            ViewModel.LoadData();
+            try
+            {
+                ViewModel.LoadData();
+                var loadedClients = new StringBuilder();
+                foreach (var client in ViewModel.ObservableClients)
+                {
+                    var name   = client.DisplayName;
+                    var number = client.MainNumber;
+
+                    loadedClients.AppendLine($"{name} {number}");
+                }
+                
+                Logger.WriteLine(loadedClients.ToString(), Category.Information);
+                
+                ListView.ItemsSource = ViewModel.ObservableClients;
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine("Problem loading client/contact data", Category.Error, e);
+            }
             
-            ListView.ItemsSource = ViewModel.ObservableClients;
         }
         
         private async void AddToolbarItem_OnClicked(object    sender
                                                   , EventArgs e)
         {
-            var clientAdded = await ViewModel.AddNewClient()
-                                             .ConfigureAwait(false);
+            // var progress = new Progress<string>(message => { BackUpDbButton.Text = message; });
+            //
+            // success = await Task.Run(() => BackupDbWork(progress))
+            //                     .ConfigureAwait(false);
+            //
             
-            if ( ! clientAdded)
+            try
+            {
+                var clientAddedTask          = ViewModel.AddNewClient();
+                clientAddedTask.Wait();
+                var clientAdded = clientAddedTask.Result;
+                //
+                // var clientAdded = Task.Run(() => ViewModel.AddNewClient(progress)).ConfigureAwait(false);
+                // await clientAdded;
+            }
+            catch (Exception exception)
             {
                 Device.BeginInvokeOnMainThread(async () =>
                 {
@@ -53,10 +81,23 @@ namespace PersonalTrainerWorkouts.Views
                 return;
             }
 
-            Device.BeginInvokeOnMainThread( () =>
-            {
-                ListView.ItemsSource = ViewModel.ObservableClients;
-            });
+            var d = 0;
+
+            // var clientAdded = await ViewModel.AddNewClient()
+            //                                  .ConfigureAwait(false);
+            //
+            // if ( ! clientAdded)
+            // {
+            //     Device.BeginInvokeOnMainThread(async () =>
+            //     {
+            //         await DisplayAlert("Did you pick a contact?"
+            //                          , "Either you did not pick a contact or something went horribly wrong. If you did not select a contact than ignore this. Otherwise, see Logs for more details."
+            //                          , "OK")
+            //         .ConfigureAwait(false);
+            //     });
+            //     
+            //     return;
+            // }
 
         }
 

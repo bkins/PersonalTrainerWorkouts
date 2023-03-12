@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using Avails.D_Flat;
 using Avails.Xamarin.Logger;
-using NLog.LayoutRenderers;
 using static Avails.Xamarin.Configuration;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Forms;
@@ -12,7 +10,7 @@ using Syncfusion.XForms.Buttons;
 namespace PersonalTrainerWorkouts.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class MessageLog : ContentPage
+    public partial class MessageLog
     {
         private MessageLogViewModel PageData      { get; set; }
         private SearchOptions       SearchOptions { get; set; }

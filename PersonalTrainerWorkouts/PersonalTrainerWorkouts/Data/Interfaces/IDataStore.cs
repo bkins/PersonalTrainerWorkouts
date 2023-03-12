@@ -13,9 +13,10 @@ namespace PersonalTrainerWorkouts.Data.Interfaces
         /// Will just add the workout passed in, not any children.
         /// </summary>
         /// <param name="workout"></param>
-        int AddJustOneWorkout(Workout workout);
+        int AddJustOneWorkout(Workout                           workout);
         int AddJustOneSession(Session                           session);
         int AddJustOneClient(Client                             client);
+        void AddJustOneClientWithChildren(Client                client);
         void AddExercise(Exercise                               exercise);
         int  AddJustOneExercise(Exercise                        exercise);
         void AddSynergist(Synergist                             synergist);

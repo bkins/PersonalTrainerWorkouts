@@ -12,9 +12,9 @@ namespace PersonalTrainerWorkouts.Views
                  , nameof(ExerciseId))]
     [QueryProperty(nameof(WorkoutId)
                  , nameof(WorkoutId))]
-    public partial class TypeOfExerciseEntryPage : ContentPage
+    public partial class TypeOfExerciseEntryPage
     {
-        private TypeOfExerciseViewModel ViewModel;
+        private TypeOfExerciseViewModel _viewModel;
 
         private string _workoutId = "0";
 
@@ -42,7 +42,7 @@ namespace PersonalTrainerWorkouts.Views
             try
             {
                 _exerciseId = exerciseId;
-                ViewModel   = new TypeOfExerciseViewModel(_exerciseId);
+                _viewModel   = new TypeOfExerciseViewModel(_exerciseId);
             }
             catch (Exception e)
             {
@@ -64,7 +64,7 @@ namespace PersonalTrainerWorkouts.Views
         {
             var nameEntry = (Entry)sender;
 
-            ViewModel.SaveTypeOfExercise(nameEntry.Text);
+            _viewModel.SaveTypeOfExercise(nameEntry.Text);
 
             PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
                                           , nameof(ExerciseAddEditPage.WorkoutId)

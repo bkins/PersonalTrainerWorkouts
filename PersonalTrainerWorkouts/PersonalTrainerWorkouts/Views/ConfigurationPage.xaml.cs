@@ -6,14 +6,13 @@ using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Essentials;
-using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 
 
 namespace PersonalTrainerWorkouts.Views
 {
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class ConfigurationPage : ContentPage
+    public partial class ConfigurationPage
     {
         private ConfigurationViewModel  ViewModel        { get; }
         private BackupDatabaseViewModel BackupViewModel  { get; set; }

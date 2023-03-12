@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using PersonalTrainerWorkouts.Models;
 
 namespace PersonalTrainerWorkouts.ViewModels
@@ -8,8 +7,6 @@ namespace PersonalTrainerWorkouts.ViewModels
     {
         public IEnumerable<MuscleGroup> ListOfAllExerciseMuscleGroup => DataAccessLayer.GetAllMuscleGroups();
         public MuscleGroup              SelectedMuscleGroup          { get; set; }
-
-        public MuscleGroupListViewModel() { }
 
         public void SaveExerciseMuscleGroup(int exerciseId)
         {

@@ -1,6 +1,4 @@
 ﻿using System.Linq;
-using Avails.D_Flat.Exceptions;
-using Avails.D_Flat.Extensions;
 using PersonalTrainerWorkouts.Models;
 
 namespace PersonalTrainerWorkouts.ViewModels

@@ -18,7 +18,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 SetValue(ref _exercise
                        , value);
 
-                OnPropertyChanged(nameof(Exercise));
+                OnPropertyChanged();
             }
         }
 
@@ -30,7 +30,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 SetValue(ref _workoutExercise
                        , value);
 
-                OnPropertyChanged(nameof(WorkoutExercise));
+                OnPropertyChanged();
             }
         }
 
@@ -42,7 +42,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 SetValue(ref _workout
                        , value);
 
-                OnPropertyChanged(nameof(Workout));
+                OnPropertyChanged();
             }
         }
 
@@ -54,7 +54,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 SetValue(ref _exerciseForDebugging
                        , value);
 
-                OnPropertyChanged(nameof(ExerciseForDebugging));
+                OnPropertyChanged();
             }
         }
 

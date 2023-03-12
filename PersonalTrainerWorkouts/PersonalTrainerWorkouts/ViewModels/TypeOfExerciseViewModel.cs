@@ -1,6 +1,5 @@
 ﻿using Avails.D_Flat.Extensions;
 using Avails.Xamarin.Logger;
-using NLog.Fluent;
 using PersonalTrainerWorkouts.Models;
 
 namespace PersonalTrainerWorkouts.ViewModels

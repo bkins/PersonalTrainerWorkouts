@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 using Avails.D_Flat.Extensions;
 using Avails.Xamarin;
@@ -19,7 +16,7 @@ namespace PersonalTrainerWorkouts.Views
     [QueryProperty(nameof(SessionId)
                  , nameof(SessionId))]
     [XamlCompilation(XamlCompilationOptions.Compile)]
-    public partial class SessionEditPage : ContentPage, IQueryAttributable
+    public partial class SessionEditPage : IQueryAttributable
     {
         public string           SessionId { get; set; }
         public SessionViewModel ViewModel { get; set; }
@@ -48,7 +45,7 @@ namespace PersonalTrainerWorkouts.Views
 
         private void LoadData()
         {
-            var clickHereToSelectFormat = $"Click here to select a {0}";
+            const string clickHereToSelectFormat = "Click here to select a {0}";
 
             SessionDateEntry.Text     = ViewModel.NewSession.Date.ToShortDateTimeString();
             SessionNotesRtEditor.Text = ViewModel.NewSession.Note;

@@ -4,6 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:rte="clr-namespace:Syncfusion.XForms.RichTextEditor;assembly=Syncfusion.SfRichTextEditor.XForms"
              xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
              xmlns:xForms="http://schemas.syncfusion.com/xamarin"
              xmlns:xForms1="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
              x:Class="PersonalTrainerWorkouts.Views.SessionEditPage"
@@ -35,7 +36,7 @@
                           x:Key="ItemTemplate">
                 <Grid x:Name="WorkoutsTemplateGrid"
                       RowDefinitions = "*"
-                      ColumnDefinitions="*, Auto">
+                      ColumnDefinitions="*, Auto" x:DataType="models:Session">
                     
                     <Label Text="{Binding Name}"
                            Grid.Column="0"

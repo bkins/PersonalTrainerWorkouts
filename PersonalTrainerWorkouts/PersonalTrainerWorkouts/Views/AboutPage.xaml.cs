@@ -1,13 +1,11 @@
 ﻿using System;
-using Google.Apis.Drive.v3.Data;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Essentials;
-using Xamarin.Forms;
 
 namespace PersonalTrainerWorkouts.Views
 {
     //BENDO: [Before release of version 1.0] Remove xamarin stuff and put in info about this app
-    public partial class AboutPage : ContentPage
+    public partial class AboutPage
     {
         public AboutViewModel AboutViewModel { get; set; }
         public AboutPage()

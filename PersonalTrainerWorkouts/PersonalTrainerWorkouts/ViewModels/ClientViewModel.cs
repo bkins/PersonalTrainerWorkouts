@@ -52,7 +52,14 @@ namespace PersonalTrainerWorkouts.ViewModels
         {
             if (Client.ClientId == 0)
             {
-                Id = DataAccessLayer.AddNewClient(Client);
+                // Id = DataAccessLayer.AddNewClientWithChildren(Client);
+                DataAccessLayer.AddNewClientWithChildren(Client);
+
+                var newClient = DataAccessLayer.GetClients()
+                                               .First(client => client.DisplayName == Client.DisplayName
+                                                             && client.MainNumber == Client.MainNumber);
+
+                Id = newClient.ClientId;
             }
             else
             {
