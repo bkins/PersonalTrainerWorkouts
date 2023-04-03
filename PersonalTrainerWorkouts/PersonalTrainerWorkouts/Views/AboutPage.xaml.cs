@@ -1,5 +1,7 @@
-﻿using System;
-using PersonalTrainerWorkouts.ViewModels;
+﻿using PersonalTrainerWorkouts.ViewModels;
+
+using System;
+
 using Xamarin.Essentials;
 
 namespace PersonalTrainerWorkouts.Views
@@ -14,11 +16,11 @@ namespace PersonalTrainerWorkouts.Views
 
             AboutViewModel = new AboutViewModel();
 
-            TablesLabel.Text = string.Join(Environment.NewLine
+            TablesLabel.Text = string.Join($"{Environment.NewLine}{Environment.NewLine}"
                                          , AboutViewModel.TableList);
         }
 
-        async void OnButtonClicked(object    sender
+        async void OnButtonClicked(object sender
                                  , EventArgs e)
         {
             // Launch the specified URL in the system browser.
@@ -26,10 +28,10 @@ namespace PersonalTrainerWorkouts.Views
         }
 
         private void
-        TableHeaderLabel_OnTapped(object    sender
+        TableHeaderLabel_OnTapped(object sender
                                 , EventArgs e)
         {
-            TableLabelScrollView.IsVisible = ! TableLabelScrollView.IsVisible;
+            TableLabelScrollView.IsVisible = !TableLabelScrollView.IsVisible;
         }
     }
 }

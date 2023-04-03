@@ -1,19 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using Avails.D_Flat.Exceptions;
+﻿using Avails.D_Flat.Exceptions;
 using Avails.Xamarin.Logger;
+
 using PersonalTrainerWorkouts.Data.Interfaces;
 using PersonalTrainerWorkouts.Models;
+using PersonalTrainerWorkouts.Models.AppContacts;
 using PersonalTrainerWorkouts.Models.Intermediates;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace PersonalTrainerWorkouts.Data
 {
     public partial class DataAccess
     {
-        private IDataStore Database         { get; set; }
-        public  string     DatabaseLocation => GetDatabaseLocation();
-        public  string     DatabaseFileName => GetDatabaseFileName();
+        private IDataStore Database { get; set; }
+        public string DatabaseLocation => GetDatabaseLocation();
+        public string DatabaseFileName => GetDatabaseFileName();
 
         public DataAccess(IDataStore database)
         {
@@ -49,12 +52,12 @@ namespace PersonalTrainerWorkouts.Data
         {
             Database.DropContactTables();
         }
-        
+
         public string GetDatabasePath()
         {
             return Database.DbPath();
         }
-       
+
         //NotImplemented: This method is INCOMPLETE.
         //This method is to complete the Gets in the (Database class) that take the param of 'forceRefresh' that return a Workout
         //BENDO: Instead of having this method rebuild all object within the Workout, have a 'Refresh" method for each object that can be in
@@ -81,12 +84,12 @@ namespace PersonalTrainerWorkouts.Data
             }
 
             bool exerciseHasAnySynergists = workout.Exercises.Any(field => field.Synergists.Any());
-            bool exerciseHasAnyEquipment  = workout.Exercises.Any(field => ! field.Equipment.Any());
-            bool exerciseHasAnyTypes      = workout.Exercises.Any(field => ! field.TypesOfExercise.Any());
+            bool exerciseHasAnyEquipment = workout.Exercises.Any(field => !field.Equipment.Any());
+            bool exerciseHasAnyTypes = workout.Exercises.Any(field => !field.TypesOfExercise.Any());
 
-            if (! exerciseHasAnySynergists
-             && ! exerciseHasAnyEquipment
-             && ! exerciseHasAnyTypes)
+            if (!exerciseHasAnySynergists
+             && !exerciseHasAnyEquipment
+             && !exerciseHasAnyTypes)
             {
                 //Exercise has no children, nothing left to refresh
                 return workout;
@@ -109,9 +112,9 @@ namespace PersonalTrainerWorkouts.Data
 
     public partial class DataAccess //Helper methods
     {
-        public static bool ValidateForNoDuplicatedNames(string                 potentialDuplicatedName
+        public static bool ValidateForNoDuplicatedNames(string potentialDuplicatedName
                                                       , IEnumerable<BaseModel> listOfModels
-                                                      , string                 type)
+                                                      , string type)
         {
             var duplicatedWorkout = listOfModels.FirstOrDefault(field => field.Name == potentialDuplicatedName);
 
@@ -119,10 +122,10 @@ namespace PersonalTrainerWorkouts.Data
             {
                 throw new AttemptToAddDuplicateEntityException(type
                                                              , duplicatedWorkout
-                                                             , nameof(potentialDuplicatedName));    
+                                                             , nameof(potentialDuplicatedName));
             }
             return true;
-            
+
         }
 
         public List<string> GetTables()
@@ -130,7 +133,7 @@ namespace PersonalTrainerWorkouts.Data
             return Database.GetTables();
         }
     }
-    
+
     public partial class DataAccess //Deletes
     {
         public void DeleteExerciseType(int exerciseId
@@ -176,7 +179,7 @@ namespace PersonalTrainerWorkouts.Data
                 Logger.WriteLine($"Something unexpected happened: {exception.Message}", Category.Error, exception);
             }
         }
-        
+
         public int DeleteSession(Session session)
         {
             try
@@ -190,7 +193,7 @@ namespace PersonalTrainerWorkouts.Data
                 return 0;
             }
         }
-        
+
         public int DeleteClient(Client client)
         {
             try
@@ -205,7 +208,7 @@ namespace PersonalTrainerWorkouts.Data
             }
         }
     }
-    
+
     public partial class DataAccess //Updates
     {
         public void UpdateWorkout(Workout workout)
@@ -217,12 +220,12 @@ namespace PersonalTrainerWorkouts.Data
         {
             Database.UpdateSession(session);
         }
-        
+
         public void UpdateClient(Client client)
         {
             Database.UpdateClient(client);
         }
-        
+
         public void UpdateExercise(Exercise exercise)
         {
             Database.UpdateExercise(exercise);
@@ -238,7 +241,7 @@ namespace PersonalTrainerWorkouts.Data
             Database.UpdateLinkedWorkoutsToExercises(linkedWorkoutsToExercises);
         }
     }
-    
+
     public partial class DataAccess //Gets
     {
         public Workout GetWorkout(int workoutId)
@@ -255,12 +258,12 @@ namespace PersonalTrainerWorkouts.Data
         {
             return Database.GetSessions() ?? new List<Session>();
         }
-        
+
         public IEnumerable<Client> GetClients()
         {
             return Database.GetClients() ?? new List<Client>();
         }
-        
+
         public IEnumerable<WorkoutExercise> GetWorkoutExercises(int workoutId)
         {
             return Database.GetWorkoutExercisesByWorkout(workoutId)
@@ -330,7 +333,7 @@ namespace PersonalTrainerWorkouts.Data
         }
 
     }
-    
+
     public partial class DataAccess //Adds
     {
         public int AddNewWorkout(Workout workout)
@@ -358,21 +361,21 @@ namespace PersonalTrainerWorkouts.Data
         {
             Database.AddJustOneClientWithChildren(client);
         }
-        
+
         public int AddNewTypeOfExercise(TypeOfExercise typeOfExercise)
         {
             //BENDO: Refactor...ugly!
             var allTypesOfExercises = Database.GetTypes();
-            var typesOfExercises    = allTypesOfExercises.ToList();
+            var typesOfExercises = allTypesOfExercises.ToList();
 
-            if (! typesOfExercises.Any())
+            if (!typesOfExercises.Any())
                 return Database.AddJustOneTypeOfExercise(typeOfExercise);
 
             var validNewType = ValidateForNoDuplicatedNames(typeOfExercise.Name
                                                           , typesOfExercises
                                                           , nameof(TypeOfExercise));
 
-            if ( ! validNewType)
+            if (!validNewType)
             {
                 return -1;
             }
@@ -394,10 +397,11 @@ namespace PersonalTrainerWorkouts.Data
             }
 
             Database.AddExerciseType(new ExerciseType
-                                     {
-                                         ExerciseId = exerciseId
-                                       , TypeId     = typeOfExerciseId
-                                     });
+            {
+                ExerciseId = exerciseId
+                                       ,
+                TypeId = typeOfExerciseId
+            });
         }
 
         public void AddExerciseEquipment(int exerciseId
@@ -413,10 +417,11 @@ namespace PersonalTrainerWorkouts.Data
             }
 
             Database.AddExerciseEquipment(new ExerciseEquipment
-                                          {
-                                              ExerciseId  = exerciseId
-                                            , EquipmentId = equipmentId
-                                          });
+            {
+                ExerciseId = exerciseId
+                                            ,
+                EquipmentId = equipmentId
+            });
         }
 
         public int AddNewExercise(Exercise exercise)
@@ -467,11 +472,13 @@ namespace PersonalTrainerWorkouts.Data
             }
 
             Database.AddSynergist(new Synergist
-                                  {
-                                      ExerciseId            = newSynergist.ExerciseId
-                                    , MuscleGroupId         = newSynergist.MuscleGroupId
-                                    , OpposingMuscleGroupId = newSynergist.OpposingMuscleGroupId
-                                  });
+            {
+                ExerciseId = newSynergist.ExerciseId
+                                    ,
+                MuscleGroupId = newSynergist.MuscleGroupId
+                                    ,
+                OpposingMuscleGroupId = newSynergist.OpposingMuscleGroupId
+            });
         }
 
         public int AddWorkoutExercise(WorkoutExercise workoutExercise)
@@ -486,6 +493,13 @@ namespace PersonalTrainerWorkouts.Data
             var newLinkedWorkoutsToExercises = Database.AddLinkedWorkoutExercise(linkedWorkoutsToExercises);
 
             return newLinkedWorkoutsToExercises;
+        }
+
+        public int AddNewContact(AppContact contact)
+        {
+            var newContactId = Database.AddContact(contact);
+
+            return newContactId;
         }
     }
 }

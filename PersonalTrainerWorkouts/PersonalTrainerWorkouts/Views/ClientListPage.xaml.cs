@@ -1,14 +1,18 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Avails.Xamarin;
+﻿using Avails.Xamarin;
 using Avails.Xamarin.Logger;
+
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.ViewModels;
+
 using Syncfusion.ListView.XForms;
+
+using System;
+using System.Linq;
+using System.Text;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+
 using SwipeEndedEventArgs = Syncfusion.ListView.XForms.SwipeEndedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views
@@ -16,41 +20,59 @@ namespace PersonalTrainerWorkouts.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ClientListPage
     {
-        public int                 SwipedItem { get; set; }
-        public ClientListViewModel ViewModel  { get; set; }
+        public int SwipedItem { get; set; }
+        public ClientListViewModel clientListVm { get; set; }
 
         public ClientListPage()
         {
             InitializeComponent();
-            ViewModel = new ClientListViewModel();
+            clientListVm = new ClientListViewModel();
         }
+
         protected override void OnAppearing()
         {
             //ViewModel.SyncContacts();
             try
             {
-                ViewModel.LoadData();
+                //clientListVm.LoadData();
+
+                //if (clientListVm.ObservableClients is null)
+                //{
+                //    Logger.WriteLineToToastForced("No clients found.", Category.Warning);
+                //    return;
+                //}
+
                 var loadedClients = new StringBuilder();
-                foreach (var client in ViewModel.ObservableClients)
+                foreach (var client in clientListVm.ObservableClients)
                 {
-                    var name   = client.DisplayName;
-                    var number = client.MainNumber;
+                    var name = string.Empty;
+
+                    if (client.DisplayName is null)
+                    {
+                        name = "DisplayName is null";
+                    }
+                    else
+                    {
+                        name = client.DisplayName;
+                    }
+                    //var name   = client?.DisplayName ?? "DisplayName is null";
+                    var number = client?.MainNumber ?? "MainNumber is null";
 
                     loadedClients.AppendLine($"{name} {number}");
                 }
-                
+
                 Logger.WriteLine(loadedClients.ToString(), Category.Information);
-                
-                ListView.ItemsSource = ViewModel.ObservableClients;
+
+                ListView.ItemsSource = clientListVm.ObservableClients;
             }
             catch (Exception e)
             {
                 Logger.WriteLine("Problem loading client/contact data", Category.Error, e);
             }
-            
+
         }
-        
-        private async void AddToolbarItem_OnClicked(object    sender
+
+        private async void AddToolbarItem_OnClicked(object sender
                                                   , EventArgs e)
         {
             // var progress = new Progress<string>(message => { BackUpDbButton.Text = message; });
@@ -58,13 +80,13 @@ namespace PersonalTrainerWorkouts.Views
             // success = await Task.Run(() => BackupDbWork(progress))
             //                     .ConfigureAwait(false);
             //
-            
+
             try
             {
-                var clientAddedTask          = ViewModel.AddNewClient();
-                clientAddedTask.Wait();
-                var clientAdded = clientAddedTask.Result;
-                //
+                var clientAdded = clientListVm.AddNewClient();
+
+                Logger.WriteLineToToastForced($"Client was added: {clientAdded}", Category.Information);
+
                 // var clientAdded = Task.Run(() => ViewModel.AddNewClient(progress)).ConfigureAwait(false);
                 // await clientAdded;
             }
@@ -77,7 +99,7 @@ namespace PersonalTrainerWorkouts.Views
                                      , "OK")
                     .ConfigureAwait(false);
                 });
-                
+
                 return;
             }
 
@@ -101,22 +123,22 @@ namespace PersonalTrainerWorkouts.Views
 
         }
 
-        private void SearchToolbarItem_OnClicked(object    sender
+        private void SearchToolbarItem_OnClicked(object sender
                                                , EventArgs e)
         {
-            Filter.IsVisible = ! Filter.IsVisible;
+            Filter.IsVisible = !Filter.IsVisible;
         }
 
-        private void Filter_OnTextChanged(object               sender
+        private void Filter_OnTextChanged(object sender
                                         , TextChangedEventArgs e)
         {
-            ListView.ItemsSource = ViewModel.SearchClients(Filter.Text);
+            ListView.ItemsSource = clientListVm.SearchClients(Filter.Text);
         }
 
-        private void OnSelectionChanged(object                        sender
+        private void OnSelectionChanged(object sender
                                       , ItemSelectionChangedEventArgs e)
         {
-            var item = (Client) e.AddedItems?.FirstOrDefault();
+            var item = (Client)e.AddedItems?.FirstOrDefault();
 
             if (item == null) { return; }
 
@@ -127,40 +149,46 @@ namespace PersonalTrainerWorkouts.Views
                                     , item.ClientId.ToString());
         }
 
-        private void ListView_SwipeEnded(object              sender
+        private void ListView_SwipeEnded(object sender
                                        , SwipeEndedEventArgs e)
         {
             SwipedItem = e.ItemIndex;
         }
 
-        private void LeftImage_BindingContextChanged(object    sender
+        private void LeftImage_BindingContextChanged(object sender
                                                    , EventArgs e)
         {
             if (sender is Image deleteImage)
             {
                 (deleteImage.Parent as View)?.GestureRecognizers.Add(new TapGestureRecognizer
-                                                                     {
-                                                                         Command = new Command(Delete)
-                                                                     });
+                {
+                    Command = new Command(Delete)
+                });
             }
         }
-        
+
         private void Delete()
         {
-            var itemDeleted = ViewModel.Delete(SwipedItem);
+            var itemDeleted = clientListVm.Delete(SwipedItem);
 
-            if ( ! itemDeleted.success)
+            if (!itemDeleted.success)
             {
                 Logger.WriteLine("Client could not be deleted.  Please try again."
                                , Category.Warning);
             }
 
-            ListView.ItemsSource = ViewModel.ObservableClients;
+            ListView.ItemsSource = clientListVm.ObservableClients;
 
             Logger.WriteLine($"Deleted Client: {itemDeleted.item} deleted."
                            , Category.Information);
 
             ListView.ResetSwipe();
+        }
+
+        private void SyncContactsToolbarItem_OnClicked(object sender
+                                                     , EventArgs e)
+        {
+            clientListVm.SyncContactsToAppDatabase();
         }
     }
 }

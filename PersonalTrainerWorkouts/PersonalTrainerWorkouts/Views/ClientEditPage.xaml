@@ -3,6 +3,8 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             xmlns:sfAccordion="clr-namespace:Syncfusion.XForms.Accordion;assembly=Syncfusion.Expander.XForms"
+             xmlns:sfRte="clr-namespace:Syncfusion.XForms.RichTextEditor;assembly=Syncfusion.SfRichTextEditor.XForms"
              x:Class="PersonalTrainerWorkouts.Views.ClientEditPage"
              x:DataType="viewModels:ClientViewModel"
              >
@@ -46,41 +48,131 @@
     
     <ContentPage.Content>
         <StackLayout>
-            <Grid ColumnDefinitions="Auto,*"
-                  RowDefinitions="Auto,Auto">
-                
-                <Label x:Name="ClientNameLabel"
-                       Grid.Column="0"
-                       Grid.Row="0"
-                       VerticalTextAlignment="Center"
-                       FontSize="Small"
-                       Text="Name:" 
-                       />
-                
-                <Entry x:Name="ClientNameEntry"
-                       Grid.Column="1"
-                       Grid.Row="0"
-                       FontSize="Small"
-                       Placeholder="Client fullname"
-                       Text="{Binding Client.DisplayName}"/>
-                
-                <Label x:Name="ClientMainPhoneLabel"
-                       Grid.Column="0"
-                       Grid.Row="1"
-                       VerticalTextAlignment="Center"
-                       FontSize="Small"
-                       Text="Main Number:" 
-                />
-                
-                <Entry x:Name="ClientMainPhoneEntry"
-                       Grid.Column="1"
-                       Grid.Row="1"
-                       FontSize="Small"
-                       Placeholder="Main Number"
-                       Text="{Binding Client.MainNumber}"/>
+            <sfAccordion:SfAccordion DynamicSizeMode="Content" 
+                                    ExpandMode="MultipleOrNone">
 
-            </Grid>
-            
+                <sfAccordion:SfAccordion.Items>
+
+                    <sfAccordion:AccordionItem> <!--Client Info-->
+                        
+                        <sfAccordion:AccordionItem.Header>
+
+                            <Grid>
+                                <Label Text="Client Info"
+                                       TextColor="{DynamicResource PrimaryBackColor}"
+                                       FontAttributes="Bold"
+                                       HeightRequest="25"
+                                       VerticalTextAlignment="Center" />
+                            </Grid>
+
+                        </sfAccordion:AccordionItem.Header>
+                        
+                        <sfAccordion:AccordionItem.Content>
+
+                            <Grid ColumnDefinitions="Auto,*"
+                                  RowDefinitions="Auto,Auto,Auto,Auto">
+                
+                                <Label x:Name="ClientNameLabel"
+                                       Grid.Column="0"
+                                       Grid.Row="0"
+                                       VerticalTextAlignment="Center"
+                                       FontSize="Small"
+                                       FontAttributes="Bold"
+                                       Text="Name:" 
+                                />
+                
+                                <Entry x:Name="ClientNameEntry"
+                                       Grid.Column="1"
+                                       Grid.Row="0"
+                                       FontSize="Small"
+                                       Placeholder="Client fullname"
+                                       Text="{Binding Client.DisplayName}"/>
+                
+                                <Label x:Name="ClientMainPhoneLabel"
+                                       Grid.Column="0"
+                                       Grid.Row="1"
+                                       VerticalTextAlignment="Center"
+                                       FontSize="Small"
+                                       FontAttributes="Bold"
+                                       Text="Main Number:" 
+                                />
+                
+                                <Entry x:Name="ClientMainPhoneEntry"
+                                       Grid.Column="1"
+                                       Grid.Row="1"
+                                       FontSize="Small"
+                                       Placeholder="Main Number"
+                                       Text="{Binding Client.MainNumber}"
+                                       />
+                                <Label x:Name="ClientNotesLabel"
+                                       Grid.Column="0"
+                                       Grid.Row="2"
+                                       Grid.ColumnSpan="2"
+                                       FontSize="Small"
+                                       FontAttributes="Bold"
+                                       Text="Client Notes:"
+                                       />
+                                <sfRte:SfRichTextEditor x:Name="ClientNoteRte"
+                                                        Grid.Column="0"
+                                                        Grid.Row="3"
+                                                        Grid.ColumnSpan="2"
+                                                        Text="{Binding Client.Notes}"
+                                                        />
+                            </Grid>
+
+                        </sfAccordion:AccordionItem.Content>
+
+                    </sfAccordion:AccordionItem> <!--Client Info-->
+                    
+                    <sfAccordion:AccordionItem> <!--Goals-->
+                        
+                        <sfAccordion:AccordionItem.Header>
+
+                            <Grid>
+                                <Label Text="Goals"
+                                       TextColor="{DynamicResource PrimaryBackColor}"
+                                       FontAttributes="Bold"
+                                       HeightRequest="25"
+                                       VerticalTextAlignment="Center" />
+                            </Grid>
+
+                        </sfAccordion:AccordionItem.Header>
+
+                        <sfAccordion:AccordionItem.Content>
+
+                            <Grid ColumnDefinitions="Auto,*">
+                
+                                <Label x:Name="GoalNameLabel"
+                                       Grid.Column="0"
+                                       Grid.Row="0"
+                                       VerticalTextAlignment="Center"
+                                       FontSize="Small"
+                                       Text="Hardcoded goal"
+                                />
+                                <Label x:Name="StatusImage"
+                                       Grid.Column="1"
+                                       FontSize="Small"
+                                       Text="X"
+                                       />
+
+                                <!--TODO: Display goal status indicators (image):
+                                    * SuccessFullyCompleted (Green Check mark)
+                                    * Failed                (Red X)
+                                    * MissedTarget          (Yellow <find an appropriate image>)
+                                    * InProgress            (Green <find an appropriate image>
+                                    * NotStarted            (Grey hyphen)
+                                    
+                                    Add tap gesture to each of the above that shows the status image meaning
+                                -->
+
+                            </Grid>
+
+                        </sfAccordion:AccordionItem.Content>
+
+                    </sfAccordion:AccordionItem> <!--Goals-->
+                </sfAccordion:SfAccordion.Items>
+            </sfAccordion:SfAccordion>
+
             <!-- <Grid x:Name="RteGrid" -->
             <!--       ColumnDefinitions="*" -->
             <!--       VerticalOptions="FillAndExpand" -->

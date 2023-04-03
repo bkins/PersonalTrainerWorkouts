@@ -60,6 +60,10 @@
     <!-- Add an item to the toolbar -->
     <ContentPage.ToolbarItems>
         
+        <ToolbarItem x:Name="SyncContactsToolbarItem"
+                     Text="Sync Contacts"
+                     IconImageSource="sync_black_48.png"
+                     Clicked="SyncContactsToolbarItem_OnClicked"/>
         <ToolbarItem x:Name="AddToolbarItem" 
                      Text="Add"
                      IconImageSource="baseline_add_circle_outline_black_48.png"

@@ -46,7 +46,7 @@
 
                 <syncfusion:SfAccordion.Items>
 
-                    <syncfusion:AccordionItem>
+                    <syncfusion:AccordionItem> <!--Workout-->
 
                         <syncfusion:AccordionItem.Header>
 
@@ -139,7 +139,7 @@
 
                         </syncfusion:AccordionItem.Content>
 
-                    </syncfusion:AccordionItem>
+                    </syncfusion:AccordionItem> <!--Workout-->
 
                     <syncfusion:AccordionItem>
 
@@ -274,7 +274,7 @@
                             </Grid>
                         </syncfusion:AccordionItem.Content>
 
-                    </syncfusion:AccordionItem>
+                    </syncfusion:AccordionItem> <!--Exercises-->
 
                 </syncfusion:SfAccordion.Items>
 

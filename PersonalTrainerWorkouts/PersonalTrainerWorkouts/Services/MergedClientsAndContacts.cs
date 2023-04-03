@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
+
 using Avails.Xamarin.Logger;
+
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
+
 using Xamarin.Essentials;
 
 namespace PersonalTrainerWorkouts.Services;
@@ -12,16 +16,19 @@ public sealed class MergedClientsAndContacts
     private static MergedClientsAndContacts _instance;
     public static MergedClientsAndContacts Instance
     {
-        get => _instance ??= new ();
+        get => _instance ??= new();
     }
-    
+
     private IEnumerable<Contact> CachedContacts { get; set; }
-    public IEnumerable<Client>  CachedClients  { get; set; }
+    private List<Contact> _contacts;
+
+    public IEnumerable<Client> CachedClients { get; set; }
+    public List<Client> ClientsList { get; set; }
 
     private DataAccess _dataAccess;
     public DataAccess DataAccessLayer
     {
-        get => _dataAccess ??= new (App.Database);
+        get => _dataAccess ??= new(App.Database);
         set => _dataAccess = value;
     }
 
@@ -32,8 +39,8 @@ public sealed class MergedClientsAndContacts
         get => _contactsDataAccess ??= new(App.ContactDataStore);
         set => _contactsDataAccess = value;
     }
-    
-    public MergedClientsAndContacts ()
+
+    public MergedClientsAndContacts()
     {
         UpdateAll(forceRefresh: true);
     }
@@ -55,7 +62,7 @@ public sealed class MergedClientsAndContacts
         }
 
         if (CachedClients is null) return;
-        
+
         foreach (var client in CachedClients)
         {
             var contact = GetContact(client);
@@ -68,8 +75,8 @@ public sealed class MergedClientsAndContacts
 
     private Contact GetContact(Client client)
     {
-        var contact = CachedContacts.FirstOrDefault(contact => contact.Id
-                                                            == client.ContactId);
+        var contact = _contacts.FirstOrDefault(contact => contact.Id
+                                                       == client.ContactId);
         if (contact is null)
         {
             ForceUpdateContacts();
@@ -79,13 +86,13 @@ public sealed class MergedClientsAndContacts
             return contact;
         }
 
-        contact = CachedContacts.FirstOrDefault(cachedContact => cachedContact.Id
-                                                              == client.ContactId);
+        contact = _contacts.FirstOrDefault(cachedContact => cachedContact.Id
+                                                         == client.ContactId);
         if (contact is null)
         {
             Logger.WriteLine($"A Client (ClientId = {client.ClientId}) has a ContactId ({client.ContactId}) that cannot be found. Was a Contact removed from the phone?", Category.Warning);
         }
-        
+
         return contact;
     }
 
@@ -97,36 +104,43 @@ public sealed class MergedClientsAndContacts
         client.PhoneNumbers
               .FirstOrDefault()
               !.IsMain = true;
-            
+
         DataAccessLayer.UpdateClient(client);
     }
 
     private static bool NoNeedToUpdateIsMain(Client client)
     {
-        return client is null 
-            || ! client.PhoneNumbers.Any()
+        return client is null
+            || !client.PhoneNumbers.Any()
             || client.PhoneNumbers.Any(numbers => numbers.IsMain);
     }
 
     public void ForceUpdateContacts()
     {
         CachedContacts = ContactsDataAccessLayer.GetContacts();
+        _contacts = CachedContacts.ToList();
+
         UpdateAll(forceRefresh: false);
     }
 
-    public void ForceUpdateClients()
+    public async Task ForceUpdateClients()
     {
-        CachedClients = DataAccessLayer.GetClients();
-        
-        if (CachedClients is null) return;
-        
-        foreach (var client in CachedClients)
+        CachedClients = await Task.Run(() => DataAccessLayer.GetClients());
+        ClientsList = CachedClients.ToList();
+
+        if (ClientsList is null) return;
+
+        foreach (var client in ClientsList)
         {
             var contact = GetContact(client);
 
             client.Contact = contact;
 
+            var hasAnyIsMain = client.PhoneNumbers.Any(phone => phone.IsMain);
+
             DefaultPhoneNumbersIsMain(client);
+
+            hasAnyIsMain = client.PhoneNumbers.Any(phone => phone.IsMain);
         }
         //UpdateAll(forceRefresh: false);
     }

@@ -1,17 +1,20 @@
 ﻿using System;
 using System.Linq;
 using System.Threading.Tasks;
+
 using Avails.Xamarin.Logger;
+
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Services;
+
 using Xamarin.Essentials;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
     public class ClientViewModel : BaseViewModel
     {
-        private int    Id     { get; set; }
-        public  Client Client { get; set; }
+        private int Id { get; set; }
+        public Client Client { get; set; }
 
         public ClientViewModel()
         {
@@ -37,7 +40,7 @@ namespace PersonalTrainerWorkouts.ViewModels
             {
                 var contact = await Contacts.PickContactAsync();
 
-                if(contact == null)
+                if (contact == null)
                     return;
 
                 Client.Contact = contact;
@@ -47,7 +50,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 Logger.WriteLine("Something went wrong while retrieving Contact.", Category.Error, ex);
             }
         }
-        
+
         public void Save()
         {
             if (Client.ClientId == 0)

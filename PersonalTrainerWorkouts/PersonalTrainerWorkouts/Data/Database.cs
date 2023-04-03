@@ -1,19 +1,23 @@
-﻿using System;
+﻿using Avails.Xamarin.Logger;
+
+using PersonalTrainerWorkouts.Data.Interfaces;
+using PersonalTrainerWorkouts.Models;
+using PersonalTrainerWorkouts.Models.AppContacts;
+using PersonalTrainerWorkouts.Models.Intermediates;
+
+using SQLite;
+
+using SQLiteNetExtensions.Extensions;
+
+using Syncfusion.DataSource.Extensions;
+
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+
 using InvalidOperationException = System.InvalidOperationException;
-
-using Avails.Xamarin.Logger;
-using PersonalTrainerWorkouts.Data.Interfaces;
-using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Models.Intermediates;
-
-using SQLite;
-using SQLiteNetExtensions.Extensions;
-using Syncfusion.DataSource.Extensions;
-
 using SequenceContainsNoElementsException = Avails.D_Flat.Exceptions.SequenceContainsNoElementsException;
 using TypeOfExercise = PersonalTrainerWorkouts.Models.TypeOfExercise;
 
@@ -24,12 +28,12 @@ namespace PersonalTrainerWorkouts.Data
         //BENDO:  Implement the use of forceRefresh in methods that use it
         //(and add to methods that it makes sense to add it to)
         private readonly SQLiteConnection _database;
-        private readonly string           _path;
+        private readonly string _path;
 
         public Database(string dbPath)
         {
             _database = new SQLiteConnection(dbPath);
-            _path     = dbPath;
+            _path = dbPath;
 
             var databaseVersion = GetDatabaseVersion();
 
@@ -59,13 +63,8 @@ namespace PersonalTrainerWorkouts.Data
                 _database.CreateTable<Synergist>();
                 _database.CreateTable<OpposingMuscleGroup>();
 
-                _database.CreateTable<Client>();
-                _database.CreateTable<Session>();
-                _database.CreateTable<Address>();
-                _database.CreateTable<PhoneNumber>();
-                _database.CreateTable<Measurable>();
-                _database.CreateTable<Goal>();
-                
+                CreateContactTables();
+
                 _database.CreateTable<ExerciseType>();
                 _database.CreateTable<ExerciseEquipment>();
                 _database.CreateTable<ExerciseMuscleGroup>();
@@ -90,12 +89,7 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<Synergist>();
             _database.DropTable<OpposingMuscleGroup>();
 
-            _database.DropTable<Client>();
-            _database.DropTable<Session>();
-            _database.DropTable<Address>();
-            _database.DropTable<PhoneNumber>();
-            _database.DropTable<Measurable>();
-            _database.DropTable<Goal>();
+            DropContactTables();
 
             _database.DropTable<ExerciseType>();
             _database.DropTable<ExerciseEquipment>();
@@ -111,6 +105,12 @@ namespace PersonalTrainerWorkouts.Data
             _database.CreateTable<Address>();
             _database.CreateTable<PhoneNumber>();
             _database.CreateTable<Measurable>();
+            _database.CreateTable<UnitOfMeasurement>();
+            _database.CreateTable<Goal>();
+
+            _database.CreateTable<AppContact>();
+            _database.CreateTable<AppContactPhone>();
+            _database.CreateTable<AppContactEmail>();
         }
 
         public void DropContactTables()
@@ -120,6 +120,14 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<Address>();
             _database.DropTable<PhoneNumber>();
             _database.DropTable<Measurable>();
+            _database.DropTable<UnitOfMeasurement>();
+            _database.DropTable<Goal>();
+
+            _database.DropTable<AppContact>();
+            _database.DropTable<AppContactPhone>();
+            _database.DropTable<AppContactEmail>();
+
+
         }
 
         public string GetFilePath()
@@ -153,8 +161,8 @@ namespace PersonalTrainerWorkouts.Data
             ////        + " INSERT INTO _Variables(id)VALUES(1); ");
         }
 
-        
-        
+
+
         public List<string> GetTables()
         {
             // const string query = "SELECT name FROM sqlite_master " +
@@ -162,7 +170,7 @@ namespace PersonalTrainerWorkouts.Data
             //                      "ORDER BY 1";
 
             var result = new List<string>();
-            
+
             try
             {
                 result = _database.GetAllWithChildren<Table>().ToList().ConvertAll(table => table.ToString());
@@ -176,16 +184,16 @@ namespace PersonalTrainerWorkouts.Data
         }
 
         private static string GetNoElementsExceptionMessage(string nameOfIdVariable
-                                                          , int    valueOfVariable)
+                                                          , int valueOfVariable)
         {
             return $"Record(s) could not be found. No records with {nameOfIdVariable} of {valueOfVariable}.";
         }
 
         private static string GetNoElementsExceptionMessage(string nameOfFirstIdVariable
                                                           , string nameOfSecondIdVariable
-                                                          , int    valueOfFirstIdVariable
-                                                          , int    valueOfSecondIdVariable
-                                                          , char   pluralChar = '\0')
+                                                          , int valueOfFirstIdVariable
+                                                          , int valueOfSecondIdVariable
+                                                          , char pluralChar = '\0')
         {
             return $"Record{pluralChar} could not be found. No record{pluralChar} with {nameOfFirstIdVariable} of {valueOfFirstIdVariable} and {nameOfSecondIdVariable} of {valueOfSecondIdVariable}.";
         }
@@ -236,7 +244,7 @@ namespace PersonalTrainerWorkouts.Data
         {
             try
             {
-                var workout             = _database.GetWithChildren<Workout>(workoutId);
+                var workout = _database.GetWithChildren<Workout>(workoutId);
                 var workoutsToExercises = GetAllLinkedWorkoutsToExercises(workoutId);
 
                 foreach (var workoutsToExercise in workoutsToExercises)
@@ -588,18 +596,18 @@ namespace PersonalTrainerWorkouts.Data
         {
             return _database.GetAllWithChildren<Synergist>();
         }
-        
+
         public IEnumerable<ExerciseMuscleGroup> GetExerciseMuscleGroups(bool forceRefresh = false)
         {
             var exerciseMuscleGroups = _database.GetAllWithChildren<ExerciseMuscleGroup>();
 
-            if ( ! exerciseMuscleGroups.Any())
+            if (!exerciseMuscleGroups.Any())
             {
                 throw new SequenceContainsNoElementsException($"No {nameof(ExerciseMuscleGroup)} founds.  No Records in the table '{nameof(ExerciseMuscleGroup)}'."
                                                             , nameof(ExerciseMuscleGroup)
                                                             , null);
             }
-            
+
             return exerciseMuscleGroups;
         }
 
@@ -747,8 +755,8 @@ namespace PersonalTrainerWorkouts.Data
                             .ToList();
         }
     }
-    
-    public partial  class Database //Deletes
+
+    public partial class Database //Deletes
     {
         public int DeleteClient(ref Client client)
         {
@@ -757,7 +765,7 @@ namespace PersonalTrainerWorkouts.Data
 
             return numberDeleted;
         }
-        
+
         /// <summary>
         /// Generic Delete TODO: Need to test to ensure it works as intended.
         /// </summary>
@@ -771,8 +779,8 @@ namespace PersonalTrainerWorkouts.Data
 
             return numberDeleted;
         }
-        
-        
+
+
         public int DeleteWorkout(ref Workout workout)
         {
             var numberDeleted = _database.Delete(workout);
@@ -867,22 +875,22 @@ namespace PersonalTrainerWorkouts.Data
         {
             return _database.Update(address);
         }
-        
+
         public int UpdatePhoneNumber(PhoneNumber phoneNumber)
         {
             return _database.Update(phoneNumber);
         }
-        
+
         public void UpdateSession(Session session)
         {
             _database.UpdateWithChildren(session);
         }
-        
+
         public void UpdateClient(Client client)
         {
             _database.UpdateWithChildren(client);
         }
-        
+
         public void UpdateWorkout(Workout workout)
         {
             _database.UpdateWithChildren(workout);
@@ -892,7 +900,7 @@ namespace PersonalTrainerWorkouts.Data
         {
             _database.UpdateWithChildren(session);
         }
-        
+
         public void UpdateWorkoutExercises(WorkoutExercise workoutExercise)
         {
             _database.UpdateWithChildren(workoutExercise);
@@ -928,7 +936,7 @@ namespace PersonalTrainerWorkouts.Data
         {
             return _database.Insert(equipment);
         }
-        
+
         public int SaveExercise(Exercise exercise)
         {
             if (exercise.Id == 0)
@@ -968,7 +976,7 @@ namespace PersonalTrainerWorkouts.Data
             _database.Update(workout);
         }
     }
-    
+
     public partial class Database //Adds
     {
         public int AddAddress(Address address) => throw new NotImplementedException();
@@ -976,6 +984,13 @@ namespace PersonalTrainerWorkouts.Data
         public int AddPhoneNumber(PhoneNumber phoneNumber) => throw new NotImplementedException();
 
         public int AddMeasurable(Measurable measurable) => throw new NotImplementedException();
+
+        public int AddContact(AppContact contact)
+        {
+            _database.InsertWithChildren(contact);
+
+            return contact.Id;
+        }
 
         public void AddWorkoutWithExercises(Workout workout)
         {
@@ -1049,7 +1064,7 @@ namespace PersonalTrainerWorkouts.Data
         {
             _database.InsertWithChildren(client);
         }
-        
+
         public void AddExercise(Exercise exercise)
         {
             _database.InsertWithChildren(exercise);
@@ -1114,32 +1129,32 @@ namespace PersonalTrainerWorkouts.Data
             0;
         }
 
-        public void AddClient(Client            client
-                            , List<Address>     addresses    = null
+        public void AddClient(Client client
+                            , List<Address> addresses = null
                             , List<PhoneNumber> phoneNumbers = null)
         {
             _database.Insert(client);
 
-            client.Addresses    = addresses ?? new List<Address>();
+            client.Addresses = addresses ?? new List<Address>();
             client.PhoneNumbers = phoneNumbers ?? new List<PhoneNumber>();
 
             UpdateClient(client);
         }
 
-        public void AddSession(Session       session
-                             , Client        client
+        public void AddSession(Session session
+                             , Client client
                              , List<Workout> workouts = null)
         {
             _database.Insert(session);
 
-            session.Client   = client;
+            session.Client = client;
             session.Workouts = workouts ?? new List<Workout>();
 
             UpdateSession(session);
         }
 
         public void AddPhoneNumber(PhoneNumber phoneNumber
-                                 , Client      client)
+                                 , Client client)
         {
             _database.Insert(phoneNumber);
 
@@ -1149,7 +1164,7 @@ namespace PersonalTrainerWorkouts.Data
         }
 
         public void AddAddress(Address address
-                             , Client  client)
+                             , Client client)
         {
             _database.Insert(address);
 
