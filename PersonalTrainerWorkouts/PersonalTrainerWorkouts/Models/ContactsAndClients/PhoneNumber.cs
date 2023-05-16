@@ -1,7 +1,7 @@
 ﻿using SQLite;
 using SQLiteNetExtensions.Attributes;
 
-namespace PersonalTrainerWorkouts.Models
+namespace PersonalTrainerWorkouts.Models.ContactsAndClients
 {
     [Table("PhoneNumber")]
     public class PhoneNumber
@@ -18,5 +18,9 @@ namespace PersonalTrainerWorkouts.Models
         [ForeignKey(typeof(Client))]
         public int ClientId { get; set; }
 
+        public override string ToString()
+        {
+            return Number;
+        }
     }
 }

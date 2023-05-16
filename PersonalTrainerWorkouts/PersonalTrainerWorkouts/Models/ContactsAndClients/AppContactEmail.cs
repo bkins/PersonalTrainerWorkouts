@@ -1,6 +1,7 @@
 ﻿using SQLite;
+using SQLiteNetExtensions.Attributes;
 
-namespace PersonalTrainerWorkouts.Models.AppContacts
+namespace PersonalTrainerWorkouts.Models.ContactsAndClients
 {
     [Table("ContactEmails")]
     public class AppContactEmail
@@ -10,5 +11,7 @@ namespace PersonalTrainerWorkouts.Models.AppContacts
 
         public string EmailAddress { get; set; }
 
+        [ForeignKey(typeof(AppContact))]
+        public int AppContactId { get; set; }
     }
 }

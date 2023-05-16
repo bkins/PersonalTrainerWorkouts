@@ -4,6 +4,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:xForms="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
              xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
+             xmlns:contactsAndClients="clr-namespace:PersonalTrainerWorkouts.Models.ContactsAndClients;assembly=PersonalTrainerWorkouts"
+             xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.ClientListPage"
              Title="Clients">
 
@@ -30,21 +32,21 @@
             <DataTemplate x:Name="ItemTemplate"
                           x:Key="ItemTemplate" >
                 
-                <Grid x:Name="grid" ColumnDefinitions="*,*" 
-                      x:DataType="models:Client">
+                <Grid x:Name="grid"
+                      x:DataType="contactsAndClients:Client" 
+                      ColumnDefinitions="*,*" 
+                      RowDefinitions="*">
                     
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    
-                    <Label Text="{Binding DisplayName}"
+                    <Label x:Name="ClientNameLabel"
+                           Text="{Binding Name}"
                            Grid.Column="0"
                            Grid.Row="0"
                            FontSize="Medium"
                            FontAttributes="Bold"
                            Margin="10, 0, 0, 0" />
                     
-                    <Label Text="{Binding MainNumber}"
+                    <Label x:Name="MainNumberLabel" 
+                           Text="{Binding MainNumber}"
                            Grid.Column="1"
                            Grid.Row="0"
                            FontSize="Medium"
@@ -91,29 +93,90 @@
                            AllowSwiping="True"
                            SelectionChanged="OnSelectionChanged"
                            SwipeEnded="ListView_SwipeEnded"
+                           SwipeStarted="ListView_OnSwipeStarted"
                            ItemTemplate="{StaticResource ItemTemplate}">
             
             <xForms:SfListView.LeftSwipeTemplate >
                 <DataTemplate x:Name="LeftSwipeTemplate">
-                    <Grid VerticalOptions="CenterAndExpand">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid Grid.Column="0"
-                              BackgroundColor="#DC595F"
+
+                    <!--Hold all controls in the left swipe-->
+                    <Grid x:Name="LeftDrawerGrid"
+                          VerticalOptions="CenterAndExpand"
+                          ColumnDefinitions="*"
+                          >
+
+                        <!--First item in the left swipe-->
+                        <Grid x:Name="DrawerCompartmentSendTextGrid"
+                              Grid.Column="0"
                               HorizontalOptions="Fill"
                               VerticalOptions="Fill">
-                            <Grid VerticalOptions="CenterAndExpand"
+
+                            <Grid x:Name="ImageSendTextGrid"
+                                  VerticalOptions="CenterAndExpand"
                                   HorizontalOptions="Center">
-                                <Image x:Name="DeleteImage"
+
+                                <Image x:Name="SendTextImage"
                                        Grid.Column="0"
-                                       Grid.Row="0"
                                        BackgroundColor="Transparent"
                                        HeightRequest="35"
                                        WidthRequest="35"
-                                       BindingContextChanged="LeftImage_BindingContextChanged"
+                                       BindingContextChanged="SendTextImage_OnBindingContextChanged"
+                                       Source="chat_black_48.png">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="SendTextImage_OnTapped" />
+                                    </Image.GestureRecognizers>
 
-                                       Source="Delete.png" />
+                                </Image>
+                            </Grid>
+                        </Grid>
+
+                        <!--Second item in the left swipe-->
+                        <Grid x:Name="DrawerCompartmentDialNumberGrid"
+                              Grid.Column="1"
+                              HorizontalOptions="Fill"
+                              VerticalOptions="Fill">
+
+                            <Grid x:Name="ImageDialNumberGrid"
+                                  VerticalOptions="CenterAndExpand"
+                                  HorizontalOptions="Center">
+
+                                <Image x:Name="DialNumberImage"
+                                       Grid.Column="0"
+                                       BackgroundColor="Transparent"
+                                       HeightRequest="35"
+                                       WidthRequest="35"
+                                       BindingContextChanged="DialNumberImage_OnBindingContextChanged"
+                                       Source="call_black_48.png">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="DialNumberImage_OnTapped" />
+                                    </Image.GestureRecognizers>
+
+                                </Image>
+                            </Grid>
+                        </Grid>
+
+                        <!--Third item in the left swipe-->
+                        <Grid x:Name="DrawerCompartmentDeleteGrid"
+                              Grid.Column="2"
+                              HorizontalOptions="Fill"
+                              VerticalOptions="Fill">
+
+                            <Grid x:Name="ImageDeleteGrid"
+                                  VerticalOptions="CenterAndExpand"
+                                  HorizontalOptions="Center">
+
+                                <Image x:Name="DeleteImage"
+                                       Grid.Column="0"
+                                       BackgroundColor="Transparent"
+                                       HeightRequest="35"
+                                       WidthRequest="35"
+                                       BindingContextChanged="DeleteImage_OnBindingContextChanged"
+                                       Source="delete_black_48.png">
+                                    <Image.GestureRecognizers>
+                                        <TapGestureRecognizer Tapped="DeleteImage_OnTapped" />
+                                    </Image.GestureRecognizers>
+
+                                </Image>
                             </Grid>
                         </Grid>
                     </Grid>
@@ -121,5 +184,6 @@
                 </DataTemplate>
             </xForms:SfListView.LeftSwipeTemplate>
         </xForms:SfListView>
+        
     </StackLayout>
 </ContentPage>

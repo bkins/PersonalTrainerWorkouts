@@ -1,11 +1,12 @@
-﻿using System;
-using System.Linq;
-using System.Threading.Tasks;
-
-using Avails.Xamarin.Logger;
+﻿using Avails.Xamarin.Logger;
 
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Services;
+using PersonalTrainerWorkouts.Models.ContactsAndClients;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 using Xamarin.Essentials;
 
@@ -16,24 +17,37 @@ namespace PersonalTrainerWorkouts.ViewModels
         private int Id { get; set; }
         public Client Client { get; set; }
 
+        public bool ShowChangeNumberImage { get ; }
+
+        //public List<GoalViewModel> Goals { get; set; }
+
         public ClientViewModel()
         {
             Client = new Client();
         }
         public ClientViewModel(string clientId)
         {
-            Client = MergedClientsAndContacts.Instance
-                                             .CachedClients
-                                             .FirstOrDefault(client => client.ClientId.ToString() == clientId);
-            // Client.PhoneNumbers.Add(new PhoneNumber
-            //                         {
-            //                             Type   = "Cell"
-            //                           , Number = "(360) 790-8466"
-            //                           , IsMain = true
-            //                         });
-            Save();
+            Client = DataAccessLayer.GetClients()
+                                    .FirstOrDefault(client => client.Id.ToString() == clientId);
+
+            ContactsDataAccess.UpdateClientWithContactInfo(Client);
+
+            ShowChangeNumberImage = Client?.PhoneNumbers.Count > 1;
+
+            //Goals = new List<GoalViewModel>();
+            //var clientGoals = Client?.Goals;
+
+            //if (clientGoals == null) return;
+
+            //foreach (var clientGoal in clientGoals)
+            //{
+            //    Goals.Add(new GoalViewModel(clientGoal));
+            //}
         }
 
+        /// <summary>
+        /// Opens Contacts on device for user to choose a Contact to link to the Client
+        /// </summary>
         public async Task LinkContactToClient()
         {
             try
@@ -43,7 +57,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                 if (contact == null)
                     return;
 
-                Client.Contact = contact;
+                Client.AppContact = new AppContact(contact);
             }
             catch (Exception ex)
             {
@@ -53,31 +67,71 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         public void Save()
         {
-            if (Client.ClientId == 0)
-            {
-                // Id = DataAccessLayer.AddNewClientWithChildren(Client);
-                DataAccessLayer.AddNewClientWithChildren(Client);
+            if (Client.Id == 0)
+            {//Add new
 
+                Client.Contact = new Contact();
+                // DataAccessLayer.AddNewClientWithChildren(Client);
+                
+                DataAccessLayer.AddNewClient(Client);
+                
+                foreach (var phoneNumber in Client.PhoneNumbers)
+                {
+                    phoneNumber.ClientId = Client.Id;
+                    DataAccessLayer.AddNewPhone(phoneNumber);
+                }
+
+                Client.AppContact.ClientId = Client.Id;
+                
+                DataAccessLayer.AddNewContact(Client.AppContact);
+                
                 var newClient = DataAccessLayer.GetClients()
-                                               .First(client => client.DisplayName == Client.DisplayName
-                                                             && client.MainNumber == Client.MainNumber);
+                                               .First(client => client.Id == Client.Id);
 
-                Id = newClient.ClientId;
+                Id = newClient.Id;
             }
             else
-            {
+            {//Update existing
                 DataAccessLayer.UpdateClient(Client);
             }
         }
 
-        public int Delete()
+        public void Save(Goal goal)
         {
-            if (Id == 0)
+            if (goal.Id == 0)
             {
-                return 0;
+                DataAccessLayer.AddNewGoal(goal);
+                Client.Goals.Add(goal);
+                Save();
+
+                return;
             }
 
-            return DataAccessLayer.DeleteClient(Client);
+            DataAccessLayer.UpdateGoal(goal);
+        }
+
+        public int Delete()
+        {
+            return Id == 0
+                    ? 0
+                    : DataAccessLayer.DeleteClient(Client);
+        }
+
+        public void SetNewMainNumber(PhoneNumber newMainNumber)
+        {
+            var oldMainNumber = Client.PhoneNumbers.FirstOrDefault(number => number.IsMain);
+
+            if (oldMainNumber is not null) { oldMainNumber.IsMain = false; }
+
+            var mainNumberToUpdate = Client.PhoneNumbers.FirstOrDefault(number => number.Number == newMainNumber.Number);
+
+            if (mainNumberToUpdate is not null)
+            {
+                newMainNumber.IsMain = true;
+                Client.MainNumber    = newMainNumber.Number;
+            }
+            
+            Save();
         }
     }
 }

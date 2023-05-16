@@ -1,13 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Web;
-using Avails.D_Flat.Extensions;
+﻿using Avails.D_Flat.Extensions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
+
+using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.ViewModels;
+
 using Syncfusion.ListView.XForms;
+
+using System;
+using System.Collections.Generic;
+using System.Web;
+
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+
 using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;
 using SwipeEndedEventArgs = Syncfusion.ListView.XForms.SwipeEndedEventArgs;
 
@@ -18,9 +24,11 @@ namespace PersonalTrainerWorkouts.Views
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class SessionEditPage : IQueryAttributable
     {
-        public string           SessionId { get; set; }
+        public string SessionId { get; set; }
         public SessionViewModel ViewModel { get; set; }
-        
+
+        private Client SeletectedClient;
+
         public SessionEditPage()
         {
             InitializeComponent();
@@ -31,6 +39,11 @@ namespace PersonalTrainerWorkouts.Views
             try
             {
                 SessionId = HttpUtility.UrlDecode(query[nameof(SessionId)]);
+                // SessionId = query.TryGetValue(nameof(SessionId)
+                //                             , out var value)
+                //                     ? HttpUtility.UrlDecode(value)
+                //                     : "0";
+
                 ViewModel = new SessionViewModel(SessionId);
 
                 LoadData();
@@ -47,83 +60,84 @@ namespace PersonalTrainerWorkouts.Views
         {
             const string clickHereToSelectFormat = "Click here to select a {0}";
 
-            SessionDateEntry.Text     = ViewModel.NewSession.Date.ToShortDateTimeString();
+            SessionDateEntry.Text = ViewModel.NewSession.Date.ToShortDateTimeString();
             SessionNotesRtEditor.Text = ViewModel.NewSession.Note;
-            ClientPickerLabel.Text    = ViewModel.NewSession.Client?.DisplayName ?? string.Format(clickHereToSelectFormat, "Client");
-            
-            ClientPicker.ItemsSource  = ViewModel.ClientListViewModel.Clients;
+            ClientPickerLabel.Text = ViewModel.NewSession.Client?.DisplayName ?? string.Format(clickHereToSelectFormat, "Client");
+
+            ClientPicker.ItemsSource = ViewModel.ClientListViewModel.Clients;
         }
 
-        private void SaveButton_OnClicked(object    sender
+        private void SaveButton_OnClicked(object sender
                                         , EventArgs e)
         {
             ViewModel.NewSession.Date = DateTime.Parse(SessionDateEntry.Text);
             ViewModel.NewSession.Note = SessionNotesRtEditor.Text;
-            
-            ViewModel.SaveSession(ClientPickerLabel.Text);
-            
+
+            ViewModel.SaveSession();
+
             PageNavigation.NavigateBackwards();
         }
 
-        private void SelectClient_OnTapped(object    sender
+        private void SelectClient_OnTapped(object sender
                                                  , EventArgs e)
         {
             ClientPicker.IsVisible = true;
         }
 
-        private void ClientPicker_OnOkButtonClicked(object                    sender
+        private void ClientPicker_OnOkButtonClicked(object sender
                                                   , SelectionChangedEventArgs e)
         {
-            ClientPickerLabel.Text = ClientPicker.SelectedItem.ToString();
+            ViewModel.NewSession.Client = (Client)ClientPicker.SelectedItem;
+            ClientPickerLabel.Text = ViewModel.NewSession.Client.DisplayName;
             ClientPicker.IsVisible = false;
         }
 
-        private void ClientPicker_OnCancelButtonClicked(object                    sender
+        private void ClientPicker_OnCancelButtonClicked(object sender
                                                       , SelectionChangedEventArgs e)
         {
             ClientPicker.IsVisible = false;
         }
 
-        private void SelectWorkout_OnTapped(object    sender
+        private void SelectWorkout_OnTapped(object sender
                                           , EventArgs e)
         {
-            
+
         }
 
-        private void WorkoutsPicker_OnOkButtonClicked(object                    sender
+        private void WorkoutsPicker_OnOkButtonClicked(object sender
                                                     , SelectionChangedEventArgs e)
         {
-            
+
         }
 
-        private void WorkoutsPicker_OnCancelButtonClicked(object                    sender
+        private void WorkoutsPicker_OnCancelButtonClicked(object sender
                                                         , SelectionChangedEventArgs e)
         {
-            
+
         }
 
-        private void AddRemoveButton_OnClicked(object    sender
+        private void AddRemoveButton_OnClicked(object sender
                                              , EventArgs e)
         {
-            
+
         }
 
-        private void LeftImage_BindingContextChanged(object    sender
+        private void LeftImage_BindingContextChanged(object sender
                                                    , EventArgs e)
         {
-            
+
         }
 
-        private void OnSelectionChanged(object                        sender
+        private void OnSelectionChanged(object sender
                                       , ItemSelectionChangedEventArgs e)
         {
-            
+
         }
 
-        private void ListView_SwipeEnded(object              sender
+        private void ListView_SwipeEnded(object sender
                                        , SwipeEndedEventArgs e)
         {
-            
+
         }
     }
 }

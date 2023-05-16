@@ -1,26 +1,34 @@
-﻿using System.Linq;
-using PersonalTrainerWorkouts.Models;
+﻿using PersonalTrainerWorkouts.Models;
+
+using System.Linq;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
     public class SessionViewModel : BaseViewModel
     {
-        private int                 Id                                 { get; set; }
-        public  Session             NewSession                         { get; set; }
-        public  ClientListViewModel ClientListViewModel                { get; set; }
-        public  bool                ManageExerciseToolBarItemIsEnabled { get; set; }
+        private int Id { get; set; }
+        public Session NewSession { get; set; }
+        public ClientListViewModel ClientListViewModel { get; set; }
+        public bool ManageExerciseToolBarItemIsEnabled { get; set; }
 
         public SessionViewModel()
         {
-            NewSession          = new Session();
+            NewSession = new Session();
             ClientListViewModel = new ClientListViewModel();
         }
 
         public SessionViewModel(string sessionId)
         {
-            NewSession = DataAccessLayer.GetSessions()
-                                        .FirstOrDefault(session => session.Id
-                                                                          .ToString() == sessionId);
+            if (sessionId == "0")
+            {
+                NewSession = new Session();
+            }
+            else
+            {
+                var allSessions = DataAccessLayer.GetSessions();
+                NewSession = allSessions.FirstOrDefault(session => session.Id.ToString() == sessionId);
+
+            }
 
             ClientListViewModel = new ClientListViewModel();
         }
@@ -29,10 +37,16 @@ namespace PersonalTrainerWorkouts.ViewModels
         {
             NewSession.Client = DataAccessLayer.GetClients()
                                                .FirstOrDefault(client => client.DisplayName == clientName);
-            
+
+            SaveSession();
+        }
+
+        public void SaveSession()
+        {
             if (NewSession.Id == 0)
             {
-                Id = DataAccessLayer.AddNewSession(NewSession);
+                NewSession.ClientId = NewSession.Client.Id;
+                DataAccessLayer.AddNewSession(NewSession);
             }
             else
             {

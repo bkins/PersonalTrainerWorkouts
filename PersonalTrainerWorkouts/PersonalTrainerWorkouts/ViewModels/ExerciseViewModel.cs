@@ -17,6 +17,7 @@ namespace PersonalTrainerWorkouts.ViewModels
                                , int    reps)
         {
             WorkoutExerciseId = workoutExerciseId;
+            
             Exercise          = DataAccessLayer.GetExercise(exerciseId);
             Name              = Exercise.Name;
             Description       = Exercise.Description;

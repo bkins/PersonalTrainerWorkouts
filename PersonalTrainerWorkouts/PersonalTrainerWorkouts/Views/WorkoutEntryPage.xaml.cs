@@ -23,7 +23,7 @@ namespace PersonalTrainerWorkouts.Views
 
             //NameEntry.Focus();
 
-            DifficultyEditor.Text = string.Empty;
+            DifficultyEditor.Text = "0";
         }
 
         //https://docs.microsoft.com/en-us/xamarin/get-started/quickstarts/database?pivots=windows

@@ -3,6 +3,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:xForms="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:xBusyIndicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
              xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.SessionListPage"
              Title="Sessions">
@@ -29,7 +30,8 @@
         <ResourceDictionary>
             <DataTemplate x:Name="ItemTemplate"
                           x:Key="ItemTemplate">
-                <Grid x:Name="grid" x:DataType="models:Session">
+                <Grid x:Name="sessionsGrid" 
+                      x:DataType="models:Session">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
@@ -39,7 +41,7 @@
                            FontSize="Medium"
                            FontAttributes="Bold"
                            Margin="10, 0, 0, 0" />
-                    <Label Text="{Binding Client.Name}"
+                    <Label Text="{Binding Client.AppContact.DisplayName}"
                            Grid.Row="1"
                            FontSize="Medium"
                            FontAttributes="Italic"
@@ -113,5 +115,12 @@
                 </DataTemplate>
             </xForms:SfListView.LeftSwipeTemplate>
         </xForms:SfListView>
+        
+        <xBusyIndicator:SfBusyIndicator x:Name="BusyIndicator"
+                                        Title="Loading..."
+                                        AnimationType="Ball"
+                                        EnableAnimation="False"
+                                        IsVisible="False"
+                                        BackgroundColor="Transparent" />
     </StackLayout>
 </ContentPage>

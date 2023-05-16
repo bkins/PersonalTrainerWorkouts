@@ -29,7 +29,8 @@
         <ResourceDictionary>
             <DataTemplate x:Name="ItemTemplate"
                           x:Key="ItemTemplate">
-                <Grid x:Name="grid" x:DataType="models:Workout">
+                <Grid x:Name="grid" 
+                      x:DataType="models:Workout">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />

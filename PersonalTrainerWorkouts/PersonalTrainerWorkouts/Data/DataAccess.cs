@@ -3,7 +3,7 @@ using Avails.Xamarin.Logger;
 
 using PersonalTrainerWorkouts.Data.Interfaces;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Models.AppContacts;
+using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.Models.Intermediates;
 
 using System;
@@ -14,13 +14,15 @@ namespace PersonalTrainerWorkouts.Data
 {
     public partial class DataAccess
     {
-        private IDataStore Database { get; set; }
-        public string DatabaseLocation => GetDatabaseLocation();
-        public string DatabaseFileName => GetDatabaseFileName();
+        private IDataStore         Database          { get; set; }
+        private IContactsDataStore ContactsDataStore { get; set; }
+        public  string             DatabaseLocation  => GetDatabaseLocation();
+        public  string             DatabaseFileName  => GetDatabaseFileName();
 
-        public DataAccess(IDataStore database)
+        public DataAccess(IDataStore database, IContactsDataStore contactsDataStore)
         {
-            Database = database;
+            Database          = database;
+            ContactsDataStore = contactsDataStore;
         }
 
         private string GetDatabaseLocation()
@@ -223,7 +225,13 @@ namespace PersonalTrainerWorkouts.Data
 
         public void UpdateClient(Client client)
         {
+            client.SetMainNumber(); //Contact data is not being saved when saving the client
             Database.UpdateClient(client);
+        }
+
+        public void UpdateGoal(Goal goal)
+        {
+            Database.UpdateGoal(goal);
         }
 
         public void UpdateExercise(Exercise exercise)
@@ -256,12 +264,35 @@ namespace PersonalTrainerWorkouts.Data
 
         public IEnumerable<Session> GetSessions()
         {
-            return Database.GetSessions() ?? new List<Session>();
+            var allSessions = Database.GetSessions().ToList();
+            var allClients = GetClients().ToList();
+
+            foreach (var session in allSessions)
+            {
+                session.Client = allClients.FirstOrDefault(client => client.Id == session.ClientId) ?? new Client();
+            }
+            return allSessions;
         }
 
         public IEnumerable<Client> GetClients()
         {
-            return Database.GetClients() ?? new List<Client>();
+            var allClients = Database.GetClients().ToList();
+            var allAppContacts = GetAppContacts().ToList();
+
+            foreach (var client in allClients.Where(client => allAppContacts.Any(contact => contact.ClientId == client.Id)))
+            {
+                client.AppContact = allAppContacts.FirstOrDefault(contact => contact.ClientId == client.Id);
+                client.SetMainNumber();
+
+                client.Contact ??= client.AppContact?.ToContact(ContactsDataStore, client.AppContact);
+            }
+
+            return allClients;
+        }
+
+        public IEnumerable<AppContact> GetAppContacts()
+        {
+            return Database.GetAppContacts() ?? new List<AppContact>();
         }
 
         public IEnumerable<WorkoutExercise> GetWorkoutExercises(int workoutId)
@@ -332,6 +363,10 @@ namespace PersonalTrainerWorkouts.Data
             return Database.GetOpposingMuscleGroupByMuscleGroup(muscleGroupId);
         }
 
+        public Goal GetGoal(int goalId)
+        {
+            return Database.GetGoal(goalId);
+        }
     }
 
     public partial class DataAccess //Adds
@@ -347,11 +382,16 @@ namespace PersonalTrainerWorkouts.Data
             return Database.AddJustOneWorkout(workout);
         }
 
-        public int AddNewSession(Session session)
+        public void AddNewSession(Session session)
         {
-            return Database.AddJustOneSession(session);
+            Database.AddJustSession(session);
         }
 
+        public int AddNewPhone(PhoneNumber phoneNumber)
+        {
+            return Database.AddPhoneNumber(phoneNumber);
+        }
+        
         public int AddNewClient(Client client)
         {
             return Database.AddJustOneClient(client);
@@ -362,9 +402,12 @@ namespace PersonalTrainerWorkouts.Data
             Database.AddJustOneClientWithChildren(client);
         }
 
+        public int AddNewGoal(Goal goal)
+        {
+            return Database.AddJustOneGoal(goal);
+        }
         public int AddNewTypeOfExercise(TypeOfExercise typeOfExercise)
         {
-            //BENDO: Refactor...ugly!
             var allTypesOfExercises = Database.GetTypes();
             var typesOfExercises = allTypesOfExercises.ToList();
 

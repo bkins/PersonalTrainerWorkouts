@@ -2,8 +2,9 @@
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Android.Runtime;
 using Android.OS;
+using Android.Runtime;
+
 using AndroidX.Core.App;
 using AndroidX.Core.Content;
 
@@ -11,10 +12,10 @@ namespace PersonalTrainerWorkouts.Droid
 {
     [Activity
             (
-                Label        = "PersonalTrainerWorkouts"
-              , Icon         = "@mipmap/icon"
-              , Theme        = "@style/MainTheme"
-              , MainLauncher = true
+                Label = "PersonalTrainerWorkouts"
+              , Icon = "@drawable/WeightLifting" //"@mipmap/icon"
+              , Theme = "@style/MainTheme"
+              , MainLauncher = false
               , LaunchMode = LaunchMode.SingleInstance
               , ConfigurationChanges = ConfigChanges.ScreenSize
                                      | ConfigChanges.Orientation
@@ -22,6 +23,7 @@ namespace PersonalTrainerWorkouts.Droid
                                      | ConfigChanges.ScreenLayout
                                      | ConfigChanges.SmallestScreenSize
              , ScreenOrientation = ScreenOrientation.Portrait
+             , Exported = true
             )]
     [IntentFilter(new[]
                   {
@@ -42,9 +44,9 @@ namespace PersonalTrainerWorkouts.Droid
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
             {
-                if ( ! CheckPermissionGranted(Manifest.Permission.ReadExternalStorage) 
-                  || ! CheckPermissionGranted(Manifest.Permission.WriteExternalStorage)
-                  || ! CheckPermissionGranted(Manifest.Permission.ReadContacts))
+                if (!CheckPermissionGranted(Manifest.Permission.ReadExternalStorage)
+                  || !CheckPermissionGranted(Manifest.Permission.WriteExternalStorage)
+                  || !CheckPermissionGranted(Manifest.Permission.ReadContacts))
                 {
                     RequestPermission();
                 }
@@ -56,12 +58,12 @@ namespace PersonalTrainerWorkouts.Droid
             Xamarin.Forms.Forms.Init(this, savedInstanceState);
 
             Xamarin.Auth.Presenters.XamarinAndroid.AuthenticationConfiguration.Init(this, savedInstanceState);
-            
+
             LoadApplication(new App());
         }
 
-        public override void OnRequestPermissionsResult(int                          requestCode
-                                                      , string[]                     permissions
+        public override void OnRequestPermissionsResult(int requestCode
+                                                      , string[] permissions
                                                       , [GeneratedEnum] Permission[] grantResults)
         {
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode
@@ -85,7 +87,7 @@ namespace PersonalTrainerWorkouts.Droid
             }
             base.OnNewIntent(intent);
         }
-        
+
         private void RequestPermission()
         {
             ActivityCompat.RequestPermissions(this

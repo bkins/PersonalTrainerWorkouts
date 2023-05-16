@@ -1,5 +1,5 @@
 ﻿using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Models.AppContacts;
+using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.Models.Intermediates;
 
 using System.Collections.Generic;
@@ -17,7 +17,8 @@ namespace PersonalTrainerWorkouts.Data.Interfaces
         /// </summary>
         /// <param name="workout"></param>
         int AddJustOneWorkout(Workout workout);
-        int AddJustOneSession(Session session);
+        void AddSessionWithChildren(Session session);
+        void AddJustSession(Session session);
         int AddJustOneClient(Client client);
         void AddJustOneClientWithChildren(Client client);
         void AddExercise(Exercise exercise);
@@ -61,29 +62,45 @@ namespace PersonalTrainerWorkouts.Data.Interfaces
 
         //Gets
         Workout GetWorkout(int workoutId);
+
         IEnumerable<Workout> GetWorkouts(bool forceRefresh = false);
+
         IEnumerable<Session> GetSessions(bool forceRefresh = false);
+
         IEnumerable<Client> GetClients(bool forceRefresh = false);
+
+        IEnumerable<AppContact> GetAppContacts(bool forceRefresh = false);
+
         LinkedWorkoutsToExercises GetLinkedWorkoutsToExercise(int linkedWorkoutsToExercisesId);
+
         IEnumerable<LinkedWorkoutsToExercises> GetAllLinkedWorkoutsToExercises(bool forceRefresh = false);
+
         IEnumerable<LinkedWorkoutsToExercises> GetAllLinkedWorkoutsToExercises(int workoutId);
 
         IEnumerable<LinkedWorkoutsToExercises> GetAllLinkedWorkoutsToExercises(int workoutId
                                                                              , int exerciseId);
 
         WorkoutExercise GetWorkoutExercise(int workoutExerciseId);
+
         IEnumerable<WorkoutExercise> GetWorkoutExercises(bool forceRefresh = false);
+
         IEnumerable<WorkoutExercise> GetWorkoutExercises(int workoutId);
 
         IEnumerable<WorkoutExercise> GetWorkoutExercises(int workoutId
                                                        , int exerciseId);
 
         IEnumerable<WorkoutExercise> GetWorkoutExercisesByWorkout(int workoutId);
+
         IEnumerable<WorkoutExercise> GetWorkoutExercisesByExercise(int exerciseId);
+
         Exercise GetExercise(int exerciseId);
+
         IEnumerable<Exercise> GetExercises(bool forceRefresh = false);
+
         IEnumerable<ExerciseMuscleGroup> GetExerciseMuscleGroups(bool forceRefresh = false);
+
         IEnumerable<MuscleGroup> GetMuscleGroups(bool forceRefresh = false);
+
         MuscleGroup GetOpposingMuscleGroupByMuscleGroup(int muscleGroupId);
         IEnumerable<Synergist> GetSynergists(bool forceRefresh = false);
         TypeOfExercise GetTypeOfExercise(int typeOfExerciseId);
@@ -124,5 +141,8 @@ namespace PersonalTrainerWorkouts.Data.Interfaces
         List<string> GetTables();
         void DropContactTables();
         void CreateContactTables();
+        void UpdateGoal(Goal goal);
+        int AddJustOneGoal(Goal goal);
+        Goal GetGoal(int goalId);
     }
 }

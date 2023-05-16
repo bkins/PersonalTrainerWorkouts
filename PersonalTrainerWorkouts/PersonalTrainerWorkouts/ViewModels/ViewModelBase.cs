@@ -11,7 +11,7 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         public DataAccess DataAccessLayer
         {
-            get => _dataAccess = _dataAccess ?? new DataAccess(App.Database);
+            get => _dataAccess = _dataAccess ?? new DataAccess(App.Database, App.ContactDataStore);
             set => _dataAccess = value;
         }
 

@@ -3,6 +3,7 @@
 using SQLiteNetExtensions.Attributes;
 
 using System;
+using PersonalTrainerWorkouts.Models.ContactsAndClients;
 
 namespace PersonalTrainerWorkouts.Models;
 
@@ -50,4 +51,43 @@ public class Goal : BaseModel
 
     [ForeignKey(typeof(Client))]
     public int ClientId { get; set; }
+
+    public string GetStatus()
+    {
+        if (SuccessfullyCompleted)
+        {
+            return "Completed Successfully";
+        }
+
+        if (Failed)
+        {
+            return "Failed";
+        }
+
+        if (NotStarted)
+        {
+            return "Not Started";
+        }
+
+        if (MissedTarget)
+        {
+            return "Missed Target";
+        }
+
+        if (InProcess)
+        {
+            return "In Process";
+        }
+
+        return null;
+    }
+    public override string ToString()
+    {
+        var status = GetStatus();
+
+        var formattedStatus = status is null ?
+                                      string.Empty :
+                                      $" ({status})"; 
+        return $"{Name}{status}";
+    }
 }

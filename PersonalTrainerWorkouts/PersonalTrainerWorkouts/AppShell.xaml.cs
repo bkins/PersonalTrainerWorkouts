@@ -51,6 +51,8 @@ namespace PersonalTrainerWorkouts
             
             Routing.RegisterRoute(nameof(ClientListPage), typeof(ClientListPage));
             Routing.RegisterRoute(nameof(ClientEditPage), typeof(ClientEditPage));
+            
+            Routing.RegisterRoute(nameof(GoalsAddEditPage), typeof(GoalsAddEditPage));
         }
     }
 }

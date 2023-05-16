@@ -1,12 +1,19 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
+﻿using PersonalTrainerWorkouts.Models.ContactsAndClients;
+
+using System.Collections.Generic;
+
 using Xamarin.Essentials;
 
 namespace PersonalTrainerWorkouts.Data.Interfaces;
 
 public interface IContactsDataStore
 {
-    IEnumerable<Contact> GetContacts();
+    IEnumerable<AppContact> GetAppContacts();
+    IEnumerable<Contact> GetDeviceContacts();
+
     void SetContacts();
-    Task<Contact> SelectContact();
+
+    AppContact GetSelectedAppContact();
+
+    void UpdateClientWithContactInfo(Client client);
 }

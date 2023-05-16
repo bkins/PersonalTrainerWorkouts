@@ -2,7 +2,7 @@
 <project version="4">
   <component name="DataSourceManagerImpl" format="xml" multifile-model="true">
     <data-source source="LOCAL" name="data" uuid="126ac6c6-3eee-419a-bc7e-987f40b55e5c">
-      <driver-ref>sqlite.xerial</driver-ref>
+      <driver-ref>1df487f4-0a46-4313-9563-afa2bcff6a09</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:C:\Users\Ben\source\repos\PersonalTrainerWorkouts\PersonalTrainerWorkouts\PersonalTrainerWorkouts\data.db</jdbc-url>
@@ -14,10 +14,36 @@
       </libraries>
     </data-source>
     <data-source source="LOCAL" name="emulated_data" uuid="cbee5989-2924-422c-bd12-ef5aab558253">
-      <driver-ref>sqlite.xerial</driver-ref>
+      <driver-ref>1df487f4-0a46-4313-9563-afa2bcff6a09</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
       <jdbc-url>jdbc:sqlite:C:\Users\Ben\source\repos\PersonalTrainerWorkouts\PersonalTrainerWorkouts\PersonalTrainerWorkouts\emulated_data.db</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+      <libraries>
+        <library>
+          <url>file://$APPLICATION_CONFIG_DIR$/jdbc-drivers/Xerial SQLiteJDBC/3.39.2/sqlite-jdbc-3.39.2.jar</url>
+        </library>
+      </libraries>
+    </data-source>
+    <data-source source="LOCAL" name="ThingsToRemember My Phone driver - identifier.sqlite" uuid="4ff5ec22-d7d8-4707-b0fc-d27d6ff52d15">
+      <driver-ref>0b291658-5182-4801-b4df-609f924e379b</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:identifier.sqlite</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="ThingsToRemember My Phone driver - identifier.sqlite [2]" uuid="1648ac23-8dcd-4052-87f5-75804e7bc6b4">
+      <driver-ref>0b291658-5182-4801-b4df-609f924e379b</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:identifier.sqlite</jdbc-url>
+      <working-dir>$ProjectFileDir$</working-dir>
+    </data-source>
+    <data-source source="LOCAL" name="WorkoutDatabase" uuid="eed73c72-930e-4400-bfea-6ba401f4456e">
+      <driver-ref>1df487f4-0a46-4313-9563-afa2bcff6a09</driver-ref>
+      <synchronize>true</synchronize>
+      <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
+      <jdbc-url>jdbc:sqlite:C:\Users\Ben\AppData\Local\JetBrains\Rider2023.1\device-explorer\samsung-sm_g975u-R58M563SQ5N\data\data\com.companyname.personaltrainerworkouts\files\.local\share\WorkoutDatabase.db3</jdbc-url>
       <working-dir>$ProjectFileDir$</working-dir>
       <libraries>
         <library>

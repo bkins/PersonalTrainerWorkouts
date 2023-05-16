@@ -1,11 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
+﻿using Avails.D_Flat.Extensions;
 using Avails.Xamarin.Logger;
 
 using PersonalTrainerWorkouts.Data;
-using PersonalTrainerWorkouts.Models;
+using PersonalTrainerWorkouts.Models.ContactsAndClients;
+
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 using Xamarin.Essentials;
 
@@ -19,8 +20,11 @@ public sealed class MergedClientsAndContacts
         get => _instance ??= new();
     }
 
-    private IEnumerable<Contact> CachedContacts { get; set; }
-    private List<Contact> _contacts;
+    private IEnumerable<Contact> CachedDeviceContacts { get; set; }
+    private List<Contact> _deviceContacts;
+
+    private IEnumerable<AppContact> CachedAppContacts { get; set; }
+    private List<AppContact> _appContacts;
 
     public IEnumerable<Client> CachedClients { get; set; }
     public List<Client> ClientsList { get; set; }
@@ -28,7 +32,7 @@ public sealed class MergedClientsAndContacts
     private DataAccess _dataAccess;
     public DataAccess DataAccessLayer
     {
-        get => _dataAccess ??= new(App.Database);
+        get => _dataAccess ??= new(App.Database, App.ContactDataStore);
         set => _dataAccess = value;
     }
 
@@ -75,22 +79,46 @@ public sealed class MergedClientsAndContacts
 
     private Contact GetContact(Client client)
     {
-        var contact = _contacts.FirstOrDefault(contact => contact.Id
-                                                       == client.ContactId);
+        var contact = _deviceContacts.FirstOrDefault(contact => contact.Id == client.ContactId);
+
         if (contact is null)
         {
-            ForceUpdateContacts();
+            Task.Run(ForceUpdateContacts).ConfigureAwait(false);
         }
         else
         {
             return contact;
         }
 
-        contact = _contacts.FirstOrDefault(cachedContact => cachedContact.Id
-                                                         == client.ContactId);
+        contact = _deviceContacts.FirstOrDefault(deviceContact => deviceContact.Id == client.ContactId);
+
         if (contact is null)
         {
-            Logger.WriteLine($"A Client (ClientId = {client.ClientId}) has a ContactId ({client.ContactId}) that cannot be found. Was a Contact removed from the phone?", Category.Warning);
+            Logger.WriteLine($"A Client (ClientId = {client.Id}) has a AppContactId ({client.AppContactId}) that cannot be found. Was a Contact removed from the phone?"
+                           , Category.Warning);
+        }
+
+        return contact;
+    }
+
+    private AppContact GetAppContact(Client client)
+    {
+        var contact = _appContacts.FirstOrDefault(contact => contact.Id
+                                                       == client.ContactId.ToSafeInt());
+        if (contact is null)
+        {
+            Task.Run(ForceUpdateContacts).ConfigureAwait(false);
+        }
+        else
+        {
+            return contact;
+        }
+
+        contact = _appContacts.FirstOrDefault(cachedContact => cachedContact.Id
+                                                         == client.ContactId.ToSafeInt());
+        if (contact is null)
+        {
+            Logger.WriteLine($"A Client (ClientId = {client.Id}) has a AppContactId ({client.AppContactId}) that cannot be found. Was a Contact removed from the phone?", Category.Warning);
         }
 
         return contact;
@@ -115,10 +143,10 @@ public sealed class MergedClientsAndContacts
             || client.PhoneNumbers.Any(numbers => numbers.IsMain);
     }
 
-    public void ForceUpdateContacts()
+    public async Task ForceUpdateContacts()
     {
-        CachedContacts = ContactsDataAccessLayer.GetContacts();
-        _contacts = CachedContacts.ToList();
+        CachedAppContacts = await Task.Run(() => ContactsDataAccessLayer.GetAppContacts());
+        _appContacts = CachedAppContacts?.ToList();
 
         UpdateAll(forceRefresh: false);
     }
@@ -126,7 +154,7 @@ public sealed class MergedClientsAndContacts
     public async Task ForceUpdateClients()
     {
         CachedClients = await Task.Run(() => DataAccessLayer.GetClients());
-        ClientsList = CachedClients.ToList();
+        ClientsList = CachedClients?.ToList();
 
         if (ClientsList is null) return;
 

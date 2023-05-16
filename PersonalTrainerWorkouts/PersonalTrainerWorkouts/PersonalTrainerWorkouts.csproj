@@ -24,6 +24,7 @@
     <PackageReference Include="SQLiteNetExtensions.Async" Version="2.1.0" />
     <PackageReference Include="Syncfusion.Xamarin.Buttons" Version="20.4.0.41" />
     <PackageReference Include="Syncfusion.Xamarin.Expander" Version="20.4.0.41" />
+    <PackageReference Include="Syncfusion.Xamarin.SfBusyIndicator" Version="21.1.39" />
     <PackageReference Include="Syncfusion.Xamarin.SfListView" Version="20.4.0.41" />
     <PackageReference Include="Syncfusion.Xamarin.SfPicker" Version="20.4.0.41" />
     <PackageReference Include="Syncfusion.Xamarin.SfRichTextEditor" Version="20.4.0.41" />

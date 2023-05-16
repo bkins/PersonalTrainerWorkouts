@@ -1,9 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using PersonalTrainerWorkouts.Models.ContactsAndClients;
 
 using SQLite;
 
 using SQLiteNetExtensions.Attributes;
+
+using System;
+using System.Collections.Generic;
 
 namespace PersonalTrainerWorkouts.Models
 {
@@ -15,6 +17,7 @@ namespace PersonalTrainerWorkouts.Models
 
         public DateTime Date { get; set; }
         public string Note { get; set; }
+        public bool Paid { get; set; }
 
         [ForeignKey(typeof(Client))]
         public int ClientId { get; set; }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Avails.D_Flat.Exceptions;
+using Avails.D_Flat.Extensions;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
@@ -35,7 +36,7 @@ namespace PersonalTrainerWorkouts.ViewModels
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(_selectedExercise.Name))
+                if (_selectedExercise.Name.IsNullEmptyOrWhitespace())
                     throw new UnnamedEntityException($"{nameof(Exercise)} was not named.  Must be named before attempting to save.");
 
                 var workoutExercise = new LinkedWorkoutsToExercises

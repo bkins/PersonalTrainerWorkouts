@@ -1,36 +1,51 @@
-﻿using System.Collections.Generic;
-using System.Threading.Tasks;
-using PersonalTrainerWorkouts.Data.Interfaces;
+﻿using PersonalTrainerWorkouts.Data.Interfaces;
+using PersonalTrainerWorkouts.Models.ContactsAndClients;
+
+using System.Collections.Generic;
+
 using Xamarin.Essentials;
 
 namespace PersonalTrainerWorkouts.Data;
 
 public class ContactsDataAccess
 {
-    private IContactsDataStore DataStore       { get; set; }
+    private IContactsDataStore DataStore { get; set; }
 
-    public Task<Contact> SelectedContact
+    private AppContact _selectedAppContact;
+    public AppContact SelectedContact
     {
-        get => SelectContact();
+        get => _selectedAppContact ?? SelectContact();
+        set => _selectedAppContact = value;
     }
 
-    public ContactsDataAccess (IContactsDataStore dataStore)
+    public ContactsDataAccess(IContactsDataStore dataStore)
     {
-        DataStore = dataStore;
+        dataStore ??= new ContactsDataStore();
+        DataStore =   dataStore;
     }
 
-    public IEnumerable<Contact> GetContacts()
+    public IEnumerable<Contact> GetDeviceContacts()
     {
-        return DataStore.GetContacts();
+        return DataStore.GetDeviceContacts();
     }
-    
+
+    public IEnumerable<AppContact> GetAppContacts()
+    {
+        return DataStore.GetAppContacts();
+    }
+
     public void SetContacts()
     {
         DataStore.SetContacts();
     }
 
-    public async Task<Contact> SelectContact()
+    public AppContact SelectContact()
     {
-        return await DataStore.SelectContact();
+        return DataStore.GetSelectedAppContact();
+    }
+
+    public void UpdateClientWithContactInfo(Client client)
+    {
+        DataStore.UpdateClientWithContactInfo(client);
     }
 }

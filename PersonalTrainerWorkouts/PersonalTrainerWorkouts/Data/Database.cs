@@ -2,7 +2,7 @@
 
 using PersonalTrainerWorkouts.Data.Interfaces;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Models.AppContacts;
+using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.Models.Intermediates;
 
 using SQLite;
@@ -126,8 +126,6 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<AppContact>();
             _database.DropTable<AppContactPhone>();
             _database.DropTable<AppContactEmail>();
-
-
         }
 
         public string GetFilePath()
@@ -238,6 +236,31 @@ namespace PersonalTrainerWorkouts.Data
                 throw;
             }
         }
+        public Goal GetGoal(int goalId)
+        {
+            try
+            {
+                var goal = _database.GetWithChildren<Goal>(goalId);
+
+                return goal;
+            }
+            catch (InvalidOperationException operationException)
+            {
+                throw new SequenceContainsNoElementsException(GetNoElementsExceptionMessage(nameof(goalId)
+                                                                , goalId)
+                                                            , typeof(Client).ToString()
+                                                            , operationException);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine(e.Message
+                               , Category.Error
+                               , e);
+
+                throw;
+            }
+        }
+
         //BENDO: For all methods that take forceRefresh, call method that will rebuild the object by calling the database to get current values
         //       necessary to fill the object.
         public Workout GetWorkout(int workoutId)
@@ -284,6 +307,11 @@ namespace PersonalTrainerWorkouts.Data
         public IEnumerable<Client> GetClients(bool forceRefresh = false)
         {
             return _database.GetAllWithChildren<Client>();
+        }
+
+        public IEnumerable<AppContact> GetAppContacts(bool forceRefresh = false)
+        {
+            return _database.GetAllWithChildren<AppContact>();
         }
 
         public LinkedWorkoutsToExercises GetLinkedWorkoutsToExercise(int linkedWorkoutsToExercisesId)
@@ -888,17 +916,19 @@ namespace PersonalTrainerWorkouts.Data
 
         public void UpdateClient(Client client)
         {
-            _database.UpdateWithChildren(client);
+            try
+            {
+                _database.UpdateWithChildren(client);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine($"Error occurred while Updating Client ({nameof(UpdateClient)})", Category.Error, e);
+            }
         }
 
         public void UpdateWorkout(Workout workout)
         {
             _database.UpdateWithChildren(workout);
-        }
-
-        public void UpdateSion(Session session)
-        {
-            _database.UpdateWithChildren(session);
         }
 
         public void UpdateWorkoutExercises(WorkoutExercise workoutExercise)
@@ -975,13 +1005,23 @@ namespace PersonalTrainerWorkouts.Data
             //Update existing workout that has no associated exercises
             _database.Update(workout);
         }
+
+        public void UpdateGoal(Goal goal)
+        {
+            _database.Update(goal);
+        }
     }
 
     public partial class Database //Adds
     {
         public int AddAddress(Address address) => throw new NotImplementedException();
 
-        public int AddPhoneNumber(PhoneNumber phoneNumber) => throw new NotImplementedException();
+        public int AddPhoneNumber(PhoneNumber phoneNumber)
+        {
+            _database.Insert(phoneNumber);
+
+            return phoneNumber.Id;
+        }
 
         public int AddMeasurable(Measurable measurable) => throw new NotImplementedException();
 
@@ -1046,18 +1086,27 @@ namespace PersonalTrainerWorkouts.Data
             : 0; //Nothing was inserted
         }
 
-        public int AddJustOneSession(Session session)
+        public void AddSessionWithChildren(Session session)
         {
-            return _database.Insert(session) == 1
-            ? session.Id
-            : 0;
+            _database.InsertWithChildren(session);
+        }
+
+        public void AddJustSession(Session session)
+        {
+            _database.Insert(session);
         }
 
         public int AddJustOneClient(Client client)
         {
             return _database.Insert(client) == 1
-            ? client.ClientId
+            ? client.Id
             : 0;
+        }
+        public int AddJustOneGoal(Goal goal)
+        {
+            return _database.Insert(goal) == 1 ?
+                           goal.Id
+                           : 0;
         }
 
         public void AddJustOneClientWithChildren(Client client)
@@ -1133,6 +1182,7 @@ namespace PersonalTrainerWorkouts.Data
                             , List<Address> addresses = null
                             , List<PhoneNumber> phoneNumbers = null)
         {
+            client.SetMainNumber();
             _database.Insert(client);
 
             client.Addresses = addresses ?? new List<Address>();

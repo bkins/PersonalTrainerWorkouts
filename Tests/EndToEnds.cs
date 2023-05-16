@@ -1,42 +1,139 @@
-﻿using System;
+﻿using Avails.D_Flat.Exceptions;
+using Avails.D_Flat.Extensions;
+
+using PersonalTrainerWorkouts.Data;
+using PersonalTrainerWorkouts.Models;
+using PersonalTrainerWorkouts.Models.ContactsAndClients;
+using PersonalTrainerWorkouts.Models.Intermediates;
+using PersonalTrainerWorkouts.ViewModels;
+
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using Avails.D_Flat.Exceptions;
-using Xunit.Abstractions;
-using PersonalTrainerWorkouts.Data;
-using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Models.Intermediates;
-using PersonalTrainerWorkouts.ViewModels;
+
+using Xamarin.Essentials;
+
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Tests
 {
     public class EndToEnds
     {
-        private readonly        ITestOutputHelper _testOutputHelper;
-        private static          Database          _database;
-        private static readonly string            DbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
+        private readonly ITestOutputHelper _testOutputHelper;
+        private static   Database          _database;
+        private static   ContactsDataStore _contactsDataStore;
+        private static readonly string DbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
                                                            , "P2Database_test.db3");
-        public static Database   Database        => _database ??= new Database(DbPath);
-        public static DataAccess DataAccessLayer { get; set; }
 
-        public static TestData   TestData        { get; set; }
+        public static Database          Database => _database ??= new Database(DbPath);
+        public static ContactsDataStore ContactsDataStore = _contactsDataStore ??= new ContactsDataStore();
+        public static DataAccess        DataAccessLayer { get; set; }
+
+        public static TestData TestData { get; set; }
 
         public EndToEnds(ITestOutputHelper testOutputHelper)
         {
             _testOutputHelper = testOutputHelper;
             _testOutputHelper.WriteLine($"Database path: {DbPath}");
 
-            DataAccessLayer = new DataAccess(Database);
+            DataAccessLayer = new DataAccess(Database, ContactsDataStore);
             TestData        = new TestData();
         }
 
         [Fact]
+        public void AddClient()
+        {
+            //The ClientViewModel's DB is C:\Users\Ben\AppData\Local\WorkoutDatabase.db3 instead of the path defined above
+            //TODO: Fix this ^^^
+            
+            //RefreshDatabase();
+            var deviceContacts = new List<Contact>
+                                 {
+                                     new Contact
+                                     {
+                                         Emails = new List<ContactEmail>
+                                                  {
+                                                      new ContactEmail
+                                                      {
+                                                          EmailAddress = "contact1@email.com"
+                                                      }
+                                                  }
+                                       , FamilyName = "Rogers"
+                                       , GivenName  = "Fred"
+                                       , Id         = "001"
+                                       , MiddleName = "McFeely"
+                                       , NamePrefix = "Mr."
+                                       , NameSuffix = "III"
+                                       , Phones = new List<ContactPhone>
+                                                  {
+                                                      new ContactPhone
+                                                      {
+                                                          PhoneNumber = "123-456-7890"
+                                                      }
+                                                  }
+                                     }
+
+                                 };
+            
+            var contactDataStore = new ContactsDataStore(deviceContacts);
+            var appContact       = new AppContact(deviceContacts.FirstOrDefault());
+
+            var client = new Client(appContact.ToContact(contactDataStore, appContact))
+                         {
+                             AppContact = appContact
+                         };
+
+            client.SetMainNumber();
+            client.SetName();
+            
+            SaveClient(client);
+            
+            Assert.True(client.Id > 0);
+            
+            var clients = DataAccessLayer.GetClients();
+            
+            _testOutputHelper.WriteLine("Clients: ");
+            foreach (var foundClient in clients)
+            {
+                _testOutputHelper.WriteLine(foundClient.ToString());
+            }
+        }
+
+        private void SaveClient(Client client)
+        {
+            if (client.Id == 0)
+            { //Add new
+
+                client.Contact = new Contact();
+                // DataAccessLayer.AddNewClientWithChildren(client);
+                
+                DataAccessLayer.AddNewClient(client);
+                
+                foreach (var phoneNumber in client.PhoneNumbers)
+                {
+                    phoneNumber.ClientId = client.Id;
+                    DataAccessLayer.AddNewPhone(phoneNumber);
+                }
+
+                client.AppContact.ClientId = client.Id;
+                
+                DataAccessLayer.AddNewContact(client.AppContact);
+                
+                var newClient = DataAccessLayer.GetClients()
+                                               .First(dbClient => dbClient.Id == client.Id);
+            }
+            else
+            { //Update existing
+                DataAccessLayer.UpdateClient(client);
+            }
+        }
+        [Fact]
         public void AddWorkoutTest()
         {
             RefreshDatabase();
-            
+
             Workout workout;
 
             try
@@ -49,7 +146,7 @@ namespace Tests
 
                 throw;
             }
-            
+
             Assert.Equal(1, workout.Id);
         }
 
@@ -58,13 +155,13 @@ namespace Tests
         {
             RefreshDatabase();
 
-            var workout   = TestData.Workout;
+            var workout = TestData.Workout;
             var exercises = AddExercise(workout).ToList();
 
             Assert.Single(exercises);
             Assert.Equal(1, exercises.First().Id);
         }
-        
+
         [Fact(Skip = "Broken - Need to rewrite.  Some of the aspects of this test are not valid (e.g. AddCompleteWorkout - I will never (as it is written right now) build a complete Workout object, then add it to the DB")]
         public void AddEquipmentToExerciseInWorkoutTest()
         {
@@ -86,15 +183,15 @@ namespace Tests
             //Replace with what will really happen in the app
             //Database.AddCompleteWorkout(workout);
 
-            Assert.True  (workout.Id > 0);
+            Assert.True(workout.Id > 0);
 
             var theExercise = Assert.Single(workout.Exercises);
-            Assert.True (theExercise.Id > 0);
+            Assert.True(theExercise.Id > 0);
 
             var theEquipment = Assert.Single(workout.Exercises.First().Equipment);
-            Assert.True  (theEquipment.Id > 0);
+            Assert.True(theEquipment.Id > 0);
         }
-        
+
         [Fact(Skip = "Fix or remove.  Uses AddCompleteWorkout (which was removed) and MusclesGroups need to be replaced with Synergists")]
         public void AddMuscleGroupToExerciseInWorkoutTest()
         {
@@ -113,34 +210,34 @@ namespace Tests
             //                       {
             //                           TestData.Bicep
             //                       };
-            
+
             //Database.AddCompleteWorkout(workout);
 
-            Assert.True  (workout.Id > 0);
+            Assert.True(workout.Id > 0);
 
             var theExercise = Assert.Single(workout.Exercises);
-            Assert.True  (theExercise.Id > 0);
+            Assert.True(theExercise.Id > 0);
 
             //var theMuscleGroup = Assert.Single(workout.Exercises.First().MuscleGroups);
             //Assert.True  (theMuscleGroup.Id > 0);
         }
-        
+
         [Fact]
         public void AddMuscleGroupWithOpposingMuscleGroupToExerciseInWorkoutTest()
         {
             RefreshDatabase();
 
             // 1. Build each entity and add to the DB as it is built
-            var workout                  = TestData.Workout;
+            var workout = TestData.Workout;
             var exercise = new Exercise
-                           {
-                               Name = "Exercise Test for MuscleGroups/Synergists"
-                           };
+            {
+                Name = "Exercise Test for MuscleGroups/Synergists"
+            };
 
             var exerciseAddEditViewModel = new ExerciseAddEditViewModel
-                                           {
-                                               DataAccessLayer = DataAccessLayer
-                                           };
+            {
+                DataAccessLayer = DataAccessLayer
+            };
             //This is simulating an already added Workout.
             //The Use-Case is the
             //Workout would be added,
@@ -148,27 +245,31 @@ namespace Tests
             //then the Exercise is created and added to the Workout. 
             var workoutId = exerciseAddEditViewModel.DataAccessLayer.AddNewWorkout(workout);
 
-            exerciseAddEditViewModel.Workout  = workout;
+            exerciseAddEditViewModel.Workout = workout;
             exerciseAddEditViewModel.Exercise = exercise;
             exerciseAddEditViewModel.Workout.Exercises.Add(exerciseAddEditViewModel.Exercise);
             exerciseAddEditViewModel.SaveExercise(workoutId);
-            
-            var muscleGroupId         = exerciseAddEditViewModel.DataAccessLayer.AddNewMuscleGroup(TestData.Bicep);
+
+            var muscleGroupId = exerciseAddEditViewModel.DataAccessLayer.AddNewMuscleGroup(TestData.Bicep);
             var opposingMuscleGroupId = exerciseAddEditViewModel.DataAccessLayer.AddNewMuscleGroup(TestData.Tricep);
 
             var bicepTricepSynergist = new Synergist
-                                       {
-                                           ExerciseId            = exerciseAddEditViewModel.Exercise.Id
-                                         , MuscleGroupId         = muscleGroupId
-                                         , OpposingMuscleGroupId = opposingMuscleGroupId
-                                       };
-            
+            {
+                ExerciseId = exerciseAddEditViewModel.Exercise.Id
+                                          ,
+                MuscleGroupId = muscleGroupId
+                                          ,
+                OpposingMuscleGroupId = opposingMuscleGroupId
+            };
+
             var tricepBicepSynergist = new Synergist
-                                       {
-                                           ExerciseId            = exerciseAddEditViewModel.Exercise.Id
-                                         , MuscleGroupId         = opposingMuscleGroupId
-                                         , OpposingMuscleGroupId = muscleGroupId
-                                       };
+            {
+                ExerciseId = exerciseAddEditViewModel.Exercise.Id
+                                         ,
+                MuscleGroupId = opposingMuscleGroupId
+                                         ,
+                OpposingMuscleGroupId = muscleGroupId
+            };
 
             exerciseAddEditViewModel.DataAccessLayer.AddSynergist(bicepTricepSynergist);
             exerciseAddEditViewModel.DataAccessLayer.AddSynergist(tricepBicepSynergist);
@@ -179,7 +280,7 @@ namespace Tests
                                      bicepTricepSynergist
                                    , tricepBicepSynergist
                                  };
-            
+
             // 2. Query DB for the newly created object/relationships above
             var workoutFromDb = DataAccessLayer.GetWorkout(workoutId);
 
@@ -230,7 +331,7 @@ namespace Tests
             // 3. Create the new Opposing Muscle Group and add it to the database
             //Database.AddMuscleGroups(new MuscleGroup{Name = "Opposing Muscle Group"});
             var opposingMuscleGroup = Database.GetMuscleGroups().First(field => field.Name == "Opposing Muscle Group");
-            
+
             // 4. Insert the relationship between the Muscle Group and Opposing Muscle Group in the OpposingMuscleGroup table
             //Database.AddOpposingMuscleGroup(muscleGroupId, opposingMuscleGroup.Id);
 
@@ -246,9 +347,9 @@ namespace Tests
 
             //Begin adding the Type Of Exercise
             var typeOfExercise = new TypeOfExercise
-                                 {
-                                     Name = "Type Of Exercise 1"
-                                 };
+            {
+                Name = "Type Of Exercise 1"
+            };
 
             var newTypeOfExerciseId = Database.AddType(typeOfExercise);
 
@@ -264,7 +365,7 @@ namespace Tests
             //Assert.Single(workout.Exercises.First().TypesOfExercise);
             //Assert.True(workout.Exercises.First().TypesOfExercise.First().Id == newTypeOfExerciseId);
         }
-        
+
         [Fact(Skip = "Fix or rewrite. Uses AddCompleteWorkout (which was removed) and replace reference to MuscleGroups with Synergists")]
         public void AddEquipmentToExerciseInWorkout()
         {
@@ -304,7 +405,7 @@ namespace Tests
             // 3. Create the new Opposing Muscle Group and add it to the database
             //Database.AddMuscleGroups(new MuscleGroup{Name = "Opposing Muscle Group"});
             var opposingMuscleGroup = Database.GetMuscleGroups().First(field => field.Name == "Opposing Muscle Group");
-            
+
             // 4. Insert the relationship between the Muscle Group and Opposing Muscle Group in the OpposingMuscleGroup table
             //Database.AddOpposingMuscleGroup(muscleGroupId, opposingMuscleGroup.Id);
 
@@ -320,12 +421,12 @@ namespace Tests
 
             //Begin adding the Type Of Exercise
             var typeOfExercise = new TypeOfExercise
-                                 {
-                                     Name = "Type Of Exercise 1"
-                                 };
+            {
+                Name = "Type Of Exercise 1"
+            };
 
             var newTypeOfExerciseId = Database.AddType(typeOfExercise);
-            
+
             var thisExercisesTypes = new List<TypeOfExercise>()
                                      {
                                          Database.GetTypeOfExercise(newTypeOfExerciseId)
@@ -335,9 +436,9 @@ namespace Tests
 
             //Begin adding Equipment to the Exercise
             var equipment = new Equipment
-                            {
-                                Name = "Equipment 1"
-                            };
+            {
+                Name = "Equipment 1"
+            };
 
             var newEquipmentId = Database.AddEquipment(equipment);
 
@@ -354,8 +455,8 @@ namespace Tests
             //Assert.Single(workout.Exercises.First().Equipment);
             //Assert.True(workout.Exercises.First().Equipment.First().Id == newEquipmentId);
         }
-        
-        
+
+
         [Fact(Skip = "Fix or rewrite. Uses AddCompleteWorkout and _database.AddOpposingMuscleGroup (both were removed) and replace reference to MuscleGroups with Synergists")]
         //[Fact]
         public void FullTestOfWorkout()
@@ -365,63 +466,63 @@ namespace Tests
             Database.CreateTables();
 
             //Arrange
-            var expectedWorkoutName     = "Workout 1";
+            var expectedWorkoutName = "Workout 1";
             var expectedExerciseOneName = "Exercise 1";
             var expectedExerciseTwoName = "Exercise 2";
-            
+
             var rack = new Equipment
-                       {
-                           Name = "Rack"
-                       };
+            {
+                Name = "Rack"
+            };
 
             var dumbBells = new Equipment()
-                            {
-                                Name = "DumbBells"
-                            };
+            {
+                Name = "DumbBells"
+            };
 
             var largeExerciseBall = new Equipment()
-                                    {
-                                        Name = "Large Exercise Ball"
-                                    };
+            {
+                Name = "Large Exercise Ball"
+            };
 
             var mediumExerciseBall = new Equipment()
-                                     {
-                                         Name = "Medium Exercise Ball"
-                                     };
+            {
+                Name = "Medium Exercise Ball"
+            };
 
             var smallExerciseBall = new Equipment()
-                                    {
-                                        Name = "Small Exercise Ball"
-                                    };
+            {
+                Name = "Small Exercise Ball"
+            };
 
             var recoveryBands = new Equipment()
-                                {
-                                    Name = "recoveryBands"
-                                };
+            {
+                Name = "recoveryBands"
+            };
 
             var bicep = new MuscleGroup()
-                               {
-                                   Name = "Bicep"
-                               };
-            
-            var tricep = new MuscleGroup()
-                         {
-                             Name = "Tricep"
+            {
+                Name = "Bicep"
+            };
 
-                         };
+            var tricep = new MuscleGroup()
+            {
+                Name = "Tricep"
+
+            };
 
             //_database.AddMuscleGroups(bicep);
             //_database.AddMuscleGroups(tricep); 
 
             var aTypeOfExercise = new TypeOfExercise()
-                                  {
-                                      Name = "Some type of exercise"
-                                  };
+            {
+                Name = "Some type of exercise"
+            };
 
             var anotherTypeOfExercise = new TypeOfExercise()
-                                        {
-                                            Name = "Some other type of exercise"
-                                        };
+            {
+                Name = "Some other type of exercise"
+            };
 
             //var exercise1 = new Exercise()
             //                {
@@ -469,7 +570,7 @@ namespace Tests
             //                                          anotherTypeOfExercise
             //                                      }
             //                };
-            
+
             //var workout = new Workout
             //              {
             //                  Name           = expectedWorkoutName
@@ -492,15 +593,15 @@ namespace Tests
 
             var opposingMuscleGroupId = _database.GetMuscleGroups()
                                                  .First(field => field.Name == tricep.Name).Id;
-            
+
             //Database.AddOpposingMuscleGroup(muscleGroupId, opposingMuscleGroupId);
 
             //muscleGroupId = workout.Exercises
             //                       .First(field => field.Name == expectedExerciseTwoName)
             //                       .Id;
-            
+
             //Database.AddOpposingMuscleGroup(muscleGroupId, opposingMuscleGroupId);
-            
+
             //Database.UpdateWorkout(workout);
 
             //BENDO:  Add more Asserts
@@ -521,7 +622,7 @@ namespace Tests
             //Assert.Equal(workout.Exercises.Count, workoutGottenFromDatabase.Exercises.Count);
         }
 
-    #region Helper methods
+        #region Helper methods
 
         private void RefreshDatabase()
         {
@@ -532,7 +633,7 @@ namespace Tests
         private IEnumerable<Exercise> AddExercise(Workout workout)
         {
             var exercise = TestData.Exercise1;
-            
+
             workout.Exercises.Add(exercise);
             Database.AddWorkoutWithExercises(workout);
 
@@ -554,82 +655,81 @@ namespace Tests
 
             return workout;
         }
-        
-    #endregion
-        
-    #region Helper methods
-        
+
         private void RefreshDatabaseTest()
         {
             RefreshDatabase();
         }
 
-    #endregion
+        #endregion
 
     }
 
     public class TestData
     {
-        public string ExpectedWorkoutName     => "Workout 1";
+        public string ExpectedWorkoutName => "Workout 1";
         public string ExpectedExerciseOneName => "Exercise 1";
         public string ExpectedExerciseTwoName => "Exercise 2";
 
         public Equipment Rack => new()
-                                 {
-                                     Name = "Rack"
-                                 };
+        {
+            Name = "Rack"
+        };
 
         public Equipment DumbBells => new()
-                                      {
-                                          Name = "DumbBells"
-                                      };
+        {
+            Name = "DumbBells"
+        };
 
         public Equipment LargeExerciseBall => new()
-                                              {
-                                                  Name = "Large Exercise Ball"
-                                              };
+        {
+            Name = "Large Exercise Ball"
+        };
 
         public Equipment MediumExerciseBall => new()
-                                               {
-                                                   Name = "Medium Exercise Ball"
-                                               };
+        {
+            Name = "Medium Exercise Ball"
+        };
 
         public Equipment SmallExerciseBall => new()
-                                              {
-                                                  Name = "Small Exercise Ball"
-                                              };
+        {
+            Name = "Small Exercise Ball"
+        };
 
         public Equipment RecoveryBands => new()
-                                          {
-                                              Name = "recoveryBands"
-                                          };
+        {
+            Name = "recoveryBands"
+        };
 
         public MuscleGroup Bicep => new()
-                                    {
-                                        Name = "Bicep"
-                                    };
+        {
+            Name = "Bicep"
+        };
 
         public MuscleGroup Tricep => new()
-                                     {
-                                         Name = "Tricep"
-                                     };
-        
+        {
+            Name = "Tricep"
+        };
+
         public TypeOfExercise OneTypeOfExercise => new()
-                                  {
-                                      Name = "Some type of exercise"
-                                  };
+        {
+            Name = "Some type of exercise"
+        };
 
         public TypeOfExercise AnotherTypeOfExercise => new()
-                                        {
-                                            Name = "Some other type of exercise"
-                                        };
+        {
+            Name = "Some other type of exercise"
+        };
 
         public Exercise Exercise1 => new()
-                        {
-                            Name         = ExpectedExerciseOneName
-                          , Description  = $"{ExpectedExerciseOneName} description"
-                          , LengthOfTime = "5:00"
-                          , Equipment = new List<Equipment>()
+        {
+            Name = ExpectedExerciseOneName
+                          ,
+            Description = $"{ExpectedExerciseOneName} description"
+                          ,
+            LengthOfTime = "5:00"
+                          ,
+            Equipment = new List<Equipment>()
                                         {
                                             Rack
                                           , DumbBells
@@ -638,35 +738,42 @@ namespace Tests
                                            {
                                                Bicep
                                            }*/
-                          , TypesOfExercise = new List<TypeOfExercise>()
+                          ,
+            TypesOfExercise = new List<TypeOfExercise>()
                                               {
                                                   OneTypeOfExercise
                                               }
-                        };
+        };
 
         public Exercise Exercise2 => new()
-                            {
-                                Name         = ExpectedExerciseTwoName
-                              , Description  = $"{ExpectedExerciseTwoName} description"
-                              , LengthOfTime = "10:00"
-                              , Equipment = new List<Equipment>()
+        {
+            Name = ExpectedExerciseTwoName
+                              ,
+            Description = $"{ExpectedExerciseTwoName} description"
+                              ,
+            LengthOfTime = "10:00"
+                              ,
+            Equipment = new List<Equipment>()
                                             {
                                                 LargeExerciseBall
                                               , RecoveryBands
                                             }
-                              /*
-                              , TypesOfExercise = new List<TypeOfExercise>()
-                                                  {
-                                                      AnotherTypeOfExercise
-                                                  }*/
-                            };
-            
+            /*
+            , TypesOfExercise = new List<TypeOfExercise>()
+                                {
+                                    AnotherTypeOfExercise
+                                }*/
+        };
+
         public Workout Workout => new()
-                      {
-                          Name           = "Workout 1"
-                        , CreateDateTime = DateTime.Now
-                        , Description    = "Workout One description."
-                        , Difficulty     = 1
-                      };
+        {
+            Name = "Workout 1"
+                        ,
+            CreateDateTime = DateTime.Now
+                        ,
+            Description = "Workout One description."
+                        ,
+            Difficulty = 1
+        };
     }
 }

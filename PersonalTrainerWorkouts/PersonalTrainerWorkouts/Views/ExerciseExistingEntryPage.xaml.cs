@@ -35,8 +35,6 @@ namespace PersonalTrainerWorkouts.Views
                 Logger.WriteLine("Failed to load Exercises."
                                , Category.Error
                                , e);
-
-                //BENDO: consider implementing a page that shows exception details
             }
         }
 

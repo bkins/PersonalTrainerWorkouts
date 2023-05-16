@@ -3,6 +3,7 @@
 using SQLiteNetExtensions.Attributes;
 
 using System;
+using PersonalTrainerWorkouts.Models.ContactsAndClients;
 
 namespace PersonalTrainerWorkouts.Models
 {

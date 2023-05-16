@@ -1,0 +1,9 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PTWO.Android-NoBuild" type="XamarinAndroidProject" factoryName="Xamarin.Android">
+    <option name="PROJECT_PATH" value="$PROJECT_DIR$/PersonalTrainerWorkouts/PersonalTrainerWorkouts.Android/PersonalTrainerWorkouts.Android.csproj" />
+    <option name="PROGRAM_PARAMETERS" value="" />
+    <option name="TARGET_SELECTION_MODE" value="DEVICE_AND_SNAPSHOT_COMBO_BOX" />
+    <option name="DEPLOY_BEHAVIOUR_NAME" value="Default" />
+    <method v="2" />
+  </configuration>
+</component>

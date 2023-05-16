@@ -1,4 +1,7 @@
-﻿using SQLite;
+﻿using PersonalTrainerWorkouts.Data;
+using PersonalTrainerWorkouts.Data.Interfaces;
+
+using SQLite;
 
 using SQLiteNetExtensions.Attributes;
 
@@ -7,7 +10,7 @@ using System.Linq;
 
 using Xamarin.Essentials;
 
-namespace PersonalTrainerWorkouts.Models.AppContacts
+namespace PersonalTrainerWorkouts.Models.ContactsAndClients
 {
     [Table("Contacts")]
     public class AppContact
@@ -41,12 +44,20 @@ namespace PersonalTrainerWorkouts.Models.AppContacts
                            GivenName :
                            $"{GivenName} {FamilyName}";
         }
-
+    
         [OneToMany(CascadeOperations = CascadeOperation.All)]
         public new List<AppContactPhone> Phones { get; set; } = new List<AppContactPhone>();
 
         [OneToMany(CascadeOperations = CascadeOperation.All)]
         public new List<AppContactEmail> Emails { get; set; } = new List<AppContactEmail>();
+
+        [ForeignKey(typeof(Client))]
+        public int ClientId { get; set; }
+        
+        public AppContact()
+        {
+
+        }
 
         public AppContact(Contact contact)
         {
@@ -74,6 +85,17 @@ namespace PersonalTrainerWorkouts.Models.AppContacts
             }).ToList();
 
             Emails.AddRange(appEmails);
+        }
+
+        public Contact ToContact(IContactsDataStore contactsDataStore, AppContact selectedContact = null)
+        {
+            var contactsDataAccess = new ContactsDataAccess(contactsDataStore);
+
+            if (selectedContact is not null)
+            {
+                contactsDataAccess.SelectedContact = selectedContact;
+            }
+            return contactsDataAccess.GetDeviceContacts().FirstOrDefault(contact => contact.Id == ContactId);
         }
     }
 }

@@ -1,8 +1,7 @@
 ﻿using SQLite;
-
 using SQLiteNetExtensions.Attributes;
 
-namespace PersonalTrainerWorkouts.Models
+namespace PersonalTrainerWorkouts.Models.ContactsAndClients
 {
     [Table(nameof(Address))]
     public class Address
