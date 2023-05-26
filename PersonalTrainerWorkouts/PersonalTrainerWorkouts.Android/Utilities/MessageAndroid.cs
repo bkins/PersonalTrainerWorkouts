@@ -8,7 +8,7 @@ using Logger = NLog.Logger;
 using LogManager = NLog.LogManager;
 
 [assembly: Xamarin.Forms.Dependency(typeof(MessageAndroid))]
-[assembly: Xamarin.Forms.Dependency(typeof(NLog.ILogger))]
+[assembly: Xamarin.Forms.Dependency(typeof(ILogger))]
 namespace PersonalTrainerWorkouts.Droid.Utilities
 {
     public class MessageAndroid : IMessage, ILogger
