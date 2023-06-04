@@ -12,9 +12,12 @@ using Syncfusion.DataSource.Extensions;
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
-
+using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
+using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
+using Tests.Helpers;
 using Xamarin.Essentials;
 
 using Xunit;
@@ -491,21 +494,81 @@ namespace Tests
 
         #endregion
 
-        #region Other units
+        #region Goal Status
+        
+        //TODO: This happened today (5/28/2023). Add unit test for this scenario:
+        //Appears that MissedTarget doesn't count today's date
+        /*
+         * DateStarted: 5/27/2023
+           TargetDate: 5/28/2023
+           DateCompleted: null
+           GetStatus: Missed Target
+           Failed: False
+           InProcess: True              <-- Shouldn't have two true statuses
+           MissedTarget: True           <-- Shouldn't have two true statuses
+           NotStarted: False
+           SuccessfullyCompleted: False
+         */
+        [Theory]
+        [ClassData(typeof(EnumeratedGoalStatus))]
+        // [InlineData("5/28/2023", "5/27/2023", "5/28/2023", null, false, Goal.Status.InProgress)]
+        // [InlineData("5/28/2023", "5/27/2023", "6/27/2023", null, false, Goal.Status.InProgress)]
+        // [InlineData("5/28/2023", "5/27/2023", "6/27/2023", "6/10/2023", false, Goal.Status.CompletedSuccessfully)]
+        // [InlineData("5/28/2023", "5/27/2023", "6/27/2023", null, true, Goal.Status.Failed)]
+        // [InlineData("5/28/2023", null, "6/27/2023", "6/10/2023", false, Goal.Status.NotStarted)]
+        // [InlineData("5/28/2023", "5/27/2023", "6/27/2023", "6/28/2023", false, Goal.Status.MissTarget)]
+        public void TestGoalStatuses(string      todaysDate
+                                   , string      startDate
+                                   , string      targetDate
+                                   , string      completedDate
+                                   , bool        failed
+                                   , Goal.Status expectedStatus)
+        //public void TestGoalStatuses( GoalStatusTestObject testObject)
+        {
+            //Arrange
+            var goal = new Goal
+                           {
+                               Id            = 1
+                             , ClientId      = 1
+                             , Name          = "Test Goal"
+                             , Description   = "Test Goal description"
+                             , Failed        = failed
+                             , DateStarted   = ParseDateTime(startDate)
+                             , TargetDate    = DateTime.Parse(targetDate)
+                             , DateCompleted = ParseDateTime(completedDate)
+                             , TodaysDate    = DateTime.Parse(todaysDate) 
+                           };
+            
+            //Act
+            var actualStatus = goal.GetStatus();
+            
+            var statuses = new List<bool>
+                               {
+                                   goal.Failed
+                                 , goal.InProcess
+                                 , goal.MissedTarget
+                                 , goal.NotStarted
+                                 , goal.SuccessfullyCompleted
+                               };
+            
+            //Assert
+            //The expected status matches the actual status
+            Assert.Equal(expectedStatus, actualStatus);
+            
+            //There is only one status set to true
+            Assert.True(statuses.Count(status => status) == 1);
+        }
+
+        #endregion
+        #region Search
 
         [Theory]
-        [InlineData(""
-              , 0)]
-        [InlineData("d=3"
-                 , 1)]
-        [InlineData("d>1"
-                 , 3)]
-        [InlineData("d>=2"
-                  , 3)]
-        [InlineData("d<3"
-                 , 2)]
-        [InlineData("d<=3"
-                  , 3)]
+        [InlineData("", 0)]
+        [InlineData("d=3", 1)]
+        [InlineData("d>1", 3)]
+        [InlineData("d>=2", 3)]
+        [InlineData("d<3", 2)]
+        [InlineData("d<=3", 3)]
         public void TestSearchDifficulty(string searchText
                                        , int expectedCount)
         {
@@ -523,36 +586,21 @@ namespace Tests
         }
 
         [Theory]
-        [InlineData(""
-        , 0)]
-        [InlineData("TR=0"
-            , 0)]
-        [InlineData("TR=-1"
-             , 0)]
-        [InlineData("TR=9999999"
-                  , 0)]
-        [InlineData("TR<9999999"
-                  , 4)]
-        [InlineData("TR=150"
-              , 1)]
-        [InlineData("TR<71"
-             , 2)]
-        [InlineData("TR<=70"
-              , 2)]
-        [InlineData("TR>70"
-             , 2)]
-        [InlineData("TR>=70"
-              , 3)]
-        [InlineData("TR>"
-           , 0)]
-        [InlineData("TR<"
-           , 0)]
-        [InlineData("TR="
-           , 0)]
-        [InlineData("TR>="
-            , 0)]
-        [InlineData("TR<="
-            , 0)]
+        [InlineData("", 0)]
+        [InlineData("TR=0", 0)]
+        [InlineData("TR=-1", 0)]
+        [InlineData("TR=9999999", 0)]
+        [InlineData("TR<9999999", 4)]
+        [InlineData("TR=150", 1)]
+        [InlineData("TR<71", 2)]
+        [InlineData("TR<=70", 2)]
+        [InlineData("TR>70", 2)]
+        [InlineData("TR>=70", 3)]
+        [InlineData("TR>", 0)]
+        [InlineData("TR<", 0)]
+        [InlineData("TR=", 0)]
+        [InlineData("TR>=", 0)]
+        [InlineData("TR<=", 0)]
         public void TestSearchTotalReps(string searchText
                                       , int expectedCount)
         {
@@ -570,8 +618,7 @@ namespace Tests
         }
 
         [Theory]
-        [InlineData("TT=1:00"
-                  , 1)]
+        [InlineData("TT=1:00", 1)]
         public void TestSearchTotalTime(string searchText
                                       , int expectedCount)
         {
@@ -589,18 +636,12 @@ namespace Tests
         }
 
         [Theory]
-        [InlineData(""
-                  , 4)]
-        [InlineData("Econ"
-                  , 1)]
-        [InlineData("cess"
-                  , 1)]
-        [InlineData("etc."
-                  , 1)]
-        [InlineData("or "
-                  , 2)]
-        [InlineData("."
-                  , 4)]
+        [InlineData("", 4)]
+        [InlineData("Econ", 1)]
+        [InlineData("cess", 1)]
+        [InlineData("etc.", 1)]
+        [InlineData("or ", 2)]
+        [InlineData(".", 4)]
         public void TestSearchNameAndDescription(string searchText
                                                , int expectedCount)
         {
@@ -618,38 +659,22 @@ namespace Tests
         }
 
         [Theory(Skip = "failing - not sure why")]
-        [InlineData(""
-            , 4)]
-        [InlineData("Econ"
-                , 1)]
-        [InlineData("cess"
-                , 1)]
-        [InlineData("etc."
-                , 1)]
-        [InlineData("or "
-               , 2)]
-        [InlineData("."
-             , 4)]
-        [InlineData("d=3"
-               , 1)]
-        [InlineData("d>1"
-               , 3)]
-        [InlineData("d>=2"
-                , 3)]
-        [InlineData("d<3"
-               , 2)]
-        [InlineData("d<=3"
-                , 3)]
-        [InlineData("TR=150"
-                  , 1)]
-        [InlineData("TR<71"
-                 , 2)]
-        [InlineData("TR<=70"
-                  , 2)]
-        [InlineData("TR>70"
-                 , 2)]
-        [InlineData("TR>=70"
-                  , 3)]
+        [InlineData("", 4)]
+        [InlineData("Econ", 1)]
+        [InlineData("cess", 1)]
+        [InlineData("etc.", 1)]
+        [InlineData("or ", 2)]
+        [InlineData(".", 4)]
+        [InlineData("d=3", 1)]
+        [InlineData("d>1", 3)]
+        [InlineData("d>=2", 3)]
+        [InlineData("d<3", 2)]
+        [InlineData("d<=3", 3)]
+        [InlineData("TR=150", 1)]
+        [InlineData("TR<71", 2)]
+        [InlineData("TR<=70", 2)]
+        [InlineData("TR>70", 2)]
+        [InlineData("TR>=70", 3)]
         public void TestSearchWorkouts(string searchText
                                      , int expectedCount)
         {
@@ -670,6 +695,12 @@ namespace Tests
 
         #region Helper Methods
 
+        private static DateTime? ParseDateTime(string dateTime)
+        {
+            return dateTime is null
+                        ? null
+                        : DateTime.Parse(dateTime);
+        }
         private static void RefreshDatabase()
         {
             Database.DropTables();

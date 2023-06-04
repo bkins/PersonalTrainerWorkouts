@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-
+using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 using InvalidOperationException = System.InvalidOperationException;
 using SequenceContainsNoElementsException = Avails.D_Flat.Exceptions.SequenceContainsNoElementsException;
 using TypeOfExercise = PersonalTrainerWorkouts.Models.TypeOfExercise;
@@ -38,7 +38,25 @@ namespace PersonalTrainerWorkouts.Data
             var databaseVersion = GetDatabaseVersion();
 
             CreateTables();
+            PopulateDefaultConfigurations();
             Check();
+        }
+
+        private void PopulateDefaultConfigurations()
+        {
+            var allGoalSuccessions = _database.GetAllWithChildren<GoalSuccession>().ToList();
+            if (allGoalSuccessions.All(succession => succession.Succession != Succession.Baseline))
+            {
+                _database.Insert(new GoalSuccession { Succession = Succession.Baseline });
+            }
+            if (allGoalSuccessions.All(succession => succession.Succession != Succession.Target))
+            {
+                _database.Insert(new GoalSuccession { Succession = Succession.Target });
+            }
+            if (allGoalSuccessions.All(succession => succession.Succession != Succession.Interim))
+            {
+                _database.Insert(new GoalSuccession { Succession = Succession.Interim });
+            }
         }
 
         private int GetDatabaseVersion()
@@ -63,7 +81,7 @@ namespace PersonalTrainerWorkouts.Data
                 _database.CreateTable<Synergist>();
                 _database.CreateTable<OpposingMuscleGroup>();
 
-                CreateContactTables();
+                CreateClientTables();
 
                 _database.CreateTable<ExerciseType>();
                 _database.CreateTable<ExerciseEquipment>();
@@ -89,7 +107,7 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<Synergist>();
             _database.DropTable<OpposingMuscleGroup>();
 
-            DropContactTables();
+            DropClientTables();
 
             _database.DropTable<ExerciseType>();
             _database.DropTable<ExerciseEquipment>();
@@ -98,7 +116,7 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<LinkedWorkoutsToExercises>();
         }
 
-        public void CreateContactTables()
+        public void CreateClientTables()
         {
             _database.CreateTable<Client>();
             _database.CreateTable<Session>();
@@ -106,6 +124,7 @@ namespace PersonalTrainerWorkouts.Data
             _database.CreateTable<PhoneNumber>();
             _database.CreateTable<Measurable>();
             _database.CreateTable<UnitOfMeasurement>();
+            _database.CreateTable<GoalSuccession>();
             _database.CreateTable<Goal>();
 
             _database.CreateTable<AppContact>();
@@ -113,7 +132,7 @@ namespace PersonalTrainerWorkouts.Data
             _database.CreateTable<AppContactEmail>();
         }
 
-        public void DropContactTables()
+        public void DropClientTables()
         {
             _database.DropTable<Client>();
             _database.DropTable<Session>();
@@ -121,13 +140,15 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<PhoneNumber>();
             _database.DropTable<Measurable>();
             _database.DropTable<UnitOfMeasurement>();
+            _database.DropTable<GoalSuccession>();
             _database.DropTable<Goal>();
 
             _database.DropTable<AppContact>();
             _database.DropTable<AppContactPhone>();
             _database.DropTable<AppContactEmail>();
         }
-
+        
+        
         public string GetFilePath()
         {
             return _path;
@@ -208,7 +229,10 @@ namespace PersonalTrainerWorkouts.Data
 
         public Address GetPhoneNumber(int phoneNumberId) => throw new NotImplementedException();
 
-        public IEnumerable<Measurable> GetAllMeasurables(bool forceRefresh = false) => throw new NotImplementedException();
+        public IEnumerable<Measurable> GetAllMeasurables(bool forceRefresh = false)
+        {
+            return _database.GetAllWithChildren<Measurable>();
+        }
 
         public Address GetMeasurable(int measurableId) => throw new NotImplementedException();
 
@@ -309,6 +333,12 @@ namespace PersonalTrainerWorkouts.Data
             return _database.GetAllWithChildren<Client>();
         }
 
+        public IEnumerable<Goal> GetGoals(bool forceRefresh = false)
+        {
+            return _database.GetAllWithChildren<Goal>();
+            
+        }
+        
         public IEnumerable<AppContact> GetAppContacts(bool forceRefresh = false)
         {
             return _database.GetAllWithChildren<AppContact>();
@@ -794,6 +824,14 @@ namespace PersonalTrainerWorkouts.Data
             return numberDeleted;
         }
 
+        public int DeleteMeasurable(ref Measurable measurable)
+        {
+            var numberDelete = _database.Delete(measurable);
+            measurable = null;
+
+            return numberDelete;
+        }
+
         /// <summary>
         /// Generic Delete TODO: Need to test to ensure it works as intended.
         /// </summary>
@@ -897,8 +935,7 @@ namespace PersonalTrainerWorkouts.Data
 
         public int DeletePhoneNumber(ref PhoneNumber phoneNumber) => throw new NotImplementedException();
 
-        public int DeleteMeasurable(ref Measurable measurable) => throw new NotImplementedException();
-
+        
         public int UpdateAddress(Address address)
         {
             return _database.Update(address);
@@ -1023,7 +1060,12 @@ namespace PersonalTrainerWorkouts.Data
             return phoneNumber.Id;
         }
 
-        public int AddMeasurable(Measurable measurable) => throw new NotImplementedException();
+        public int AddMeasurable(Measurable measurable)
+        {
+            _database.Insert(measurable);
+
+            return measurable.Id;
+        }
 
         public int AddContact(AppContact contact)
         {
@@ -1104,9 +1146,16 @@ namespace PersonalTrainerWorkouts.Data
         }
         public int AddJustOneGoal(Goal goal)
         {
-            return _database.Insert(goal) == 1 ?
-                           goal.Id
-                           : 0;
+            return _database.Insert(goal) == 1
+                                ? goal.Id
+                                : 0;
+        }
+
+        public int AddJustOneMeasurable(Measurable measurable)
+        {
+            return _database.Insert(measurable) == 1
+                                ? measurable.Id
+                                : 0;
         }
 
         public void AddJustOneClientWithChildren(Client client)

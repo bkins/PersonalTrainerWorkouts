@@ -1,0 +1,241 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:PersonalTrainerWorkouts.Views.CustomControls;assembly=PersonalTrainerWorkouts"
+             xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels.Tab_Clients;assembly=PersonalTrainerWorkouts"
+             x:Class="PersonalTrainerWorkouts.Views.Tab_Clients.GoalsAddEditPage"
+             x:DataType="viewModels:GoalViewModel"
+             >
+    <ContentPage.ToolbarItems>
+        <ToolbarItem x:Name="SaveToolbarItem"
+                     Text="Save"
+                     IconImageSource="save_black_48.png"
+                     Clicked="SaveButton_OnClicked" 
+                     />
+    </ContentPage.ToolbarItems>
+       
+    <ContentPage.Content>
+           <!--RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto">-->
+           <ScrollView>
+            <Grid ColumnDefinitions="40*, 50*, 10*"
+                  RowDefinitions="25, 25, 40, 25, 40, 40, 40, 40, Auto, 25, Auto, Auto">
+                   
+                   <Label x:Name="ClientNameLabel"
+                          Text="{Binding ClientNameForDisplay}"
+                          Grid.Column="0"
+                          Grid.Row="0"
+                          Grid.ColumnSpan="3"
+                          HorizontalTextAlignment="Center"
+                          FontAttributes="Bold"
+                          FontSize="Medium"
+                          
+                          />
+                   <Label x:Name="NameLabel"
+                          Text="Name: "
+                          Grid.Column="0"
+                          Grid.Row="1"
+                          FontAttributes="Bold"
+                          FontSize="Medium"
+                          VerticalOptions="Fill"
+                          HorizontalOptions="Start" />
+                <Editor x:Name="NameEditor"
+                        Placeholder="name of goal"
+                        Grid.Column="0"
+                        Grid.Row="2"
+                        Grid.ColumnSpan="3"
+                        VerticalOptions="Fill"
+                        HorizontalOptions="Start" />
+
+                <Label x:Name="DescriptionLabel"
+                       Text="Description: "
+                       Grid.Column="0"
+                       Grid.Row="3"
+                       FontAttributes="Bold"
+                       FontSize="Medium"
+                       VerticalOptions="Fill"
+                       HorizontalOptions="StartAndExpand" 
+                       />
+                <Editor x:Name="DescriptionEditor"
+                        Grid.Column="0"
+                        Grid.Row="4"
+                        Grid.ColumnSpan="3"
+                        Placeholder="short description"
+                        VerticalOptions="Fill"
+                        HorizontalOptions="Start" 
+                        />
+                <Label x:Name="StartDateLabel"
+                       Text="Start Date: "
+                       Grid.Column="0"
+                       Grid.Row="5"
+                       FontAttributes="Bold"
+                       FontSize="Medium"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Start" 
+                       />
+                <local:NullableDatePicker x:Name="StartDatePicker"
+                                          Grid.Column="1"
+                                          Grid.Row="5"
+                                          Grid.ColumnSpan="2"
+                                          Date="{Binding Goal.DateStarted}"
+                                          PlaceHolder="  /  /    "
+                                          Format="d"
+                                          TextColor="Black"
+                                          WidthRequest="100"
+                                          FontSize="Medium"
+                                          VerticalOptions="Start"
+                                          HorizontalOptions="StartAndExpand"
+                                          DateSelected="StartDatePicker_OnDateSelected" 
+                />
+                <Label x:Name="TargetDateLabel"
+                       Text="Target Date: "
+                       Grid.Column="0"
+                       Grid.Row="6"
+                       FontAttributes="Bold"
+                       FontSize="Medium"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Start" 
+                       />
+                <DatePicker x:Name="TargetDatePicker"
+                            Grid.Column="1"
+                            Grid.Row="6"
+                            Grid.ColumnSpan="2"
+                            Date="{Binding Goal.TargetDate}"
+                            TextColor="Black"
+                            WidthRequest="100"
+                            FontSize="Medium"
+                            VerticalOptions="Start"
+                            HorizontalOptions="StartAndExpand"
+                            DateSelected="TargetDatePicker_OnDateSelected" 
+                            />
+                <Label x:Name="CompletedDateLabel"
+                       Text="Completed Date: "
+                       Grid.Column="0"
+                       Grid.Row="7"
+                       FontAttributes="Bold"
+                       FontSize="Medium"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Start" 
+                       />
+                <local:NullableDatePicker x:Name="CompletedDatePicker"
+                                          Grid.Column="1"
+                                          Grid.Row="7"
+                                          Grid.ColumnSpan="2"
+                                          Date="{Binding Goal.DateCompleted}"
+                                          PlaceHolder="  /  /    "
+                                          Format="d"
+                                          TextColor="Black"
+                                          WidthRequest="100"
+                                          FontSize="Medium"
+                                          VerticalOptions="Start"
+                                          HorizontalOptions="StartAndExpand"
+                                          DateSelected="CompletedDatePicker_OnDateSelected"
+                                          PropertyChanged="CompletedDatePicker_OnPropertyChanged"
+                                          />
+                <Label x:Name="SuccessfullyCompletedLabel"
+                       Text="Completed Successfully?"
+                       Grid.Column="0"
+                       Grid.Row="8"
+                       FontAttributes="Bold"
+                       FontSize="Medium"
+                       VerticalOptions="Fill"
+                       HorizontalOptions="Start" 
+                       IsVisible="False"
+                       />
+                <CheckBox x:Name="SuccessfullyCompletedCheckbox"
+                          Grid.Column="1"
+                          Grid.Row="8"
+                          IsEnabled="False"
+                          IsVisible="False"
+                          />
+                <Label x:Name="FailedLabel"
+                       Text="Fail/Abandon?"
+                       Grid.Column="0"
+                       Grid.Row="9"
+                       FontAttributes="Bold"
+                       FontSize="Medium"
+                       VerticalOptions="Fill"
+                       HorizontalOptions="Start" 
+                       />
+                <CheckBox x:Name="FailedCheckbox"
+                          Grid.Column="1"
+                          Grid.Row="9" 
+                          />
+                <Label x:Name="StatusLabel"
+                       Text="Status:"
+                       Grid.Column="0"
+                       Grid.Row="10"
+                       FontAttributes="Bold"
+                       FontSize="Medium"
+                       VerticalOptions="Center"
+                       HorizontalOptions="Start" 
+                       />
+                <Editor x:Name="StatusEditor"
+                        Grid.Column="1"
+                        Grid.Row="10"
+                        Grid.ColumnSpan="2"
+                        Text="{Binding GoalStatusDescription}"
+                        IsReadOnly="True"
+                        VerticalOptions="Fill"
+                        HorizontalOptions="FillAndExpand" 
+                        />
+                <!-- <ImageButton x:Name="StatusImage" -->
+                <!--        Grid.Column="0" -->
+                <!--        Grid.Row="10" -->
+                <!--        HeightRequest="25" -->
+                <!--        BackgroundColor="Transparent" -->
+                <!--        /> -->
+                
+                <!--TODO Instead of doing the nonsense below, see ClientEditPage.xaml-->
+                <!--     And how it is displaying the correct image for the status-->
+                <Image x:Name="GoalStatusImage"
+                       Grid.Column="2"
+                       Grid.Row="10"
+                       HeightRequest="25"
+                       Source="{Binding GoalStatusImageFileName}"
+                       HorizontalOptions="Start"
+                       />
+                <!-- <Image x:Name="InProgressImage" -->
+                <!--        Grid.Column="1" -->
+                <!--        Grid.Row="10" -->
+                <!--        HeightRequest="25" -->
+                <!--        Source="Inprogress_48.png" /> -->
+                <!-- <Image x:Name="SuccessImage" -->
+                <!--        Grid.Column="1" -->
+                <!--        Grid.Row="10" -->
+                <!--        HeightRequest="25" -->
+                <!--        Source="Success_48.png"/> -->
+                <!-- <Image x:Name="NotStartedImage" -->
+                <!--        Grid.Column="1" -->
+                <!--        Grid.Row="10" -->
+                <!--        HeightRequest="25" -->
+                <!--        Source="NotStarted_48.png" /> -->
+                <!-- <Image x:Name="MissedTargetImage" -->
+                <!--        Grid.Column="1" -->
+                <!--        Grid.Row="10" -->
+                <!--        HeightRequest="25" -->
+                <!--        Source="MissedTarget_48.png"/> -->
+                <!-- <Image x:Name="FailedImage" -->
+                <!--        Grid.Column="1" -->
+                <!--        Grid.Row="10" -->
+                <!--        HeightRequest="25" -->
+                <!--        Source="Failed_48.png" /> -->
+                <!-- <Image x:Name="UnknownImage" -->
+                <!--        Grid.Column="1" -->
+                <!--        Grid.Row="10" -->
+                <!--        HeightRequest="25" -->
+                <!--        Source="Unknown_48.png"/> -->
+                   <Button x:Name="LogGoalVmData"
+                           Grid.Row="11"
+                           Text="Log GoalVm Data"
+                           Clicked="LogGoalVmData_OnClicked"/>
+            </Grid>
+
+            <!-- <Button x:Name="SaveButton" -->
+            <!--         Text="Save" -->
+            <!--         Clicked="SaveButton_OnClicked"/> -->
+
+
+        </ScrollView>
+    </ContentPage.Content>
+</ContentPage>

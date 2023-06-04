@@ -43,82 +43,101 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Update="Views\AboutPage.xaml.cs">
-      <DependentUpon>AboutPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\ConfigurationPage.xaml.cs">
-      <DependentUpon>ConfigurationPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TypeOfExerciseListPage.xaml.cs">
-      <DependentUpon>TypeOfExerciseListPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\TypeOfExerciseEntryPage.xaml.cs">
-      <DependentUpon>TypeOfExerciseEntryPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\WorkoutListPage.xaml.cs">
-      <DependentUpon>WorkoutListPage.xaml</DependentUpon>
-    </Compile>
     <Compile Update="Views\MessageLog.xaml.cs">
       <DependentUpon>MessageLog.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\ExerciseExistingEntryPage.xaml.cs">
-      <DependentUpon>ExerciseExistingEntryPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\ExerciseAddEditPage.xaml.cs">
-      <DependentUpon>ExerciseAddEditPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\ExerciseListPage.xaml.cs">
-      <DependentUpon>ExerciseListPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Update="Views\WorkoutExercisePage.xaml.cs">
-      <DependentUpon>WorkoutExercisePage.xaml</DependentUpon>
     </Compile>
     <Compile Update="Views\HomePage.xaml.cs">
       <DependentUpon>HomePage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Remove="ApplicationExceptions\**" />
+    <Compile Update="Views\Tab_About\AboutPage.xaml.cs">
+      <DependentUpon>AboutPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Clients\ClientEditPage.xaml.cs">
+      <DependentUpon>ClientEditPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Clients\ClientListPage.xaml.cs">
+      <DependentUpon>ClientListPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Workouts\EquipmentListPage.xaml.cs">
+      <DependentUpon>EquipmentListPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Workouts\ExerciseAddEditPage.xaml.cs">
+      <DependentUpon>ExerciseAddEditPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Workouts\ExerciseExistingEntryPage.xaml.cs">
+      <DependentUpon>ExerciseExistingEntryPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Workouts\ExerciseListPage.xaml.cs">
+      <DependentUpon>ExerciseListPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Workouts\ExerciseMuscleGroupListPage.xaml.cs">
+      <DependentUpon>ExerciseMuscleGroupListPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Clients\GoalsAddEditPage.xaml.cs">
+      <DependentUpon>GoalsAddEditPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Sessions\SessionEditPage.xaml.cs">
+      <DependentUpon>SessionEditPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Sessions\SessionListPage.xaml.cs">
+      <DependentUpon>SessionListPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Workouts\MuscleGroupListPage.xaml.cs">
+      <DependentUpon>MuscleGroupListPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Workouts\TypeOfExerciseEntryPage.xaml.cs">
+      <DependentUpon>TypeOfExerciseEntryPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Workouts\TypeOfExerciseListPage.xaml.cs">
+      <DependentUpon>TypeOfExerciseListPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Workouts\WorkoutEntryPage.xaml.cs">
+      <DependentUpon>WorkoutEntryPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Workouts\WorkoutExercisePage.xaml.cs">
+      <DependentUpon>WorkoutExercisePage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Workouts\WorkoutListPage.xaml.cs">
+      <DependentUpon>WorkoutListPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Workouts\WorkoutsPage.xaml.cs">
+      <DependentUpon>WorkoutsPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_SettingAndTools\ConfigurationPage.xaml.cs">
+      <DependentUpon>ConfigurationPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Update="Views\Tab_Sync\SyncPage.xaml.cs">
+      <DependentUpon>SyncPage.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Update="Views\AboutPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\ConfigurationPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\EquipmentListPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\ExerciseMuscleGroupListPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\MuscleGroupListPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\TypeOfExerciseEntryPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\TypeOfExerciseListPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
     <EmbeddedResource Update="Views\MessageLog.xaml">
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
-    <EmbeddedResource Update="Views\ExerciseAddEditPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\WorkoutListPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\SyncPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\WorkoutEntryPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
-    <EmbeddedResource Update="Views\WorkoutsPage.xaml">
-      <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
-    </EmbeddedResource>
+    <EmbeddedResource Remove="ApplicationExceptions\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -126,10 +145,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="ApplicationExceptions" />
+    <ProjectReference Include="..\..\..\Avails\Avails\Avails.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Avails\Avails\Avails.csproj" />
+    <None Remove="ApplicationExceptions\**" />
   </ItemGroup>
 </Project>

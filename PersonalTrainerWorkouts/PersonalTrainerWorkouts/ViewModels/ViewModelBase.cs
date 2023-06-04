@@ -7,7 +7,7 @@ namespace PersonalTrainerWorkouts.ViewModels
 {
     public class ViewModelBase : INotifyPropertyChanged
     {
-        private static DataAccess _dataAccess;
+        protected static DataAccess _dataAccess;
 
         public DataAccess DataAccessLayer
         {
@@ -21,6 +21,13 @@ namespace PersonalTrainerWorkouts.ViewModels
         {
             get => _contactsDataAccess = _contactsDataAccess ?? new ContactsDataAccess(App.ContactDataStore);
             set => _contactsDataAccess = value;
+        }
+
+        private bool _isBusy;
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetValue(ref _isBusy, value);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

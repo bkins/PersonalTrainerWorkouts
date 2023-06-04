@@ -3,7 +3,7 @@ using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.Models.Intermediates;
 
 using System.Collections.Generic;
-
+using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 using TypeOfExercise = PersonalTrainerWorkouts.Models.TypeOfExercise;
 
 namespace PersonalTrainerWorkouts.Data.Interfaces
@@ -67,8 +67,8 @@ namespace PersonalTrainerWorkouts.Data.Interfaces
 
         IEnumerable<Session> GetSessions(bool forceRefresh = false);
 
-        IEnumerable<Client> GetClients(bool forceRefresh = false);
-
+        IEnumerable<Client> GetClients(bool         forceRefresh = false);
+        IEnumerable<Goal> GetGoals(bool             forceRefresh = false);
         IEnumerable<AppContact> GetAppContacts(bool forceRefresh = false);
 
         LinkedWorkoutsToExercises GetLinkedWorkoutsToExercise(int linkedWorkoutsToExercisesId);
@@ -139,10 +139,11 @@ namespace PersonalTrainerWorkouts.Data.Interfaces
         string GetFileName();
 
         List<string> GetTables();
-        void DropContactTables();
-        void CreateContactTables();
-        void UpdateGoal(Goal goal);
-        int AddJustOneGoal(Goal goal);
-        Goal GetGoal(int goalId);
+        void DropClientTables();
+        void CreateClientTables();
+        void UpdateGoal(Goal                goal);
+        int AddJustOneGoal(Goal             goal);
+        Goal GetGoal(int                    goalId);
+        int AddJustOneMeasurable(Measurable measurable);
     }
 }

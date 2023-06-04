@@ -11,7 +11,11 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-
+using System.Runtime.InteropServices;
+using Newtonsoft.Json.Converters;
+using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
+using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
+using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
 using Xamarin.Essentials;
 
 using Xunit;
@@ -23,12 +27,12 @@ namespace Tests
     {
         private readonly ITestOutputHelper _testOutputHelper;
         private static   Database          _database;
-        private static   ContactsDataStore _contactsDataStore;
+        // private static   ContactsDataStore _contactsDataStore;
         private static readonly string DbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
                                                            , "P2Database_test.db3");
 
         public static Database          Database => _database ??= new Database(DbPath);
-        public static ContactsDataStore ContactsDataStore = _contactsDataStore ??= new ContactsDataStore();
+        // public static ContactsDataStore ContactsDataStore = _contactsDataStore ??= new ContactsDataStore();
         public static DataAccess        DataAccessLayer { get; set; }
 
         public static TestData TestData { get; set; }
@@ -38,7 +42,8 @@ namespace Tests
             _testOutputHelper = testOutputHelper;
             _testOutputHelper.WriteLine($"Database path: {DbPath}");
 
-            DataAccessLayer = new DataAccess(Database, ContactsDataStore);
+            // DataAccessLayer = new DataAccess(Database, ContactsDataStore);
+            DataAccessLayer = new DataAccess(Database);
             TestData        = new TestData();
         }
 
@@ -620,6 +625,291 @@ namespace Tests
             //Assert.Equal(workout.Id, workoutGottenFromDatabase.Id);
 
             //Assert.Equal(workout.Exercises.Count, workoutGottenFromDatabase.Exercises.Count);
+        }
+
+        [Theory]
+        [InlineData(false, false, false, Goal.Status.InProgress)]
+        [InlineData(false, false, true, Goal.Status.InProgress)]
+        [InlineData(false, true, false, Goal.Status.InProgress)]
+        [InlineData(false, true, true, Goal.Status.InProgress)]
+        [InlineData(true, false, false, Goal.Status.InProgress)]
+        [InlineData(true, false, true, Goal.Status.CompletedSuccessfully)]
+        [InlineData(true, true, false, Goal.Status.InProgress)]
+        [InlineData(true, true, true, Goal.Status.CompletedSuccessfully)]
+        
+        public void GoalMeasurablesScenario(bool        doInitialMeasurables
+                                          , bool        doIncompleteMeasurables
+                                          , bool        doCompleteInterimMeasurables
+                                          , Goal.Status expectedStatus)
+        {
+            //Setup
+            //Start with fresh DB
+            Database.DropTables();
+            Database.CreateTables();
+
+            var startingDate  = new DateTime(2023, 6, 3);
+            var goalVm        = SetUpGoalViewModel(startingDate);
+            var measurablesVm = new MeasurablesViewModel(goalVm.Goal.Id, DataAccessLayer);
+            
+            SetupAsserts(goalVm, measurablesVm);
+
+            Measurable baselineMeasurable = null;
+
+            //Step2            
+            if(doInitialMeasurables) baselineMeasurable = TestInitialMeasurables(startingDate
+                                                                               , goalVm
+                                                                               , measurablesVm);
+            
+            //Step2a
+            if (doIncompleteMeasurables 
+             && baselineMeasurable is not null) TestCompleteInterimMeasurables(baselineMeasurable
+                                                                             , startingDate
+                                                                             , measurablesVm
+                                                                             , goalVm);
+            
+            //Step3
+            if(doCompleteInterimMeasurables
+            && baselineMeasurable is not null) TestInterimMeasurables(baselineMeasurable
+                                                                    , startingDate
+                                                                    , measurablesVm
+                                                                    , goalVm);
+            //Final Step
+            goalVm.CalculateStatus();
+
+            Assert.Equal(expectedStatus, goalVm.Goal.GetStatus());
+
+            PrintReport(goalVm, measurablesVm, "Final Step: Success", "Setting Goal status based on Measurables");
+            //TestRecalculatingGoalStatusBasedOnMeasurables(goalVm, measurablesVm);
+        }
+
+        private void TestRecalculatingGoalStatusBasedOnMeasurables(GoalViewModel        goalVm
+                                                                 , MeasurablesViewModel measurablesVm)
+        {
+            goalVm.CalculateStatus();
+
+            Assert.Equal(Goal.Status.CompletedSuccessfully, goalVm.Goal.GetStatus());
+
+            PrintReport(goalVm, measurablesVm, "Step4: Success", "Setting Goal status based on Measurables");
+        }
+        
+        private void TestCompleteInterimMeasurables(Measurable           baselineMeasurable
+                                                  , DateTime             startingDate
+                                                  , MeasurablesViewModel measurablesVm
+                                                  , GoalViewModel        goalVm)
+        {
+
+            SetIncompleteInterimMeasurables(baselineMeasurable, startingDate);
+
+            measurablesVm.Refresh();
+
+            PrintReport(goalVm, measurablesVm, "Step3: Success", "Interim measurables");
+        }
+        private void TestInterimMeasurables(Measurable           baselineMeasurable
+                                          , DateTime             startingDate
+                                          , MeasurablesViewModel measurablesVm
+                                          , GoalViewModel        goalVm)
+        {
+
+            SetInterimMeasurables(baselineMeasurable, startingDate);
+
+            measurablesVm.Refresh();
+
+            PrintReport(goalVm, measurablesVm, "Step3: Success", "Interim measurables");
+        }
+
+        private Measurable TestInitialMeasurables(DateTime             startingDate
+                                                , GoalViewModel        goalVm
+                                                , MeasurablesViewModel measurablesVm)
+        {
+
+            var baselineMeasurable = SetBaselineAndTargetMeasurable(startingDate, goalVm);
+
+            measurablesVm.Refresh();
+
+            Assert.True(measurablesVm.Measurables.Any());
+
+            PrintReport(goalVm, measurablesVm, "Step2: Success.", "Defined Baseline and Target Measurables");
+
+            return baselineMeasurable;
+        }
+
+        private void SetupAsserts(GoalViewModel        goalVm
+                             , MeasurablesViewModel measurablesVm)
+        {
+            Assert.Equal(1, goalVm.Goal.Id);
+            Assert.True(goalVm.ClientName.HasValue());
+            Assert.True(goalVm.ClientNameForDisplay.HasValue());
+            Assert.Equal(Goal.Status.InProgress, goalVm.Goal.GetStatus());
+
+            PrintReport(goalVm, measurablesVm, "Step1: Success.", "Client and Goals defined and associated.");
+        }
+
+        private static Measurable SetBaselineAndTargetMeasurable(DateTime      startingDate
+                                                               , GoalViewModel newGoalVm)
+        {
+
+            var baselineMeasurable = new Measurable
+                                         {
+                                             Variable       = "Weight"
+                                           , Value          = 195
+                                           , GoalSuccession = Succession.Baseline
+                                           , DateTaken      = startingDate
+                                           , GoalId         = newGoalVm.Goal.Id
+                                           , ClientId       = newGoalVm.Goal.ClientId
+                                         };
+            var targetMeasurable = new Measurable
+                                       {
+                                           Variable       = baselineMeasurable.Variable
+                                         , Value          = 175
+                                         , GoalSuccession = Succession.Target
+                                         , DateTaken      = startingDate
+                                         , GoalId         = newGoalVm.Goal.Id
+                                         , ClientId       = newGoalVm.Goal.ClientId
+                                       };
+            Database.AddMeasurable(baselineMeasurable);
+            Database.AddMeasurable(targetMeasurable);
+
+            return baselineMeasurable;
+        }
+
+        private static void SetIncompleteInterimMeasurables(Measurable baselineMeasurable
+                                                , DateTime   startingDate)
+        {
+            var interim1Measurables = new Measurable
+                                          {
+                                              Variable              = baselineMeasurable.Variable
+                                            , GoalId                = baselineMeasurable.GoalId
+                                            , ClientId              = baselineMeasurable.ClientId
+                                            , GoalSuccession        = Succession.Interim
+                                            , DateTaken             = startingDate.AddDays(7)
+                                            , Value                 = 194
+                                            , Type                  = "Measurement"
+                                          };
+            Database.AddMeasurable(interim1Measurables);
+
+            var interim2Measurables = new Measurable
+                                          {
+                                              Variable              = baselineMeasurable.Variable
+                                            , GoalId                = baselineMeasurable.GoalId
+                                            , ClientId              = baselineMeasurable.ClientId
+                                            , GoalSuccession        = Succession.Interim
+                                            , DateTaken             = startingDate.AddDays(14)
+                                            , Value                 = 192
+                                            , Type                  = "Measurement"
+                                          };
+            
+            Database.AddMeasurable(interim2Measurables);
+
+            var interim3Measurables = new Measurable
+                                          {
+                                              Variable              = baselineMeasurable.Variable
+                                            , GoalId                = baselineMeasurable.GoalId
+                                            , ClientId              = baselineMeasurable.ClientId
+                                            , GoalSuccession        = Succession.Interim
+                                            , DateTaken             = startingDate.AddDays(21)
+                                            , Value                 = 185
+                                            , Type                  = "Measurement"
+                                          };
+            
+            Database.AddMeasurable(interim3Measurables);
+
+        }
+        
+        private static void SetInterimMeasurables(Measurable baselineMeasurable
+                                                , DateTime   startingDate)
+        {
+            var interim1Measurables = new Measurable
+                                          {
+                                              Variable              = baselineMeasurable.Variable
+                                            , GoalId                = baselineMeasurable.GoalId
+                                            , ClientId              = baselineMeasurable.ClientId
+                                            , GoalSuccession        = Succession.Interim
+                                            , DateTaken             = startingDate.AddDays(7)
+                                            , Value                 = 194
+                                            , Type                  = "Measurement"
+                                          };
+            Database.AddMeasurable(interim1Measurables);
+
+            var interim2Measurables = new Measurable
+                                          {
+                                              Variable              = baselineMeasurable.Variable
+                                            , GoalId                = baselineMeasurable.GoalId
+                                            , ClientId              = baselineMeasurable.ClientId
+                                            , GoalSuccession        = Succession.Interim
+                                            , DateTaken             = startingDate.AddDays(14)
+                                            , Value                 = 192
+                                            , Type                  = "Measurement"
+                                          };
+            
+            Database.AddMeasurable(interim2Measurables);
+
+            var interim3Measurables = new Measurable
+                                          {
+                                              Variable              = baselineMeasurable.Variable
+                                            , GoalId                = baselineMeasurable.GoalId
+                                            , ClientId              = baselineMeasurable.ClientId
+                                            , GoalSuccession        = Succession.Interim
+                                            , DateTaken             = startingDate.AddDays(21)
+                                            , Value                 = 185
+                                            , Type                  = "Measurement"
+                                          };
+            
+            Database.AddMeasurable(interim3Measurables);
+
+            var interim4Measurables = new Measurable
+                                          {
+                                              Variable              = baselineMeasurable.Variable
+                                            , GoalId                = baselineMeasurable.GoalId
+                                            , ClientId              = baselineMeasurable.ClientId
+                                            , GoalSuccession        = Succession.Interim
+                                            , DateTaken             = startingDate.AddDays(28)
+                                            , Value                 = 175
+                                            , Type                  = "Measurement"
+                                          };
+            
+            Database.AddMeasurable(interim4Measurables);
+        }
+
+        private void PrintReport(GoalViewModel newGoalVm, MeasurablesViewModel measurablesViewModel, string title, string subTitle)
+        {
+            _testOutputHelper.WriteLine("");
+            _testOutputHelper.WriteLine(title);
+            _testOutputHelper.WriteLine($"       {subTitle}");
+
+            _testOutputHelper.WriteLine("");
+            _testOutputHelper.WriteLine($"  Client: {newGoalVm.ClientName}");
+            _testOutputHelper.WriteLine($"    Goal: ");
+            _testOutputHelper.WriteLine($"      {newGoalVm.Goal}");
+            
+            if (measurablesViewModel.Measurables.Any()) _testOutputHelper.WriteLine( "        Measurables:");
+            
+            foreach (var measurable in measurablesViewModel.Measurables)
+            {
+                _testOutputHelper.WriteLine($"            {measurable}");
+            }
+
+        }
+
+        private static GoalViewModel SetUpGoalViewModel(DateTime startingDate)
+        {
+            var client = new Client
+                             {
+                                 Name = "Test Client"
+                             };
+            var goal = new Goal
+                           {
+                               Name             = "Lose 20lbs"
+                             , DateStarted      = startingDate
+                             , TargetComparison = TargetComparisons.CanBeLessThan
+                           };
+
+
+            client.Goals.Add(goal);
+
+            Database.AddJustOneClientWithChildren(client);
+            var newGoalVm = new GoalViewModel(goal, DataAccessLayer);
+
+            return newGoalVm;
         }
 
         #region Helper methods

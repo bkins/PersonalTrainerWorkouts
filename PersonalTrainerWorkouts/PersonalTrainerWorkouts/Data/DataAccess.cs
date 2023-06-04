@@ -7,8 +7,10 @@ using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.Models.Intermediates;
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 
 namespace PersonalTrainerWorkouts.Data
 {
@@ -25,6 +27,11 @@ namespace PersonalTrainerWorkouts.Data
             ContactsDataStore = contactsDataStore;
         }
 
+        public DataAccess(IDataStore database)
+        {
+            Database          = database;
+            ContactsDataStore = null;
+        }
         private string GetDatabaseLocation()
         {
             return Database.GetFilePath();
@@ -47,12 +54,12 @@ namespace PersonalTrainerWorkouts.Data
 
         public void CreateContactTables()
         {
-            Database.CreateContactTables();
+            Database.CreateClientTables();
         }
 
         public void DropContactTables()
         {
-            Database.DropContactTables();
+            Database.DropClientTables();
         }
 
         public string GetDatabasePath()
@@ -209,6 +216,20 @@ namespace PersonalTrainerWorkouts.Data
                 return 0;
             }
         }
+
+        public int DeleteMeasurable(Measurable measurable)
+        {
+            try
+            {
+                return Database.DeleteMeasurable(ref measurable);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine($"Something unexpected happened while deleting {nameof(Measurable)}: {e.Message}", Category.Error, e);
+
+                return 0;
+            }
+        }
     }
 
     public partial class DataAccess //Updates
@@ -290,6 +311,26 @@ namespace PersonalTrainerWorkouts.Data
             return allClients;
         }
 
+        public IEnumerable<Goal> GetGoals()
+        {
+            return Database.GetGoals();
+        }
+
+        public IEnumerable<Measurable> GetMeasurables()
+        {
+            return Database.GetAllMeasurables();
+        }
+
+        public IEnumerable<Measurable> GetMeasurablesByGoal(int goalId)
+        {
+            return GetMeasurables().Where(measurable => measurable.GoalId == goalId);
+        }
+
+        public IEnumerable<Measurable> GetMeasurablesByClient(int clientId)
+        {
+            return GetMeasurables().Where(measurable => measurable.ClientId == clientId);
+        }
+        
         public IEnumerable<AppContact> GetAppContacts()
         {
             return Database.GetAppContacts() ?? new List<AppContact>();
@@ -406,6 +447,12 @@ namespace PersonalTrainerWorkouts.Data
         {
             return Database.AddJustOneGoal(goal);
         }
+
+        public int AddMeasurable(Measurable measurable)
+        {
+            return Database.AddJustOneMeasurable(measurable);
+        }
+        
         public int AddNewTypeOfExercise(TypeOfExercise typeOfExercise)
         {
             var allTypesOfExercises = Database.GetTypes();

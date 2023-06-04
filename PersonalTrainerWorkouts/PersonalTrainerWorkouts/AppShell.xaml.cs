@@ -1,6 +1,9 @@
 ﻿using PersonalTrainerWorkouts.Views;
+using PersonalTrainerWorkouts.Views.Tab_Clients;
+using PersonalTrainerWorkouts.Views.Tab_Sessions;
+using PersonalTrainerWorkouts.Views.Tab_Workouts;
 using Xamarin.Forms;
-using WorkoutExercisePage = PersonalTrainerWorkouts.Views.WorkoutExercisePage;
+using WorkoutExercisePage = PersonalTrainerWorkouts.Views.Tab_Workouts.WorkoutExercisePage;
 
 namespace PersonalTrainerWorkouts
 {

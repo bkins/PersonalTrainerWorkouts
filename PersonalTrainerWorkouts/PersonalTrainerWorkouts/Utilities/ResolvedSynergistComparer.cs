@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using PersonalTrainerWorkouts.ViewModels;
+using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
 
 namespace PersonalTrainerWorkouts.Utilities
 {

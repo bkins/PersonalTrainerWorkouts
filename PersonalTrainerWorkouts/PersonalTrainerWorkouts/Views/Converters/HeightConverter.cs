@@ -13,7 +13,8 @@ namespace PersonalTrainerWorkouts.Views.Converters
                             , object      parameter
                             , CultureInfo culture)
         {
-            return parameter is SfListView listView && value is ObservableCollection<T> items ?
+            return parameter is SfListView listView 
+                   && value is ObservableCollection<T> items ?
                            items.Count * listView.ItemSize :
                            0;
         }

@@ -23,6 +23,11 @@ namespace PersonalTrainerWorkouts.UWP.Utilities
                 .Show(); 
         }
 
+        public void Log(LogLevel level, string message, Exception ex, string caller)
+        {
+            throw new NotImplementedException();
+        }
+
         public void Log(LogLevel  level
                       , string    message
                       , Exception ex)

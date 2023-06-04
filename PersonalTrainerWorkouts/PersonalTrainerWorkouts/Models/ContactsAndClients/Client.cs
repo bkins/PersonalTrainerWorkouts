@@ -9,7 +9,7 @@ using SQLiteNetExtensions.Attributes;
 
 using System.Collections.Generic;
 using System.Linq;
-
+using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 using Xamarin.Essentials;
 
 namespace PersonalTrainerWorkouts.Models.ContactsAndClients

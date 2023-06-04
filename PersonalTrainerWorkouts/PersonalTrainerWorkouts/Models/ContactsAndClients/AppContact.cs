@@ -89,6 +89,8 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients
 
         public Contact ToContact(IContactsDataStore contactsDataStore, AppContact selectedContact = null)
         {
+            if (contactsDataStore is null) return new Contact();
+            
             var contactsDataAccess = new ContactsDataAccess(contactsDataStore);
 
             if (selectedContact is not null)

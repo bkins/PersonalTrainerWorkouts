@@ -3,6 +3,12 @@
 <Shell xmlns="http://xamarin.com/schemas/2014/forms"
        xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
        xmlns:views="clr-namespace:PersonalTrainerWorkouts.Views"
+       xmlns:tabAbout="clr-namespace:PersonalTrainerWorkouts.Views.Tab_About;assembly=PersonalTrainerWorkouts"
+       xmlns:tabClients="clr-namespace:PersonalTrainerWorkouts.Views.Tab_Clients;assembly=PersonalTrainerWorkouts"
+       xmlns:tabSessions="clr-namespace:PersonalTrainerWorkouts.Views.Tab_Sessions;assembly=PersonalTrainerWorkouts"
+       xmlns:tabWorkouts="clr-namespace:PersonalTrainerWorkouts.Views.Tab_Workouts;assembly=PersonalTrainerWorkouts"
+       xmlns:tabSettingAndTools="clr-namespace:PersonalTrainerWorkouts.Views.Tab_SettingAndTools;assembly=PersonalTrainerWorkouts"
+       xmlns:tabSync="clr-namespace:PersonalTrainerWorkouts.Views.Tab_Sync;assembly=PersonalTrainerWorkouts"
        x:Class="PersonalTrainerWorkouts.AppShell">
 
     <TabBar>
@@ -12,24 +18,24 @@
                       ContentTemplate="{DataTemplate views:WorkoutsPage}" />-->
         <ShellContent Title="Sessions"
                       Icon="calendar_month_black_48.png"
-                      ContentTemplate="{DataTemplate views:SessionListPage}"/>
+                      ContentTemplate="{DataTemplate tabSessions:SessionListPage}"/>
         <ShellContent Title="Clients"
                       Icon="groups_black_48.png"
-                      ContentTemplate="{DataTemplate views:ClientListPage}"/>
+                      ContentTemplate="{DataTemplate tabClients:ClientListPage}"/>
         <ShellContent Title="Workouts"
                       Icon="fitness_center_black_48.png"
-                      ContentTemplate="{DataTemplate views:WorkoutListPage}"/>
+                      ContentTemplate="{DataTemplate tabWorkouts:WorkoutListPage}"/>
         
         <ShellContent Title="Settings &amp; Tools"
                       Icon="settings_black_48.png"
-                      ContentTemplate="{DataTemplate views:ConfigurationPage}" 
+                      ContentTemplate="{DataTemplate tabSettingAndTools:ConfigurationPage}" 
                       />
         <ShellContent Title="Sync"
                       Icon="sync_black_48.png"
-                      ContentTemplate="{DataTemplate views:SyncPage}" />
+                      ContentTemplate="{DataTemplate tabSync:SyncPage}" />
         <ShellContent Title="About"
                       Icon="icon_about.png"
-                      ContentTemplate="{DataTemplate views:AboutPage}" />
+                      ContentTemplate="{DataTemplate tabAbout:AboutPage}" />
     </TabBar>
 
 </Shell>
