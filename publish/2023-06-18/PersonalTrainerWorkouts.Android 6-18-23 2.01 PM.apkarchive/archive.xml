@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Archive>
+  <Name>PersonalTrainerWorkouts.Android</Name>
+  <PackageName>com.companyname.personaltrainerworkouts</PackageName>
+  <PackageVersionCode>1</PackageVersionCode>
+  <PackageVersionName>0.2</PackageVersionName>
+  <PackageFormat>apk</PackageFormat>
+  <CreationDate>638227188691559956</CreationDate>
+  <SolutionName>PersonalTrainerWorkouts</SolutionName>
+  <SolutionPath>C:\Users\benho\Repos\PersonalTrainerWorkouts\PersonalTrainerWorkouts.sln</SolutionPath>
+  <Status></Status>
+  <MinSdkVersion>29</MinSdkVersion>
+  <Configuration>
+    <DebugMode>false</DebugMode>
+  </Configuration>
+</Archive>
