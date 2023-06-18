@@ -6,7 +6,6 @@ using System.Web;
 using Avails.D_Flat.Exceptions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
-using PersonalTrainerWorkouts.ViewModels;
 using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
 using Xamarin.Forms;
 using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;

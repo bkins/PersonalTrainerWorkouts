@@ -6,13 +6,10 @@ using PersonalTrainerWorkouts.Data.Interfaces;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.Models.Intermediates;
-using PersonalTrainerWorkouts.ViewModels;
-
 using Syncfusion.DataSource.Extensions;
 
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;

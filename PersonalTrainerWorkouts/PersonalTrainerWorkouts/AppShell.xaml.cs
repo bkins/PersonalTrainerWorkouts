@@ -1,5 +1,4 @@
-﻿using PersonalTrainerWorkouts.Views;
-using PersonalTrainerWorkouts.Views.Tab_Clients;
+﻿using PersonalTrainerWorkouts.Views.Tab_Clients;
 using PersonalTrainerWorkouts.Views.Tab_Sessions;
 using PersonalTrainerWorkouts.Views.Tab_Workouts;
 using Xamarin.Forms;
@@ -56,6 +55,7 @@ namespace PersonalTrainerWorkouts
             Routing.RegisterRoute(nameof(ClientEditPage), typeof(ClientEditPage));
             
             Routing.RegisterRoute(nameof(GoalsAddEditPage), typeof(GoalsAddEditPage));
+            Routing.RegisterRoute(nameof(MeasurablesAddPage), typeof(MeasurablesAddPage));
         }
     }
 }

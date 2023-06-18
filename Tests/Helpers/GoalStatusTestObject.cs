@@ -1,6 +1,4 @@
-﻿using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Models.ContactsAndClients;
-using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
+﻿using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 
 namespace Tests.Helpers;
 

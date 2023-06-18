@@ -2,10 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using Avails.D_Flat.Extensions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models.ContactsAndClients;
-using PersonalTrainerWorkouts.ViewModels;
+using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
 using Xamarin.Essentials;
 using Xamarin.Forms;
@@ -63,9 +64,18 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
             //         }).ConfigureAwait(false);
 
             //BindingContext = ClientVm;
-            
-            GoalsCollectionView.ItemsSource = ClientVm.Goals;
-            PhoneNumberPicker.ItemsSource = ClientVm.PhoneNumbers;
+            GoalVm = new GoalViewModel(ClientId.ToSafeInt());
+
+            BindingContext = GoalVm;
+
+            GoalsCollectionView.ItemsSource       = ClientVm.Goals;
+            MeasurablesCollectionView.ItemsSource = ClientVm.Measurables
+                                                            .Where(measurable => measurable.GoalSuccession != Succession.Baseline)
+                                                            .OrderBy(measurable => measurable.Variable)
+                                                            .ThenByDescending(measurable => measurable.GoalSuccession)
+                                                            .ThenBy(measurable => measurable.DateTaken);
+
+            PhoneNumberPicker.ItemsSource         = ClientVm.PhoneNumbers;
             
             Title = ClientVm.Client.DisplayName;
 
@@ -137,6 +147,7 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
         private void PhoneNumberPicker_OnOkButtonClicked(object                    sender
                                                        , SelectionChangedEventArgs e)
         {
+            PhoneNumberPicker.IsOpen    = false;
             PhoneNumberPicker.IsVisible = false;
 
             var selectedNumber = PhoneNumberPicker.SelectedItem as PhoneNumber;
@@ -148,6 +159,7 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
         private void PhoneNumberPicker_OnCancelButtonClicked(object                    sender
                                                            , SelectionChangedEventArgs e)
         {
+            PhoneNumberPicker.IsOpen    = false;
             PhoneNumberPicker.IsVisible = false;
         }
 
@@ -179,11 +191,27 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
                                                     , EventArgs e)
         {
             //Bring up picker of a list of number that are in the Client to reassign the main number
+            PhoneNumberPicker.IsOpen    = true;
             PhoneNumberPicker.IsVisible = true;
         }
 
+        private void AddNewMeasurableButton_OnClicked(object    sender
+                                                    , EventArgs e)
+        {
+            PageNavigation.NavigateTo(nameof(MeasurablesAddPage)
+                                    , nameof(MeasurablesAddPage.ClientId)
+                                    , ClientId
+                                    , nameof(MeasurablesAddPage.GoalId)
+                                    , "0");
+        }
+
+        private void MeasurablesCollectionView_OnSelectionChanged(object                                  sender
+                                                                , Xamarin.Forms.SelectionChangedEventArgs e)
+        {
+
+        }
         #endregion
 
-        
+
     }
 }

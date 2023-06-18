@@ -147,8 +147,25 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<AppContactPhone>();
             _database.DropTable<AppContactEmail>();
         }
-        
-        
+
+        public void InsertConfigurationValues()
+        {
+            InsertUnitsOfMeasurements();
+        }
+
+        private void InsertUnitsOfMeasurements()
+        {
+            var unitOfMeasurements = _database.GetAllWithChildren<UnitOfMeasurement>();
+
+            foreach (var name in Enum.GetNames(typeof(Unit)))
+            {
+                if (unitOfMeasurements.All(unit => unit.Unit != name))
+                {
+                    _database.Insert(new UnitOfMeasurement { Unit = name });
+                }
+            }
+        }
+
         public string GetFilePath()
         {
             return _path;
@@ -234,7 +251,10 @@ namespace PersonalTrainerWorkouts.Data
             return _database.GetAllWithChildren<Measurable>();
         }
 
-        public Address GetMeasurable(int measurableId) => throw new NotImplementedException();
+        public Measurable GetMeasurable(int measurableId)
+        {
+            return _database.Get<Measurable>(measurableId);
+        }
 
         public Client GetClient(int clientId)
         {
@@ -283,6 +303,11 @@ namespace PersonalTrainerWorkouts.Data
 
                 throw;
             }
+        }
+
+        public IEnumerable<UnitOfMeasurement> GetUnitOfMeasurements()
+        {
+            return _database.GetAllWithChildren<UnitOfMeasurement>();
         }
 
         //BENDO: For all methods that take forceRefresh, call method that will rebuild the object by calling the database to get current values
@@ -832,6 +857,14 @@ namespace PersonalTrainerWorkouts.Data
             return numberDelete;
         }
 
+        public int DeleteGoal(ref Goal goal)
+        {
+            var numberDeleted = _database.Delete(goal);
+            goal = null;
+
+            return numberDeleted;
+        }
+
         /// <summary>
         /// Generic Delete TODO: Need to test to ensure it works as intended.
         /// </summary>
@@ -929,7 +962,10 @@ namespace PersonalTrainerWorkouts.Data
 
     public partial class Database //Updates
     {
-        public int UpdateMeasurable(Measurable measurable) => throw new NotImplementedException();
+        public int UpdateMeasurable(Measurable measurable)
+        {
+            return _database.Update(measurable);
+        }
 
         public int DeleteAddress(ref Address address) => throw new NotImplementedException();
 

@@ -125,7 +125,7 @@ namespace PersonalTrainerWorkouts.Data.Interfaces
         int AddPhoneNumber(PhoneNumber phoneNumber);
 
         IEnumerable<Measurable> GetAllMeasurables(bool forceRefresh = false);
-        Address GetMeasurable(int measurableId);
+        Measurable GetMeasurable(int measurableId);
         int DeleteMeasurable(ref Measurable measurable);
         int UpdateMeasurable(Measurable measurable);
         int AddMeasurable(Measurable measurable);
@@ -145,5 +145,8 @@ namespace PersonalTrainerWorkouts.Data.Interfaces
         int AddJustOneGoal(Goal             goal);
         Goal GetGoal(int                    goalId);
         int AddJustOneMeasurable(Measurable measurable);
+        void InsertConfigurationValues();
+        IEnumerable<UnitOfMeasurement> GetUnitOfMeasurements();
+        int DeleteGoal(ref Goal goal);
     }
 }

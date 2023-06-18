@@ -1,6 +1,5 @@
 ﻿using System;
 using PersonalTrainerWorkouts.Services;
-using PersonalTrainerWorkouts.ViewModels;
 using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

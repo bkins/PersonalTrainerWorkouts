@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
-using PersonalTrainerWorkouts.ViewModels;
 using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
 using Syncfusion.DataSource.Extensions;
 using Syncfusion.ListView.XForms;

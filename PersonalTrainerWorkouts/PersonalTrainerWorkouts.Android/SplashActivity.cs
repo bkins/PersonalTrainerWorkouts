@@ -50,8 +50,9 @@ namespace PersonalTrainerWorkouts.Droid
 
             var tasks = new List<Task>
                         {
-                            LoadAppResources()
-                            //, Add loading of resources that can be retrieve at start up here
+                            LoadContactsFromDevice()
+                          , InsertConfigurationValueIntoDatabase()
+                        //, Add loading of resources that can be retrieve at start up here
                         };
 
             await Task.WhenAll(tasks);
@@ -61,7 +62,7 @@ namespace PersonalTrainerWorkouts.Droid
             StartActivity(new Intent(Application.Context, typeof(MainActivity)));
         }
 
-        private static Task<bool> LoadAppResources()
+        private static Task<bool> LoadContactsFromDevice()
         {
             if (App.ContactDataStore.DeviceContacts.HasNoValue())
             {
@@ -70,7 +71,12 @@ namespace PersonalTrainerWorkouts.Droid
             return Task.FromResult(true);
         }
 
+        private static Task<bool> InsertConfigurationValueIntoDatabase()
+        {
+            App.Database.InsertConfigurationValues();
 
+            return Task.FromResult(true);
+        }
     }
 
 }

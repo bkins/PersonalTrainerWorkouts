@@ -7,7 +7,6 @@ using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.Models.Intermediates;
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
@@ -230,6 +229,20 @@ namespace PersonalTrainerWorkouts.Data
                 return 0;
             }
         }
+
+        public int DeleteGoal(Goal goal)
+        {
+            try
+            {
+                return Database.DeleteGoal(ref goal);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine($"Something unexpected happened while deleting {nameof(Goal)}: {e.Message}", Category.Error, e);
+
+                return 0;
+            }
+        }
     }
 
     public partial class DataAccess //Updates
@@ -253,6 +266,11 @@ namespace PersonalTrainerWorkouts.Data
         public void UpdateGoal(Goal goal)
         {
             Database.UpdateGoal(goal);
+        }
+
+        public void UpdateMeasurable(Measurable measurable)
+        {
+            Database.UpdateMeasurable(measurable);
         }
 
         public void UpdateExercise(Exercise exercise)
@@ -281,6 +299,11 @@ namespace PersonalTrainerWorkouts.Data
         public IEnumerable<Workout> GetWorkouts()
         {
             return Database.GetWorkouts() ?? new List<Workout>();
+        }
+
+        public IEnumerable<UnitOfMeasurement> GetUnitOfMeasures()
+        {
+            return Database.GetUnitOfMeasurements() ?? new List<UnitOfMeasurement>();
         }
 
         public IEnumerable<Session> GetSessions()
@@ -407,6 +430,11 @@ namespace PersonalTrainerWorkouts.Data
         public Goal GetGoal(int goalId)
         {
             return Database.GetGoal(goalId);
+        }
+        
+        public Measurable GetMeasurable(int measurableId)
+        {
+            return measurableId == 0 ? new Measurable() : Database.GetMeasurable(measurableId);
         }
     }
 
@@ -590,6 +618,11 @@ namespace PersonalTrainerWorkouts.Data
             var newContactId = Database.AddContact(contact);
 
             return newContactId;
+        }
+
+        public void InsertConfigurationValues()
+        {
+            Database.InsertConfigurationValues();
         }
     }
 }

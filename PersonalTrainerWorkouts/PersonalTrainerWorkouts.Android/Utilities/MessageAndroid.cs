@@ -10,8 +10,6 @@ using PersonalTrainerWorkouts.Droid.Utilities;
 using System;
 using System.Threading.Tasks;
 
-using LogManager = NLog.LogManager;
-
 [assembly: Xamarin.Forms.Dependency(typeof(MessageAndroid))]
 [assembly: Xamarin.Forms.Dependency(typeof(ILogger))]
 namespace PersonalTrainerWorkouts.Droid.Utilities

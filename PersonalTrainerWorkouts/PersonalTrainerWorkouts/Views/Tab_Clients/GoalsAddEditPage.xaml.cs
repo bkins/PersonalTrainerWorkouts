@@ -45,8 +45,9 @@ public partial class GoalsAddEditPage : ContentPage, IQueryAttributable
 
     public bool            IsNewGoal { get; set; }
     //public Goal            Goal      { get; set; }
-    public GoalViewModel   GoalVm    { get; set; }
-    public ClientViewModel ClientVm  { get; set; }
+    public GoalViewModel        GoalVm       { get; set; }
+    public ClientViewModel      ClientVm     { get; set; }
+    public MeasurablesViewModel MeasurableVm { get; set; }
 
     private void LoadGoal(string value)
     {
@@ -60,9 +61,16 @@ public partial class GoalsAddEditPage : ContentPage, IQueryAttributable
                            .Goals
                            .FirstOrDefault(goal => goal.Id == _goalId.ToSafeInt());
 
-        GoalVm = new GoalViewModel(goal);
-        
-        BindingContext = GoalVm;
+        GoalVm         = new GoalViewModel(goal);
+        //MeasurableVm   = new MeasurablesViewModel(_goalId.ToSafeInt(), 0);
+        BindingContext                       = GoalVm;
+        //MeasurableCollectionView.ItemsSource = GoalVm.MeasurablesViewModelGroupByVariable;
+        MeasurableCollectionView.ItemsSource = GoalVm.MeasurablesVmList
+                                                     .Where(measurable => measurable.GoalSuccession != Succession.Baseline)
+                                                     .OrderBy(measurable => measurable.Variable)
+                                                     .ThenByDescending(measurable => measurable.GoalSuccession)
+                                                     .ThenBy(measurable => measurable.DateTaken);
+                                                    // .GroupBy(measurable => measurable.Variable);
     }
 
     private bool DataIsValidOrNewGoal()
@@ -188,10 +196,11 @@ public partial class GoalsAddEditPage : ContentPage, IQueryAttributable
 
             // if (Goal.DateStarted != null) StartDatePicker.Date = Goal.DateStarted.Value;
             // if (Goal.DateCompleted != null) CompletedDatePicker.Date = Goal.DateCompleted.Value;
-            
-            StartDatePicker.NullableDate     = GoalVm.Goal.DateStarted;
-            CompletedDatePicker.NullableDate = GoalVm.Goal.DateCompleted;
-            TargetDatePicker.Date            = GoalVm.Goal.TargetDate;
+
+            // if (GoalVm.Goal.DateStarted != null)   StartDatePicker.NullableDate     = GoalVm.Goal.DateStarted;
+            // if (GoalVm.Goal.DateCompleted != null) CompletedDatePicker.Date = GoalVm.Goal.DateCompleted.Value;
+
+            // TargetDatePicker.Date = GoalVm.Goal.TargetDate;
             
             //SuccessfullyCompletedCheckbox.IsChecked = Goal.SuccessfullyCompleted;
             FailedCheckbox.IsChecked = GoalVm.Goal.Failed;
@@ -354,5 +363,27 @@ public partial class GoalsAddEditPage : ContentPage, IQueryAttributable
     {
         Logger.WriteLine("GoalVm Data", Category.Information, null, GoalVm.ToString());
         Logger.WriteLineToToastForced("VM Data Logged", Category.Information);
+    }
+
+    private void MeasurablesCollectionView_OnSelectionChanged(object                    sender
+                                                            , SelectionChangedEventArgs e)
+    {
+
+    }
+
+    private void AddNewMeasurableButton_OnClicked(object    sender
+                                                , EventArgs e)
+    {
+        PageNavigation.NavigateTo(nameof(MeasurablesAddPage)
+                                , nameof(MeasurablesAddPage.ClientId)
+                                , ClientId
+                                , nameof(MeasurablesAddPage.GoalId)
+                                , GoalId);
+    }
+
+    private void MeasurableCollectionView_OnSelectionChanged(object                    sender
+                                                           , SelectionChangedEventArgs e)
+    {
+
     }
 }

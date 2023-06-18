@@ -2,7 +2,6 @@
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.ViewModels;
 using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
 using Xamarin.Forms;
 using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;

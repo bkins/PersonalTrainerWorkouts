@@ -9,20 +9,22 @@
     <color android:color="@android:color/darker_gray"/>
   </item>
   
-  <item android:top="40dp">
-    <bitmap android:src="@drawable/sync_black_48"
-            android:gravity="center_horizontal|top"
-            />
-  </item>
-  <item>
-    <bitmap android:src="@drawable/WeightLifting"
+<!--  <item android:top="40dp">-->
+<!--    <bitmap android:src="@drawable/sync_black_48"-->
+<!--            />-->
+<!--  </item>-->
+  <item >
+    <bitmap android:src="@drawable/HopkinsTrainingLogo_small"
             android:tileMode="disabled"
-            android:gravity="center"/>
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:adjustViewBounds="true"/>
   </item>
   <item android:bottom="40dp">
     <bitmap android:src="@drawable/NotGuaranteed"
             android:tileMode="disabled"
-            android:gravity="fill_horizontal|bottom"/>
+            android:gravity="fill_horizontal|bottom"
+            />
   </item>
   <!--  <item>-->
 <!--    <animated-rotate android:src="@drawable/Running"-->

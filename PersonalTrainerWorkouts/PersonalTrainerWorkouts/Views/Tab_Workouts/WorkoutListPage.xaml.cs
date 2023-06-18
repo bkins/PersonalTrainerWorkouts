@@ -3,7 +3,6 @@ using System.Linq;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.ViewModels;
 using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
 using Syncfusion.ListView.XForms;
 using Xamarin.Forms;

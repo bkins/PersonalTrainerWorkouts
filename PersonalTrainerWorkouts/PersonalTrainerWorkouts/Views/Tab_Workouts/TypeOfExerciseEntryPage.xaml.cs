@@ -1,7 +1,6 @@
 ﻿using System;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
-using PersonalTrainerWorkouts.ViewModels;
 using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

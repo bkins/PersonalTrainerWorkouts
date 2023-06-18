@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using SQLite;
+﻿using SQLite;
 using SQLiteNetExtensions.Attributes;
 
 namespace PersonalTrainerWorkouts.Models.ContactsAndClients

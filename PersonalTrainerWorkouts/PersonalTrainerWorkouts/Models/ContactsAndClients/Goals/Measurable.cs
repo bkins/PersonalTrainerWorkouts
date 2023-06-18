@@ -23,7 +23,10 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients.Goals
         public string   Variable       { get; set; }
         public double   Value          { get; set; }
         public DateTime DateTaken      { get; set; }
-        public string   Type           { get; set; } //TODO: Make a table of these values
+        /// <summary>
+        /// Measure or Max //TODO: Make a table of these values
+        /// </summary>
+        public string   Type           { get; set; } 
         /// <summary>
         /// Baseline, Target, Internal                                      
         /// Baseline: The beginning measurement when Goal is set            
@@ -36,8 +39,7 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients.Goals
         [ForeignKey(typeof(Client))]
         public int ClientId { get; set; }
 
-        [ForeignKey(typeof(UnitOfMeasurement))]
-        public int UnitOfMeasurementId { get; set; }
+        public string UnitOfMeasurement { get; set; }
         
         [ForeignKey(typeof(Goal))]
         public int GoalId { get; set; }
@@ -47,7 +49,7 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients.Goals
 
         public override string ToString()
         {
-            return $"{GoalSuccession} - {Value}"; //TODO: add UnitOfMeasurement when implemented
+            return $"{DateTaken.ToShortDateString()} : {GoalSuccession} - {Value} {UnitOfMeasurement}"; //TODO: add UnitOfMeasurement when implemented
         }
 
         public bool Equals(Measurable other)
@@ -59,7 +61,7 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients.Goals
                 && Variable            == other.Variable
                 && Type                == other.Type
                 && ClientId            == other.ClientId
-                && UnitOfMeasurementId == other.UnitOfMeasurementId
+                && UnitOfMeasurement   == other.UnitOfMeasurement
                 && GoalId              == other.GoalId
                 && Value.Equals(other.Value)
                 && DateTaken.Equals(other.DateTaken);
@@ -85,7 +87,7 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients.Goals
                 hashCode = (hashCode * 397) ^ DateTaken.GetHashCode();
                 hashCode = (hashCode * 397) ^ (Type != null ? Type.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ ClientId;
-                hashCode = (hashCode * 397) ^ UnitOfMeasurementId;
+                hashCode = (hashCode * 397) ^ (UnitOfMeasurement != null ? UnitOfMeasurement.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ GoalId;
 
                 return hashCode;

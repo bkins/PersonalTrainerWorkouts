@@ -5,7 +5,6 @@ using Avails.D_Flat.Extensions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.ViewModels;
 using PersonalTrainerWorkouts.ViewModels.Tab_Sessions;
 using Syncfusion.ListView.XForms;
 using Xamarin.Forms;

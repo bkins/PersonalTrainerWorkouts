@@ -3,12 +3,12 @@
 namespace PersonalTrainerWorkouts.Models.ContactsAndClients.Goals
 {
     [Table($"{nameof(UnitOfMeasurement)}s")]
-    internal class UnitOfMeasurement
+    public class UnitOfMeasurement
     {
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        public Unit Unit { get; set; }
+        public string Unit { get; set; }
     }
 
     public enum Unit
@@ -20,4 +20,3 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients.Goals
       , Seconds
     }
 }
-

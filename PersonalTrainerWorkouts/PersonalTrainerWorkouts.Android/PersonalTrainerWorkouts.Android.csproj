@@ -137,6 +137,9 @@
     <AndroidResource Include="Resources\drawable\Failed_48.png" />
     <AndroidResource Include="Resources\drawable\fitness_center_black_48.png" />
     <AndroidResource Include="Resources\drawable\groups_black_48.png" />
+    <AndroidResource Include="Resources\drawable\HopkinsTrainingLogo.png" />
+    <AndroidResource Include="Resources\drawable\HopkinsTrainingLogo_medium.png" />
+    <AndroidResource Include="Resources\drawable\HopkinsTrainingLogo_small.png" />
     <AndroidResource Include="Resources\drawable\InProgress_48.png" />
     <AndroidResource Include="Resources\drawable\MissedTarget_48.png" />
     <AndroidResource Include="Resources\drawable\NotStarted_48.png" />
@@ -147,6 +150,7 @@
     <AndroidResource Include="Resources\drawable\splash_screen.xml" />
     <AndroidResource Include="Resources\drawable\Success_48.png" />
     <AndroidResource Include="Resources\drawable\sync_black_48.png" />
+    <AndroidResource Include="Resources\drawable\target_black_48.png" />
     <AndroidResource Include="Resources\drawable\Unknown_48.png" />
     <AndroidResource Include="Resources\layout\Main.axml" />
     <AndroidResource Include="Resources\values\styles.xml" />

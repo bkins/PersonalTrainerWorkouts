@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avails.Xamarin.Logger;
-using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 using Xamarin.Essentials;
@@ -12,11 +11,11 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Clients
 {
     public class ClientViewModel : ViewModelBase
     {
-        private int                      Id                    { get; set; }
-        public  Client                   Client                { get; set; }
-        public  List<GoalViewModel>      Goals                 { get; set; }
-        public  IEnumerable<PhoneNumber> PhoneNumbers          { get; set; }
-        public  bool                     ShowChangeNumberImage { get; }
+        public  Client                     Client                { get; set; }
+        public  List<GoalViewModel>        Goals                 { get; set; }
+        public  List<MeasurablesViewModel> Measurables           { get; set; }
+        public  IEnumerable<PhoneNumber>   PhoneNumbers          { get; set; }
+        public  bool                       ShowChangeNumberImage { get; }
 
         //public List<GoalViewModel> Goals { get; set; }
 
@@ -24,6 +23,7 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Clients
         {
             Client = new Client();
         }
+
         public ClientViewModel(string clientId)
         {
             Client = DataAccessLayer.GetClients()
@@ -34,15 +34,8 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Clients
 
             ShowChangeNumberImage = Client?.PhoneNumbers.Count > 1;
 
-            Goals = new List<GoalViewModel>();
-            var clientGoals = Client?.Goals;
-
-            if (clientGoals == null) return;
-
-            foreach (var clientGoal in clientGoals)
-            {
-                Goals.Add(new GoalViewModel(clientGoal));
-            }
+            SetListOfGoalViewModels();
+            SetListOfMeasurableViewModels();
 
             // PhoneNumbers = new List<PhoneNumber>();
             // var clientNumbers = Client?.PhoneNumbers;
@@ -53,6 +46,46 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Clients
             // {
             //     PhoneNumbers.Add(number);
             // }
+        }
+
+        private void SetListOfMeasurableViewModels()
+        {
+            Measurables = new List<MeasurablesViewModel>();
+
+            var measurables    = DataAccessLayer.GetMeasurables()
+                                                .Where(measurable => measurable.ClientId == Client.Id)
+                                                .ToList();
+            foreach (var measurable in measurables)
+            {
+                if (measurable.Type == null) continue;
+                var thisMeasurable = new MeasurablesViewModel
+                                     {
+                                         Variable          = measurable.Variable
+                                       , Value             = measurable.Value
+                                       , DateTaken         = measurable.DateTaken
+                                       , Id                = measurable.Id
+                                       , Type              = measurable.Type
+                                       , GoalSuccession    = measurable.GoalSuccession
+                                       , UnitOfMeasurement = measurable.UnitOfMeasurement
+                                     };
+                thisMeasurable.NewMeasurable ??= new Measurable();
+
+                Measurables.Add(thisMeasurable);
+
+            }
+        }
+
+        private void SetListOfGoalViewModels()
+        {
+            Goals = new List<GoalViewModel>();
+            var clientGoals = Client?.Goals;
+
+            if (clientGoals == null) return;
+
+            foreach (var clientGoal in clientGoals)
+            {
+                Goals.Add(new GoalViewModel(clientGoal));
+            }
         }
 
         /// <summary>
@@ -97,8 +130,6 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Clients
                 
                 var newClient = DataAccessLayer.GetClients()
                                                .First(client => client.Id == Client.Id);
-
-                Id = newClient.Id;
             }
             else
             {//Update existing
@@ -122,7 +153,7 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Clients
 
         public int Delete()
         {
-            return Id == 0
+            return Client.Id == 0
                     ? 0
                     : DataAccessLayer.DeleteClient(Client);
         }

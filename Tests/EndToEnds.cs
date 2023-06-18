@@ -5,14 +5,10 @@ using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.Models.Intermediates;
-using PersonalTrainerWorkouts.ViewModels;
-
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
-using Newtonsoft.Json.Converters;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
 using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
@@ -649,7 +645,7 @@ namespace Tests
 
             var startingDate  = new DateTime(2023, 6, 3);
             var goalVm        = SetUpGoalViewModel(startingDate);
-            var measurablesVm = new MeasurablesViewModel(goalVm.Goal.Id, DataAccessLayer);
+            var measurablesVm = new MeasurablesViewModel(goalVm.Goal.Id, 0, DataAccessLayer);
             
             SetupAsserts(goalVm, measurablesVm);
 

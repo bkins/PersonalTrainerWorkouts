@@ -1,5 +1,4 @@
 ﻿using System;
-using PersonalTrainerWorkouts.ViewModels;
 using PersonalTrainerWorkouts.ViewModels.Tab_About;
 using Xamarin.Essentials;
 

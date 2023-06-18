@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models.ContactsAndClients;
-using PersonalTrainerWorkouts.ViewModels;
 using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
 using Syncfusion.ListView.XForms;
 using Xamarin.Essentials;

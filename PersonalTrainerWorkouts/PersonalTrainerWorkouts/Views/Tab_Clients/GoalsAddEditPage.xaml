@@ -2,8 +2,12 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+             xmlns:sfAccordion="clr-namespace:Syncfusion.XForms.Accordion;assembly=Syncfusion.Expander.XForms"
+
              xmlns:local="clr-namespace:PersonalTrainerWorkouts.Views.CustomControls;assembly=PersonalTrainerWorkouts"
              xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels.Tab_Clients;assembly=PersonalTrainerWorkouts"
+
              x:Class="PersonalTrainerWorkouts.Views.Tab_Clients.GoalsAddEditPage"
              x:DataType="viewModels:GoalViewModel"
              >
@@ -16,10 +20,9 @@
     </ContentPage.ToolbarItems>
        
     <ContentPage.Content>
-           <!--RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto, Auto">-->
            <ScrollView>
             <Grid ColumnDefinitions="40*, 50*, 10*"
-                  RowDefinitions="25, 25, 40, 25, 40, 40, 40, 40, Auto, 25, Auto, Auto">
+                  RowDefinitions="25, 25, 40, 25, 40, 40, 40, 40, Auto, 25, Auto, Auto, Auto">
                    
                    <Label x:Name="ClientNameLabel"
                           Text="{Binding ClientNameForDisplay}"
@@ -40,10 +43,11 @@
                           VerticalOptions="Fill"
                           HorizontalOptions="Start" />
                 <Editor x:Name="NameEditor"
-                        Placeholder="name of goal"
                         Grid.Column="0"
                         Grid.Row="2"
                         Grid.ColumnSpan="3"
+                        Text="{Binding Goal.Name}"
+                        Placeholder="name of goal"
                         VerticalOptions="Fill"
                         HorizontalOptions="Start" />
 
@@ -60,6 +64,7 @@
                         Grid.Column="0"
                         Grid.Row="4"
                         Grid.ColumnSpan="3"
+                        Text="{Binding Goal.Description}"
                         Placeholder="short description"
                         VerticalOptions="Fill"
                         HorizontalOptions="Start" 
@@ -73,6 +78,7 @@
                        VerticalOptions="Center"
                        HorizontalOptions="Start" 
                        />
+                   <!--Date="{Binding Goal.DateStarted}"-->
                 <local:NullableDatePicker x:Name="StartDatePicker"
                                           Grid.Column="1"
                                           Grid.Row="5"
@@ -132,22 +138,7 @@
                                           DateSelected="CompletedDatePicker_OnDateSelected"
                                           PropertyChanged="CompletedDatePicker_OnPropertyChanged"
                                           />
-                <Label x:Name="SuccessfullyCompletedLabel"
-                       Text="Completed Successfully?"
-                       Grid.Column="0"
-                       Grid.Row="8"
-                       FontAttributes="Bold"
-                       FontSize="Medium"
-                       VerticalOptions="Fill"
-                       HorizontalOptions="Start" 
-                       IsVisible="False"
-                       />
-                <CheckBox x:Name="SuccessfullyCompletedCheckbox"
-                          Grid.Column="1"
-                          Grid.Row="8"
-                          IsEnabled="False"
-                          IsVisible="False"
-                          />
+
                 <Label x:Name="FailedLabel"
                        Text="Fail/Abandon?"
                        Grid.Column="0"
@@ -159,7 +150,8 @@
                        />
                 <CheckBox x:Name="FailedCheckbox"
                           Grid.Column="1"
-                          Grid.Row="9" 
+                          Grid.Row="9"
+                          IsChecked="{Binding Goal.Failed}"
                           />
                 <Label x:Name="StatusLabel"
                        Text="Status:"
@@ -179,15 +171,7 @@
                         VerticalOptions="Fill"
                         HorizontalOptions="FillAndExpand" 
                         />
-                <!-- <ImageButton x:Name="StatusImage" -->
-                <!--        Grid.Column="0" -->
-                <!--        Grid.Row="10" -->
-                <!--        HeightRequest="25" -->
-                <!--        BackgroundColor="Transparent" -->
-                <!--        /> -->
-                
-                <!--TODO Instead of doing the nonsense below, see ClientEditPage.xaml-->
-                <!--     And how it is displaying the correct image for the status-->
+
                 <Image x:Name="GoalStatusImage"
                        Grid.Column="2"
                        Grid.Row="10"
@@ -195,46 +179,163 @@
                        Source="{Binding GoalStatusImageFileName}"
                        HorizontalOptions="Start"
                        />
-                <!-- <Image x:Name="InProgressImage" -->
-                <!--        Grid.Column="1" -->
-                <!--        Grid.Row="10" -->
-                <!--        HeightRequest="25" -->
-                <!--        Source="Inprogress_48.png" /> -->
-                <!-- <Image x:Name="SuccessImage" -->
-                <!--        Grid.Column="1" -->
-                <!--        Grid.Row="10" -->
-                <!--        HeightRequest="25" -->
-                <!--        Source="Success_48.png"/> -->
-                <!-- <Image x:Name="NotStartedImage" -->
-                <!--        Grid.Column="1" -->
-                <!--        Grid.Row="10" -->
-                <!--        HeightRequest="25" -->
-                <!--        Source="NotStarted_48.png" /> -->
-                <!-- <Image x:Name="MissedTargetImage" -->
-                <!--        Grid.Column="1" -->
-                <!--        Grid.Row="10" -->
-                <!--        HeightRequest="25" -->
-                <!--        Source="MissedTarget_48.png"/> -->
-                <!-- <Image x:Name="FailedImage" -->
-                <!--        Grid.Column="1" -->
-                <!--        Grid.Row="10" -->
-                <!--        HeightRequest="25" -->
-                <!--        Source="Failed_48.png" /> -->
-                <!-- <Image x:Name="UnknownImage" -->
-                <!--        Grid.Column="1" -->
-                <!--        Grid.Row="10" -->
-                <!--        HeightRequest="25" -->
-                <!--        Source="Unknown_48.png"/> -->
-                   <Button x:Name="LogGoalVmData"
-                           Grid.Row="11"
-                           Text="Log GoalVm Data"
-                           Clicked="LogGoalVmData_OnClicked"/>
+                <sfAccordion:SfAccordion DynamicSizeMode="Content"
+                                         ExpandMode="MultipleOrNone"
+                                         Grid.Column="0"
+                                         Grid.Row="11"
+                                         Grid.ColumnSpan="3">
+                       <sfAccordion:SfAccordion.Items>
+                              <sfAccordion:AccordionItem x:Name="MeasurableAccordionItem"
+                                                         IsEnabled="True"
+                                                         IsExpanded="True">
+                                     <sfAccordion:AccordionItem.Header>
+                                            <Grid ColumnDefinitions="*,25">
+                                                   <Label x:Name="MeasurableHeaderLabel"
+                                                          Grid.Column="0"
+                                                          Text="Measurables"
+                                                          BackgroundColor="{StaticResource PrimaryBackColor}"
+                                                          TextColor="{StaticResource PrimaryForeColor}"
+                                                          FontAttributes="Bold"
+                                                          FontSize="Medium"
+                                                          HeightRequest="{StaticResource AccordionHeight}"
+                                                          VerticalTextAlignment="Center"
+                                                          HorizontalTextAlignment="Center"/>
+                                                   <Button x:Name="AddNewMeasurableButton"
+                                                           Grid.Column="1"
+                                                           Text="+"
+                                                           FontAttributes="Bold"
+                                                           FontSize="Small"
+                                                           HeightRequest="{StaticResource AccordionHeight}"
+                                                           VerticalOptions="FillAndExpand"
+                                                           HorizontalOptions="FillAndExpand"
+                                                           Clicked="AddNewMeasurableButton_OnClicked"
+
+                                                   />
+                                            </Grid>
+                                     </sfAccordion:AccordionItem.Header>
+                                     <sfAccordion:AccordionItem.Content>
+                                            <Grid>
+                                                   <CollectionView x:Name="MeasurableCollectionView"
+                                                                   x:DataType="viewModels:GoalViewModel"
+                                                                   Margin="10,10,10,10"
+                                                                   SelectionMode="Single"
+                                                                   SelectionChanged="MeasurableCollectionView_OnSelectionChanged"
+                                                                   ItemsUpdatingScrollMode="KeepItemsInView"
+                                                                   HorizontalScrollBarVisibility="Always"
+                                                   >
+                                                          <CollectionView.ItemsLayout>
+
+                                                                 <LinearItemsLayout Orientation="Vertical"
+                                                                                    ItemSpacing="0"
+                                                                 />
+                                                          </CollectionView.ItemsLayout>
+
+                                                          <CollectionView.ItemTemplate>
+                                                                 <DataTemplate>
+                                                                        <Grid ColumnDefinitions="5*, 35*, 45*, 15*"
+                                                                              x:DataType="viewModels:MeasurablesViewModel"
+                                                                        >
+                                                                            <Image x:Name="IsTargetImage"
+                                                                                   Grid.Column="0"
+                                                                                   Source="target_black_48.png"
+                                                                                   IsVisible="{Binding IsTarget}"
+                                                                                   />
+                                                                            <Label x:Name="SuccessionCharLabel"
+                                                                                   Grid.Column="0"
+                                                                                   Text="{Binding SuccessionChar}"
+                                                                                   HorizontalTextAlignment="Center"
+                                                                                   VerticalTextAlignment="End"
+                                                                                   IsVisible="{Binding IsInterim}"
+                                                                            />
+                                                                            <Label x:Name="DateTakenLabel"
+                                                                                   Grid.Column="1"
+                                                                                   VerticalTextAlignment="Start"
+                                                                                   VerticalOptions="CenterAndExpand"
+                                                                                   Text="{Binding DateTaken, StringFormat='{0:yyyy/MM/dd}'}"
+                                                                                   FontSize="Medium"
+                                                                                   TextColor="Black"/>
+                                                                            <Label x:Name="VariableLabel"
+                                                                                   Grid.Column="2"
+                                                                                   VerticalTextAlignment="Start"
+                                                                                   VerticalOptions="CenterAndExpand"
+                                                                                   Text="{Binding Variable}"
+                                                                                   FontSize="Medium"
+                                                                                   TextColor="Black"/>
+                                                                            <Label x:Name="ValueLabel"
+                                                                                   Grid.Column="3"
+                                                                                   VerticalTextAlignment="Start"
+                                                                                   VerticalOptions="CenterAndExpand"
+                                                                                   Text="{Binding Value}"
+                                                                                   FontSize="Medium"
+                                                                                   TextColor="Black"
+                                                                                   HorizontalTextAlignment="End"/>
+
+                                                                        </Grid>
+                                                                 </DataTemplate>
+                                                          </CollectionView.ItemTemplate>
+                                                   </CollectionView>
+                                            </Grid>
+                                     </sfAccordion:AccordionItem.Content>
+
+                              </sfAccordion:AccordionItem>
+
+                       </sfAccordion:SfAccordion.Items>
+                </sfAccordion:SfAccordion>
+                   <!--                  <CollectionView.ItemsLayout> -->
+                   <!-- -->
+                   <!--                      <LinearItemsLayout Orientation="Vertical" -->
+                   <!--                                         ItemSpacing="0" -->
+                   <!--                      /> -->
+                   <!--                  </CollectionView.ItemsLayout> -->
+                   <!-- -->
+                   <!--                  <CollectionView.ItemTemplate> -->
+                   <!--                      <DataTemplate> -->
+                   <!--                          ~1~Padding="10,10,10,10"@1@ -->
+                   <!--                          ~1~<Grid ColumnDefinitions="90*, 10*"@1@ -->
+                   <!--                          <Grid ColumnDefinitions="*, *, *, *" -->
+                   <!--                                x:DataType="tabClients:MeasurablesViewModel" -->
+                   <!--                          > -->
+                   <!--                              <Label x:Name="MeasurablesVariableLabel" -->
+                   <!--                                     Grid.Column="0" -->
+                   <!--                                     VerticalTextAlignment="Start" -->
+                   <!--                                     VerticalOptions="CenterAndExpand" -->
+                   <!--                                     Text="{Binding NewMeasurable.Variable}" -->
+                   <!--                                     FontSize="Medium" -->
+                   <!--                                     FontAttributes="Bold" -->
+                   <!--                                     TextColor="Black" -->
+                   <!--                                     /> -->
+                   <!--                              <Label x:Name="MeasurablesValueLabel" -->
+                   <!--                                     Grid.Column="1" -->
+                   <!--                                     VerticalTextAlignment="Start" -->
+                   <!--                                     VerticalOptions="CenterAndExpand" -->
+                   <!--                                     Text="{Binding NewMeasurable.Value}" -->
+                   <!--                                     FontSize="Medium" -->
+                   <!--                                     FontAttributes="Bold" -->
+                   <!--                                     TextColor="Black" -->
+                   <!--                              /> -->
+                   <!--                              <Label x:Name="MeasurablesUomLabel" -->
+                   <!--                                     Grid.Column="2" -->
+                   <!--                                     VerticalTextAlignment="Start" -->
+                   <!--                                     VerticalOptions="CenterAndExpand" -->
+                   <!--                                     Text="{Binding NewMeasurable.UnitOfMeasurement}" -->
+                   <!--                                     FontSize="Medium" -->
+                   <!--                                     FontAttributes="Bold" -->
+                   <!--                                     TextColor="Black" -->
+                   <!--                              /> -->
+                   <!--                              <Image x:Name="MeasurablesStatusImage" -->
+                   <!--                                     Grid.Column="3" -->
+                   <!--                                     HeightRequest="25" -->
+                   <!--                                     Source="{Binding StatusImageFile}" -->
+                   <!--                                     /> -->
+
+                   <!--                                  Add tap gesture to each of the above that shows the status image meaning -->
+
+                   <!--                          </Grid> -->
+                   <!--                      </DataTemplate> -->
+                   <!--                  </CollectionView.ItemTemplate> -->
+                   <!-- -->
+                   <!--              </CollectionView> -->
             </Grid>
-
-            <!-- <Button x:Name="SaveButton" -->
-            <!--         Text="Save" -->
-            <!--         Clicked="SaveButton_OnClicked"/> -->
-
 
         </ScrollView>
     </ContentPage.Content>

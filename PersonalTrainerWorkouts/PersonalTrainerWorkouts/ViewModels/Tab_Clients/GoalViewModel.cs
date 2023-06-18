@@ -3,20 +3,31 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Avails.D_Flat.Extensions;
-using Microsoft.Extensions.Primitives;
 using PersonalTrainerWorkouts.Data;
-using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
+using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 
 namespace PersonalTrainerWorkouts.ViewModels.Tab_Clients;
 
 public class GoalViewModel : ViewModelBase
 {
     private string _goalStatusImageFileName;
-    public Goal                 Goal                  { get; set; }
-    public MeasurablesViewModel MeasurablesViewModel  { get; set; }
-    public string               GoalStatusDescription { get; set; }
+
+    public Goal Goal { get; set; }
+
+    // public Measurable                 Measurable            { get; set; }
+    //public MeasurablesViewModel       MeasurablesViewModel  { get; set; }
+    public List<MeasurablesViewModel>                 MeasurablesViewModels               { get; set; }
+    public IEnumerable<MeasurablesViewModel>          MeasurablesVmList                   { get; set; }
+    public IEnumerable<IGrouping<string, MeasurablesViewModel>> MeasurablesViewModelGroupByVariable => MeasurablesVmList
+                                                                                                       .Where(measurable => measurable.GoalSuccession
+                                                                                                                         != Succession.Baseline)
+                                                                                                       .OrderBy(measurable => measurable.Variable)
+                                                                                                       .ThenByDescending(
+                                                                                                           measurable => measurable.GoalSuccession)
+                                                                                                       .ThenBy(measurable => measurable.DateTaken)
+                                                                                                       .GroupBy(measurable => measurable.Variable);
+    public string                                     GoalStatusDescription               { get; set; }
 
     public string GoalStatusImageFileName
     {
@@ -34,7 +45,22 @@ public class GoalViewModel : ViewModelBase
     
     public GoalViewModel()
     {
-        
+        Goal                 = new Goal();
+        //Measurable           = new Measurable();
+        //MeasurablesViewModel = new MeasurablesViewModel(0);
+    }
+
+    public GoalViewModel(int clientId)
+    {
+        SetListOfMeasurableViewModelsForClient(clientId);
+    }
+
+    public GoalViewModel(DataAccess dataAccess)
+    {
+        _dataAccess          = dataAccess;
+        Goal                 = new Goal();
+        //Measurable           = new Measurable();
+        //MeasurablesViewModel = new MeasurablesViewModel(0);
     }
 
     public GoalViewModel(Goal       goal
@@ -49,16 +75,68 @@ public class GoalViewModel : ViewModelBase
         Initialize(goal);
     }
 
-    private void Initialize(Goal goal)
+    private void Initialize(Goal goal, bool refreshGoal = false)
     {
         if (goal is null) return;
 
-        Goal                 = DataAccessLayer.GetGoal(goal.Id);
-        MeasurablesViewModel = new MeasurablesViewModel(goal.Id);
-        ClientName           = DataAccessLayer.GetClients().FirstOrDefault(client => client.Id == goal.ClientId)?.Name;
+        Goal = refreshGoal
+                    ? DataAccessLayer.GetGoal(goal.Id)
+                    : goal;
+
+        SetListOfMeasurableViewModelsForGoal();
+
+        ClientName = DataAccessLayer.GetClients()
+                                    .FirstOrDefault(client => client.Id == goal.ClientId)
+                                    ?.Name;
+
         ClientNameForDisplay = $"{ClientName}'s Goal";
 
         CalculateStatus();
+    }
+    private void SetListOfMeasurableViewModelsForGoal()
+    {
+        MeasurablesViewModels = new List<MeasurablesViewModel>();
+        // foreach (var goal in Goals)
+        // {
+        //     foreach (var measurable in goal.Measurables)
+        //     {
+        //         Measurables.Add(new MeasurablesViewModel(goal.Goal.Id, measurable.Id));
+        //     }
+        //
+        // }
+        var allMeasurables = new StringBuilder();
+        var measurables = DataAccessLayer.GetMeasurables()
+                                         .Where(measurable => measurable.GoalId == Goal.Id)
+                                         .ToList();
+        foreach (var measurable in measurables)
+        {
+            var thisMeasurable = new MeasurablesViewModel(measurable.GoalId, measurable.ClientId);
+            thisMeasurable.NewMeasurable ??= new Measurable();
+
+            MeasurablesViewModels.Add(thisMeasurable);
+            //allMeasurables.AppendLine(thisMeasurable.NewMeasurable.ToString());
+        }
+
+        //Logger.WriteLine(allMeasurables.ToString(), Category.Information);
+    }
+
+    private void SetListOfMeasurableViewModelsForClient(int clientId)
+    {
+        MeasurablesViewModels = new List<MeasurablesViewModel>();
+
+        var allMeasurables = new StringBuilder();
+        var measurables = DataAccessLayer.GetMeasurables()
+                                         .Where(measurable => measurable.ClientId == clientId)
+                                         .ToList();
+        foreach (var measurable in measurables)
+        {
+            var thisMeasurable = new MeasurablesViewModel(measurable.ClientId);
+            thisMeasurable.NewMeasurable ??= new Measurable();
+
+            MeasurablesViewModels.Add(thisMeasurable);
+        }
+
+        MeasurablesVmList = MeasurablesViewModels;
     }
 
     private string GetGoalStatusFileName()
@@ -87,40 +165,87 @@ public class GoalViewModel : ViewModelBase
 
     private void SetDateCompletedBasedOnMeasurables()
     {
-        MeasurablesViewModel.Refresh();
+        MeasurablesVmList = UpdateMeasurables();
 
-        var targetMeasurable = MeasurablesViewModel.Measurables
-                                                   .FirstOrDefault(measurables => measurables.GoalSuccession == Succession.Target);
+        if ( ! MeasurablesVmList.Any()) return;
 
-        foreach (var measurable in MeasurablesViewModel.Measurables.Where(measurable=>measurable.GoalSuccession != Succession.Baseline 
-                                                                                   && measurable.GoalSuccession != Succession.Target))
+        var targetMeasurable = GetTargetMeasurable();
+        var interimMeasurables = GetInterimMeasurables().ToList();
+
+        if (targetMeasurable is null || ! interimMeasurables.Any()) return;
+
+        var interimThatMetGoal = (from measurable in interimMeasurables
+                                  let isComplete = CompareMeasurableToTarget(measurable
+                                                                           , targetMeasurable)
+                                  where isComplete
+                                  select measurable).FirstOrDefault();
+        if (interimThatMetGoal is not null)
         {
-            var targetComparison = CompareMeasurableToTarget(measurable, targetMeasurable);
-
-            if (! targetComparison) continue;
-
+            Goal.DateCompleted = interimThatMetGoal.DateTaken;
+        }
+        foreach (var measurable in
+                 from measurable in interimMeasurables
+                 let isComplete = CompareMeasurableToTarget(measurable, targetMeasurable)
+                 where isComplete
+                 select measurable)
+        {
             Goal.DateCompleted = measurable.DateTaken;
         }
     }
 
-    private bool CompareMeasurableToTarget(Measurable measurable
-                                         , Measurable targetMeasurable)
+    private IEnumerable<MeasurablesViewModel> UpdateMeasurables()
     {
-        const double tolerance   = 0.000000001;
-
-        var targetValue      = targetMeasurable?.Value ?? 0;
-        var targetComparison = Goal.TargetComparison switch
-                               {
-                                   TargetComparisons.MustBeEqual => Math.Abs(measurable.Value - targetValue) < tolerance
-                                 , TargetComparisons.CanBeGreaterThan => measurable.Value >= targetValue
-                                 , TargetComparisons.CanBeLessThan => measurable.Value <= targetValue
-                                 , _ => false
-                               };
-
-        return targetComparison;
+        var measurables = DataAccessLayer.GetMeasurablesByGoal(Goal.Id)
+                              .ToList();
+        var measurableViewModels = measurables.Select(measurable => new MeasurablesViewModel(measurable.Variable
+                                                                                           , measurable.Value
+                                                                                           , measurable.Type
+                                                                                           , measurable.DateTaken
+                                                                                           , measurable.GoalSuccession
+                                                                                           , measurable.UnitOfMeasurement))
+                                              .ToList();
+        return measurableViewModels;
     }
 
-    public IEnumerable<Measurable> Measurables { get; set; }
+    private IEnumerable<MeasurablesViewModel> GetInterimMeasurables()
+    {
+        var interimMeasurables = MeasurablesVmList.Where(measurable => measurable.GoalSuccession != Succession.Baseline
+                                                                    && measurable.GoalSuccession != Succession.Target);
+
+        return interimMeasurables;
+    }
+
+    private MeasurablesViewModel GetTargetMeasurable()
+    {
+        var targetMeasurable = MeasurablesVmList.FirstOrDefault(measurable => measurable.GoalSuccession == Succession.Target);
+
+        return targetMeasurable;
+    }
+
+    public bool CompareMeasurableToTarget(MeasurablesViewModel measurable
+                                        , MeasurablesViewModel targetMeasurable)
+    {
+        return CompareMeasurableToTarget(measurable.Value
+                                       , targetMeasurable.Value
+                                       , Goal.TargetComparison);
+    }
+
+    //TODO: Consider moving this logic out of the ViewModel
+    public static bool CompareMeasurableToTarget(double measurableValue
+                                               , double targetValue
+                                               , TargetComparisons    targetComparison)
+    {
+        var target = targetValue;
+        var comparison = targetComparison switch
+                         {
+                             TargetComparisons.MustBeEqual => Math.Abs(measurableValue - targetValue) < Constants.Tolerance
+                           , TargetComparisons.CanBeGreaterThan => measurableValue >= targetValue
+                           , TargetComparisons.CanBeLessThan => measurableValue <= targetValue
+                           , _ => false
+                         };
+
+        return comparison;
+    }
 
     public override string ToString()
     {

@@ -15,8 +15,9 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Clients;
 public class ClientListViewModel : ViewModelBase
 {
     public ObservableCollection<Client> ObservableClients { get; set; }
-    public IList<Client> Clients { get; set; }
-    public Client Client { get; set; }
+
+    public IList<Client> Clients  { get; set; }
+    public Client        Client   { get; set; }
     public List<Contact> Contacts { get; set; }
 
     public ClientListViewModel()
@@ -90,6 +91,18 @@ public class ClientListViewModel : ViewModelBase
         //Remove the client from the source list
         ObservableClients.RemoveAt(index);
 
+        var clientGoals = DataAccessLayer.GetGoals()
+                                         .Where(goal => goal.ClientId == itemToDelete.Id);
+        foreach (var goal in clientGoals)
+        {
+            DataAccessLayer.DeleteGoal(goal);
+        }
+
+        var clientMeasurables = DataAccessLayer.GetMeasurablesByClient(itemToDelete.Id);
+        foreach (var measurable in clientMeasurables)
+        {
+            DataAccessLayer.DeleteMeasurable(measurable);
+        }
         //Delete the client from the database
         var numberAffected = App.Database.DeleteClient(ref itemToDelete);
         LoadData();
