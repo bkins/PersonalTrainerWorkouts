@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+             xmlns:xForms="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
+             xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             xmlns:tabWorkouts="clr-namespace:PersonalTrainerWorkouts.ViewModels.Tab_Workouts;assembly=PersonalTrainerWorkouts"
+
+             x:Class="PersonalTrainerWorkouts.Views.Tab_Workouts.MuscleGroupListPage"
+
+             x:DataType="tabWorkouts:MuscleGroupViewModel"
+             Title="Add Muscle Group to Exercise">
+
+    <ContentPage.Content>
+        <StackLayout>
+
+            <xForms:SfPicker x:Name="MuscleGroupPicker"
+                             ItemsSource="{Binding Synergists}"
+                             DisplayMemberPath="Name"
+                             ShowColumnHeader="False"
+                             ColumnHeaderText="Muscle Group Name"
+                             ShowHeader="False"
+                             OkButtonClicked="MuscleGroupPicker_OnOkButtonClicked"
+                             CancelButtonClicked="MuscleGroupPicker_OnCancelButtonClicked"
+                             ShowFooter="True" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

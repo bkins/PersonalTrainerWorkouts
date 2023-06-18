@@ -1,7 +1,7 @@
 ﻿using System;
+using Avails.Xamarin.Interfaces;
 using Microsoft.Toolkit.Uwp.Notifications;
 using NLog;
-using PersonalTrainerWorkouts.Utilities.Interfaces;
 
 namespace PersonalTrainerWorkouts.UWP.Utilities
 {
@@ -21,6 +21,11 @@ namespace PersonalTrainerWorkouts.UWP.Utilities
                 .SetToastDuration(ToastDuration.Short)
                 .AddText(message)
                 .Show(); 
+        }
+
+        public void Log(LogLevel level, string message, Exception ex, string caller)
+        {
+            throw new NotImplementedException();
         }
 
         public void Log(LogLevel  level

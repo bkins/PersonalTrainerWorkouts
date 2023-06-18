@@ -1,11 +1,14 @@
 ﻿using Android.App;
 using Android.Widget;
-using System;
-using PersonalTrainerWorkouts.Droid.Utilities;
+
+using Avails.Xamarin.Interfaces;
+
 using NLog;
-using PersonalTrainerWorkouts.Utilities.Interfaces;
-using Logger = NLog.Logger;
-using LogManager = NLog.LogManager;
+
+using PersonalTrainerWorkouts.Droid.Utilities;
+
+using System;
+using System.Threading.Tasks;
 
 [assembly: Xamarin.Forms.Dependency(typeof(MessageAndroid))]
 [assembly: Xamarin.Forms.Dependency(typeof(ILogger))]
@@ -13,6 +16,33 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
 {
     public class MessageAndroid : IMessage, ILogger
     {
+        public string Name { get; }
+
+        public LogFactory Factory { get; }
+
+        public bool IsTraceEnabled { get; }
+
+        public bool IsDebugEnabled { get; }
+
+        public bool IsInfoEnabled { get; }
+
+        public bool IsWarnEnabled { get; }
+
+        public bool IsErrorEnabled { get; }
+
+        public bool IsFatalEnabled { get; }
+
+        public MessageAndroid()
+        {
+            IsDebugEnabled = true;
+            IsInfoEnabled = true;
+            IsWarnEnabled = true;
+            IsErrorEnabled = true;
+            IsFatalEnabled = true;
+            IsTraceEnabled = true;
+            Name = string.Empty;
+            Factory = new LogFactory();
+        }
         public void LongAlert(string message)
         {
             Toast.MakeText(Application.Context, message, ToastLength.Long)
@@ -27,243 +57,253 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
 
 
         //BENDO: Continue to implement logging to LogCat (not sure if this is the best place/way.  Probably need to learn more about it.
-        public void Log(LogLevel  level
-                       , string    message
-                       , Exception ex)
+        public void Log(  LogLevel  level
+                        , string    message
+                        , Exception ex
+                        , string    caller)
         {
-            Logger catLog = LogManager.GetCurrentClassLogger();
-            catLog.SetProperty("Tag", "~~~~~~~~MyApp~~~~~~~~");
+            //var catLog = LogManager.GetCurrentClassLogger();
+
+            var tag = $"InternalLogging: {nameof(PersonalTrainerWorkouts)}:{caller}";
+
+            //catLog.WithProperty("Tag", tag);
+
             if (ex is null)
             {
-                catLog.Info(message);
+                Android.Util.Log.Info(tag
+                                    , message);
+               // catLog.Info(message);
             }
             else
             {
-                catLog.Error(ex, message);
+                Android.Util.Log.Error(tag
+                                     , $"{message}/n{ex.Message}/n{ex.StackTrace}");
+
+                //catLog.Error(ex, message);
             }
         }
-        
+
         public void Log(LogLevel level,
-                        object   value)
+                        object value)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        object          value)
+                        object value)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        object   arg1,
-                        object   arg2)
+                        string message,
+                        object arg1,
+                        object arg2)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        object   arg1,
-                        object   arg2,
-                        object   arg3)
+                        string message,
+                        object arg1,
+                        object arg2,
+                        object arg3)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        bool            argument)
+                        string message,
+                        bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        bool     argument)
+                        string message,
+                        bool argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        char            argument)
+                        string message,
+                        char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        char     argument)
+                        string message,
+                        char argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        byte            argument)
+                        string message,
+                        byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        byte     argument)
+                        string message,
+                        byte argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        string          argument)
+                        string message,
+                        string argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        string   argument)
+                        string message,
+                        string argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        int             argument)
+                        string message,
+                        int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        int      argument)
+                        string message,
+                        int argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        long            argument)
+                        string message,
+                        long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        long     argument)
+                        string message,
+                        long argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        float           argument)
+                        string message,
+                        float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        float    argument)
+                        string message,
+                        float argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        double          argument)
+                        string message,
+                        double argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        double   argument)
+                        string message,
+                        double argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        decimal         argument)
+                        string message,
+                        decimal argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        decimal  argument)
+                        string message,
+                        decimal argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        object          argument)
+                        string message,
+                        object argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        object   argument)
+                        string message,
+                        object argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        sbyte           argument)
+                        string message,
+                        sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        sbyte    argument)
+                        string message,
+                        sbyte argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        uint            argument)
+                        string message,
+                        uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        uint     argument)
+                        string message,
+                        uint argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
-                        ulong           argument)
+                        string message,
+                        ulong argument)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level,
-                        string   message,
-                        ulong    argument)
+                        string message,
+                        ulong argument)
         {
             throw new NotImplementedException();
         }
@@ -273,125 +313,123 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void Log(LogEventInfo   logEvent)
+        public void Log(LogEventInfo logEvent)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(Type         wrapperType,
+        public void Log(Type wrapperType,
                         LogEventInfo logEvent)
         {
             throw new NotImplementedException();
         }
 
         public void Log<T>(LogLevel level,
-                           T        value)
+                           T value)
         {
             throw new NotImplementedException();
         }
 
-        public void Log<T>(LogLevel        level,
+        public void Log<T>(LogLevel level,
                            IFormatProvider formatProvider,
-                           T               value)
+                           T value)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel            level,
+        public void Log(LogLevel level,
                         LogMessageGenerator messageFunc)
         {
             throw new NotImplementedException();
         }
 
-        public void LogException(LogLevel  level,
-                                 string    message,
+        public void LogException(LogLevel level,
+                                 string message,
                                  Exception exception)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
-                        Exception       exception,
-                        string          message,
+        public void Log(LogLevel level,
+                        Exception exception,
+                        string message,
                         params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
-                        Exception       exception,
+        public void Log(LogLevel level,
+                        Exception exception,
                         IFormatProvider formatProvider,
-                        string          message,
+                        string message,
                         params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
+        public void Log(LogLevel level,
                         IFormatProvider formatProvider,
-                        string          message,
+                        string message,
                         params object[] args)
         {
             throw new NotImplementedException();
         }
 
         public void Log(LogLevel level
-                      , string   message)
+                      , string message)
         {
             throw new NotImplementedException();
         }
 
-        public void Log(LogLevel        level,
-                        string          message,
+        public void Log(LogLevel level,
+                        string message,
                         params object[] args)
         {
             throw new NotImplementedException();
         }
-        
-        public void Log<TArgument>(LogLevel        level,
-                                   IFormatProvider formatProvider,
-                                   string          message,
-                                   TArgument       argument)
+
+        public void Log(LogLevel  level
+                      , string    message
+                      , Exception exception)
         {
             throw new NotImplementedException();
         }
 
-        public void Log<TArgument>(LogLevel  level,
-                                   string    message,
+        public void Log<TArgument>(LogLevel level,
+                                   IFormatProvider formatProvider,
+                                   string message,
                                    TArgument argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log<TArgument1, TArgument2>(LogLevel        level,
-                                                IFormatProvider formatProvider,
-                                                string          message,
-                                                TArgument1      argument1,
-                                                TArgument2      argument2)
+        public void Log<TArgument>(LogLevel level,
+                                   string message,
+                                   TArgument argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Log<TArgument1, TArgument2>(LogLevel   level,
-                                                string     message,
+        public void Log<TArgument1, TArgument2>(LogLevel level,
+                                                IFormatProvider formatProvider,
+                                                string message,
                                                 TArgument1 argument1,
                                                 TArgument2 argument2)
         {
             throw new NotImplementedException();
         }
 
-        public void Log<TArgument1, TArgument2, TArgument3>(LogLevel        level,
-                                                            IFormatProvider formatProvider,
-                                                            string          message,
-                                                            TArgument1      argument1,
-                                                            TArgument2      argument2,
-                                                            TArgument3      argument3)
+        public void Log<TArgument1, TArgument2>(LogLevel level,
+                                                string message,
+                                                TArgument1 argument1,
+                                                TArgument2 argument2)
         {
             throw new NotImplementedException();
         }
 
-        public void Log<TArgument1, TArgument2, TArgument3>(LogLevel   level,
-                                                            string     message,
+        public void Log<TArgument1, TArgument2, TArgument3>(LogLevel level,
+                                                            IFormatProvider formatProvider,
+                                                            string message,
                                                             TArgument1 argument1,
                                                             TArgument2 argument2,
                                                             TArgument3 argument3)
@@ -399,13 +437,18 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public string Name { get; }
-
-        public LogFactory Factory { get; }
+        public void Log<TArgument1, TArgument2, TArgument3>(LogLevel level,
+                                                            string message,
+                                                            TArgument1 argument1,
+                                                            TArgument2 argument2,
+                                                            TArgument3 argument3)
+        {
+            throw new NotImplementedException();
+        }
 
         public event EventHandler<EventArgs> LoggerReconfigured;
 
-        public void Swallow(Action  action)
+        public void Swallow(Action action)
         {
             throw new NotImplementedException();
         }
@@ -416,10 +459,24 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public T Swallow<T>(Func<T> func,
-                            T      fallback)
+                            T fallback)
         {
             throw new NotImplementedException();
         }
+
+        public void Swallow(Task task)
+        {
+            throw new NotImplementedException();
+        }
+
+        public Task SwallowAsync(Task task) => throw new NotImplementedException();
+
+        public Task SwallowAsync(Func<Task> asyncAction) => throw new NotImplementedException();
+
+        public Task<TResult> SwallowAsync<TResult>(Func<Task<TResult>> asyncFunc) => throw new NotImplementedException();
+
+        public Task<TResult> SwallowAsync<TResult>(Func<Task<TResult>> asyncFunc
+                                                 , TResult fallback) => throw new NotImplementedException();
 
         public void Trace(object value)
         {
@@ -427,7 +484,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          object          value)
+                          object value)
         {
             throw new NotImplementedException();
         }
@@ -448,47 +505,47 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          bool            argument)
+                          string message,
+                          bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(string message,
-                          bool   argument)
+                          bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          char            argument)
+                          string message,
+                          char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(string message,
-                          char   argument)
+                          char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          byte            argument)
+                          string message,
+                          byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(string message,
-                          byte   argument)
+                          byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          string          argument)
+                          string message,
+                          string argument)
         {
             throw new NotImplementedException();
         }
@@ -500,47 +557,47 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          int             argument)
+                          string message,
+                          int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(string message,
-                          int    argument)
+                          int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          long            argument)
+                          string message,
+                          long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(string message,
-                          long   argument)
+                          long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          float           argument)
+                          string message,
+                          float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(string message,
-                          float  argument)
+                          float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          double          argument)
+                          string message,
+                          double argument)
         {
             throw new NotImplementedException();
         }
@@ -552,21 +609,21 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          decimal         argument)
+                          string message,
+                          decimal argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Trace(string  message,
+        public void Trace(string message,
                           decimal argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          object          argument)
+                          string message,
+                          object argument)
         {
             throw new NotImplementedException();
         }
@@ -578,40 +635,40 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          sbyte           argument)
+                          string message,
+                          sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(string message,
-                          sbyte  argument)
+                          sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          uint            argument)
+                          string message,
+                          uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(string message,
-                          uint   argument)
+                          uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
-                          ulong           argument)
+                          string message,
+                          ulong argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(string message,
-                          ulong  argument)
+                          ulong argument)
         {
             throw new NotImplementedException();
         }
@@ -622,7 +679,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          object          value)
+                          object value)
         {
             throw new NotImplementedException();
         }
@@ -643,47 +700,47 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          bool            argument)
+                          string message,
+                          bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(string message,
-                          bool   argument)
+                          bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          char            argument)
+                          string message,
+                          char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(string message,
-                          char   argument)
+                          char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          byte            argument)
+                          string message,
+                          byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(string message,
-                          byte   argument)
+                          byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          string          argument)
+                          string message,
+                          string argument)
         {
             throw new NotImplementedException();
         }
@@ -695,47 +752,47 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          int             argument)
+                          string message,
+                          int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(string message,
-                          int    argument)
+                          int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          long            argument)
+                          string message,
+                          long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(string message,
-                          long   argument)
+                          long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          float           argument)
+                          string message,
+                          float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(string message,
-                          float  argument)
+                          float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          double          argument)
+                          string message,
+                          double argument)
         {
             throw new NotImplementedException();
         }
@@ -747,21 +804,21 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          decimal         argument)
+                          string message,
+                          decimal argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Debug(string  message,
+        public void Debug(string message,
                           decimal argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          object          argument)
+                          string message,
+                          object argument)
         {
             throw new NotImplementedException();
         }
@@ -773,40 +830,40 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          sbyte           argument)
+                          string message,
+                          sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(string message,
-                          sbyte  argument)
+                          sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          uint            argument)
+                          string message,
+                          uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(string message,
-                          uint   argument)
+                          uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
-                          ulong           argument)
+                          string message,
+                          ulong argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(string message,
-                          ulong  argument)
+                          ulong argument)
         {
             throw new NotImplementedException();
         }
@@ -817,7 +874,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Info(IFormatProvider formatProvider,
-                         object          value)
+                         object value)
         {
             throw new NotImplementedException();
         }
@@ -838,47 +895,47 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         bool            argument)
+                         string message,
+                         bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(string message,
-                         bool   argument)
+                         bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         char            argument)
+                         string message,
+                         char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(string message,
-                         char   argument)
+                         char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         byte            argument)
+                         string message,
+                         byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(string message,
-                         byte   argument)
+                         byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         string          argument)
+                         string message,
+                         string argument)
         {
             throw new NotImplementedException();
         }
@@ -890,47 +947,47 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         int             argument)
+                         string message,
+                         int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(string message,
-                         int    argument)
+                         int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         long            argument)
+                         string message,
+                         long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(string message,
-                         long   argument)
+                         long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         float           argument)
+                         string message,
+                         float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(string message,
-                         float  argument)
+                         float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         double          argument)
+                         string message,
+                         double argument)
         {
             throw new NotImplementedException();
         }
@@ -942,21 +999,21 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         decimal         argument)
+                         string message,
+                         decimal argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Info(string  message,
+        public void Info(string message,
                          decimal argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         object          argument)
+                         string message,
+                         object argument)
         {
             throw new NotImplementedException();
         }
@@ -968,40 +1025,40 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         sbyte           argument)
+                         string message,
+                         sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(string message,
-                         sbyte  argument)
+                         sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         uint            argument)
+                         string message,
+                         uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(string message,
-                         uint   argument)
+                         uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
-                         ulong           argument)
+                         string message,
+                         ulong argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info(string message,
-                         ulong  argument)
+                         ulong argument)
         {
             throw new NotImplementedException();
         }
@@ -1012,7 +1069,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         object          value)
+                         object value)
         {
             throw new NotImplementedException();
         }
@@ -1033,47 +1090,47 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         bool            argument)
+                         string message,
+                         bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(string message,
-                         bool   argument)
+                         bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         char            argument)
+                         string message,
+                         char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(string message,
-                         char   argument)
+                         char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         byte            argument)
+                         string message,
+                         byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(string message,
-                         byte   argument)
+                         byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         string          argument)
+                         string message,
+                         string argument)
         {
             throw new NotImplementedException();
         }
@@ -1085,47 +1142,47 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         int             argument)
+                         string message,
+                         int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(string message,
-                         int    argument)
+                         int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         long            argument)
+                         string message,
+                         long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(string message,
-                         long   argument)
+                         long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         float           argument)
+                         string message,
+                         float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(string message,
-                         float  argument)
+                         float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         double          argument)
+                         string message,
+                         double argument)
         {
             throw new NotImplementedException();
         }
@@ -1137,21 +1194,21 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         decimal         argument)
+                         string message,
+                         decimal argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Warn(string  message,
+        public void Warn(string message,
                          decimal argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         object          argument)
+                         string message,
+                         object argument)
         {
             throw new NotImplementedException();
         }
@@ -1163,40 +1220,40 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         sbyte           argument)
+                         string message,
+                         sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(string message,
-                         sbyte  argument)
+                         sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         uint            argument)
+                         string message,
+                         uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(string message,
-                         uint   argument)
+                         uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
-                         ulong           argument)
+                         string message,
+                         ulong argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(string message,
-                         ulong  argument)
+                         ulong argument)
         {
             throw new NotImplementedException();
         }
@@ -1207,7 +1264,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Error(IFormatProvider formatProvider,
-                          object          value)
+                          object value)
         {
             throw new NotImplementedException();
         }
@@ -1228,47 +1285,47 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          bool            argument)
+                          string message,
+                          bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(string message,
-                          bool   argument)
+                          bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          char            argument)
+                          string message,
+                          char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(string message,
-                          char   argument)
+                          char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          byte            argument)
+                          string message,
+                          byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(string message,
-                          byte   argument)
+                          byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          string          argument)
+                          string message,
+                          string argument)
         {
             throw new NotImplementedException();
         }
@@ -1280,47 +1337,47 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          int             argument)
+                          string message,
+                          int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(string message,
-                          int    argument)
+                          int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          long            argument)
+                          string message,
+                          long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(string message,
-                          long   argument)
+                          long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          float           argument)
+                          string message,
+                          float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(string message,
-                          float  argument)
+                          float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          double          argument)
+                          string message,
+                          double argument)
         {
             throw new NotImplementedException();
         }
@@ -1332,21 +1389,21 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          decimal         argument)
+                          string message,
+                          decimal argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Error(string  message,
+        public void Error(string message,
                           decimal argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          object          argument)
+                          string message,
+                          object argument)
         {
             throw new NotImplementedException();
         }
@@ -1358,40 +1415,40 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          sbyte           argument)
+                          string message,
+                          sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(string message,
-                          sbyte  argument)
+                          sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          uint            argument)
+                          string message,
+                          uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(string message,
-                          uint   argument)
+                          uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
-                          ulong           argument)
+                          string message,
+                          ulong argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error(string message,
-                          ulong  argument)
+                          ulong argument)
         {
             throw new NotImplementedException();
         }
@@ -1402,7 +1459,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          object          value)
+                          object value)
         {
             throw new NotImplementedException();
         }
@@ -1423,47 +1480,47 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          bool            argument)
+                          string message,
+                          bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(string message,
-                          bool   argument)
+                          bool argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          char            argument)
+                          string message,
+                          char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(string message,
-                          char   argument)
+                          char argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          byte            argument)
+                          string message,
+                          byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(string message,
-                          byte   argument)
+                          byte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          string          argument)
+                          string message,
+                          string argument)
         {
             throw new NotImplementedException();
         }
@@ -1475,47 +1532,47 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          int             argument)
+                          string message,
+                          int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(string message,
-                          int    argument)
+                          int argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          long            argument)
+                          string message,
+                          long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(string message,
-                          long   argument)
+                          long argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          float           argument)
+                          string message,
+                          float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(string message,
-                          float  argument)
+                          float argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          double          argument)
+                          string message,
+                          double argument)
         {
             throw new NotImplementedException();
         }
@@ -1527,21 +1584,21 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          decimal         argument)
+                          string message,
+                          decimal argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Fatal(string  message,
+        public void Fatal(string message,
                           decimal argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          object          argument)
+                          string message,
+                          object argument)
         {
             throw new NotImplementedException();
         }
@@ -1553,40 +1610,40 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          sbyte           argument)
+                          string message,
+                          sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(string message,
-                          sbyte  argument)
+                          sbyte argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          uint            argument)
+                          string message,
+                          uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(string message,
-                          uint   argument)
+                          uint argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
-                          ulong           argument)
+                          string message,
+                          ulong argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(string message,
-                          ulong  argument)
+                          ulong argument)
         {
             throw new NotImplementedException();
         }
@@ -1597,7 +1654,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Trace<T>(IFormatProvider formatProvider,
-                             T               value)
+                             T value)
         {
             throw new NotImplementedException();
         }
@@ -1607,35 +1664,35 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void TraceException(string    message,
+        public void TraceException(string message,
                                    Exception exception)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(Exception exception,
-                          string    message)
+                          string message)
         {
             throw new NotImplementedException();
         }
 
-        public void Trace(Exception       exception,
-                          string          message,
+        public void Trace(Exception exception,
+                          string message,
                           params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Trace(Exception       exception,
+        public void Trace(Exception exception,
                           IFormatProvider formatProvider,
-                          string          message,
+                          string message,
                           params object[] args)
         {
             throw new NotImplementedException();
         }
 
         public void Trace(IFormatProvider formatProvider,
-                          string          message,
+                          string message,
                           params object[] args)
         {
             throw new NotImplementedException();
@@ -1646,40 +1703,40 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void Trace(string          message,
+        public void Trace(string message,
                           params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Trace(string    message,
+        public void Trace(string message,
                           Exception exception)
         {
             throw new NotImplementedException();
         }
 
         public void Trace<TArgument>(IFormatProvider formatProvider,
-                                     string          message,
-                                     TArgument       argument)
+                                     string message,
+                                     TArgument argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Trace<TArgument>(string    message,
+        public void Trace<TArgument>(string message,
                                      TArgument argument)
         {
             throw new NotImplementedException();
         }
 
         public void Trace<TArgument1, TArgument2>(IFormatProvider formatProvider,
-                                                  string          message,
-                                                  TArgument1      argument1,
-                                                  TArgument2      argument2)
+                                                  string message,
+                                                  TArgument1 argument1,
+                                                  TArgument2 argument2)
         {
             throw new NotImplementedException();
         }
 
-        public void Trace<TArgument1, TArgument2>(string     message,
+        public void Trace<TArgument1, TArgument2>(string message,
                                                   TArgument1 argument1,
                                                   TArgument2 argument2)
         {
@@ -1687,15 +1744,15 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Trace<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider,
-                                                              string          message,
-                                                              TArgument1      argument1,
-                                                              TArgument2      argument2,
-                                                              TArgument3      argument3)
+                                                              string message,
+                                                              TArgument1 argument1,
+                                                              TArgument2 argument2,
+                                                              TArgument3 argument3)
         {
             throw new NotImplementedException();
         }
 
-        public void Trace<TArgument1, TArgument2, TArgument3>(string     message,
+        public void Trace<TArgument1, TArgument2, TArgument3>(string message,
                                                               TArgument1 argument1,
                                                               TArgument2 argument2,
                                                               TArgument3 argument3)
@@ -1709,7 +1766,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Debug<T>(IFormatProvider formatProvider,
-                             T               value)
+                             T value)
         {
             throw new NotImplementedException();
         }
@@ -1719,35 +1776,35 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void DebugException(string    message,
+        public void DebugException(string message,
                                    Exception exception)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(Exception exception,
-                          string    message)
+                          string message)
         {
             throw new NotImplementedException();
         }
 
-        public void Debug(Exception       exception,
-                          string          message,
+        public void Debug(Exception exception,
+                          string message,
                           params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Debug(Exception       exception,
+        public void Debug(Exception exception,
                           IFormatProvider formatProvider,
-                          string          message,
+                          string message,
                           params object[] args)
         {
             throw new NotImplementedException();
         }
 
         public void Debug(IFormatProvider formatProvider,
-                          string          message,
+                          string message,
                           params object[] args)
         {
             throw new NotImplementedException();
@@ -1758,40 +1815,40 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void Debug(string          message,
+        public void Debug(string message,
                           params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Debug(string    message,
+        public void Debug(string message,
                           Exception exception)
         {
             throw new NotImplementedException();
         }
 
         public void Debug<TArgument>(IFormatProvider formatProvider,
-                                     string          message,
-                                     TArgument       argument)
+                                     string message,
+                                     TArgument argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Debug<TArgument>(string    message,
+        public void Debug<TArgument>(string message,
                                      TArgument argument)
         {
             throw new NotImplementedException();
         }
 
         public void Debug<TArgument1, TArgument2>(IFormatProvider formatProvider,
-                                                  string          message,
-                                                  TArgument1      argument1,
-                                                  TArgument2      argument2)
+                                                  string message,
+                                                  TArgument1 argument1,
+                                                  TArgument2 argument2)
         {
             throw new NotImplementedException();
         }
 
-        public void Debug<TArgument1, TArgument2>(string     message,
+        public void Debug<TArgument1, TArgument2>(string message,
                                                   TArgument1 argument1,
                                                   TArgument2 argument2)
         {
@@ -1799,15 +1856,15 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Debug<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider,
-                                                              string          message,
-                                                              TArgument1      argument1,
-                                                              TArgument2      argument2,
-                                                              TArgument3      argument3)
+                                                              string message,
+                                                              TArgument1 argument1,
+                                                              TArgument2 argument2,
+                                                              TArgument3 argument3)
         {
             throw new NotImplementedException();
         }
 
-        public void Debug<TArgument1, TArgument2, TArgument3>(string     message,
+        public void Debug<TArgument1, TArgument2, TArgument3>(string message,
                                                               TArgument1 argument1,
                                                               TArgument2 argument2,
                                                               TArgument3 argument3)
@@ -1821,7 +1878,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Info<T>(IFormatProvider formatProvider,
-                            T               value)
+                            T value)
         {
             throw new NotImplementedException();
         }
@@ -1831,35 +1888,35 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void InfoException(string    message,
+        public void InfoException(string message,
                                   Exception exception)
         {
             throw new NotImplementedException();
         }
 
         public void Info(Exception exception,
-                         string    message)
+                         string message)
         {
             throw new NotImplementedException();
         }
 
-        public void Info(Exception       exception,
-                         string          message,
+        public void Info(Exception exception,
+                         string message,
                          params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Info(Exception       exception,
+        public void Info(Exception exception,
                          IFormatProvider formatProvider,
-                         string          message,
+                         string message,
                          params object[] args)
         {
             throw new NotImplementedException();
         }
 
         public void Info(IFormatProvider formatProvider,
-                         string          message,
+                         string message,
                          params object[] args)
         {
             throw new NotImplementedException();
@@ -1870,40 +1927,40 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void Info(string          message,
+        public void Info(string message,
                          params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Info(string    message,
+        public void Info(string message,
                          Exception exception)
         {
             throw new NotImplementedException();
         }
 
         public void Info<TArgument>(IFormatProvider formatProvider,
-                                    string          message,
-                                    TArgument       argument)
+                                    string message,
+                                    TArgument argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Info<TArgument>(string    message,
+        public void Info<TArgument>(string message,
                                     TArgument argument)
         {
             throw new NotImplementedException();
         }
 
         public void Info<TArgument1, TArgument2>(IFormatProvider formatProvider,
-                                                 string          message,
-                                                 TArgument1      argument1,
-                                                 TArgument2      argument2)
+                                                 string message,
+                                                 TArgument1 argument1,
+                                                 TArgument2 argument2)
         {
             throw new NotImplementedException();
         }
 
-        public void Info<TArgument1, TArgument2>(string     message,
+        public void Info<TArgument1, TArgument2>(string message,
                                                  TArgument1 argument1,
                                                  TArgument2 argument2)
         {
@@ -1911,15 +1968,15 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Info<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider,
-                                                             string          message,
-                                                             TArgument1      argument1,
-                                                             TArgument2      argument2,
-                                                             TArgument3      argument3)
+                                                             string message,
+                                                             TArgument1 argument1,
+                                                             TArgument2 argument2,
+                                                             TArgument3 argument3)
         {
             throw new NotImplementedException();
         }
 
-        public void Info<TArgument1, TArgument2, TArgument3>(string     message,
+        public void Info<TArgument1, TArgument2, TArgument3>(string message,
                                                              TArgument1 argument1,
                                                              TArgument2 argument2,
                                                              TArgument3 argument3)
@@ -1933,7 +1990,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Warn<T>(IFormatProvider formatProvider,
-                            T               value)
+                            T value)
         {
             throw new NotImplementedException();
         }
@@ -1943,35 +2000,35 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void WarnException(string    message,
+        public void WarnException(string message,
                                   Exception exception)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(Exception exception,
-                         string    message)
+                         string message)
         {
             throw new NotImplementedException();
         }
 
-        public void Warn(Exception       exception,
-                         string          message,
+        public void Warn(Exception exception,
+                         string message,
                          params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Warn(Exception       exception,
+        public void Warn(Exception exception,
                          IFormatProvider formatProvider,
-                         string          message,
+                         string message,
                          params object[] args)
         {
             throw new NotImplementedException();
         }
 
         public void Warn(IFormatProvider formatProvider,
-                         string          message,
+                         string message,
                          params object[] args)
         {
             throw new NotImplementedException();
@@ -1982,40 +2039,40 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void Warn(string          message,
+        public void Warn(string message,
                          params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Warn(string    message,
+        public void Warn(string message,
                          Exception exception)
         {
             throw new NotImplementedException();
         }
 
         public void Warn<TArgument>(IFormatProvider formatProvider,
-                                    string          message,
-                                    TArgument       argument)
+                                    string message,
+                                    TArgument argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Warn<TArgument>(string    message,
+        public void Warn<TArgument>(string message,
                                     TArgument argument)
         {
             throw new NotImplementedException();
         }
 
         public void Warn<TArgument1, TArgument2>(IFormatProvider formatProvider,
-                                                 string          message,
-                                                 TArgument1      argument1,
-                                                 TArgument2      argument2)
+                                                 string message,
+                                                 TArgument1 argument1,
+                                                 TArgument2 argument2)
         {
             throw new NotImplementedException();
         }
 
-        public void Warn<TArgument1, TArgument2>(string     message,
+        public void Warn<TArgument1, TArgument2>(string message,
                                                  TArgument1 argument1,
                                                  TArgument2 argument2)
         {
@@ -2023,15 +2080,15 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Warn<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider,
-                                                             string          message,
-                                                             TArgument1      argument1,
-                                                             TArgument2      argument2,
-                                                             TArgument3      argument3)
+                                                             string message,
+                                                             TArgument1 argument1,
+                                                             TArgument2 argument2,
+                                                             TArgument3 argument3)
         {
             throw new NotImplementedException();
         }
 
-        public void Warn<TArgument1, TArgument2, TArgument3>(string     message,
+        public void Warn<TArgument1, TArgument2, TArgument3>(string message,
                                                              TArgument1 argument1,
                                                              TArgument2 argument2,
                                                              TArgument3 argument3)
@@ -2045,7 +2102,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Error<T>(IFormatProvider formatProvider,
-                             T               value)
+                             T value)
         {
             throw new NotImplementedException();
         }
@@ -2055,35 +2112,35 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void ErrorException(string    message,
+        public void ErrorException(string message,
                                    Exception exception)
         {
             throw new NotImplementedException();
         }
 
         public void Error(Exception exception,
-                          string    message)
+                          string message)
         {
             throw new NotImplementedException();
         }
 
-        public void Error(Exception       exception,
-                          string          message,
+        public void Error(Exception exception,
+                          string message,
                           params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Error(Exception       exception,
+        public void Error(Exception exception,
                           IFormatProvider formatProvider,
-                          string          message,
+                          string message,
                           params object[] args)
         {
             throw new NotImplementedException();
         }
 
         public void Error(IFormatProvider formatProvider,
-                          string          message,
+                          string message,
                           params object[] args)
         {
             throw new NotImplementedException();
@@ -2094,40 +2151,40 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void Error(string          message,
+        public void Error(string message,
                           params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Error(string    message,
+        public void Error(string message,
                           Exception exception)
         {
             throw new NotImplementedException();
         }
 
         public void Error<TArgument>(IFormatProvider formatProvider,
-                                     string          message,
-                                     TArgument       argument)
+                                     string message,
+                                     TArgument argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Error<TArgument>(string    message,
+        public void Error<TArgument>(string message,
                                      TArgument argument)
         {
             throw new NotImplementedException();
         }
 
         public void Error<TArgument1, TArgument2>(IFormatProvider formatProvider,
-                                                  string          message,
-                                                  TArgument1      argument1,
-                                                  TArgument2      argument2)
+                                                  string message,
+                                                  TArgument1 argument1,
+                                                  TArgument2 argument2)
         {
             throw new NotImplementedException();
         }
 
-        public void Error<TArgument1, TArgument2>(string     message,
+        public void Error<TArgument1, TArgument2>(string message,
                                                   TArgument1 argument1,
                                                   TArgument2 argument2)
         {
@@ -2135,15 +2192,15 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Error<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider,
-                                                              string          message,
-                                                              TArgument1      argument1,
-                                                              TArgument2      argument2,
-                                                              TArgument3      argument3)
+                                                              string message,
+                                                              TArgument1 argument1,
+                                                              TArgument2 argument2,
+                                                              TArgument3 argument3)
         {
             throw new NotImplementedException();
         }
 
-        public void Error<TArgument1, TArgument2, TArgument3>(string     message,
+        public void Error<TArgument1, TArgument2, TArgument3>(string message,
                                                               TArgument1 argument1,
                                                               TArgument2 argument2,
                                                               TArgument3 argument3)
@@ -2157,7 +2214,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Fatal<T>(IFormatProvider formatProvider,
-                             T               value)
+                             T value)
         {
             throw new NotImplementedException();
         }
@@ -2167,35 +2224,35 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void FatalException(string    message,
+        public void FatalException(string message,
                                    Exception exception)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(Exception exception,
-                          string    message)
+                          string message)
         {
             throw new NotImplementedException();
         }
 
-        public void Fatal(Exception       exception,
-                          string          message,
+        public void Fatal(Exception exception,
+                          string message,
                           params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Fatal(Exception       exception,
+        public void Fatal(Exception exception,
                           IFormatProvider formatProvider,
-                          string          message,
+                          string message,
                           params object[] args)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal(IFormatProvider formatProvider,
-                          string          message,
+                          string message,
                           params object[] args)
         {
             throw new NotImplementedException();
@@ -2206,40 +2263,40 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public void Fatal(string          message,
+        public void Fatal(string message,
                           params object[] args)
         {
             throw new NotImplementedException();
         }
 
-        public void Fatal(string    message,
+        public void Fatal(string message,
                           Exception exception)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal<TArgument>(IFormatProvider formatProvider,
-                                     string          message,
-                                     TArgument       argument)
+                                     string message,
+                                     TArgument argument)
         {
             throw new NotImplementedException();
         }
 
-        public void Fatal<TArgument>(string    message,
+        public void Fatal<TArgument>(string message,
                                      TArgument argument)
         {
             throw new NotImplementedException();
         }
 
         public void Fatal<TArgument1, TArgument2>(IFormatProvider formatProvider,
-                                                  string          message,
-                                                  TArgument1      argument1,
-                                                  TArgument2      argument2)
+                                                  string message,
+                                                  TArgument1 argument1,
+                                                  TArgument2 argument2)
         {
             throw new NotImplementedException();
         }
 
-        public void Fatal<TArgument1, TArgument2>(string     message,
+        public void Fatal<TArgument1, TArgument2>(string message,
                                                   TArgument1 argument1,
                                                   TArgument2 argument2)
         {
@@ -2247,15 +2304,7 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
         }
 
         public void Fatal<TArgument1, TArgument2, TArgument3>(IFormatProvider formatProvider,
-                                                              string          message,
-                                                              TArgument1      argument1,
-                                                              TArgument2      argument2,
-                                                              TArgument3      argument3)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void Fatal<TArgument1, TArgument2, TArgument3>(string     message,
+                                                              string message,
                                                               TArgument1 argument1,
                                                               TArgument2 argument2,
                                                               TArgument3 argument3)
@@ -2263,16 +2312,13 @@ namespace PersonalTrainerWorkouts.Droid.Utilities
             throw new NotImplementedException();
         }
 
-        public bool IsTraceEnabled { get; }
+        public void Fatal<TArgument1, TArgument2, TArgument3>(string message,
+                                                              TArgument1 argument1,
+                                                              TArgument2 argument2,
+                                                              TArgument3 argument3)
+        {
+            throw new NotImplementedException();
+        }
 
-        public bool IsDebugEnabled { get; }
-
-        public bool IsInfoEnabled { get; }
-
-        public bool IsWarnEnabled { get; }
-
-        public bool IsErrorEnabled { get; }
-
-        public bool IsFatalEnabled { get; }
     }
 }

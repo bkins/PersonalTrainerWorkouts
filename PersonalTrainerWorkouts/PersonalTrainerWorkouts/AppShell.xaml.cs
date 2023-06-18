@@ -1,11 +1,12 @@
-﻿using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.Views;
+﻿using PersonalTrainerWorkouts.Views.Tab_Clients;
+using PersonalTrainerWorkouts.Views.Tab_Sessions;
+using PersonalTrainerWorkouts.Views.Tab_Workouts;
 using Xamarin.Forms;
-using WorkoutExercisePage = PersonalTrainerWorkouts.Views.WorkoutExercisePage;
+using WorkoutExercisePage = PersonalTrainerWorkouts.Views.Tab_Workouts.WorkoutExercisePage;
 
 namespace PersonalTrainerWorkouts
 {
-    public partial class AppShell : Shell
+    public partial class AppShell
     {
         public AppShell()
         {
@@ -26,8 +27,11 @@ namespace PersonalTrainerWorkouts
             Routing.RegisterRoute(nameof(ExerciseListPage)
                                 , typeof(ExerciseListPage));
 
-            Routing.RegisterRoute(nameof(MessageLog)
-                                , typeof(MessageLog));
+            // Routing.RegisterRoute(nameof(MessageLog)
+            //                     , typeof(MessageLog));
+
+            Routing.RegisterRoute(nameof(Avails.Xamarin.Views.LoggingPage.MessageLog)
+                                , typeof(Avails.Xamarin.Views.LoggingPage.MessageLog));
 
             Routing.RegisterRoute(nameof(WorkoutExercisePage)
                                 , typeof(WorkoutExercisePage));
@@ -43,6 +47,15 @@ namespace PersonalTrainerWorkouts
 
             Routing.RegisterRoute(nameof(MuscleGroupListPage)
                                 , typeof(MuscleGroupListPage));
+            
+            Routing.RegisterRoute(nameof(SessionListPage), typeof(SessionListPage));
+            Routing.RegisterRoute(nameof(SessionEditPage), typeof(SessionEditPage));
+            
+            Routing.RegisterRoute(nameof(ClientListPage), typeof(ClientListPage));
+            Routing.RegisterRoute(nameof(ClientEditPage), typeof(ClientEditPage));
+            
+            Routing.RegisterRoute(nameof(GoalsAddEditPage), typeof(GoalsAddEditPage));
+            Routing.RegisterRoute(nameof(MeasurablesAddPage), typeof(MeasurablesAddPage));
         }
     }
 }

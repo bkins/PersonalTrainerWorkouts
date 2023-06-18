@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;
-using PersonalTrainerWorkouts.Utilities;
 using SQLite;
 using SQLiteNetExtensionsAsync.Extensions;
 
@@ -89,9 +89,7 @@ namespace PersonalTrainerWorkouts.Data
         {
             try
             {
-                var workoutsWithChildren = _asyncDatabase.GetWithChildrenAsync<Workout>(id)
-                                                         .GetAwaiter()
-                                                         .GetResult();
+                var workoutsWithChildren = await _asyncDatabase.GetWithChildrenAsync<Workout>(id).ConfigureAwait(false);
 
                 return workoutsWithChildren;
             }
@@ -114,9 +112,7 @@ namespace PersonalTrainerWorkouts.Data
         {
             try
             {
-                var workoutsWithChildren = _asyncDatabase.GetWithChildrenAsync<Workout>(workoutId)
-                                                         .GetAwaiter()
-                                                         .GetResult();
+                var workoutsWithChildren = await _asyncDatabase.GetWithChildrenAsync<Workout>(workoutId).ConfigureAwait(false);
 
                 return workoutsWithChildren.Exercises;
             }

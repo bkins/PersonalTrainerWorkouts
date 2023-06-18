@@ -1,0 +1,97 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             
+             xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels.Tab_Clients;assembly=PersonalTrainerWorkouts"
+             x:DataType="viewModels:MeasurablesViewModel"
+             x:Class="PersonalTrainerWorkouts.Views.Tab_Clients.MeasurablesAddPage"
+             >
+       <ContentPage.ToolbarItems>
+              <ToolbarItem x:Name="SaveToolbarItem"
+                           Text="Save"
+                           IconImageSource="save_black_48.png"
+                           Clicked="SaveButton_OnClicked"
+              />
+       </ContentPage.ToolbarItems>
+    <ContentPage.Content>
+        <StackLayout>
+            <Grid ColumnDefinitions="25*, 75*"
+                  RowDefinitions="20*, 20*, 20*, 20*, 20, 20">
+                
+            <Label x:Name="VariableLabel"
+                   Grid.Column="0"
+                   Grid.Row="0"
+                   Text="Variable"
+                   VerticalOptions="Center"/>
+            <Editor x:Name="VariableEditor"
+                    Grid.Column="1"
+                    Grid.Row="0"
+                    Placeholder="Variable"
+                    Text="{Binding NewMeasurable.Variable}"
+                    FontSize="Small"
+                    VerticalOptions="Center"/>
+            
+            <Label x:Name="ValueLabel"
+                   Grid.Column="0"
+                   Grid.Row="1"
+                   Text="Value"
+                   VerticalOptions="Center"
+                   />
+            <Editor x:Name="ValueEditor"
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    Placeholder="Value"
+                    Text="{Binding NewMeasurable.Variable}"
+                    FontSize="Small"
+                    VerticalOptions="Center"
+                    />
+            <Label x:Name="UnitOfMeasurementLabel"
+                   Grid.Column="0"
+                   Grid.Row="2"
+                   Text="Unit of measurement"
+                   VerticalOptions="Center"
+                   />
+
+            <Label x:Name="DateTakenLabel"
+                   Grid.Column="0"
+                   Grid.Row="3"
+                   Text="Date Taken"
+                   VerticalOptions="Center"
+                   />
+            <DatePicker x:Name="DateTakePicker"
+                        Grid.Column="1"
+                        Grid.Row="3"
+                        FontSize="Small"
+                        VerticalOptions="Center"
+                        />
+            
+            <Label x:Name="TypeLabel"
+                   Grid.Column="0"
+                   Grid.Row="4"
+                   Text="Type"
+                   VerticalOptions="Center"
+                   />
+            <RadioButton x:Name="MaxRadioButton"
+                         Grid.Column="0"
+                         Grid.Row="5"
+                         GroupName="type"
+                         Content="Max"
+                         TextColor="Black"
+                         FontSize="Small"
+                         IsChecked="False"
+                         CheckedChanged="MaxRadioButton_OnCheckedChanged"/>
+            <RadioButton x:Name="MeasurementRadioButton"
+                         Grid.Column="1"
+                         Grid.Row="5"
+                         GroupName="type"
+                         Content="Measurement"
+                         TextColor="Black"
+                         FontSize="Small"
+                         IsChecked="False"
+                         CheckedChanged="MeasurementRadioButton_OnCheckedChanged"/>
+            
+            </Grid>
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

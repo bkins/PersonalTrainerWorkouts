@@ -1,13 +1,22 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" 
           android:versionCode="1" 
           android:versionName="1.0" 
-          package="com.companyname.personaltrainerworkouts">
-    <uses-sdk android:minSdkVersion="21" 
-              android:targetSdkVersion="30" />
-    <application android:label="PersonalTrainerWorkouts.Android" 
-                 android:theme="@style/MainTheme"
-                 android:allowBackup="false"
-    />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+          package="com.companyname.personaltrainerworkouts" 
+          android:installLocation="auto"
+		  android:exported="true"
+          >
+	<uses-sdk android:minSdkVersion="21" android:targetSdkVersion="31" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.READ_CONTACTS" />
+	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+	<application android:label="PersonalTrainerWorkouts.Android" 
+	             android:theme="@style/MyTheme" 
+	             android:allowBackup="false" 
+	             android:fullBackupContent="@xml/auto_backup_rules" 		 
+	             >
+
+	</application>
 </manifest>

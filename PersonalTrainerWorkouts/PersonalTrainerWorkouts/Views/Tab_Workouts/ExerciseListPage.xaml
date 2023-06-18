@@ -1,0 +1,112 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+             xmlns:dataSource="clr-namespace:Syncfusion.DataSource;assembly=Syncfusion.DataSource.Portable"
+             xmlns:listview="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             xmlns:tabWorkouts="clr-namespace:PersonalTrainerWorkouts.ViewModels.Tab_Workouts;assembly=PersonalTrainerWorkouts"
+
+             x:Class="PersonalTrainerWorkouts.Views.Tab_Workouts.ExerciseListPage"
+             x:DataType="tabWorkouts:ExerciseListViewModel"
+             Title="Exercise List">
+
+    <ContentPage.Resources>
+        <Style TargetType="{x:Type Editor}">
+            <Setter Property="BackgroundColor"
+                    Value="{DynamicResource AppBackgroundColor}" />
+        </Style>
+        <Style TargetType="StackLayout">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="{DynamicResource AppPrimaryColor}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem IconImageSource="baseline_add_circle_outline_black_48.png"
+                     Clicked="OnAddNewClicked" />
+        <ToolbarItem IconImageSource="baseline_add_circle_black_48.png"
+                     Clicked="OnAddExistingClicked" />
+
+    </ContentPage.ToolbarItems>
+
+    <listview:SfListView x:Name="ExerciseList"
+                         x:DataType="tabWorkouts:WorkoutExerciseWithChildren"
+                         ItemSize="60"
+                         BackgroundColor="#FFE8E8EC"
+                         GroupHeaderSize="50"
+                         AllowGroupExpandCollapse="false"
+                         DragStartMode="OnHold,OnDragIndicator"
+                         IsStickyGroupHeader="false"
+                         SelectionMode="None"
+                         ItemDragging="ExerciseList_OnItemDragging"
+                         ItemTapped="ExerciseList_OnItemTapped">
+        <listview:SfListView.DataSource>
+            <dataSource:DataSource>
+                <dataSource:DataSource.SortDescriptors>
+                    <dataSource:SortDescriptor PropertyName="WorkoutExercise.OrderBy"
+                                               Direction="Ascending" />
+                </dataSource:DataSource.SortDescriptors>
+            </dataSource:DataSource>
+        </listview:SfListView.DataSource>
+
+        <listview:SfListView.ItemTemplate>
+            <DataTemplate>
+
+                <Frame HasShadow="True"
+                       BackgroundColor="White"
+                       Padding="0"
+                       InputTransparent="{OnPlatform Default=false, 
+                                                     Android=true}">
+
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+
+                        <Label x:Name="textLabel"
+                               Text="{Binding Exercise.Name}"
+                               Grid.Column="0"
+                               FontSize="15"
+                               TextColor="#333333"
+                               VerticalOptions="Center"
+                               HorizontalOptions="Start"
+                               Margin="5,0,0,0" />
+
+                        <listview:DragIndicatorView Grid.Column="1"
+                                                    ListView="{x:Reference ExerciseList}"
+                                                    HorizontalOptions="End"
+                                                    VerticalOptions="Center">
+                            <Grid Padding="0,20,0,20">
+                                <Label VerticalOptions="Center"
+                                       HeightRequest="40"
+                                       WidthRequest="40"
+                                       HorizontalOptions="End"
+                                       Text="&#xe71b;"
+                                       FontSize="Medium"
+                                       TextColor="#6F7771"
+                                       FontFamily="{OnPlatform Android=Sync FontIcons.ttf#, 
+                                                               UWP=Sync FontIcons.ttf#,
+                                                               iOS=Sync FontIcons.ttf#}" />
+                            </Grid>
+                        </listview:DragIndicatorView>
+                    </Grid>
+                </Frame>
+            </DataTemplate>
+        </listview:SfListView.ItemTemplate>
+    </listview:SfListView>
+
+</ContentPage>

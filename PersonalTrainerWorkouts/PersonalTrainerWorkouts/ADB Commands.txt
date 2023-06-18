@@ -1,6 +1,6 @@
-adb -d shell "run-as com.companyname.personaltrainerworkouts cat /data/user/0/com.companyname.personaltrainerworkouts/files/.local/share/WorkoutDatabase.db3" > "C:\Users\Ben\source\repos\PersonalTrainerWorkouts\data.db"
 
-If there is an error, like "Access Denied" or anything else, try disconnecting the pnone and reconnecting. Then try action again.
+adb -d shell "run-as com.companyname.personaltrainerworkouts cat /data/user/0/com.companyname.personaltrainerworkouts/files/.local/share/WorkoutDatabase.db3" > "C:\Users\Ben\source\repos\PersonalTrainerWorkouts\data.db"
+---If there is an error, like "Access Denied" or anything else, try disconnecting the pnone and reconnecting. Then try action again.
 
 Wirelessly debug:
 
@@ -9,4 +9,4 @@ Wirelessly debug:
 	3.	Tap "Pair device with pairing code"
 	4.	Type "adb pair <ip address>:<port>" (from the Pair Device box)
 	5.	Type the Wifi pairing code
-	6.	Tyoe "adb connect <IP address>:<port>" (from IP address & Port on main screen of the Wireless debugging)
+	6.	Type "adb connect <IP address>:<port>" (from IP address & Port on main screen of the Wireless debugging)

@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using PersonalTrainerWorkouts.Models.Intermediates;
-using PersonalTrainerWorkouts.ViewModels;
+﻿using System.Collections.Generic;
+using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
 
 namespace PersonalTrainerWorkouts.Utilities
 {

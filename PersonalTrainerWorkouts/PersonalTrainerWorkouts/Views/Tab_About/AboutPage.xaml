@@ -1,0 +1,46 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="PersonalTrainerWorkouts.Views.Tab_About.AboutPage"
+             Title="About">
+    <!-- Layout children in two rows -->
+    <Grid RowDefinitions="Auto,*">
+        <Image Source="Running.ico"
+               BackgroundColor="{OnPlatform iOS=LightSlateGray, Android=#2196F3}"
+               VerticalOptions="Center"
+               HeightRequest="64" />
+        <!-- Layout children vertically -->
+        <StackLayout Grid.Row="1"
+                     Margin="20"
+                     Spacing="20">
+            <Label x:Name="TableHeaderLabel" 
+                   Text="Table Info"
+                   >
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TableHeaderLabel_OnTapped"/>
+                </Label.GestureRecognizers>
+            </Label>
+            <ScrollView x:Name="TableLabelScrollView"
+                        IsVisible="False">
+                
+                <!-- <Label FontSize="22"> -->
+                <!--     <Label.FormattedText> -->
+                <!--         <FormattedString> -->
+                <!--             <FormattedString.Spans> -->
+                <!--                 <Span Text="Personal Trainer Workouts" -->
+                <!--                       FontAttributes="Bold" -->
+                <!--                       FontSize="22" /> -->
+                <!--                 <Span Text=" v1.0" /> -->
+                <!--             </FormattedString.Spans> -->
+                <!--         </FormattedString> -->
+                <!--     </Label.FormattedText> -->
+                <!-- </Label> -->
+                <Label x:Name="TablesLabel" />    
+            </ScrollView>
+            
+            <Button Text="View Website"
+                    Clicked="OnButtonClicked" />
+        </StackLayout>
+    </Grid>
+</ContentPage>

@@ -7,22 +7,35 @@ namespace PersonalTrainerWorkouts.ViewModels
 {
     public class ViewModelBase : INotifyPropertyChanged
     {
-        private static DataAccess _dataAccess;
+        protected static DataAccess _dataAccess;
 
         public DataAccess DataAccessLayer
         {
-            get => _dataAccess = _dataAccess ?? new DataAccess(App.Database);
+            get => _dataAccess = _dataAccess ?? new DataAccess(App.Database, App.ContactDataStore);
             set => _dataAccess = value;
+        }
+
+        private ContactsDataAccess _contactsDataAccess;
+
+        public ContactsDataAccess ContactsDataAccess
+        {
+            get => _contactsDataAccess = _contactsDataAccess ?? new ContactsDataAccess(App.ContactDataStore);
+            set => _contactsDataAccess = value;
+        }
+
+        private bool _isBusy;
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set => SetValue(ref _isBusy, value);
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
-            PropertyChangedEventHandler handler = PropertyChanged;
-
-            handler?.Invoke(this
-                          , new PropertyChangedEventArgs(propertyName));
+            PropertyChanged?.Invoke(this
+                                  , new PropertyChangedEventArgs(propertyName));
         }
 
         protected void SetValue<T>(ref T                     backingField

@@ -1,10 +1,10 @@
 ﻿using System;
+
 using SQLite;
-using SQLiteNetExtensions.Attributes;
 
 namespace PersonalTrainerWorkouts.Models
 {
-    [Obsolete("Being replaced with Synergists")]
+    [Obsolete("Being replaced with Synergists", false)]
     [Table("OpposingMuscleGroups")]
     public class OpposingMuscleGroup
     {
@@ -12,7 +12,7 @@ namespace PersonalTrainerWorkouts.Models
         public int Id { get; set; }
 
         //pseudo Foreign Keys
-        public int MuscleGroupId         { get; set; }
+        public int MuscleGroupId { get; set; }
         public int OpposingMuscleGroupId { get; set; }
     }
 }
