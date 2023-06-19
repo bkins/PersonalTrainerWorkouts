@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            >
+<!--            xmlns:magic="http://magic.com/schemas/gradients"-->
+<!--        >-->
+  <item>
+    <color android:color="@android:color/darker_gray"/>
+  </item>
+  
+<!--  <item android:top="40dp">-->
+<!--    <bitmap android:src="@drawable/sync_black_48"-->
+<!--            />-->
+<!--  </item>-->
+  <item >
+    <bitmap android:src="@drawable/HopkinsTrainingLogo_small"
+            android:tileMode="disabled"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:adjustViewBounds="true"/>
+  </item>
+  <item android:bottom="40dp">
+    <bitmap android:src="@drawable/NotGuaranteed"
+            android:tileMode="disabled"
+            android:gravity="fill_horizontal|bottom"
+            />
+  </item>
+  <!--  <item>-->
+<!--    <animated-rotate android:src="@drawable/Running"-->
+<!--                     android:tileMode="disabled"-->
+<!--                     android:gravity="center"/>-->
+<!--  </item>-->
+<!--  <item>-->
+<!--      <magic:GradientView HorizontalOptions="FillAndExpand"-->
+<!--                          VerticalOptions="FillAndExpand">-->
+<!--        <magic:GradientView.Triggers>-->
+<!--          <magic:AnimationTrigger IsRunning="{Binding .}">-->
+<!--            <magic:ColorAnimation Target="{x:Reference AnimationColor}"-->
+<!--                                  TargetProperty="magic:GradientStop.Color"-->
+<!--                                  From="#f95dca" To="#0b0eb3"-->
+<!--                                  Duration="3000"-->
+<!--                                  RepeatBehavior="Forever"-->
+<!--                                  AutoReverse="True" />-->
+<!--          </magic:AnimationTrigger>-->
+<!--        </magic:GradientView.Triggers>-->
+<!--        <magic:LinearGradient Angle="-45">-->
+<!--          <magic:GradientStop Color="#f95dca" />-->
+<!--          <magic:GradientStop Color="#f95dca" x:Name="AnimationColor" />-->
+<!--        </magic:LinearGradient>-->
+<!--      </magic:GradientView>-->
+<!--    <bitmap-->
+<!--            android:src="@drawable/Running"-->
+<!--            android:tileMode="disabled"-->
+<!--            android:gravity="center"/>-->
+<!--  </item>-->
+</layer-list>

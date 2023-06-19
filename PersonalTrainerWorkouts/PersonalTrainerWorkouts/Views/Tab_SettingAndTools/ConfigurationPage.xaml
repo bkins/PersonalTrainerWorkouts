@@ -1,0 +1,152 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:accordion="clr-namespace:Syncfusion.XForms.Accordion;assembly=Syncfusion.Expander.XForms"
+             xmlns:behaviors="clr-namespace:PersonalTrainerWorkouts.Views.Behaviors;assembly=PersonalTrainerWorkouts"
+             x:Class="PersonalTrainerWorkouts.Views.Tab_SettingAndTools.ConfigurationPage"
+             Title="Settings &amp; Tools">
+
+    <ContentPage.Resources>
+        <!-- Implicit styles -->
+        <Style TargetType="{x:Type Editor}">
+            <Setter Property="BackgroundColor"
+                    Value="{DynamicResource AppBackgroundColor}" />
+        </Style>
+        <Style TargetType="StackLayout">
+            <Setter Property="VisualStateManager.VisualStateGroups">
+                <VisualStateGroupList>
+                    <VisualStateGroup x:Name="CommonStates">
+                        <VisualState x:Name="Normal" />
+                        <VisualState x:Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor"
+                                        Value="{DynamicResource AppPrimaryColor}" />
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateGroupList>
+            </Setter>
+        </Style>
+    </ContentPage.Resources>
+
+    <StackLayout>
+        <ScrollView>
+            <accordion:SfAccordion>
+                
+                <accordion:SfAccordion.Behaviors>
+                    <behaviors:AccordionBehavior/>
+                </accordion:SfAccordion.Behaviors>
+                
+                <accordion:SfAccordion.Items>
+
+                    <accordion:AccordionItem ClassId="BasicFunctions">
+
+                        <accordion:AccordionItem.Header>
+                            <Grid>
+                                <Label Text="Basic Functions"
+                                       TextColor="{DynamicResource PrimaryBackColor}"
+                                       FontAttributes="Bold"
+                                       HeightRequest="25"
+                                       VerticalTextAlignment="Center"
+                                       HorizontalTextAlignment="Center" 
+                                       />
+                            </Grid>
+                        </accordion:AccordionItem.Header>
+
+                        <accordion:AccordionItem.Content>
+                            <Grid>
+                                <!--View Log-->
+                                <Button Text="View Log"
+                                        Clicked="ViewLogButtonClicked" />
+                            </Grid>
+
+
+                        </accordion:AccordionItem.Content>
+
+                    </accordion:AccordionItem>
+
+                    <accordion:AccordionItem ClassId="DbFunctions" >
+
+                        <accordion:AccordionItem.Header>
+                            
+                            <Grid ColumnDefinitions="90*,10*">
+                                
+                                <Label Text="Database Functions"
+                                       Grid.Column="0"
+                                       TextColor="{DynamicResource PrimaryBackColor}"
+                                       FontAttributes="Bold"
+                                       HeightRequest="25"
+                                       VerticalTextAlignment="Center"
+                                       HorizontalTextAlignment="Center"
+                                        />
+                                <Image Source="outline_warning_amber_black_24.png"
+                                       Grid.Column="1"
+                                       HorizontalOptions="Start"
+                                       />
+                                
+                            </Grid>
+                        </accordion:AccordionItem.Header>
+
+                        <accordion:AccordionItem.Content>
+                            
+                            <Grid RowDefinitions="*,*,*,*,*,*,*">
+
+                                <!--Drop Tables-->
+                                <Button Text="Drop Tables"
+                                        Grid.Row="0"
+                                        Clicked="DropTablesButtonClicked" />
+
+                                <!--Create Tables-->
+                                <Button Text="Create Tables"
+                                        Grid.Row="1"
+                                        Clicked="CreateTablesButtonClicked" />
+                                
+                                <Button x:Name="CreateContactTablesButton" 
+                                        Text="Create Contact Tables"
+                                        Grid.Row="2"
+                                        Clicked="CreateContactTablesButton_OnClicked"
+                                        />
+                                
+                                <Button x:Name="DropContactTablesButton"
+                                        Text="Drop Contact Tables"
+                                        Grid.Row="3"
+                                        Clicked="DropContactTablesButton_OnClicked"/>
+                                <!-- -->
+                                <!-- ~1~Separator line@1@ -->
+                                <!-- <BoxView VerticalOptions="Center" -->
+                                <!--          HorizontalOptions="Center" -->
+                                <!--          HeightRequest="1" -->
+                                <!--          WidthRequest="200" -->
+                                <!--          Color="Gray" /> -->
+                                <!-- -->
+                                <!-- ~1~Separator line@1@ -->
+                                <!-- <BoxView VerticalOptions="Center" -->
+                                <!--          HorizontalOptions="Center" -->
+                                <!--          HeightRequest="1" -->
+                                <!--          WidthRequest="200" -->
+                                <!--          Color="Gray" /> -->
+
+                                <!--Backup Database-->
+                                <Button x:Name="BackupDatabaseButton"
+                                        Text="Backup Database"
+                                        Grid.Row="4"
+                                        Clicked="BackupDatabaseButton_OnClicked" />
+
+                                <!--Restore Database-->
+                                <Button x:Name="RestoreDatabaseButton"
+                                        Text="Restore Database"
+                                        Grid.Row="5"
+                                        Clicked="RestoreDatabaseButton_OnClicked" />
+
+                            </Grid>
+                        </accordion:AccordionItem.Content>
+
+                    </accordion:AccordionItem>
+
+                </accordion:SfAccordion.Items>
+
+            </accordion:SfAccordion>
+        </ScrollView>
+    </StackLayout>
+</ContentPage>

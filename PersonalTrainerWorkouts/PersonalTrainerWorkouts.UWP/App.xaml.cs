@@ -9,6 +9,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 
+
 namespace PersonalTrainerWorkouts.UWP
 {
     /// <summary>
@@ -50,11 +51,18 @@ namespace PersonalTrainerWorkouts.UWP
                 rootFrame = new Frame();
 
                 rootFrame.NavigationFailed += OnNavigationFailed;
-                global::Xamarin.Forms.Forms.SetFlags("Shell_UWP_Experimental");
-List<Assembly> assembliesToInclude = new List<Assembly>();
-assembliesToInclude.Add(typeof(SfPickerRenderer).GetTypeInfo().Assembly);
-assembliesToInclude.Add(typeof(SfListViewRenderer).GetTypeInfo().Assembly);
-Xamarin.Forms.Forms.Init(e, assembliesToInclude);
+                Xamarin.Forms.Forms.SetFlags("Shell_UWP_Experimental");
+                
+                var assembliesToInclude = new List<Assembly>();
+
+                assembliesToInclude.Add(typeof(SfPickerRenderer).GetTypeInfo()
+                                                                .Assembly);
+
+                assembliesToInclude.Add(typeof(SfListViewRenderer).GetTypeInfo()
+                                                                  .Assembly);
+
+                Xamarin.Forms.Forms.Init(e
+                                       , assembliesToInclude);
 
                 if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
                 {

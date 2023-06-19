@@ -1,32 +1,61 @@
-﻿using System;
+﻿using Android.OS;
+
 using PersonalTrainerWorkouts.Data;
-using Xamarin.Forms;
+
+using Environment = System.Environment;
 
 namespace PersonalTrainerWorkouts
 {
-    public partial class App : Application
+    public partial class App
     {
-        private static AsyncDatabase _asyncDatabase;
-        private static Database      _database;
-        private static DataStore     _dataStore;
+        //private static AsyncDatabase     _asyncDatabase;
+        //private static DataStore         _dataStore;
+        private static Database _database;
+        private static ContactsDataStore _contactDataStore;
 
-        //public static DataStore DataStore => _dataStore ?? (_dataStore = new DataStore( AsyncDatabase ));
-        private static readonly string Path = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
-                                                                   , "WorkoutDatabase.db3");
+        private static readonly string Path = System.IO
+                                                    .Path
+                                                    .Combine(Environment.GetFolderPath(Environment.SpecialFolder
+                                                                                                  .LocalApplicationData)
+                                                           , "WorkoutDatabase.db3");
 
-        public static Database Database => _database = _database ?? new Database(Path);
+        public static Database Database => _database ??= new Database(Path);
+        public static ContactsDataStore ContactDataStore => _contactDataStore ??= new ContactsDataStore();
 
         public App()
         {
-            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NDg2MDY1QDMxMzkyZTMyMmUzME51QWlBT3A3WEdnc2E5WFd5YmtSSnBHMW5ZaENaUjV0VEt6a3haeUpYcWM9;NDg2MDY2QDMxMzkyZTMyMmUzMFkvOTkrOURkVGEyaERkbUVQbnJ5dUhGNzFKNWVwcUZDcTFiVHNoWDBtb289;NDg2MDY3QDMxMzkyZTMyMmUzMFZHUjNVVmRtc1VLVms1VG9iZjBQaW4wRXhiamUvUFB6OG0vTXZHK2NEVzQ9;NDg2MDY4QDMxMzkyZTMyMmUzMElUd1ZyZVVERk9WY24wd3BpdEI1WUFFc0w4V3lFdUxhbXBybUhibzdsVnM9;NDg2MDY5QDMxMzkyZTMyMmUzMFhFOXRxS1lRd0NjM3dVUDA1K1ZIVVNiZGFpcGlkM0pTSXViZWZkb0dNdXc9;NDg2MDcwQDMxMzkyZTMyMmUzMGRaZ2NJaCtDZzl3cG5BWFF3bTQ4enRFK3Z1emdacmJETWR6Z05CS25tc2c9;NDg2MDcxQDMxMzkyZTMyMmUzMGkxYjFJc2NiU01oQmRIclZuOFdvR0RFQVRROHNPK2lQcUtHZCtWOGU4MTQ9;NDg2MDcyQDMxMzkyZTMyMmUzMElKQVpNZm5yWXBBVmdodHlZbC8ybnE2SzJaY0lBTUdHL0d2MVR0R2NTbm89;NDg2MDczQDMxMzkyZTMyMmUzMFgwMHpMMlZVWGdBTnBRS1gxMW1xTi91MzlFUDlhQ293cnFpdU14bDFMZlU9;NDg2MDc0QDMxMzkyZTMyMmUzMFVPaGhVUWdPOWxCVVhucllyWEdUYktQODVYUzJZQkxpK0lrQ3dNN3UzS2c9");
-
-            //Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("NDYwMzg0QDMxMzkyZTMxMmUzME5yWGhoOENxR2NvTXNQenZZTWVnckRCZkwzV3R0SHh3bGJvWHZpc25Udjg9");
+            Syncfusion.Licensing.SyncfusionLicenseProvider.RegisterLicense("Mgo+DSMBaFt+QHFqVkNrXVNbdV5dVGpAd0N3RGlcdlR1fUUmHVdTRHRcQlliTH9QckVhWn9eeHM=;Mgo+DSMBPh8sVXJ1S0d+X1RPd11dXmJWd1p/THNYflR1fV9DaUwxOX1dQl9gSXpSc0RgXX9cc3RXQ2c=;ORg4AjUWIQA/Gnt2VFhhQlJBfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hSn5Xd0BiWntecndVQmFb;MTczNTI0OUAzMjMxMmUzMTJlMzMzNWxvbWFGWm1lODJRRzlaNEpwYVlvVUF4RHpQZ0FxcWk1NG5hdVUwVWgwN0U9;MTczNTI1MEAzMjMxMmUzMTJlMzMzNW1PMUtQdkZ3TG5QZ2l6eW5tVE90UzBiVTN4bEcvcXVkNVNweDlWc0crS2c9;NRAiBiAaIQQuGjN/V0d+XU9Hc1RDX3xKf0x/TGpQb19xflBPallYVBYiSV9jS31TckRmWHxacHZWR2dcVg==;MTczNTI1MkAzMjMxMmUzMTJlMzMzNVVRSzl1Q3dzWWxFL2ZLTlFITytiakl3ZVVEMlRzU1dMZklzcmplZmF3Njg9;MTczNTI1M0AzMjMxMmUzMTJlMzMzNVFIL1VLbVBSQTViSEV4dS9vRUR3b1ErbUtCN0tGYWwyeDBuYzVkUjlPa009;Mgo+DSMBMAY9C3t2VFhhQlJBfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hSn5Xd0BiWntecndXQGJb;MTczNTI1NUAzMjMxMmUzMTJlMzMzNU0yTzkwZ1ZIa0JIallLTWJBL1Zsd25FN0I4KzhlY0VyV1NROFlSNXpBYkE9;MTczNTI1NkAzMjMxMmUzMTJlMzMzNVZEMjgwd3RZN0p0YnVBWXR3cmRUS2MzSnlDNmR0d1RFU1RabW1CWkFZbU09;MTczNTI1N0AzMjMxMmUzMTJlMzMzNVVRSzl1Q3dzWWxFL2ZLTlFITytiakl3ZVVEMlRzU1dMZklzcmplZmF3Njg9");
+            //ODM0NDE3QDMyMzAyZTM0MmUzMFBlamc3VjhPRS9mNXhTM2tPMXViZSt4VTR4T1Awb1RWT0x2alljd3FZakU9
+            //Mgo+DSMBaFt+QHFqVkNrXVNbdV5dVGpAd0N3RGlcdlR1fUUmHVdTRHRcQlliTH9QckVhWn9eeHM=;Mgo+DSMBPh8sVXJ1S0d+X1RPd11dXmJWd1p/THNYflR1fV9DaUwxOX1dQl9gSXpSc0RgXX9cc3RXQ2c=;ORg4AjUWIQA/Gnt2VFhhQlJBfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hSn5Xd0BiWntecndVQmFb;MTczNTI0OUAzMjMxMmUzMTJlMzMzNWxvbWFGWm1lODJRRzlaNEpwYVlvVUF4RHpQZ0FxcWk1NG5hdVUwVWgwN0U9;MTczNTI1MEAzMjMxMmUzMTJlMzMzNW1PMUtQdkZ3TG5QZ2l6eW5tVE90UzBiVTN4bEcvcXVkNVNweDlWc0crS2c9;NRAiBiAaIQQuGjN/V0d+XU9Hc1RDX3xKf0x/TGpQb19xflBPallYVBYiSV9jS31TckRmWHxacHZWR2dcVg==;MTczNTI1MkAzMjMxMmUzMTJlMzMzNVVRSzl1Q3dzWWxFL2ZLTlFITytiakl3ZVVEMlRzU1dMZklzcmplZmF3Njg9;MTczNTI1M0AzMjMxMmUzMTJlMzMzNVFIL1VLbVBSQTViSEV4dS9vRUR3b1ErbUtCN0tGYWwyeDBuYzVkUjlPa009;Mgo+DSMBMAY9C3t2VFhhQlJBfV5AQmBIYVp/TGpJfl96cVxMZVVBJAtUQF1hSn5Xd0BiWntecndXQGJb;MTczNTI1NUAzMjMxMmUzMTJlMzMzNU0yTzkwZ1ZIa0JIallLTWJBL1Zsd25FN0I4KzhlY0VyV1NROFlSNXpBYkE9;MTczNTI1NkAzMjMxMmUzMTJlMzMzNVZEMjgwd3RZN0p0YnVBWXR3cmRUS2MzSnlDNmR0d1RFU1RabW1CWkFZbU09;MTczNTI1N0AzMjMxMmUzMTJlMzMzNVVRSzl1Q3dzWWxFL2ZLTlFITytiakl3ZVVEMlRzU1dMZklzcmplZmF3Njg9
             InitializeComponent();
 
             MainPage = new AppShell();
+            /*
+             * StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
+                .detectAll()
+                .penaltyListener(Executors.newSingleThreadExecutor(), new StrictMode.OnVmViolationListener() {
+                    @Override
+                    public void onVmViolation(Violation v) {
+                        //DO MY CUSTOM STUFF LIKE LOG IT TO CRASHLYTICS
+                        Crashlytics.logException(v);
+                    }
+                })
+                .penaltyLog()
+                .build());
+             */
+
+            // StrictMode.SetVmPolicy(new StrictMode.VmPolicy.Builder()
+            //                        .DetectLeakedClosableObjects()
+            //                        .PenaltyLog()
+            //                        .Build());
+#if DEBUG
+            StrictMode.EnableDefaults();
+#endif
+
+
 
             //BENDO: [Before final release of v1.0] Look at site below. Some good ideas for handling/backing up database
-            //https://causerexception.com/2019/06/28/sqlite-tips-and-tricks-for-mobile-developers/
+            //https://danielcauserblog.wordpress.com/2019/06/28/sqlite-tips-and-tricks-for-mobile-developers/
         }
 
         protected override void OnStart() { }

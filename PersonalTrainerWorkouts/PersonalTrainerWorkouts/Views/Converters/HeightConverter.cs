@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Globalization;
-using System.Text;
 using Syncfusion.ListView.XForms;
 using Xamarin.Forms;
 
@@ -15,7 +13,8 @@ namespace PersonalTrainerWorkouts.Views.Converters
                             , object      parameter
                             , CultureInfo culture)
         {
-            return parameter is SfListView listView && value is ObservableCollection<T> items ?
+            return parameter is SfListView listView 
+                   && value is ObservableCollection<T> items ?
                            items.Count * listView.ItemSize :
                            0;
         }

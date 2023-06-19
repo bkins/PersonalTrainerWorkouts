@@ -1,0 +1,21 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+
+             xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
+             xmlns:tabWorkouts="clr-namespace:PersonalTrainerWorkouts.ViewModels.Tab_Workouts;assembly=PersonalTrainerWorkouts"
+
+             x:Class="PersonalTrainerWorkouts.Views.Tab_Workouts.TypeOfExerciseEntryPage"
+             x:DataType="tabWorkouts:TypeOfExerciseListViewModel"
+
+             Title="Add New Type of Exercise">
+
+    <ContentPage.Content>
+        <StackLayout>
+            <Entry Placeholder="Name"
+                   Text="{Binding SelectedTypeOfExercise.Name}"
+                   Unfocused="Name_OnUnfocused" />
+        </StackLayout>
+    </ContentPage.Content>
+</ContentPage>

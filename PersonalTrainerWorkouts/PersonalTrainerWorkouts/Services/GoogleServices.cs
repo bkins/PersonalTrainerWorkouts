@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace PersonalTrainerWorkouts.Services
+﻿namespace PersonalTrainerWorkouts.Services
 {
     public static class GoogleServices
     {

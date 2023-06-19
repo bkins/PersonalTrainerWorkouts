@@ -1,17 +1,44 @@
-﻿using System.Collections.Generic;
-using System.Linq;
+﻿using Avails.D_Flat.Exceptions;
+using Avails.Xamarin.Logger;
+
+using PersonalTrainerWorkouts.Data.Interfaces;
 using PersonalTrainerWorkouts.Models;
+using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.Models.Intermediates;
+
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 
 namespace PersonalTrainerWorkouts.Data
 {
-    public class DataAccess
+    public partial class DataAccess
     {
-        private IDataStore Database { get; set; }
+        private IDataStore         Database          { get; set; }
+        private IContactsDataStore ContactsDataStore { get; set; }
+        public  string             DatabaseLocation  => GetDatabaseLocation();
+        public  string             DatabaseFileName  => GetDatabaseFileName();
+
+        public DataAccess(IDataStore database, IContactsDataStore contactsDataStore)
+        {
+            Database          = database;
+            ContactsDataStore = contactsDataStore;
+        }
 
         public DataAccess(IDataStore database)
         {
-            Database = database;
+            Database          = database;
+            ContactsDataStore = null;
+        }
+        private string GetDatabaseLocation()
+        {
+            return Database.GetFilePath();
+        }
+
+        private string GetDatabaseFileName()
+        {
+            return Database.GetFileName();
         }
 
         public void CreateTables()
@@ -24,10 +51,21 @@ namespace PersonalTrainerWorkouts.Data
             Database.DropTables();
         }
 
+        public void CreateContactTables()
+        {
+            Database.CreateClientTables();
+        }
+
+        public void DropContactTables()
+        {
+            Database.DropClientTables();
+        }
+
         public string GetDatabasePath()
         {
             return Database.DbPath();
         }
+
         //NotImplemented: This method is INCOMPLETE.
         //This method is to complete the Gets in the (Database class) that take the param of 'forceRefresh' that return a Workout
         //BENDO: Instead of having this method rebuild all object within the Workout, have a 'Refresh" method for each object that can be in
@@ -54,12 +92,12 @@ namespace PersonalTrainerWorkouts.Data
             }
 
             bool exerciseHasAnySynergists = workout.Exercises.Any(field => field.Synergists.Any());
-            bool exerciseHasAnyEquipment  = workout.Exercises.Any(field => ! field.Equipment.Any());
-            bool exerciseHasAnyTypes      = workout.Exercises.Any(field => ! field.TypesOfExercise.Any());
+            bool exerciseHasAnyEquipment = workout.Exercises.Any(field => !field.Equipment.Any());
+            bool exerciseHasAnyTypes = workout.Exercises.Any(field => !field.TypesOfExercise.Any());
 
-            if (! exerciseHasAnySynergists
-             && ! exerciseHasAnyEquipment
-             && ! exerciseHasAnyTypes)
+            if (!exerciseHasAnySynergists
+             && !exerciseHasAnyEquipment
+             && !exerciseHasAnyTypes)
             {
                 //Exercise has no children, nothing left to refresh
                 return workout;
@@ -78,154 +116,181 @@ namespace PersonalTrainerWorkouts.Data
             return null;
         }
 
-        #region Adds
+    }
 
-        public int AddNewWorkout(Workout workout)
+    public partial class DataAccess //Helper methods
+    {
+        public static bool ValidateForNoDuplicatedNames(string potentialDuplicatedName
+                                                      , IEnumerable<BaseModel> listOfModels
+                                                      , string type)
         {
-            var allWorkouts = Database.GetWorkouts();
+            var duplicatedWorkout = listOfModels.FirstOrDefault(field => field.Name == potentialDuplicatedName);
 
-            ValidateForNoDuplicatedNames(workout.Name
-                                       , allWorkouts
-                                       , nameof(Workout));
-
-            return Database.AddJustOneWorkout(workout);
-        }
-
-        public int AddNewTypeOfExercise(TypeOfExercise typeOfExercise)
-        {
-            var allTypesOfExercises = Database.GetTypes();
-
-            ValidateForNoDuplicatedNames(typeOfExercise.Name
-                                       , allTypesOfExercises
-                                       , nameof(TypeOfExercise));
-
-            return Database.AddJustOneTypeOfExercise(typeOfExercise);
-        }
-
-        public void AddExerciseType(int exerciseId
-                                  , int typeOfExerciseId)
-        {
-            var existingExerciseTypes = Database.GetExerciseTypes()
-                                                .Where(field => field.ExerciseId == exerciseId && field.TypeId == typeOfExerciseId);
-
-            if (existingExerciseTypes.Any())
+            if (duplicatedWorkout != null)
             {
-                throw new ApplicationExceptions.EntityRelationAlreadyExistsException("You cannot add an Exercise Type that is already associated with this Exercise.\r\nPlease select different type.");
+                throw new AttemptToAddDuplicateEntityException(type
+                                                             , duplicatedWorkout
+                                                             , nameof(potentialDuplicatedName));
             }
+            return true;
 
-            Database.AddExerciseType(new ExerciseType
-                                     {
-                                         ExerciseId = exerciseId
-                                       , TypeId     = typeOfExerciseId
-                                     });
         }
 
-        public void AddExerciseEquipment(int exerciseId
-                                       , int equipmentId)
+        public List<string> GetTables()
         {
-            var existingExerciseEquipment = Database.GetExerciseEquipments()
-                                                    .Where(field => field.ExerciseId == exerciseId && field.EquipmentId == equipmentId);
+            return Database.GetTables();
+        }
+    }
 
-            if (existingExerciseEquipment.Any())
+    public partial class DataAccess //Deletes
+    {
+        public void DeleteExerciseType(int exerciseId
+                                     , int typeOfExerciseId)
+        {
+            var typeOfExerciseToDelete = Database.GetExerciseTypes()
+                                                 .First(field => field.ExerciseId == exerciseId && field.TypeId == typeOfExerciseId);
+
+            Database.DeleteExerciseType(ref typeOfExerciseToDelete);
+        }
+
+        public void DeleteExerciseEquipment(int exerciseId
+                                          , int equipmentId)
+        {
+            var equipmentToDelete = Database.GetExerciseEquipments()
+                                            .First(field => field.ExerciseId == exerciseId && field.EquipmentId == equipmentId);
+
+            Database.DeleteExerciseEquipment(ref equipmentToDelete);
+        }
+
+        public void DeleteExerciseMuscleGroup(int exerciseId
+                                            , int muscleGroupId)
+        {
+            try
             {
-                throw new ApplicationExceptions.EntityRelationAlreadyExistsException("You cannot add Equipment that is already associated with this Exercise.\r\nPlease select different equipment.");
+                var muscleGroupToDelete = Database.GetExerciseMuscleGroups()
+                                                  .First(field => field.ExerciseId == exerciseId
+                                                               && field.MuscleGroupId == muscleGroupId);
+
+                Database.DeleteExerciseMuscleGroup(ref muscleGroupToDelete);
+
+                Logger.WriteLine($"The Muscle Group '{muscleGroupId.ToString()}' was removed from the Exercise '{exerciseId.ToString()}'"
+                               , Category.Information);
             }
-
-            Database.AddExerciseEquipment(new ExerciseEquipment
-                                          {
-                                              ExerciseId  = exerciseId
-                                            , EquipmentId = equipmentId
-                                          });
-        }
-
-        public void AddExerciseMuscleGroup(int exerciseId
-                                         , int muscleGroupId)
-        {
-            var existingExerciseMuscleGroup = Database.GetExerciseMuscleGroups()
-                                                      .Where(field => field.ExerciseId == exerciseId && field.MuscleGroupId == muscleGroupId);
-
-            if (existingExerciseMuscleGroup.Any())
+            catch (SequenceContainsNoElementsException e)
             {
-                throw new ApplicationExceptions.EntityRelationAlreadyExistsException("You cannot add Muscle Group that is already associated with this Exercise.\r\nPlease select different muscle group.");
+                Logger.WriteLine($"Could not find the Muscle Group with the Id of '{muscleGroupId.ToString()}'"
+                               , Category.Error
+                               , e);
             }
-
-            Database.AddExerciseMuscleGroup(new ExerciseMuscleGroup
-                                            {
-                                                ExerciseId    = exerciseId
-                                              , MuscleGroupId = muscleGroupId
-                                            });
-        }
-
-        public int AddNewExercise(Exercise exercise)
-        {
-            var allExercises = Database.GetExercises();
-
-            ValidateForNoDuplicatedNames(exercise.Name
-                                       , allExercises
-                                       , nameof(Exercise));
-
-            return Database.AddJustOneExercise(exercise);
-        }
-
-        public int AddNewEquipment(Equipment equipment)
-        {
-            var allEquipment = Database.GetAllEquipment();
-
-            ValidateForNoDuplicatedNames(equipment.Name
-                                       , allEquipment
-                                       , nameof(Equipment));
-
-            return Database.AddJustOneEquipment(equipment);
-        }
-
-        public int AddNewMuscleGroup(MuscleGroup muscleGroup)
-        {
-            //Muscle is already in DB at this point
-            var allMuscleGroups = Database.GetMuscleGroups();
-
-            ValidateForNoDuplicatedNames(muscleGroup.Name
-                                       , allMuscleGroups
-                                       , nameof(MuscleGroup));
-
-            return Database.AddJustOneMuscleGroup(muscleGroup);
-        }
-
-        public void AddSynergist(Synergist newSynergist)
-        {
-            var existingSynergist = Database.GetSynergists()
-                                            .Where(field => field.ExerciseId == newSynergist.ExerciseId && field.MuscleGroupId == newSynergist.MuscleGroupId && field.OpposingMuscleGroupId == newSynergist.OpposingMuscleGroupId);
-
-            if (existingSynergist.Any())
+            catch (Exception exception)
             {
-                throw new ApplicationExceptions.EntityRelationAlreadyExistsException("You cannot add this Synergist.\r\nIt already exists in this Exercise\r\nPlease select/Add a different Synergist.");
+                Logger.WriteLine($"Something unexpected happened: {exception.Message}", Category.Error, exception);
             }
-
-            Database.AddSynergist(new Synergist
-                                  {
-                                      ExerciseId            = newSynergist.ExerciseId
-                                    , MuscleGroupId         = newSynergist.MuscleGroupId
-                                    , OpposingMuscleGroupId = newSynergist.OpposingMuscleGroupId
-                                  });
         }
 
-        public int AddWorkoutExercise(WorkoutExercise workoutExercise)
+        public int DeleteSession(Session session)
         {
-            var newWorkoutExerciseId = Database.AddWorkoutExercise(workoutExercise);
+            try
+            {
+                return Database.DeleteSession(ref session);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine($"Something unexpected happened while deleting {nameof(Session)}: {e.Message}", Category.Error, e);
 
-            return newWorkoutExerciseId;
+                return 0;
+            }
         }
 
-        public int AddLinkedWorkoutsToExercises(LinkedWorkoutsToExercises linkedWorkoutsToExercises)
+        public int DeleteClient(Client client)
         {
-            var newLinkedWorkoutsToExercises = Database.AddLinkedWorkoutExercise(linkedWorkoutsToExercises);
+            try
+            {
+                return Database.DeleteClient(ref client);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine($"Something unexpected happened while deleting {nameof(Client)}: {e.Message}", Category.Error, e);
 
-            return newLinkedWorkoutsToExercises;
+                return 0;
+            }
         }
 
-        #endregion
+        public int DeleteMeasurable(Measurable measurable)
+        {
+            try
+            {
+                return Database.DeleteMeasurable(ref measurable);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine($"Something unexpected happened while deleting {nameof(Measurable)}: {e.Message}", Category.Error, e);
 
-        #region Gets
+                return 0;
+            }
+        }
 
+        public int DeleteGoal(Goal goal)
+        {
+            try
+            {
+                return Database.DeleteGoal(ref goal);
+            }
+            catch (Exception e)
+            {
+                Logger.WriteLine($"Something unexpected happened while deleting {nameof(Goal)}: {e.Message}", Category.Error, e);
+
+                return 0;
+            }
+        }
+    }
+
+    public partial class DataAccess //Updates
+    {
+        public void UpdateWorkout(Workout workout)
+        {
+            Database.UpdateWorkout(workout);
+        }
+
+        public void UpdateSession(Session session)
+        {
+            Database.UpdateSession(session);
+        }
+
+        public void UpdateClient(Client client)
+        {
+            client.SetMainNumber(); //Contact data is not being saved when saving the client
+            Database.UpdateClient(client);
+        }
+
+        public void UpdateGoal(Goal goal)
+        {
+            Database.UpdateGoal(goal);
+        }
+
+        public void UpdateMeasurable(Measurable measurable)
+        {
+            Database.UpdateMeasurable(measurable);
+        }
+
+        public void UpdateExercise(Exercise exercise)
+        {
+            Database.UpdateExercise(exercise);
+        }
+
+        public void UpdateWorkoutExercise(WorkoutExercise workoutExercise)
+        {
+            Database.UpdateWorkoutExercises(workoutExercise);
+        }
+
+        public void UpdateLinkedWorkoutsToExercises(LinkedWorkoutsToExercises linkedWorkoutsToExercises)
+        {
+            Database.UpdateLinkedWorkoutsToExercises(linkedWorkoutsToExercises);
+        }
+    }
+
+    public partial class DataAccess //Gets
+    {
         public Workout GetWorkout(int workoutId)
         {
             return Database.GetWorkout(workoutId) ?? new Workout();
@@ -234,6 +299,64 @@ namespace PersonalTrainerWorkouts.Data
         public IEnumerable<Workout> GetWorkouts()
         {
             return Database.GetWorkouts() ?? new List<Workout>();
+        }
+
+        public IEnumerable<UnitOfMeasurement> GetUnitOfMeasures()
+        {
+            return Database.GetUnitOfMeasurements() ?? new List<UnitOfMeasurement>();
+        }
+
+        public IEnumerable<Session> GetSessions()
+        {
+            var allSessions = Database.GetSessions().ToList();
+            var allClients = GetClients().ToList();
+
+            foreach (var session in allSessions)
+            {
+                session.Client = allClients.FirstOrDefault(client => client.Id == session.ClientId) ?? new Client();
+            }
+            return allSessions;
+        }
+
+        public IEnumerable<Client> GetClients()
+        {
+            var allClients = Database.GetClients().ToList();
+            var allAppContacts = GetAppContacts().ToList();
+
+            foreach (var client in allClients.Where(client => allAppContacts.Any(contact => contact.ClientId == client.Id)))
+            {
+                client.AppContact = allAppContacts.FirstOrDefault(contact => contact.ClientId == client.Id);
+                client.SetMainNumber();
+
+                client.Contact ??= client.AppContact?.ToContact(ContactsDataStore, client.AppContact);
+            }
+
+            return allClients;
+        }
+
+        public IEnumerable<Goal> GetGoals()
+        {
+            return Database.GetGoals();
+        }
+
+        public IEnumerable<Measurable> GetMeasurables()
+        {
+            return Database.GetAllMeasurables();
+        }
+
+        public IEnumerable<Measurable> GetMeasurablesByGoal(int goalId)
+        {
+            return GetMeasurables().Where(measurable => measurable.GoalId == goalId);
+        }
+
+        public IEnumerable<Measurable> GetMeasurablesByClient(int clientId)
+        {
+            return GetMeasurables().Where(measurable => measurable.ClientId == clientId);
+        }
+        
+        public IEnumerable<AppContact> GetAppContacts()
+        {
+            return Database.GetAppContacts() ?? new List<AppContact>();
         }
 
         public IEnumerable<WorkoutExercise> GetWorkoutExercises(int workoutId)
@@ -289,11 +412,6 @@ namespace PersonalTrainerWorkouts.Data
             return Database.GetSynergists() ?? new List<Synergist>();
         }
 
-        public IEnumerable<ExerciseMuscleGroup> GetAllExerciseMuscleGroups()
-        {
-            return Database.GetExerciseMuscleGroups() ?? new List<ExerciseMuscleGroup>();
-        }
-
         public IEnumerable<Equipment> GetAllEquipment()
         {
             return Database.GetAllEquipment() ?? new List<Equipment>();
@@ -309,79 +427,202 @@ namespace PersonalTrainerWorkouts.Data
             return Database.GetOpposingMuscleGroupByMuscleGroup(muscleGroupId);
         }
 
-        #endregion
-
-        #region Updates
-
-        public void UpdateWorkout(Workout workout)
+        public Goal GetGoal(int goalId)
         {
-            Database.UpdateWorkout(workout);
+            return Database.GetGoal(goalId);
+        }
+        
+        public Measurable GetMeasurable(int measurableId)
+        {
+            return measurableId == 0 ? new Measurable() : Database.GetMeasurable(measurableId);
+        }
+    }
+
+    public partial class DataAccess //Adds
+    {
+        public int AddNewWorkout(Workout workout)
+        {
+            var allWorkouts = Database.GetWorkouts();
+
+            ValidateForNoDuplicatedNames(workout.Name
+                                       , allWorkouts
+                                       , nameof(Workout));
+
+            return Database.AddJustOneWorkout(workout);
         }
 
-        public void UpdateExercise(Exercise exercise)
+        public void AddNewSession(Session session)
         {
-            Database.UpdateExercise(exercise);
+            Database.AddJustSession(session);
         }
 
-        public void UpdateWorkoutExercise(WorkoutExercise workoutExercise)
+        public int AddNewPhone(PhoneNumber phoneNumber)
         {
-            Database.UpdateWorkoutExercises(workoutExercise);
+            return Database.AddPhoneNumber(phoneNumber);
+        }
+        
+        public int AddNewClient(Client client)
+        {
+            return Database.AddJustOneClient(client);
         }
 
-        public void UpdateLinkedWorkoutsToExercises(LinkedWorkoutsToExercises linkedWorkoutsToExercises)
+        public void AddNewClientWithChildren(Client client)
         {
-            Database.UpdateLinkedWorkoutsToExercises(linkedWorkoutsToExercises);
+            Database.AddJustOneClientWithChildren(client);
         }
 
-        #endregion
-
-        #region Deletes
-
-        public void DeleteExerciseType(int exerciseId
-                                     , int typeOfExerciseId)
+        public int AddNewGoal(Goal goal)
         {
-            var typeOfExerciseToDelete = Database.GetExerciseTypes()
-                                                 .First(field => field.ExerciseId == exerciseId && field.TypeId == typeOfExerciseId);
-
-            Database.DeleteExerciseType(ref typeOfExerciseToDelete);
+            return Database.AddJustOneGoal(goal);
         }
 
-        public void DeleteExerciseEquipment(int exerciseId
-                                          , int equipmentId)
+        public int AddMeasurable(Measurable measurable)
         {
-            var equipmentToDelete = Database.GetExerciseEquipments()
-                                            .First(field => field.ExerciseId == exerciseId && field.EquipmentId == equipmentId);
-
-            Database.DeleteExerciseEquipment(ref equipmentToDelete);
+            return Database.AddJustOneMeasurable(measurable);
         }
-
-        public void DeleteExerciseMuscleGroup(int exerciseId
-                                            , int muscleGroupId)
+        
+        public int AddNewTypeOfExercise(TypeOfExercise typeOfExercise)
         {
-            var muscleGroupToDelete = Database.GetExerciseMuscleGroups()
-                                              .First(field => field.ExerciseId == exerciseId && field.MuscleGroupId == muscleGroupId);
+            var allTypesOfExercises = Database.GetTypes();
+            var typesOfExercises = allTypesOfExercises.ToList();
 
-            Database.DeleteExerciseMuscleGroup(ref muscleGroupToDelete);
-        }
+            if (!typesOfExercises.Any())
+                return Database.AddJustOneTypeOfExercise(typeOfExercise);
 
-        #endregion
+            var validNewType = ValidateForNoDuplicatedNames(typeOfExercise.Name
+                                                          , typesOfExercises
+                                                          , nameof(TypeOfExercise));
 
-        #region Helper methods
-
-        public static void ValidateForNoDuplicatedNames(string                 potentialDuplicatedName
-                                                      , IEnumerable<BaseModel> listOfModels
-                                                      , string                 type)
-        {
-            var duplicatedWorkout = listOfModels.FirstOrDefault(field => field.Name == potentialDuplicatedName);
-
-            if (duplicatedWorkout != null)
+            if (!validNewType)
             {
-                throw new ApplicationExceptions.AttemptToAddDuplicateEntityException(type
-                                                                                   , duplicatedWorkout
-                                                                                   , nameof(potentialDuplicatedName));
+                return -1;
             }
+
+            return Database.AddJustOneTypeOfExercise(typeOfExercise);
         }
 
-        #endregion
+        public void AddExerciseType(int exerciseId
+                                  , int typeOfExerciseId)
+        {
+            var existingExerciseTypes = Database.GetExerciseTypes()
+                                                .Where(field => field.ExerciseId == exerciseId && field.TypeId == typeOfExerciseId);
+
+            if (existingExerciseTypes.Any())
+            {
+                //BENDO:  This is being thrown when adding an existing type to a new exercise.  Though it will adds the type
+                throw new EntityRelationAlreadyExistsException(
+                "You cannot add an Exercise Type that is already associated with this Exercise.\r\nPlease select different type.");
+            }
+
+            Database.AddExerciseType(new ExerciseType
+            {
+                ExerciseId = exerciseId
+                                       ,
+                TypeId = typeOfExerciseId
+            });
+        }
+
+        public void AddExerciseEquipment(int exerciseId
+                                       , int equipmentId)
+        {
+            var existingExerciseEquipment = Database.GetExerciseEquipments()
+                                                    .Where(field => field.ExerciseId == exerciseId && field.EquipmentId == equipmentId);
+
+            if (existingExerciseEquipment.Any())
+            {
+                throw new EntityRelationAlreadyExistsException(
+                "You cannot add Equipment that is already associated with this Exercise.\r\nPlease select different equipment.");
+            }
+
+            Database.AddExerciseEquipment(new ExerciseEquipment
+            {
+                ExerciseId = exerciseId
+                                            ,
+                EquipmentId = equipmentId
+            });
+        }
+
+        public int AddNewExercise(Exercise exercise)
+        {
+            var allExercises = Database.GetExercises();
+
+            ValidateForNoDuplicatedNames(exercise.Name
+                                       , allExercises
+                                       , nameof(Exercise));
+
+            return Database.AddJustOneExercise(exercise);
+        }
+
+        public int AddNewEquipment(Equipment equipment)
+        {
+            var allEquipment = Database.GetAllEquipment();
+
+            ValidateForNoDuplicatedNames(equipment.Name
+                                       , allEquipment
+                                       , nameof(Equipment));
+
+            return Database.AddJustOneEquipment(equipment);
+        }
+
+        public int AddNewMuscleGroup(MuscleGroup muscleGroup)
+        {
+            //Muscle is already in DB at this point
+            var allMuscleGroups = Database.GetMuscleGroups();
+
+            ValidateForNoDuplicatedNames(muscleGroup.Name
+                                       , allMuscleGroups
+                                       , nameof(MuscleGroup));
+
+            return Database.AddJustOneMuscleGroup(muscleGroup);
+        }
+
+        public void AddSynergist(Synergist newSynergist)
+        {
+            var existingSynergist = Database.GetSynergists()
+                                            .Where(field => field.ExerciseId == newSynergist.ExerciseId
+                                                         && field.MuscleGroupId == newSynergist.MuscleGroupId
+                                                         && field.OpposingMuscleGroupId == newSynergist.OpposingMuscleGroupId);
+
+            if (existingSynergist.Any())
+            {
+                throw new EntityRelationAlreadyExistsException(
+                "You cannot add this Synergist.\r\nIt already exists in this Exercise\r\nPlease select/Add a different Synergist.");
+            }
+
+            Database.AddSynergist(new Synergist
+            {
+                ExerciseId = newSynergist.ExerciseId
+                                    ,
+                MuscleGroupId = newSynergist.MuscleGroupId
+                                    ,
+                OpposingMuscleGroupId = newSynergist.OpposingMuscleGroupId
+            });
+        }
+
+        public int AddWorkoutExercise(WorkoutExercise workoutExercise)
+        {
+            var newWorkoutExerciseId = Database.AddWorkoutExercise(workoutExercise);
+
+            return newWorkoutExerciseId;
+        }
+
+        public int AddLinkedWorkoutsToExercises(LinkedWorkoutsToExercises linkedWorkoutsToExercises)
+        {
+            var newLinkedWorkoutsToExercises = Database.AddLinkedWorkoutExercise(linkedWorkoutsToExercises);
+
+            return newLinkedWorkoutsToExercises;
+        }
+
+        public int AddNewContact(AppContact contact)
+        {
+            var newContactId = Database.AddContact(contact);
+
+            return newContactId;
+        }
+
+        public void InsertConfigurationValues()
+        {
+            Database.InsertConfigurationValues();
+        }
     }
 }

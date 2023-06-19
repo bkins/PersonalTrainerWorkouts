@@ -1,6 +1,24 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="0.2" package="com.companyname.personaltrainerworkouts" android:installLocation="auto">
-	<uses-sdk android:minSdkVersion="29" android:targetSdkVersion="30" />
-	<application android:label="PersonalTrainerWorkouts.Android" android:theme="@style/MainTheme" android:allowBackup="false" android:icon="@drawable/xamarin_logo" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" 
+          android:versionCode="1"
+          android:versionName="0.2"
+          package="com.companyname.personaltrainerworkouts"
+          android:installLocation="auto"
+		  android:exported="true"
+          >
+	<uses-sdk android:minSdkVersion="29" android:targetSdkVersion="31" />
+	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+	<uses-permission android:name="android.permission.READ_CONTACTS" />
 	<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+	<application android:label="PersonalTrainerWorkouts.Android"
+	             android:theme="@style/MainTheme"
+	             android:allowBackup="false"
+                 android:icon="@drawable/xamarin_logo"
+	             android:fullBackupContent="@xml/auto_backup_rules"
+	             >
+
+	</application>
+
 </manifest>
