@@ -331,7 +331,7 @@ public class MeasurablesViewModel : ViewModelBase
          && DefaultVariableName.DefaultName != variableToUse)
         {
             return (
-                $"Currently, you cannot add a new type of Measurable to Goals.  I have updated you Variable name with the one you can use. If you want to have multiple variables that need to be met satisfy the Goal, let talk about doing that. But for now, that cannot be done."
+                $"Currently, you cannot add a new type of Measurable to Goals.  I have updated the Variable name with the one you can use. If you want to have multiple variables that need to be met to satisfy the Goal, let's talk about doing that. But for now, that cannot be done."
               , DefaultVariableName.DefaultName);
         }
         AddNewMeasurable(variableToUse
