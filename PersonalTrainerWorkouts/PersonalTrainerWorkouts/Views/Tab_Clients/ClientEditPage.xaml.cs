@@ -1,13 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using Avails.D_Flat.Extensions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
+using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
+using PersonalTrainerWorkouts.Views.Popups;
+using Syncfusion.XForms.RichTextEditor;
+using Xamarin.CommunityToolkit.Extensions;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -28,7 +34,15 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
         {
             InitializeComponent();
 
-            //ClientVm = new ClientViewModel();
+            var collection = new ObservableCollection<object>();
+            collection.Add(ToolbarOptions.Italic);
+            collection.Add(ToolbarOptions.Underline);
+            collection.Add(ToolbarOptions.Bold);
+
+            collection.Add(ToolbarOptions.NumberList);
+            collection.Add(ToolbarOptions.BulletList);
+
+            ClientNoteRte.ToolbarItems = collection;
         }
 
         public void ApplyQueryAttributes(IDictionary<string, string> query)
@@ -50,42 +64,52 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
 
         private void LoadData()
         {
-            ClientNameEntry.Text           = ClientVm.Client.DisplayName;
-            ClientMainPhoneValueLabel.Text = ClientVm.Client.MainNumber;
-            ClientNoteRte.Text             = ClientVm.Client.Notes;
+            ClientMainPhoneValueLabel.Text  = ClientVm.Client.MainNumber;
+            ClientNoteRte.Text              = ClientVm.Client.Notes;
+            GoalVm                          = new GoalViewModel(ClientId.ToSafeInt());
+            BindingContext                  = GoalVm;
+            GoalsCollectionView.ItemsSource = ClientVm.Goals;
 
-            //Task.Run(() =>
-            //         {
-            //             var goals = ClientVm.Client.Goals;
-
-            //             var goal = goals?.FirstOrDefault();
-            //             GoalVm = new GoalViewModel(goal);
-
-            //         }).ConfigureAwait(false);
-
-            //BindingContext = ClientVm;
-            GoalVm = new GoalViewModel(ClientId.ToSafeInt());
-
-            BindingContext = GoalVm;
-
-            GoalsCollectionView.ItemsSource       = ClientVm.Goals;
             MeasurablesCollectionView.ItemsSource = ClientVm.Measurables
-                                                            .Where(measurable => measurable.GoalSuccession != Succession.Baseline)
+                                                            .Where(measurable => measurable.GoalSuccession != Enums.Succession.Baseline)
                                                             .OrderBy(measurable => measurable.Variable)
                                                             .ThenByDescending(measurable => measurable.GoalSuccession)
                                                             .ThenBy(measurable => measurable.DateTaken);
 
-            PhoneNumberPicker.ItemsSource         = ClientVm.PhoneNumbers;
-            
-            Title = ClientVm.Client.DisplayName;
+            PhoneNumberPicker.ItemsSource   = ClientVm.PhoneNumbers;
+            Title                           = ClientVm.Client.DisplayName;
+            ColorValueLabel.TextColor       = ClientVm.Client.TextColor;
+            ColorValueLabel.BackgroundColor = ClientVm.Client.BackgroundColor;
+        }
 
-            //var goals = ClientVm.Client.Goals;
+        private static string GetDisplayMessage(GoalViewModel goalVm)
+        {
+            var displayMessage = goalVm.GoalStatusDescription;
+            if (goalVm.Goal.SuccessfullyCompleted)
+            {
+                displayMessage = $"Completed on {goalVm.GoalCompletedDateForDisplay}";
+            }
 
-            //var firstGoalName = goals?.FirstOrDefault()
-            //                         ?.Name;
+            return displayMessage;
         }
 
         #region Events
+
+        private void OnAccordionItemTapped(object sender, EventArgs e)
+        {
+            if (ClientAccordionItem.IsExpanded)
+            {
+                ClientAccordionItem.HeightRequest = -1;
+                ClientNoteRte.HeightRequest       = -1;
+            }
+            else
+            {
+                ClientAccordionItem.HeightRequest = Application.Current.MainPage.Height;
+                ClientNoteRte.HeightRequest       = Application.Current.MainPage.Height;
+            }
+
+            ClientAccordionItem.IsExpanded = ! ClientAccordionItem.IsExpanded;
+        }
 
         private void SaveButton_OnClicked(object    sender
                                         , EventArgs e)
@@ -210,8 +234,39 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
         {
 
         }
-        #endregion
 
+        private void TapGestureRecognizer_OnTapped_GoalStatusImage(object    sender
+                                                 , EventArgs e)
+        {
+            var goalVm         = (GoalViewModel)((Image)sender).BindingContext;
+            var displayMessage = GetDisplayMessage(goalVm);
+
+            Navigation.ShowPopup(new ToolTipPopup(displayMessage));
+        }
+
+        private async void TapGestureRecognizer_OnTapped(object    sender
+                                                       , EventArgs e)
+        {
+            var clientColorsPopup = new ClientColors(new ClientListViewModel());
+
+            void SetClientColors(Task<object> _)
+            {
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    ColorValueLabel.TextColor       = clientColorsPopup.ClientTextColor;
+                    ColorValueLabel.BackgroundColor = clientColorsPopup.ClientBackgroundColor;
+                });
+
+                ClientVm.Client.BackgroundColorHex        = clientColorsPopup.ClientBackgroundColor.ToHex();
+                ClientVm.Client.TextColorHex    = clientColorsPopup.ClientTextColor.ToHex();
+            }
+
+            await Navigation.ShowPopupAsync(clientColorsPopup)
+                            .ContinueWith(SetClientColors
+                                        , TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+
+        #endregion //Events
 
     }
 }

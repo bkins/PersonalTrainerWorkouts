@@ -237,16 +237,23 @@
                                                                         >
                                                                             <Image x:Name="IsTargetImage"
                                                                                    Grid.Column="0"
+                                                                                   HeightRequest="25"
                                                                                    Source="target_black_48.png"
                                                                                    IsVisible="{Binding IsTarget}"
                                                                                    />
-                                                                            <Label x:Name="SuccessionCharLabel"
+                                                                            <Image x:Name="IsInterimImage"
                                                                                    Grid.Column="0"
-                                                                                   Text="{Binding SuccessionChar}"
-                                                                                   HorizontalTextAlignment="Center"
-                                                                                   VerticalTextAlignment="End"
+                                                                                   HeightRequest="25"
+                                                                                   Source="done_black_48.png"
                                                                                    IsVisible="{Binding IsInterim}"
                                                                             />
+                                                                            <!-- <Label x:Name="SuccessionCharLabel" -->
+                                                                            <!--        Grid.Column="0" -->
+                                                                            <!--        Text="{Binding SuccessionChar}" -->
+                                                                            <!--        HorizontalTextAlignment="Center" -->
+                                                                            <!--        VerticalTextAlignment="End" -->
+                                                                            <!--        IsVisible="{Binding IsInterim}" -->
+                                                                            <!-- /> -->
                                                                             <Label x:Name="DateTakenLabel"
                                                                                    Grid.Column="1"
                                                                                    VerticalTextAlignment="Start"

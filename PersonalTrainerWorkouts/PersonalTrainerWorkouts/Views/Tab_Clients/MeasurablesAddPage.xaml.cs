@@ -7,9 +7,11 @@ using Avails.D_Flat.Extensions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
+using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views.Tab_Clients;
 
@@ -52,13 +54,13 @@ public partial class MeasurablesAddPage : ContentPage, IQueryAttributable
             MeasurablesViewModel = new MeasurablesViewModel(GoalId.ToSafeInt(), 0); //TODO: If this page is used to edit Measurables then I
                                                                                       //      will need to pass in the MeasurableId
             if (MeasurablesViewModel.Measurables
-                                    .All(measurable => measurable.GoalSuccession != Succession.Target))
+                                    .All(measurable => measurable.GoalSuccession != Enums.Succession.Target))
             {
                 DisplayAlert("Create a Target first"
                            , "Before you take any measurements for this goal, we need to set a target."
                            , "Ok");
                 MeasurablesViewModel.NewMeasurable ??= new Measurable();
-                MeasurablesViewModel.NewMeasurable.GoalSuccession = Succession.Target;
+                MeasurablesViewModel.NewMeasurable.GoalSuccession = Enums.Succession.Target;
 
                 Title = "Target";
             }
@@ -103,12 +105,12 @@ public partial class MeasurablesAddPage : ContentPage, IQueryAttributable
         try
         {
             var continueBack = true;
-            if (MeasurablesViewModel.GoalSuccession == Succession.Interim)
+            if (MeasurablesViewModel.GoalSuccession == Enums.Succession.Interim)
             {
                 continueBack = SetInterimMeasurableFromPageFields();
             }
 
-            if (MeasurablesViewModel.GoalSuccession == Succession.Target)
+            if (MeasurablesViewModel.GoalSuccession == Enums.Succession.Target)
             {
                 SetTargetMeasurableFromPageFields();
             }
@@ -140,7 +142,7 @@ public partial class MeasurablesAddPage : ContentPage, IQueryAttributable
     {
         var reasonCouldNotSave = MeasurablesViewModel.AddInterimMeasurable(null
                                                                          , ValueEditor.Text.ToSafeDouble()
-                                                                         , DateTakePicker.Date
+                                                                         , DateTakenPicker.Date
                                                                          , GetMeasurableType()
                                                                          , VariableEditor.Text
                                                                          , ClientId.ToSafeInt()
@@ -159,7 +161,7 @@ public partial class MeasurablesAddPage : ContentPage, IQueryAttributable
     private void SetTargetMeasurableFromPageFields()
     {
         MeasurablesViewModel.AddBaselineMeasurable(VariableEditor.Text
-                                                 , DateTakePicker.Date
+                                                 , DateTakenPicker.Date
                                                  , GetMeasurableType()
                                                  , ClientId.ToSafeInt()
                                                  , "pounds"); //TODO: Implement UOM Picker
@@ -179,5 +181,37 @@ public partial class MeasurablesAddPage : ContentPage, IQueryAttributable
         }
 
         return string.Empty;
+    }
+
+    private void DateTakenPicker_OnDateSelected(object               sender
+                                              , DateChangedEventArgs e)
+    {
+
+    }
+
+    private void TapGestureRecognizer_OnTapped_UomEditor(object    sender
+                                                       , EventArgs e)
+    {
+        UnitOfMeasurementPicker.IsOpen = true;
+    }
+
+
+    private void UnitOfMeasurementPicker_OnOkButtonClicked(object                    sender
+                                                         , SelectionChangedEventArgs e)
+    {
+        UnitOfMeasurementEditor.Text   = UnitOfMeasurementPicker.SelectedItem.ToString();
+        UnitOfMeasurementPicker.IsOpen = false;
+    }
+
+    private void UnitOfMeasurementPicker_OnCancelButtonClicked(object                    sender
+                                                             , SelectionChangedEventArgs e)
+    {
+        UnitOfMeasurementPicker.IsOpen = false;
+    }
+
+    private void TapGestureRecognizer_OnTapped_UomLabel(object    sender
+                                             , EventArgs e)
+    {
+        UnitOfMeasurementPicker.IsOpen = true;
     }
 }

@@ -3,6 +3,7 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:xForms="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:sfSchedule="clr-namespace:Syncfusion.SfSchedule.XForms;assembly=Syncfusion.SfSchedule.XForms"
              xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
              xmlns:contactsAndClients="clr-namespace:PersonalTrainerWorkouts.Models.ContactsAndClients;assembly=PersonalTrainerWorkouts"
              xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
@@ -43,6 +44,8 @@
                            Grid.Row="0"
                            FontSize="Medium"
                            FontAttributes="Bold"
+                           TextColor="{Binding TextColor}"
+                           BackgroundColor="{Binding BackgroundColor}"
                            Margin="10, 0, 0, 0" />
                     
                     <Label x:Name="MainNumberLabel" 
@@ -84,7 +87,8 @@
         <Entry x:Name="Filter" 
                Placeholder="Search Clients (try d=1 or d>5)"
                IsVisible="False"
-               TextChanged="Filter_OnTextChanged" />
+               TextChanged="Filter_OnTextChanged"
+               />
 
         <xForms:SfListView x:Name="ListView"
                            VerticalOptions="StartAndExpand"
@@ -95,7 +99,7 @@
                            SwipeEnded="ListView_SwipeEnded"
                            SwipeStarted="ListView_OnSwipeStarted"
                            ItemTemplate="{StaticResource ItemTemplate}">
-            
+
             <xForms:SfListView.LeftSwipeTemplate >
                 <DataTemplate x:Name="LeftSwipeTemplate">
 
@@ -184,6 +188,6 @@
                 </DataTemplate>
             </xForms:SfListView.LeftSwipeTemplate>
         </xForms:SfListView>
-        
+
     </StackLayout>
 </ContentPage>

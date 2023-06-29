@@ -8,6 +8,10 @@ using Avails.D_Flat.Extensions;
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Android;
+using Android.Content.PM;
+using AndroidX.Core.Content;
+using AndroidX.Core.App;
 
 namespace PersonalTrainerWorkouts.Droid
 {
@@ -20,6 +24,13 @@ namespace PersonalTrainerWorkouts.Droid
 
         public override void OnCreate(Bundle savedInstanceState, PersistableBundle persistentState)
         {
+            if (!CheckPermissionGranted(Manifest.Permission.ReadExternalStorage)
+             || !CheckPermissionGranted(Manifest.Permission.WriteExternalStorage)
+             || !CheckPermissionGranted(Manifest.Permission.ReadContacts))
+            {
+                RequestPermission();
+            }
+
             base.OnCreate(savedInstanceState, persistentState);
             Log.Debug(Tag, "SplashActivity.OnCreate");
         }
@@ -35,10 +46,22 @@ namespace PersonalTrainerWorkouts.Droid
             startupWork.Start();
         }
 
-
         public override void OnBackPressed()
         {
             // Do nothing to prevent the back button from canceling the startup process
+        }
+
+        public override void OnRequestPermissionsResult(int          requestCode
+                                                      , string[]     permissions
+                                                      , Permission[] grantResults)
+        {
+            Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode
+                                                                 , permissions
+                                                                 , grantResults);
+
+            base.OnRequestPermissionsResult(requestCode
+                                          , permissions
+                                          , grantResults);
         }
 
         /// <summary>
@@ -46,24 +69,103 @@ namespace PersonalTrainerWorkouts.Droid
         /// </summary>
         private async void Startup()
         {
-            Log.Debug(Tag, "Performing some startup work that takes a bit of time.");
+            Log.Debug(Tag
+                    , "Performing pre-load work.");
+            var preLoadTasks = new List<Task>
+                               {
+                                   GetPermissions()
+                               };
 
+            await Task.WhenAll(preLoadTasks);
+
+            Log.Debug(Tag, "Pre-load work complete.");
+
+            Log.Debug(Tag
+                    , "Performing initial loading startup work.");
             var tasks = new List<Task>
                         {
                             LoadContactsFromDevice()
                           , InsertConfigurationValueIntoDatabase()
-                        //, Add loading of resources that can be retrieve at start up here
+                            //, Add loading of resources that can be retrieve at start up here
                         };
 
             await Task.WhenAll(tasks);
 
-            Log.Debug(Tag, "Startup work is finished - starting MainActivity.");
+            Log.Debug(Tag, "Initial loading startup work is complete. Starting MainActivity...");
 
             StartActivity(new Intent(Application.Context, typeof(MainActivity)));
         }
 
-        private static Task<bool> LoadContactsFromDevice()
+        private async Task PerformingInitialLoadingWork()
         {
+            Log.Debug(Tag
+                    , "Performing initial loading startup work.");
+            var tasks = new List<Task>
+                        {
+                            LoadContactsFromDevice()
+                          , InsertConfigurationValueIntoDatabase()
+                            //, Add loading of resources that can be retrieve at start up here
+                        };
+
+            await Task.WhenAll(tasks);
+
+        }
+
+        private async Task PerformPreLoadWork()
+        {
+            Log.Debug(Tag
+                    , "Performing pre-load work.");
+            var preLoadTasks = new List<Task>
+                               {
+                                   GetPermissions()
+                               };
+
+            await Task.WhenAll(preLoadTasks);
+
+            Log.Debug(Tag, "Pre-load work complete.");
+        }
+
+        private bool DoesNotHavePermissions()
+        {
+            return ! CheckPermissionGranted(Manifest.Permission.ReadExternalStorage)
+                || ! CheckPermissionGranted(Manifest.Permission.WriteExternalStorage)
+                || ! CheckPermissionGranted(Manifest.Permission.ReadContacts);
+        }
+
+        private Task GetPermissions()
+        {
+            if (DoesNotHavePermissions())
+            {
+                Task.Run(RequestPermission);
+            }
+
+            return Task.CompletedTask;
+        }
+
+        private bool CheckPermissionGranted(string permissions)
+        {
+            // Check if the permission is already available.
+            return ContextCompat.CheckSelfPermission(this, permissions) == Permission.Granted;
+        }
+
+        private void RequestPermission()
+        {
+            ActivityCompat.RequestPermissions(this
+                                            , new[]
+                                              {
+                                                  Manifest.Permission.ReadExternalStorage
+                                                , Manifest.Permission.WriteExternalStorage
+                                                , Manifest.Permission.ReadContacts
+                                              }
+                                            , 0);
+        }
+
+        private Task<bool> LoadContactsFromDevice()
+        {
+            while (DoesNotHavePermissions())
+            {
+                //HACK: Busy wait for user to grant permissions
+            }
             if (App.ContactDataStore.DeviceContacts.HasNoValue())
             {
                 App.ContactDataStore.SetContacts();

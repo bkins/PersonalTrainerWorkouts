@@ -13,21 +13,33 @@ public class GoalViewModel : ViewModelBase
 {
     private string _goalStatusImageFileName;
 
-    public Goal Goal { get; set; }
+    public Goal   Goal                        { get; set; }
+    public string GoalCompletedDateForDisplay => GetCompletedDateForDisplay();
+    public bool   ShowGoalCompletedDate       => Goal?.DateCompleted.HasValue ?? false;
+
+    private string GetCompletedDateForDisplay()
+    {
+        if (Goal?.DateCompleted.HasValue ?? false)
+        {
+            return Goal.DateCompleted.Value.ToShortDateString();
+        }
+
+        return string.Empty;
+    }
 
     // public Measurable                 Measurable            { get; set; }
     //public MeasurablesViewModel       MeasurablesViewModel  { get; set; }
     public List<MeasurablesViewModel>                 MeasurablesViewModels               { get; set; }
     public IEnumerable<MeasurablesViewModel>          MeasurablesVmList                   { get; set; }
-    public IEnumerable<IGrouping<string, MeasurablesViewModel>> MeasurablesViewModelGroupByVariable => MeasurablesVmList
-                                                                                                       .Where(measurable => measurable.GoalSuccession
-                                                                                                                         != Succession.Baseline)
-                                                                                                       .OrderBy(measurable => measurable.Variable)
-                                                                                                       .ThenByDescending(
-                                                                                                           measurable => measurable.GoalSuccession)
-                                                                                                       .ThenBy(measurable => measurable.DateTaken)
-                                                                                                       .GroupBy(measurable => measurable.Variable);
-    public string                                     GoalStatusDescription               { get; set; }
+    public IEnumerable<IGrouping<string, MeasurablesViewModel>> MeasurablesViewModelGroupByVariable
+        => MeasurablesVmList.Where(measurable => measurable.GoalSuccession
+                                              != Enums.Succession.Baseline)
+                            .OrderBy(measurable => measurable.Variable)
+                            .ThenByDescending(
+                                measurable => measurable.GoalSuccession)
+                            .ThenBy(measurable => measurable.DateTaken)
+                            .GroupBy(measurable => measurable.Variable);
+    public string GoalStatusDescription { get; set; }
 
     public string GoalStatusImageFileName
     {
@@ -209,15 +221,15 @@ public class GoalViewModel : ViewModelBase
 
     private IEnumerable<MeasurablesViewModel> GetInterimMeasurables()
     {
-        var interimMeasurables = MeasurablesVmList.Where(measurable => measurable.GoalSuccession != Succession.Baseline
-                                                                    && measurable.GoalSuccession != Succession.Target);
+        var interimMeasurables = MeasurablesVmList.Where(measurable => measurable.GoalSuccession != Enums.Succession.Baseline
+                                                                    && measurable.GoalSuccession != Enums.Succession.Target);
 
         return interimMeasurables;
     }
 
     private MeasurablesViewModel GetTargetMeasurable()
     {
-        var targetMeasurable = MeasurablesVmList.FirstOrDefault(measurable => measurable.GoalSuccession == Succession.Target);
+        var targetMeasurable = MeasurablesVmList.FirstOrDefault(measurable => measurable.GoalSuccession == Enums.Succession.Target);
 
         return targetMeasurable;
     }

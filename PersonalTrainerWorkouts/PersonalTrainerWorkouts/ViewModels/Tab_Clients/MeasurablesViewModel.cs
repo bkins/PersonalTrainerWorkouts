@@ -19,35 +19,37 @@ public class MeasurablesViewModel : ViewModelBase
     private readonly int _goalId = 0;
     private readonly int _measurableId = 0;
 
-    public int                      Id                { get; set; }
-    public string                   Variable          { get; set; }
-    public double                   Value             { get; set; }
-    public DateTime                 DateTaken         { get; set; }
-    public string                   Type              { get; set; }
-    public Succession               GoalSuccession    { get; set; }
-    public char                     SuccessionChar    => GoalSuccession.ToString()[0];
-    public string                   UnitOfMeasurement { get; set; }
-    public IEnumerable<Measurable>  Measurables       { get; set; }
-    public Measurable               NewMeasurable     { get; set; }
-    public Goal                     Goal              { get; set; }
-    public Enums.MeasurableStatuses Status            => GetMeasurableStatus();
-    public string                   StatusImageFile   => GetMeasurableStatusImageFileName();
-    public bool                     IsTarget          => GoalSuccession == Succession.Target;
-    public bool                     IsInterim         => GoalSuccession == Succession.Interim;
+    public int                            Id                           { get; set; }
+    public string                         Variable                     { get; set; }
+    public double                         Value                        { get; set; }
+    public DateTime                       DateTaken                    { get; set; }
+    public string                         Type                         { get; set; }
+    public Enums.Succession               GoalSuccession               { get; set; }
+    public char                           SuccessionChar               => GoalSuccession.ToString()[0];
+    public string                         UnitOfMeasurement            { get; set; }
+    public IEnumerable<Measurable>        Measurables                  { get; set; }
+    public Measurable                     NewMeasurable                { get; set; }
+    public Goal                           Goal                         { get; set; }
+    public Enums.MeasurableStatuses       Status                       => GetMeasurableStatus();
+    public string                         StatusImageFile              => GetMeasurableStatusImageFileName();
+    public bool                           IsTarget                     => GoalSuccession == Enums.Succession.Target;
+    public bool                           IsInterim                    => GoalSuccession == Enums.Succession.Interim;
+    public IEnumerable<UnitOfMeasurement> UnitOfMeasurements           { get; set; }
+    public IEnumerable<string>            UnitOfMeasurementsForDisplay { get; set; }
 
-    public (string DefaultName, int CountOfUniqueVariable) DefaultVariableName => GetDefaultVariableName();
+    public (string DefaultName, int CountOfUniqueVariable) DefaultVariableName          => GetDefaultVariableName();
 
     public MeasurablesViewModel()
     {
-
+        UnitOfMeasurements = DataAccessLayer.GetUnitOfMeasures();
     }
 
-    public MeasurablesViewModel(string     variable
-                              , double     value
-                              , string     type
-                              , DateTime   dateTaken
-                              , Succession goalSuccession
-                              , string     unitOfMeasurement)
+    public MeasurablesViewModel(string           variable
+                              , double           value
+                              , string           type
+                              , DateTime         dateTaken
+                              , Enums.Succession goalSuccession
+                              , string           unitOfMeasurement) : this()
     {
         Variable          = variable;
         Value             = value;
@@ -58,7 +60,7 @@ public class MeasurablesViewModel : ViewModelBase
     }
 
 
-    public MeasurablesViewModel(int clientId)
+    public MeasurablesViewModel(int clientId) : this()
     {
         NewMeasurable = new Measurable();
         _goalId       = 0;
@@ -71,7 +73,7 @@ public class MeasurablesViewModel : ViewModelBase
         Measurables   = DataAccessLayer.GetMeasurablesByClient(clientId);
     }
 
-    public MeasurablesViewModel(int goalId, int measurableId)
+    public MeasurablesViewModel(int goalId, int measurableId) : this()
     {
         _goalId       = goalId;
         _measurableId = measurableId;
@@ -82,7 +84,7 @@ public class MeasurablesViewModel : ViewModelBase
         // GoalViewModel = new GoalViewModel(Goal);
 
         //The default of the GoalSuccession is Interim.
-        GoalSuccession = Succession.Interim;
+        GoalSuccession = Enums.Succession.Interim;
         Refresh();
     }
 
@@ -92,9 +94,10 @@ public class MeasurablesViewModel : ViewModelBase
     {
         _dataAccess = dataAccess;
 
-        NewMeasurable = DataAccessLayer.GetMeasurable(measurableId);
-        _goalId       = goalId;
-        Goal          = _goalId == 0 ? null : DataAccessLayer.GetGoal(_goalId);
+        NewMeasurable      = DataAccessLayer.GetMeasurable(measurableId);
+        UnitOfMeasurements = DataAccessLayer.GetUnitOfMeasures();
+        _goalId            = goalId;
+        Goal               = _goalId == 0 ? null : DataAccessLayer.GetGoal(_goalId);
         // GoalViewModel = new GoalViewModel(Goal);
 
         Refresh();
@@ -213,7 +216,7 @@ public class MeasurablesViewModel : ViewModelBase
 
     public (Measurable baseline, Measurable mostRecent) GetComparableMeasurables()
     {
-        var baseline = Measurables.FirstOrDefault(measurable => measurable.GoalSuccession == Succession.Baseline);
+        var baseline = Measurables.FirstOrDefault(measurable => measurable.GoalSuccession == Enums.Succession.Baseline);
         var mostRecent = Measurables.OrderByDescending(measurable => measurable.DateTaken)
                                     .Take(1)
                                     .FirstOrDefault();
@@ -245,14 +248,14 @@ public class MeasurablesViewModel : ViewModelBase
     /// <param name="unitOfMeasurementId"></param>
     /// <param name="goalId">Set this to a zero to assign this measurable to a goal.
     ///                      Measurables are linked to Goals by the GoalId defined in the constructor</param>
-    public void AddNewMeasurable(string     variable
-                               , double     value
-                               , DateTime   dateTaken
-                               , string     type
-                               , Succession goalSuccession
-                               , int        clientId
-                               , string     unitOfMeasurement
-                               , int        goalId = 0)
+    public void AddNewMeasurable(string           variable
+                               , double           value
+                               , DateTime         dateTaken
+                               , string           type
+                               , Enums.Succession goalSuccession
+                               , int              clientId
+                               , string           unitOfMeasurement
+                               , int              goalId = 0)
     {
         NewMeasurable = new Measurable
                         {
@@ -278,7 +281,7 @@ public class MeasurablesViewModel : ViewModelBase
                        , 0          //For now, all baseline measurables will have 0, until there is a need for it to have a value.
                        , dateTaken
                        , type
-                       , Succession.Baseline
+                       , Enums.Succession.Baseline
                        , clientId
                        , unitOfMeasurement);
     }
@@ -289,7 +292,7 @@ public class MeasurablesViewModel : ViewModelBase
                        , targetValue
                        , baselineMeasurable.DateTaken
                        , baselineMeasurable.Type
-                       , Succession.Target
+                       , Enums.Succession.Target
                        , baselineMeasurable.ClientId
                        , baselineMeasurable.UnitOfMeasurement);
     }
@@ -338,7 +341,7 @@ public class MeasurablesViewModel : ViewModelBase
                        , newValue
                        , dateTake
                        , typeToUse
-                       , Succession.Interim
+                       , Enums.Succession.Interim
                        , clientIdToUse
                        , unitOfMeasurementToUse
                        , goalIdToUse);

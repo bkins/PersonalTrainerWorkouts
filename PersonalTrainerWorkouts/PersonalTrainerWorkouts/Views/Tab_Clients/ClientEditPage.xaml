@@ -55,105 +55,140 @@
     
     <ContentPage.Content>
         <StackLayout Margin="5,0,0,0">
-            
+            <Grid x:Name="ClientInfoGrid"
+                  ColumnDefinitions="*, *, *"
+                  RowDefinitions="Auto, Auto, Auto"
+                  >
+
+                <Label x:Name="ClientMainPhoneLabel"
+                       Grid.Column="0"
+                       Grid.Row="0"
+                       VerticalTextAlignment="Center"
+                       FontSize="Small"
+                       FontAttributes="Bold"
+                       Text="Main Number:"
+                >
+                    <Label.GestureRecognizers>
+                            <TapGestureRecognizer Tapped="ClientMainPhoneLabel_OnTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <Label x:Name="ClientMainPhoneValueLabel"
+                       Grid.Column="1"
+                       Grid.Row="0"
+                       VerticalTextAlignment="Center"
+                       FontSize="Small"
+                       Text="{Binding Client.MainNumber}"
+                       >
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="ClientMainPhoneValueLabel_OnTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+                <Label x:Name="ColorLabel"
+                       Grid.Column="0"
+                       Grid.Row="1"
+                       Text="Color:"
+                       />
+                <Label x:Name="ColorValueLabel"
+                       Grid.Column="1"
+                       Grid.Row="1"
+                       Text="Tap to change"
+                       TextColor="{Binding Client.TextColor}"
+                       BackgroundColor="{Binding Client.BackgroundColor}">
+                    <Label.GestureRecognizers>
+                        <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped"/>
+                    </Label.GestureRecognizers>
+                </Label>
+
+                <ImageButton x:Name="ChangeMainNumberButton"
+                             Grid.Column="2"
+                             Grid.Row="0"
+                             Source="swap_calls_black_48.png"
+                             Clicked="ChangeMainNumberButton_OnClicked"
+                             BackgroundColor="Transparent"
+                             HeightRequest="35"
+                             IsVisible="{Binding ShowChangeNumberImage}"
+                             />
+            </Grid>
+
             <sfAccordion:SfAccordion DynamicSizeMode="Content" 
-                                     ExpandMode="MultipleOrNone">
+                                     ExpandMode="MultipleOrNone"
+                                     >
 
                 <sfAccordion:SfAccordion.Items>
 
                     <sfAccordion:AccordionItem x:Name="ClientAccordionItem" 
-                                               IsExpanded="True"> <!--Client Info-->
+                                               IsExpanded="True"
+                                               > <!--Client Notes-->
                         
-                        <sfAccordion:AccordionItem.Header> <!--Client Info: Header-->
+                        <sfAccordion:AccordionItem.Header> <!--Client Notes: Header-->
 
                             <Grid>
-                                <Label Text="Client Info"
-                                       TextColor="{DynamicResource PrimaryBackColor}"
+                                <Label Text="Notes"
+                                       BackgroundColor="{StaticResource PrimaryBackColor}"
+                                       TextColor="{StaticResource PrimaryForeColor}"
                                        FontAttributes="Bold"
-                                       HeightRequest="25"
-                                       VerticalTextAlignment="Center" />
-                            </Grid>
-
-                        </sfAccordion:AccordionItem.Header> <!--Client Info: Header-->
-                        
-                        <sfAccordion:AccordionItem.Content> <!--Client Info: Content-->
-
-                            <Grid ColumnDefinitions="Auto,*, Auto"
-                                  RowDefinitions="Auto,Auto,Auto,Auto">
-                
-                                <Label x:Name="ClientNameLabel"
-                                       Grid.Column="0"
-                                       Grid.Row="0"
+                                       FontSize="Medium"
+                                       HeightRequest="{StaticResource AccordionHeight}"
                                        VerticalTextAlignment="Center"
-                                       FontSize="Small"
-                                       FontAttributes="Bold"
-                                       Text="Name:" 
-                                       IsVisible="False"
-                                />
-                
-                                <Entry x:Name="ClientNameEntry"
-                                       Grid.Column="1"
-                                       Grid.Row="0"
-                                       FontSize="Small"
-                                       Placeholder="Client fullname"
-                                       Text="{Binding Client.Name}"
-                                       IsReadOnly="True"
-                                       IsVisible="False"
-                                       />
-                
-                                <Label x:Name="ClientMainPhoneLabel"
-                                       Grid.Column="0"
-                                       Grid.Row="1"
-                                       VerticalTextAlignment="Center"
-                                       FontSize="Small"
-                                       FontAttributes="Bold"
-                                       Text="Main Number:" 
-                                >
-                                    <Label.GestureRecognizers>
-                                            <TapGestureRecognizer Tapped="ClientMainPhoneLabel_OnTapped"/>
-                                    </Label.GestureRecognizers>
-                                </Label>
-                
-                                <Label x:Name="ClientMainPhoneValueLabel"
-                                       Grid.Column="1"
-                                       Grid.Row="1"
-                                       FontSize="Small"
-                                       Text="{Binding Client.MainNumber}"
+                                       HorizontalTextAlignment="Center"
                                        >
                                     <Label.GestureRecognizers>
-                                        <TapGestureRecognizer Tapped="ClientMainPhoneValueLabel_OnTapped"/>
+                                        <TapGestureRecognizer Tapped="OnAccordionItemTapped" />
                                     </Label.GestureRecognizers>
                                 </Label>
-                                <ImageButton x:Name="ChangeMainNumberButton"
-                                             Grid.Column="2"
-                                             Grid.Row="1"
-                                             Source="change_history_black_48.png"
-                                             Clicked="ChangeMainNumberButton_OnClicked"
-                                             BackgroundColor="Transparent"
-                                             HeightRequest="25"
-                                             IsVisible="{Binding ShowChangeNumberImage}"
-                                             />
-                                
-                                <Label x:Name="ClientNotesLabel"
-                                       Grid.Column="0"
-                                       Grid.Row="2"
-                                       Grid.ColumnSpan="3"
-                                       FontSize="Small"
-                                       FontAttributes="Bold"
-                                       Text="Client Notes:"
-                                       />
+                            </Grid>
+
+                        </sfAccordion:AccordionItem.Header> <!--Client Notes: Header-->
+                        
+                        <sfAccordion:AccordionItem.Content> <!--Client Notes: Content-->
+
+                            <Grid ColumnDefinitions="*"
+                                  RowDefinitions="*">
+
+                                <!-- <Label x:Name="ClientNotesLabel" -->
+                                <!--        Grid.Column="0" -->
+                                <!--        Grid.Row="2" -->
+                                <!--        Grid.ColumnSpan="3" -->
+                                <!--        FontSize="Small" -->
+                                <!--        FontAttributes="Bold" -->
+                                <!--        Text="Client Notes:" -->
+                                <!--        /> -->
+
+                                <!--Grid.Row="3"
+                                    Grid.ColumnSpan="3"-->
                                 <sfRte:SfRichTextEditor x:Name="ClientNoteRte"
+                                                        PlaceHolder="Notes"
                                                         Grid.Column="0"
-                                                        Grid.Row="3"
-                                                        Grid.ColumnSpan="3"
                                                         Text="{Binding Client.Notes}"
+                                                        HeightRequest="300"
                                                         BackgroundColor="AliceBlue"
+                                                        ToolbarOptions=" Undo
+                                                                       , Redo
+                                                                       , Alignment
+                                                                       , Bold
+                                                                       , BulletList
+                                                                       , NumberList
+                                                                       , ClearFormat
+                                                                       , DecreaseIndent
+                                                                       , Font
+                                                                       , FontColor
+                                                                       , FontSize
+                                                                       , HighlightColor
+                                                                       , Hyperlink
+                                                                       , IncreaseIndent
+                                                                       , Italic
+                                                                       , ParagraphFormat
+                                                                       , Strikethrough
+                                                                       , SubScript
+                                                                       , SuperScript
+                                                                       , Underline"
                                                         />
                             </Grid>
 
-                        </sfAccordion:AccordionItem.Content> <!--Client Info: Content-->
+                        </sfAccordion:AccordionItem.Content> <!--Client Notes: Content-->
 
-                    </sfAccordion:AccordionItem> <!--Client Info-->
+                    </sfAccordion:AccordionItem> <!--Client Notes-->
                     
                     <sfAccordion:AccordionItem> <!--Goals-->
                         
@@ -182,11 +217,6 @@
                                         HorizontalOptions="FillAndExpand"
                                         Clicked="AddNewGoalButton_OnClicked"
                                         />
-                                <!-- <ImageButton x:Name="AddNewGoalButton" -->
-                                <!--              Grid.Column="1" -->
-                                <!--              HeightRequest="25" -->
-                                <!--              Source="baseline_add_circle_black_48.png" -->
-                                <!--              Clicked="AddNewGoalButton_OnClicked"/> -->
                             </Grid>
 
                         </sfAccordion:AccordionItem.Header> <!--Goals: Header-->
@@ -211,26 +241,9 @@
 
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid ColumnDefinitions="*,*"
+                                            <Grid ColumnDefinitions="*, *, *"
                                                   x:DataType="tabClients:GoalViewModel"
                                                   >
-
-                                                <!--
-                            TOD0:
-                            * Add new field to Goals, called something like Value.
-                            * Add new field to Goals, called something like Conditional
-                            * Add new field to Goals, called MeasurableId
-                            * Create Foreign Key (one-to-one) on MeasurableId.
-                            
-                            Goals.Value will be compared to Measurable.Value using Goals.Conditional.
-                            
-                            Use case:
-                            
-                            A client sets a goal. E.g. do 5 pull-ups. Every week the client attempts to 
-                            do pull-ups and a Measurable entry it made. When the Measurable entry's 
-                            value is equal (assuming the Conditional is "=") to the value in the goal, 
-                            the goal will be considered completed successfully.
-                            -->
 
                                                 <Label x:Name="GoalLabel"
                                                        Grid.Column="0"
@@ -239,20 +252,24 @@
                                                        Text="{Binding Goal.Name}"
                                                        FontSize="Medium"
                                                        TextColor="Black"/>
-                                                <Image x:Name="GoalStatusImage"
+                                                <Label x:Name="GoalDateCompleted"
                                                        Grid.Column="1"
+                                                       VerticalTextAlignment="Start"
+                                                       VerticalOptions="CenterAndExpand"
+                                                       IsVisible="{Binding ShowGoalCompletedDate}"
+                                                       Text="{Binding GoalCompletedDateForDisplay}"
+                                                       FontSize="Medium"
+                                                       TextColor="Black"/>
+                                                <Image x:Name="GoalStatusImage"
+                                                       Grid.Column="2"
                                                        HeightRequest="25"
-                                                       Source="{Binding GoalStatusImageFileName}"/>
-                                                
-                                <!--TODO: Display goal status indicators (image):
-                                    * SuccessFullyCompleted (Green Check mark)
-                                    * Failed                (Red X)
-                                    * MissedTarget          (Yellow <find an appropriate image>)
-                                    * InProgress            (Green <find an appropriate image>
-                                    * NotStarted            (Grey hyphen)
-                                    
-                                    Add tap gesture to each of the above that shows the status image meaning
-                                -->
+                                                       Source="{Binding GoalStatusImageFileName}"
+                                                       >
+                                                    <Image.GestureRecognizers>
+                                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_GoalStatusImage"></TapGestureRecognizer>
+                                                    </Image.GestureRecognizers>
+                                                </Image>
+
                                             </Grid>
                                         </DataTemplate>
                                     </CollectionView.ItemTemplate>
@@ -319,14 +336,14 @@
                                             >
                                                 <Image x:Name="IsTargetImage"
                                                        Grid.Column="0"
+                                                       HeightRequest="25"
                                                        Source="target_black_48.png"
                                                        IsVisible="{Binding IsTarget}"
-                                                       />
-                                                <Label x:Name="SuccessionCharLabel"
+                                                />
+                                                <Image x:Name="IsInterimImage"
                                                        Grid.Column="0"
-                                                       Text="{Binding SuccessionChar}"
-                                                       HorizontalTextAlignment="Center"
-                                                       VerticalTextAlignment="End"
+                                                       HeightRequest="25"
+                                                       Source="done_black_48.png"
                                                        IsVisible="{Binding IsInterim}"
                                                 />
                                                 <Label x:Name="DateTakenLabel"
@@ -357,7 +374,8 @@
                                                     * NotImproving   (trending down)
                                                     * StayingTheSame (trending flat)
                                                     
-                                                    Add tap gesture to each of the above that shows the status image meaning
+                                                    Add tap gesture to each of the above that shows the status image meaning:
+                                                      * Use ToolTipPopup
                                                 -->
                                             </Grid>
                                         </DataTemplate>
@@ -374,7 +392,7 @@
             </sfAccordion:SfAccordion>
             
             <xForms:SfPicker x:Name="PhoneNumberPicker"
-                             HeaderText="Choose the Main Number" 
+                             HeaderText="Main Number"
                              ShowFooter="True"
                              ItemsSource="{Binding PhoneNumbers}"
                              IsVisible="False"

@@ -10,6 +10,7 @@ using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
+using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
 
 using Xamarin.Forms;
@@ -66,7 +67,7 @@ public partial class GoalsAddEditPage : ContentPage, IQueryAttributable
         BindingContext                       = GoalVm;
         //MeasurableCollectionView.ItemsSource = GoalVm.MeasurablesViewModelGroupByVariable;
         MeasurableCollectionView.ItemsSource = GoalVm.MeasurablesVmList
-                                                     .Where(measurable => measurable.GoalSuccession != Succession.Baseline)
+                                                     .Where(measurable => measurable.GoalSuccession != Enums.Succession.Baseline)
                                                      .OrderBy(measurable => measurable.Variable)
                                                      .ThenByDescending(measurable => measurable.GoalSuccession)
                                                      .ThenBy(measurable => measurable.DateTaken);

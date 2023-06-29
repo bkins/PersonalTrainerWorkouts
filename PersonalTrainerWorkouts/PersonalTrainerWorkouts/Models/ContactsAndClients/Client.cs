@@ -1,4 +1,5 @@
-﻿using Avails.D_Flat.Extensions;
+﻿using System;
+using Avails.D_Flat.Extensions;
 using Avails.Xamarin.Logger;
 
 using Java.Lang;
@@ -9,8 +10,11 @@ using SQLiteNetExtensions.Attributes;
 
 using System.Collections.Generic;
 using System.Linq;
+using Android;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 using Xamarin.Essentials;
+using Xamarin.Forms;
+using Exception = Java.Lang.Exception;
 
 namespace PersonalTrainerWorkouts.Models.ContactsAndClients
 {
@@ -29,6 +33,40 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients
                                                //just store the "Main" number as-is. This field to identify which number
                                                //in the Contact to use as the main number.
 
+        public string BackgroundColorHex  { get; set; }
+        public string TextColorHex { get; set; }
+
+        [Ignore]
+        public Color BackgroundColor => GetColorFromHex();
+
+        [Ignore]
+        public Color TextColor => GetTextColorFromHex();
+
+        private Color GetTextColorFromHex()
+        {
+            if (TextColorHex.IsNullEmptyOrWhitespace()) TextColorHex = Color.Black.ToHex();
+
+            try
+            {
+                return Color.FromHex(TextColorHex);
+            }
+            catch (Exception e) { /* swallow error and use default value below*/ }
+
+            return Color.Black;
+        }
+
+        private Color GetColorFromHex()
+        {
+            if (BackgroundColorHex.IsNullEmptyOrWhitespace()) BackgroundColorHex = Color.White.ToHex();
+
+            try
+            {
+                return Color.FromHex(BackgroundColorHex);
+            }
+            catch (Exception e) { /* swallow error and use default value below*/ }
+
+            return Color.White;
+        }
         private Contact _contact { get; set; }
 
         [Ignore]
@@ -139,6 +177,8 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients
 
         public Client()
         {
+            BackgroundColorHex = BackgroundColor.ToHex();
+            TextColorHex       = TextColor.ToHex();
         }
 
         public Client(Contact contact) : this()
@@ -188,14 +228,15 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients
         //public override string ToString() => DisplayName ?? $"No {nameof(DisplayName)} set";
         public override string ToString()
         {
-            var data = new StringBuilder();
-
-            data.Append($"\n\tName:        {Name}");
-            data.Append($"\n\tDisplayName: {DisplayName}");
-            data.Append($"\n\tMainNumber:  {MainNumber};");
-            data.Append($"\n\tId:          {Id}");
-
-            return data.ToString();
+            // var data = new StringBuilder();
+            //
+            // data.Append($"\n\tName:        {Name}");
+            // data.Append($"\n\tDisplayName: {DisplayName}");
+            // data.Append($"\n\tMainNumber:  {MainNumber};");
+            // data.Append($"\n\tId:          {Id}");
+            //
+            // return data.ToString();
+            return DisplayName;
         }
 
     }

@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
+using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
 using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
 using Xamarin.Essentials;
@@ -748,7 +749,7 @@ namespace Tests
                                          {
                                              Variable       = "Weight"
                                            , Value          = 195
-                                           , GoalSuccession = Succession.Baseline
+                                           , GoalSuccession = Enums.Succession.Baseline
                                            , DateTaken      = startingDate
                                            , GoalId         = newGoalVm.Goal.Id
                                            , ClientId       = newGoalVm.Goal.ClientId
@@ -757,7 +758,7 @@ namespace Tests
                                        {
                                            Variable       = baselineMeasurable.Variable
                                          , Value          = 175
-                                         , GoalSuccession = Succession.Target
+                                         , GoalSuccession = Enums.Succession.Target
                                          , DateTaken      = startingDate
                                          , GoalId         = newGoalVm.Goal.Id
                                          , ClientId       = newGoalVm.Goal.ClientId
@@ -773,38 +774,38 @@ namespace Tests
         {
             var interim1Measurables = new Measurable
                                           {
-                                              Variable              = baselineMeasurable.Variable
-                                            , GoalId                = baselineMeasurable.GoalId
-                                            , ClientId              = baselineMeasurable.ClientId
-                                            , GoalSuccession        = Succession.Interim
-                                            , DateTaken             = startingDate.AddDays(7)
-                                            , Value                 = 194
-                                            , Type                  = "Measurement"
+                                              Variable       = baselineMeasurable.Variable
+                                            , GoalId         = baselineMeasurable.GoalId
+                                            , ClientId       = baselineMeasurable.ClientId
+                                            , GoalSuccession = Enums.Succession.Interim
+                                            , DateTaken      = startingDate.AddDays(7)
+                                            , Value          = 194
+                                            , Type           = "Measurement"
                                           };
             Database.AddMeasurable(interim1Measurables);
 
             var interim2Measurables = new Measurable
                                           {
-                                              Variable              = baselineMeasurable.Variable
-                                            , GoalId                = baselineMeasurable.GoalId
-                                            , ClientId              = baselineMeasurable.ClientId
-                                            , GoalSuccession        = Succession.Interim
-                                            , DateTaken             = startingDate.AddDays(14)
-                                            , Value                 = 192
-                                            , Type                  = "Measurement"
+                                              Variable       = baselineMeasurable.Variable
+                                            , GoalId         = baselineMeasurable.GoalId
+                                            , ClientId       = baselineMeasurable.ClientId
+                                            , GoalSuccession = Enums.Succession.Interim
+                                            , DateTaken      = startingDate.AddDays(14)
+                                            , Value          = 192
+                                            , Type           = "Measurement"
                                           };
             
             Database.AddMeasurable(interim2Measurables);
 
             var interim3Measurables = new Measurable
                                           {
-                                              Variable              = baselineMeasurable.Variable
-                                            , GoalId                = baselineMeasurable.GoalId
-                                            , ClientId              = baselineMeasurable.ClientId
-                                            , GoalSuccession        = Succession.Interim
-                                            , DateTaken             = startingDate.AddDays(21)
-                                            , Value                 = 185
-                                            , Type                  = "Measurement"
+                                              Variable       = baselineMeasurable.Variable
+                                            , GoalId         = baselineMeasurable.GoalId
+                                            , ClientId       = baselineMeasurable.ClientId
+                                            , GoalSuccession = Enums.Succession.Interim
+                                            , DateTaken      = startingDate.AddDays(21)
+                                            , Value          = 185
+                                            , Type           = "Measurement"
                                           };
             
             Database.AddMeasurable(interim3Measurables);
@@ -816,51 +817,51 @@ namespace Tests
         {
             var interim1Measurables = new Measurable
                                           {
-                                              Variable              = baselineMeasurable.Variable
-                                            , GoalId                = baselineMeasurable.GoalId
-                                            , ClientId              = baselineMeasurable.ClientId
-                                            , GoalSuccession        = Succession.Interim
-                                            , DateTaken             = startingDate.AddDays(7)
-                                            , Value                 = 194
-                                            , Type                  = "Measurement"
+                                              Variable       = baselineMeasurable.Variable
+                                            , GoalId         = baselineMeasurable.GoalId
+                                            , ClientId       = baselineMeasurable.ClientId
+                                            , GoalSuccession = Enums.Succession.Interim
+                                            , DateTaken      = startingDate.AddDays(7)
+                                            , Value          = 194
+                                            , Type           = "Measurement"
                                           };
             Database.AddMeasurable(interim1Measurables);
 
             var interim2Measurables = new Measurable
                                           {
-                                              Variable              = baselineMeasurable.Variable
-                                            , GoalId                = baselineMeasurable.GoalId
-                                            , ClientId              = baselineMeasurable.ClientId
-                                            , GoalSuccession        = Succession.Interim
-                                            , DateTaken             = startingDate.AddDays(14)
-                                            , Value                 = 192
-                                            , Type                  = "Measurement"
+                                              Variable       = baselineMeasurable.Variable
+                                            , GoalId         = baselineMeasurable.GoalId
+                                            , ClientId       = baselineMeasurable.ClientId
+                                            , GoalSuccession = Enums.Succession.Interim
+                                            , DateTaken      = startingDate.AddDays(14)
+                                            , Value          = 192
+                                            , Type           = "Measurement"
                                           };
             
             Database.AddMeasurable(interim2Measurables);
 
             var interim3Measurables = new Measurable
                                           {
-                                              Variable              = baselineMeasurable.Variable
-                                            , GoalId                = baselineMeasurable.GoalId
-                                            , ClientId              = baselineMeasurable.ClientId
-                                            , GoalSuccession        = Succession.Interim
-                                            , DateTaken             = startingDate.AddDays(21)
-                                            , Value                 = 185
-                                            , Type                  = "Measurement"
+                                              Variable       = baselineMeasurable.Variable
+                                            , GoalId         = baselineMeasurable.GoalId
+                                            , ClientId       = baselineMeasurable.ClientId
+                                            , GoalSuccession = Enums.Succession.Interim
+                                            , DateTaken      = startingDate.AddDays(21)
+                                            , Value          = 185
+                                            , Type           = "Measurement"
                                           };
             
             Database.AddMeasurable(interim3Measurables);
 
             var interim4Measurables = new Measurable
                                           {
-                                              Variable              = baselineMeasurable.Variable
-                                            , GoalId                = baselineMeasurable.GoalId
-                                            , ClientId              = baselineMeasurable.ClientId
-                                            , GoalSuccession        = Succession.Interim
-                                            , DateTaken             = startingDate.AddDays(28)
-                                            , Value                 = 175
-                                            , Type                  = "Measurement"
+                                              Variable       = baselineMeasurable.Variable
+                                            , GoalId         = baselineMeasurable.GoalId
+                                            , ClientId       = baselineMeasurable.ClientId
+                                            , GoalSuccession = Enums.Succession.Interim
+                                            , DateTaken      = startingDate.AddDays(28)
+                                            , Value          = 175
+                                            , Type           = "Measurement"
                                           };
             
             Database.AddMeasurable(interim4Measurables);

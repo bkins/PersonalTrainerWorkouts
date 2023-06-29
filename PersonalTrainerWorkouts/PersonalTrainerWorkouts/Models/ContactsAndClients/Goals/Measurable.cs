@@ -1,4 +1,5 @@
 ﻿using System;
+using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
 
@@ -34,7 +35,7 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients.Goals
         /// Interim: The measurements between the Baseline and Target
         /// When an Interim Measurable equals the Target Measurable, the Gaol's DateCompleted is set 
         /// </summary>
-        public Succession GoalSuccession { get; set; } 
+        public Enums.Succession GoalSuccession { get; set; }
         
         [ForeignKey(typeof(Client))]
         public int ClientId { get; set; }

@@ -1,4 +1,5 @@
-﻿using SQLite;
+﻿using PersonalTrainerWorkouts.ViewModels.HelperClasses;
+using SQLite;
 
 namespace PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 
@@ -6,13 +7,6 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 public class GoalSuccession
 {
     [PrimaryKey, AutoIncrement]
-    public int        Id         { get; set; }
-    public Succession Succession { get; set; }
-}
-
-public enum Succession
-{
-    Baseline
-  , Target
-  , Interim
+    public int Id { get; set; }
+    public Enums.Succession Succession { get; set; }
 }

@@ -3,8 +3,10 @@
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:xForms="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:sfSchedule="clr-namespace:Syncfusion.SfSchedule.XForms;assembly=Syncfusion.SfSchedule.XForms"
              xmlns:xBusyIndicator="clr-namespace:Syncfusion.SfBusyIndicator.XForms;assembly=Syncfusion.SfBusyIndicator.XForms"
              xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
+             xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels.Tab_Sessions;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.Tab_Sessions.SessionListPage"
              Title="Sessions">
 
@@ -36,7 +38,7 @@
                         <RowDefinition Height="*" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
-                    <Label Text="{Binding Date}"
+                    <Label Text="{Binding StartDate}"
                            Grid.Row="0"
                            FontSize="Medium"
                            FontAttributes="Bold"
@@ -67,55 +69,133 @@
                      IconImageSource="baseline_search_black_48.png"
                      Clicked="SearchToolbarItem_OnClicked"
                      />
+        <ToolbarItem x:Name="ToggleListViewToolbarItem"
+                     Text="Toggle List View"
+                     IconImageSource="segment_black_48.png"
+                     Clicked="ToggleListViewToolbarItem_OnClicked"/>
         
     </ContentPage.ToolbarItems>
     
     <StackLayout VerticalOptions="StartAndExpand">
-        
-        <Entry x:Name="SessionsFilter" 
+
+        <Entry x:Name="SessionsFilter"
                Placeholder="Search Sessions (try d=1 or d>5)"
                IsVisible="False"
                TextChanged="SessionsFilter_OnTextChanged">
         </Entry>
 
+        <Grid x:Name="ScheduleViewRadioButtonGrid"
+              ColumnDefinitions="*,*,*,*"
+              RowDefinitions="Auto"
+        >
+            <RadioButton x:Name="DayRadioButton"
+                         Grid.Column="0"
+                         Grid.Row="0"
+                         Content="Day"
+                         GroupName="ScheduleView"
+                         IsChecked="True"
+                         TextColor="Black"
+                         FontSize="Small"
+                         CheckedChanged="DayRadioButton_OnCheckedChanged"
+                         />
+            <RadioButton x:Name="WeekRadioButton"
+                         Grid.Column="1"
+                         Grid.Row="0"
+                         Content="Week"
+                         GroupName="ScheduleView"
+                         TextColor="Black"
+                         FontSize="Small"
+                         CheckedChanged="WeekRadioButton_OnCheckedChanged"
+                         />
+            <RadioButton x:Name="MonthRadioButton"
+                         Grid.Column="2"
+                         Grid.Row="0"
+                         Grid.ColumnSpan="2"
+                         Content="Month"
+                         GroupName="ScheduleView"
+                         TextColor="Black"
+                         FontSize="Small"
+                         CheckedChanged="MonthRadioButton_OnCheckedChanged"
+                         />
+            <!-- <RadioButton x:Name="WorkWeekRadioButton" -->
+            <!--              Grid.Column="0" -->
+            <!--              Grid.Row="1" -->
+            <!--              Grid.ColumnSpan="2" -->
+            <!--              GroupName="ScheduleView" -->
+            <!--              Content="Work Week" -->
+            <!--              TextColor="Black" -->
+            <!--              CheckedChanged="WorkWeekRadioButton_OnCheckedChanged" -->
+            <!--              /> -->
+            <RadioButton x:Name="TimelineRadioButton"
+                         Grid.Column="3"
+                         Grid.Row="0"
+                         GroupName="ScheduleView"
+                         Content="Timeline"
+                         TextColor="Black"
+                         FontSize="Small"
+                         CheckedChanged="TimelineRadioButton_OnCheckedChanged"
+                         IsVisible="False"/>
+
+        </Grid>
+
+
+        <Grid ColumnDefinitions="*"
+              RowDefinitions="Auto"
+              VerticalOptions="StartAndExpand"
+              >
+            <sfSchedule:SfSchedule x:Name="SessionsSchedule"
+                                   Grid.Column="0"
+                                   Grid.Row="0"
+                                   HeightRequest="600"
+                                   FirstDayOfWeek="2"
+                                   VerticalOptions="StartAndExpand"
+                                   DataSource="{Binding Appointments }"
+                                   CellTapped="SessionsSchedule_OnCellTapped"
+            >
+                <sfSchedule:SfSchedule.BindingContext>
+                    <viewModels:SessionListViewModel />
+                </sfSchedule:SfSchedule.BindingContext>
+            </sfSchedule:SfSchedule>
+        </Grid>
+
         <xForms:SfListView x:Name="ListView"
-                           VerticalOptions="StartAndExpand"
+                           VerticalOptions="EndAndExpand"
                            AutoFitMode="DynamicHeight"
                            SelectionMode="Single"
                            AllowSwiping="True"
+                           IsVisible="False"
                            SelectionChanged="OnSelectionChanged"
                            SwipeEnded="ListView_SwipeEnded"
                            ItemTemplate="{StaticResource ItemTemplate}">
-            
-            <xForms:SfListView.LeftSwipeTemplate >
-                <DataTemplate x:Name="LeftSwipeTemplate">
-                    <Grid VerticalOptions="CenterAndExpand">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*" />
-                        </Grid.ColumnDefinitions>
-                        <Grid Grid.Column="0"
-                              BackgroundColor="#DC595F"
-                              HorizontalOptions="Fill"
-                              VerticalOptions="Fill">
-                            <Grid VerticalOptions="CenterAndExpand"
-                                  HorizontalOptions="Center">
-                                <Image x:Name="DeleteImage"
-                                       Grid.Column="0"
-                                       Grid.Row="0"
-                                       BackgroundColor="Transparent"
-                                       HeightRequest="35"
-                                       WidthRequest="35"
-                                       BindingContextChanged="LeftImage_BindingContextChanged"
 
-                                       Source="Delete.png" />
+                <xForms:SfListView.LeftSwipeTemplate >
+                    <DataTemplate x:Name="LeftSwipeTemplate">
+                        <Grid VerticalOptions="CenterAndExpand">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0"
+                                  BackgroundColor="#DC595F"
+                                  HorizontalOptions="Fill"
+                                  VerticalOptions="Fill">
+                                <Grid VerticalOptions="CenterAndExpand"
+                                      HorizontalOptions="Center">
+                                    <Image x:Name="DeleteImage"
+                                           Grid.Column="0"
+                                           Grid.Row="0"
+                                           BackgroundColor="Transparent"
+                                           HeightRequest="35"
+                                           WidthRequest="35"
+                                           BindingContextChanged="LeftImage_BindingContextChanged"
+
+                                           Source="Delete.png" />
+                                </Grid>
                             </Grid>
                         </Grid>
-                    </Grid>
 
-                </DataTemplate>
-            </xForms:SfListView.LeftSwipeTemplate>
-        </xForms:SfListView>
-        
+                    </DataTemplate>
+                </xForms:SfListView.LeftSwipeTemplate>
+            </xForms:SfListView>
         <xBusyIndicator:SfBusyIndicator x:Name="BusyIndicator"
                                         Title="Loading..."
                                         AnimationType="Ball"

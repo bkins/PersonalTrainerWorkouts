@@ -9,14 +9,10 @@ namespace PersonalTrainerWorkouts.Models.ContactsAndClients.Goals
         public int Id { get; set; }
 
         public string Unit { get; set; }
-    }
 
-    public enum Unit
-    {
-        Inches
-      , Pounds
-      , Reps
-      , Minutes
-      , Seconds
+        public override string ToString()
+        {
+            return Unit;
+        }
     }
 }

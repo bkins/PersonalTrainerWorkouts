@@ -16,7 +16,7 @@ public class ClientListViewModel : ViewModelBase
 {
     public ObservableCollection<Client> ObservableClients { get; set; }
 
-    public IList<Client> Clients  { get; set; }
+    public List<Client> Clients  { get; set; }
     public Client        Client   { get; set; }
     public List<Contact> Contacts { get; set; }
 
@@ -129,7 +129,7 @@ public class ClientListViewModel : ViewModelBase
         foreach (var session in clientSessions)
         {
             DataAccessLayer.DeleteSession(session);
-            results.Append($"Session deleted for {client.DisplayName} on {session.Date:g}{Environment.NewLine}");
+            results.Append($"Session deleted for {client.DisplayName} on {session.StartDate:g}{Environment.NewLine}");
         }
 
         Logger.WriteLine($"Sessions deleted:{Environment.NewLine}{results.ToString()}", Category.Information);

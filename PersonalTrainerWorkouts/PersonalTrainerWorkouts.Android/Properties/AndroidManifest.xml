@@ -15,7 +15,7 @@
 	<application android:label="PersonalTrainerWorkouts.Android"
 	             android:theme="@style/MainTheme"
 	             android:allowBackup="false"
-                 android:icon="@drawable/xamarin_logo"
+                 android:icon="@drawable/HopkinsTrainingLogo_medium"
 	             android:fullBackupContent="@xml/auto_backup_rules"
 	             >
 

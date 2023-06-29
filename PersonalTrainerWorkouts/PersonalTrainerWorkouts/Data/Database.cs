@@ -16,7 +16,9 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
+using Android.Renderscripts;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
+using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 using InvalidOperationException = System.InvalidOperationException;
 using SequenceContainsNoElementsException = Avails.D_Flat.Exceptions.SequenceContainsNoElementsException;
 using TypeOfExercise = PersonalTrainerWorkouts.Models.TypeOfExercise;
@@ -45,20 +47,48 @@ namespace PersonalTrainerWorkouts.Data
         private void PopulateDefaultConfigurations()
         {
             var allGoalSuccessions = _database.GetAllWithChildren<GoalSuccession>().ToList();
-            if (allGoalSuccessions.All(succession => succession.Succession != Succession.Baseline))
+            foreach (Enums.Succession succession in Enum.GetValues(typeof(Enums.Succession)))
             {
-                _database.Insert(new GoalSuccession { Succession = Succession.Baseline });
+                AddNewSuccessionIfMissing(succession, allGoalSuccessions);
             }
-            if (allGoalSuccessions.All(succession => succession.Succession != Succession.Target))
+
+            // if (allGoalSuccessions.All(succession => succession.Succession != Succession.Baseline))
+            // {
+            //     _database.Insert(new GoalSuccession { Succession = Succession.Baseline });
+            // }
+            // if (allGoalSuccessions.All(succession => succession.Succession != Succession.Target))
+            // {
+            //     _database.Insert(new GoalSuccession { Succession = Succession.Target });
+            // }
+            // if (allGoalSuccessions.All(succession => succession.Succession != Succession.Interim))
+            // {
+            //     _database.Insert(new GoalSuccession { Succession = Succession.Interim });
+            // }
+
+            var allUnitOfMeasurements = _database.GetAllWithChildren<UnitOfMeasurement>().ToList();
+            foreach (Enums.Unit value in Enum.GetValues(typeof(Enums.Unit)))
             {
-                _database.Insert(new GoalSuccession { Succession = Succession.Target });
-            }
-            if (allGoalSuccessions.All(succession => succession.Succession != Succession.Interim))
-            {
-                _database.Insert(new GoalSuccession { Succession = Succession.Interim });
+                var enumString = value.ToString();
+                AddNewUnitOmMeasurementIfMissing(enumString, allUnitOfMeasurements);
             }
         }
 
+        private void AddNewSuccessionIfMissing(Enums.Succession succession, List<GoalSuccession> goalSuccessions)
+        {
+            if (goalSuccessions.All(goalSuccession=>goalSuccession.Succession != succession))
+            {
+                _database.Insert(new GoalSuccession { Succession = succession });
+            }
+        }
+
+        private void AddNewUnitOmMeasurementIfMissing(string                  unitOfMeasure
+                                                    , List<UnitOfMeasurement> unitOfMeasurements)
+        {
+            if (unitOfMeasurements.All(uom => uom.Unit != unitOfMeasure))
+            {
+                _database.Insert(new UnitOfMeasurement { Unit = unitOfMeasure });
+            }
+        }
         private int GetDatabaseVersion()
         {
             return _database.ExecuteScalar<int>("pragma user_version");
@@ -157,7 +187,7 @@ namespace PersonalTrainerWorkouts.Data
         {
             var unitOfMeasurements = _database.GetAllWithChildren<UnitOfMeasurement>();
 
-            foreach (var name in Enum.GetNames(typeof(Unit)))
+            foreach (var name in Enum.GetNames(typeof(Enums.Unit)))
             {
                 if (unitOfMeasurements.All(unit => unit.Unit != name))
                 {

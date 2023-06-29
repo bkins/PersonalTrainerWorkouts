@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<xct:Popup xmlns="http://xamarin.com/schemas/2014/forms"
+           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+           xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+           Size="300, 19"
+           HorizontalOptions="Center"
+           x:Class="PersonalTrainerWorkouts.Views.Popups.ToolTipPopup">
+
+    <StackLayout>
+        <Label x:Name ="DisplayTextLabel"
+               Text="Test"
+               HorizontalTextAlignment="Center"
+               BackgroundColor="{StaticResource PrimaryBackColor}"
+               TextColor="{StaticResource PrimaryForeColor}"
+               />
+    </StackLayout>
+</xct:Popup>

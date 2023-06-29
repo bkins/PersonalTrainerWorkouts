@@ -1,0 +1,307 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<xct:Popup xmlns="http://xamarin.com/schemas/2014/forms"
+           xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+           xmlns:xct="http://xamarin.com/schemas/2020/toolkit"
+           Size="350, 200"
+           HorizontalOptions="Center"
+           x:Class="PersonalTrainerWorkouts.Views.Popups.ClientColors">
+
+    <StackLayout>
+        <Label x:Name="TitleLabel"
+               Text="Select a how the client will appear on the calendar"
+               FontSize="Medium"
+               TextColor="White"
+               BackgroundColor="Gray"
+               HorizontalTextAlignment="Center"
+               />
+        <Grid ColumnDefinitions="*,*,*,*,*"
+              RowDefinitions="*,*,*,*,*">
+            <!--Column 1-->
+            <Label x:Name="Label00"
+                   Grid.Column="0"
+                   Grid.Row="0"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="White"
+                   BackgroundColor="Black">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label00" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label01"
+                   Grid.Column="0"
+                   Grid.Row="1"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Black"
+                   BackgroundColor="White">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label01" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label02"
+                   Grid.Column="0"
+                   Grid.Row="2"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Black"
+                   BackgroundColor="LightGray">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label02" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label03"
+                   Grid.Column="0"
+                   Grid.Row="3"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="White"
+                   BackgroundColor="DarkGray">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label03" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label04"
+                   Grid.Column="0"
+                   Grid.Row="4"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Green"
+                   BackgroundColor="Beige">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label04" />
+                </Label.GestureRecognizers>
+            </Label>
+
+            <!--Column 2-->
+            <Label x:Name="Label10"
+                   Grid.Column="1"
+                   Grid.Row="0"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Brown"
+                   BackgroundColor="LightYellow">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label10" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label11"
+                   Grid.Column="1"
+                   Grid.Row="1"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Purple"
+                   BackgroundColor="LightGray">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label11" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label12"
+                   Grid.Column="1"
+                   Grid.Row="2"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Orange"
+                   BackgroundColor="DarkBlue">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label12" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label13"
+                   Grid.Column="1"
+                   Grid.Row="3"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="White"
+                   BackgroundColor="Blue">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label13" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label14"
+                   Grid.Column="1"
+                   Grid.Row="4"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Yellow"
+                   BackgroundColor="DarkGray">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label14" />
+                </Label.GestureRecognizers>
+            </Label>
+
+            <!--Column 3-->
+            <Label x:Name="Label20"
+                   Grid.Column="2"
+                   Grid.Row="0"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Blue"
+                   BackgroundColor="White">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label20" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label21"
+                   Grid.Column="2"
+                   Grid.Row="1"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="DarkRed"
+                   BackgroundColor="MintCream">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label21" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label22"
+                   Grid.Column="2"
+                   Grid.Row="2"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="LightGreen"
+                   BackgroundColor="DarkGreen">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label22" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label23"
+                   Grid.Column="2"
+                   Grid.Row="3"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Teal"
+                   BackgroundColor="LightGray">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label23" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label24"
+                   Grid.Column="2"
+                   Grid.Row="4"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="DarkOrange"
+                   BackgroundColor="Beige">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label24" />
+                </Label.GestureRecognizers>
+            </Label>
+
+            <!--Column 4-->
+            <Label x:Name="Label30"
+                   Grid.Column="3"
+                   Grid.Row="0"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Black"
+                   BackgroundColor="LightBlue">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label30" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label31"
+                   Grid.Column="3"
+                   Grid.Row="1"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="DeepPink"
+                   BackgroundColor="LightGray">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label31" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label32"
+                   Grid.Column="3"
+                   Grid.Row="2"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Turquoise"
+                   BackgroundColor="White">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label32" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label33"
+                   Grid.Column="3"
+                   Grid.Row="3"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="MediumPurple"
+                   BackgroundColor="LightGray">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label33" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label34"
+                   Grid.Column="3"
+                   Grid.Row="4"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Yellow"
+                   BackgroundColor="Brown">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label34" />
+                </Label.GestureRecognizers>
+            </Label>
+
+            <!--Column 5-->
+            <Label x:Name="Label40"
+                   Grid.Column="4"
+                   Grid.Row="0"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="LightPink"
+                   BackgroundColor="DarkGray">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label40" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label41"
+                   Grid.Column="4"
+                   Grid.Row="1"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="DarkTurquoise"
+                   BackgroundColor="LightYellow">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label41" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label42"
+                   Grid.Column="4"
+                   Grid.Row="2"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="Orange"
+                   BackgroundColor="SaddleBrown">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label42" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label43"
+                   Grid.Column="4"
+                   Grid.Row="3"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="DarkMagenta"
+                   BackgroundColor="LightGray">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label43" />
+                </Label.GestureRecognizers>
+            </Label>
+            <Label x:Name="Label44"
+                   Grid.Column="4"
+                   Grid.Row="4"
+                   Text="Sample"
+                   FontSize="Small"
+                   TextColor="LightGreen"
+                   BackgroundColor="DarkBlue">
+                <Label.GestureRecognizers>
+                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_Label44" />
+                </Label.GestureRecognizers>
+            </Label>
+
+        </Grid>
+    </StackLayout>
+</xct:Popup>

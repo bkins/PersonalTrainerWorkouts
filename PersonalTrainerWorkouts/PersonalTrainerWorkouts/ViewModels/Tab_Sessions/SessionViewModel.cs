@@ -1,4 +1,6 @@
 ﻿using System.Linq;
+using Avails.Xamarin.Logger;
+using NLog.Fluent;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
 
@@ -41,9 +43,11 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
             SaveSession();
         }
 
-        public void SaveSession()
+        public bool SaveSession()
         {
-            if (NewSession.Id == 0)
+            if ( ! SessionIsValid()) return false;
+
+            if (NewSession?.Id == 0)
             {
                 NewSession.ClientId = NewSession.Client.Id;
                 DataAccessLayer.AddNewSession(NewSession);
@@ -52,8 +56,33 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
             {
                 DataAccessLayer.UpdateSession(NewSession);
             }
+
+            return true;
         }
 
+        private bool SessionIsValid()
+        {
+            var hasClient      = NewSession?.Client is not null;
+            var startBeforeEnd = NewSession?.StartDate < NewSession?.EndDate;
+
+            if ( ! hasClient)
+            {
+                Logger.WriteLineToToastForced("Could not save without a selected client."
+                                            , Category.Warning);
+
+                return false;
+            }
+
+            if ( ! startBeforeEnd)
+            {
+                Logger.WriteLineToToastForced("Start date/time must be before the End date/time."
+                                            , Category.Warning);
+
+                return false;
+            }
+
+            return true;
+        }
         public int Delete()
         {
             if (Id == 0)

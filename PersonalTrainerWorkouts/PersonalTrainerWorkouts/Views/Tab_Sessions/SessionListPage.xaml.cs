@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Avails.D_Flat.Extensions;
@@ -6,7 +7,9 @@ using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.ViewModels.Tab_Sessions;
+using Syncfusion.DataSource.Extensions;
 using Syncfusion.ListView.XForms;
+using Syncfusion.SfSchedule.XForms;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using SwipeEndedEventArgs = Syncfusion.ListView.XForms.SwipeEndedEventArgs;
@@ -25,6 +28,7 @@ namespace PersonalTrainerWorkouts.Views.Tab_Sessions
 
             ShowBusyIndicator(true
                             , "Initialing...");
+
         }
 
         protected override void OnAppearing()
@@ -34,8 +38,10 @@ namespace PersonalTrainerWorkouts.Views.Tab_Sessions
 
             ViewModel = new SessionListViewModel();
 
-            ListView.ItemsSource = ViewModel.ObservableListOfSessions;
+            var sessions = ViewModel.ObservableListOfSessions;
+            ListView.ItemsSource = sessions;
 
+            SessionsSchedule.DataSource = ViewModel.Appointments;
             ShowBusyIndicator(false);
         }
 
@@ -126,6 +132,68 @@ namespace PersonalTrainerWorkouts.Views.Tab_Sessions
                 BusyIndicator.EnableAnimation = show;
                 BusyIndicator.IsVisible = show;
             });
+        }
+
+        private void SessionsSchedule_OnCellTapped(object              sender
+                                                 , CellTappedEventArgs e)
+        {
+            switch (SessionsSchedule.ScheduleView)
+            {
+                case ScheduleView.DayView:
+                    //Go to SessionEditPage, to edit the session
+                    break;
+                case ScheduleView.WeekView:
+                    SessionsSchedule.ScheduleView = ScheduleView.DayView;
+                    break;
+                case ScheduleView.MonthView:
+                    SessionsSchedule.ScheduleView = ScheduleView.WeekView;
+                    break;
+                case ScheduleView.WorkWeekView:
+                    break;
+                case ScheduleView.TimelineView:
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+
+        private void DayRadioButton_OnCheckedChanged(object                  sender
+                                                   , CheckedChangedEventArgs e)
+        {
+            SessionsSchedule.ScheduleView = ScheduleView.DayView;
+        }
+
+        private void WeekRadioButton_OnCheckedChanged(object                  sender
+                                                    , CheckedChangedEventArgs e)
+        {
+            SessionsSchedule.ScheduleView = ScheduleView.WeekView;
+        }
+
+        private void MonthRadioButton_OnCheckedChanged(object                  sender
+                                                     , CheckedChangedEventArgs e)
+        {
+            SessionsSchedule.ScheduleView = ScheduleView.MonthView;
+        }
+
+        private void WorkWeekRadioButton_OnCheckedChanged(object                  sender
+                                              , CheckedChangedEventArgs e)
+        {
+            SessionsSchedule.ScheduleView = ScheduleView.WorkWeekView;
+        }
+
+        private void TimelineRadioButton_OnCheckedChanged(object                  sender
+                                             , CheckedChangedEventArgs e)
+        {
+            SessionsSchedule.ScheduleView = ScheduleView.TimelineView;
+        }
+
+        private void ToggleListViewToolbarItem_OnClicked(object    sender
+                                                       , EventArgs e)
+        {
+            ListView.IsVisible                    = ! ListView.IsVisible;
+            //ListViewScrollView.IsVisible          = ! ListView.IsVisible;
+            ScheduleViewRadioButtonGrid.IsVisible = ! ListView.IsVisible;
+            SessionsSchedule.IsVisible            = ! ListView.IsVisible;
         }
     }
 }

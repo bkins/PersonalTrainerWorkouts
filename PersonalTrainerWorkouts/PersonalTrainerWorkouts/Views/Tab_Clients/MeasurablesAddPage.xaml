@@ -2,7 +2,8 @@
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             
+
+             xmlns:xForms="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
              xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels.Tab_Clients;assembly=PersonalTrainerWorkouts"
              x:DataType="viewModels:MeasurablesViewModel"
              x:Class="PersonalTrainerWorkouts.Views.Tab_Clients.MeasurablesAddPage"
@@ -51,20 +52,53 @@
                    Grid.Row="2"
                    Text="Unit of measurement"
                    VerticalOptions="Center"
-                   />
+                   >
+                   <Label.GestureRecognizers>
+                          <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_UomLabel"></TapGestureRecognizer>
+                   </Label.GestureRecognizers>
+            </Label>
 
+            <Editor x:Name="UnitOfMeasurementEditor"
+                    Grid.Column="1"
+                    Grid.Row="2"
+                    Placeholder="Unit"
+                    Text="{Binding NewMeasurable.UnitOfMeasurement}"
+                    FontSize="Small"
+                    VerticalOptions="Center"
+                    >
+                   <Editor.GestureRecognizers>
+                          <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_UomEditor"/>
+                   </Editor.GestureRecognizers>
+            </Editor>
+            <xForms:SfPicker x:Name="UnitOfMeasurementPicker"
+                             HeaderText="Choose a Unit Of Measurement"
+                             ShowFooter="True"
+                             ItemsSource="{Binding UnitOfMeasurements}"
+                             IsVisible="False"
+                             PickerMode="Dialog"
+                             OkButtonClicked="UnitOfMeasurementPicker_OnOkButtonClicked"
+                             CancelButtonClicked="UnitOfMeasurementPicker_OnCancelButtonClicked"
+
+            />
             <Label x:Name="DateTakenLabel"
                    Grid.Column="0"
                    Grid.Row="3"
                    Text="Date Taken"
                    VerticalOptions="Center"
-                   />
-            <DatePicker x:Name="DateTakePicker"
+            />
+            <DatePicker x:Name="DateTakenPicker"
                         Grid.Column="1"
                         Grid.Row="3"
-                        FontSize="Small"
-                        VerticalOptions="Center"
-                        />
+                        Grid.ColumnSpan="2"
+                        Date="{Binding NewMeasurable.DateTaken}"
+                        TextColor="Black"
+                        WidthRequest="100"
+                        FontSize="Medium"
+                        VerticalOptions="Start"
+                        HorizontalOptions="StartAndExpand"
+                        DateSelected="DateTakenPicker_OnDateSelected"
+            />
+
             
             <Label x:Name="TypeLabel"
                    Grid.Column="0"

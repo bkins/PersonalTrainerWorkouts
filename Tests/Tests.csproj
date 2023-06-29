@@ -25,6 +25,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Avails\Avails\Avails.csproj" />
+    <ProjectReference Include="..\PersonalTrainerWorkouts\PersonalTrainerWorkouts.Android\PersonalTrainerWorkouts.Android.csproj" />
+    <ProjectReference Include="..\PersonalTrainerWorkouts\PersonalTrainerWorkouts.iOS\PersonalTrainerWorkouts.iOS.csproj" />
     <ProjectReference Include="..\PersonalTrainerWorkouts\PersonalTrainerWorkouts\PersonalTrainerWorkouts.csproj" />
   </ItemGroup>
 

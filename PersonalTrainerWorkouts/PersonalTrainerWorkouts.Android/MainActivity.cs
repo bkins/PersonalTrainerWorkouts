@@ -44,9 +44,9 @@ namespace PersonalTrainerWorkouts.Droid
         {
             if (Build.VERSION.SdkInt >= BuildVersionCodes.M)
             {
-                if (!CheckPermissionGranted(Manifest.Permission.ReadExternalStorage)
-                  || !CheckPermissionGranted(Manifest.Permission.WriteExternalStorage)
-                  || !CheckPermissionGranted(Manifest.Permission.ReadContacts))
+                if ( ! CheckPermissionGranted(Manifest.Permission.ReadExternalStorage)
+                  || ! CheckPermissionGranted(Manifest.Permission.WriteExternalStorage)
+                  || ! CheckPermissionGranted(Manifest.Permission.ReadContacts))
                 {
                     RequestPermission();
                 }

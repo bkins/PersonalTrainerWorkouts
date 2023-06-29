@@ -1,16 +1,29 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
+using Syncfusion.DataSource.Extensions;
+using Syncfusion.SfSchedule.XForms;
+using Xamarin.Forms;
 
 namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
 {
     public class SessionListViewModel : ViewModelBase
     {
-        public ObservableCollection<Session> ObservableListOfSessions { get; set; }
+        public ObservableCollection<Session>     ObservableListOfSessions { get; set; }
         public List<WorkoutsToExerciseViewModel> ListOfSessionsWithTotals { get; set; }
+
+        private ObservableCollection<ScheduleAppointment> _appointments;
+
+        public ObservableCollection<ScheduleAppointment> Appointments
+        {
+            get { return _appointments ??= new ObservableCollection<ScheduleAppointment>(); }
+            set => _appointments = value;
+        }
 
         public SessionListViewModel()
         {
@@ -18,6 +31,11 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
             LoadData(allSessions);
         }
 
+        /// <summary>
+        /// For testing
+        /// </summary>
+        /// <param name="aListOfSessions"></param>
+        /// <param name="dbAccessLayer"></param>
         public SessionListViewModel(List<Session> aListOfSessions, DataAccess dbAccessLayer)
         {
             DataAccessLayer = dbAccessLayer;
@@ -26,8 +44,38 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
 
         public void LoadData(IEnumerable<Session> sessions)
         {
+            var sessionsList = sessions.ToList();
 
-            ObservableListOfSessions = new ObservableCollection<Session>(sessions);
+            ObservableListOfSessions = new ObservableCollection<Session>(sessionsList);
+
+            var appointmentsList = new List<ScheduleAppointment>();
+
+            try
+            {
+                appointmentsList = sessionsList.Select(GetScheduledAppointment)
+                                               .ToList();
+            }
+            catch (Exception e)
+            {
+                //Think I have fixed the cases when this error was occurring,
+                //but will leave the try/catch just in case
+                Logger.WriteLine("Error while creating appointmentList.", Category.Error, e);
+            }
+
+            Appointments = new ObservableCollection<ScheduleAppointment>(appointmentsList);
+        }
+
+        private static ScheduleAppointment GetScheduledAppointment(Session session)
+        {
+            var appointment = new ScheduleAppointment();
+            appointment.StartTime = session.StartDate;
+            appointment.EndTime   = session.EndDate;
+            appointment.Subject   = session.Client.DisplayName;
+            appointment.Notes     = session.Client.MainNumber;
+            appointment.Color     = Color.FromHex(session.Client.BackgroundColorHex);
+            appointment.TextColor = Color.FromHex(session.Client.TextColorHex);
+
+            return appointment;
         }
 
         public (string item, bool success) Delete(int index)

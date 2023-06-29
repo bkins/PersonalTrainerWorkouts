@@ -15,9 +15,11 @@ namespace PersonalTrainerWorkouts.Models
         [PrimaryKey, AutoIncrement]
         public int Id { get; set; }
 
-        public DateTime Date { get; set; }
-        public string Note { get; set; }
-        public bool Paid { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate   { get; set; }
+
+        public string   Note    { get; set; }
+        public bool     Paid    { get; set; }
 
         [ForeignKey(typeof(Client))]
         public int ClientId { get; set; }
