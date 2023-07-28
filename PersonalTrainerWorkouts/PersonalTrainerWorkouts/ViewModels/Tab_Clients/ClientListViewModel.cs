@@ -88,9 +88,6 @@ public class ClientListViewModel : ViewModelBase
             return ($"There are sessions assigned to {name}", false, DeleteReasons.HasSessions);
         }
 
-        //Remove the client from the source list
-        ObservableClients.RemoveAt(index);
-
         var clientGoals = DataAccessLayer.GetGoals()
                                          .Where(goal => goal.ClientId == itemToDelete.Id);
         foreach (var goal in clientGoals)
@@ -134,7 +131,7 @@ public class ClientListViewModel : ViewModelBase
 
         Logger.WriteLine($"Sessions deleted:{Environment.NewLine}{results.ToString()}", Category.Information);
 
-        return ($"All sessions deleted for {client.DisplayName}.  See logs for all seesions deleted", true, DeleteReasons.Success);
+        return ($"All sessions deleted for {client.DisplayName}.  See logs for all sessions deleted", true, DeleteReasons.Success);
     }
 
     public ObservableCollection<Client> SearchByClientName(string filterText)
@@ -209,6 +206,7 @@ public class ClientListViewModel : ViewModelBase
             DataAccessLayer.AddNewContact(appContact);
             DataAccessLayer.AddNewClient(newClient);
 
+            Client            = newClient;
             ObservableClients = new ObservableCollection<Client>(DataAccessLayer.GetClients());
 
             LoadData();

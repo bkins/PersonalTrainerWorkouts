@@ -44,6 +44,11 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
             ItemViewModel = new ExerciseItemViewModel();
         }
 
+        public ExerciseExistingEntryPage(string workoutId)
+        {
+            _workoutId = workoutId;
+        }
+
         private void ExercisePicker_OnOkButtonClicked(object                    sender
                                                           , SelectionChangedEventArgs e)
         {

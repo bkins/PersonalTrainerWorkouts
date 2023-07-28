@@ -51,6 +51,11 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
             ExerciseList.DataSource.LiveDataUpdateMode = Syncfusion.DataSource.LiveDataUpdateMode.AllowDataShaping;
         }
 
+        public ExerciseListPage(string workoutId)
+        {
+            WorkoutId = workoutId;
+        }
+
         protected override void OnAppearing()
         {
             ReloadExercises();
@@ -65,29 +70,27 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
         }
 
         private void OnAddNewClicked(object    sender
-                                         , EventArgs e)
+                                   , EventArgs e)
         {
-            PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
-                                          , nameof(ExerciseAddEditPage.WorkoutId)
-                                          , WorkoutId
-                                          , nameof(ExerciseAddEditPage.ExerciseId)
-                                          , "0");
+            var instance = new ExerciseAddEditPage(WorkoutId, "0");
+
+            PageNavigation.NavigateTo(instance);
         }
 
         private void OnAddExistingClicked(object    sender
-                                              , EventArgs e)
+                                        , EventArgs e)
         {
-            PageNavigation.NavigateTo(nameof(ExerciseExistingEntryPage)
-                                          , nameof(ExerciseExistingEntryPage.WorkoutId)
-                                          , WorkoutId);
+            var instance = new ExerciseExistingEntryPage(WorkoutId);
+
+            PageNavigation.NavigateTo(instance);
         }
 
         private void OnSelectionChanged(object                    sender
                                             , SelectionChangedEventArgs e)
         {
-            PageNavigation.NavigateTo(nameof(ExerciseExistingEntryPage)
-                                          , nameof(ExerciseExistingEntryPage.WorkoutId)
-                                          , WorkoutId);
+            var instance = new ExerciseExistingEntryPage(WorkoutId);
+
+            PageNavigation.NavigateTo(instance);
         }
 
         private async void ExerciseList_OnItemDragging(object                sender
@@ -144,12 +147,10 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
                                                    , ItemTappedEventArgs e)
         {
             var tappedExercise = (WorkoutExerciseWithChildren)e.ItemData;
+            var instance = new ExerciseAddEditPage(tappedExercise.Workout.Id.ToString()
+                                                 , tappedExercise.Exercise.Id.ToString());
 
-            PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
-                                          , nameof(ExerciseAddEditPage.WorkoutId)
-                                          , tappedExercise.Workout.Id.ToString()
-                                          , nameof(ExerciseAddEditPage.ExerciseId)
-                                          , tappedExercise.Exercise.Id.ToString());
+            PageNavigation.NavigateTo(instance);
         }
     }
 }

@@ -91,6 +91,11 @@ public partial class GoalsAddEditPage : ContentPage, IQueryAttributable
         GoalVm = new GoalViewModel();
     }
 
+    public GoalsAddEditPage(string clientId, string goalId)
+    {
+        _clientId = clientId;
+        _goalId   = goalId;
+    }
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -375,11 +380,10 @@ public partial class GoalsAddEditPage : ContentPage, IQueryAttributable
     private void AddNewMeasurableButton_OnClicked(object    sender
                                                 , EventArgs e)
     {
-        PageNavigation.NavigateTo(nameof(MeasurablesAddPage)
-                                , nameof(MeasurablesAddPage.ClientId)
-                                , ClientId
-                                , nameof(MeasurablesAddPage.GoalId)
-                                , GoalId);
+        var instance = new MeasurablesAddPage(ClientId
+                                            , GoalId);
+
+        PageNavigation.NavigateTo(instance);
     }
 
     private void MeasurableCollectionView_OnSelectionChanged(object                    sender

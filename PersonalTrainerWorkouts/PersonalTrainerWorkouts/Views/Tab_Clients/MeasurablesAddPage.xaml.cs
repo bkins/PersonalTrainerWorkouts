@@ -44,7 +44,12 @@ public partial class MeasurablesAddPage : ContentPage, IQueryAttributable
         InitializeComponent();
        // MeasurablesViewModel = new MeasurablesViewModel();
     }
-    
+
+    public MeasurablesAddPage(string clientId, string goalId)
+    {
+        ClientId = clientId;
+        GoalId   = goalId;
+    }
     public void ApplyQueryAttributes(IDictionary<string, string> query)
     {
         try

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
-using Syncfusion.DataSource.Extensions;
 using Xamarin.CommunityToolkit.UI.Views;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
+using Avails.Xamarin.Utilities;
 using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
 using Syncfusion.ListView.XForms;
@@ -143,9 +144,9 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
 
             ListView.SelectedItems.Clear();
 
-            PageNavigation.NavigateTo(nameof(ClientEditPage)
-                                    , nameof(ClientEditPage.ClientId)
-                                    , item.Id.ToString());
+            var instance = new ClientEditPage(item.Id.ToString());
+
+            PageNavigation.NavigateTo(instance);
         }
 
         private void ListView_OnSwipeStarted(object sender
@@ -207,50 +208,39 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
                                   , DeleteReasons reason) itemDeleted
                                  , Client client)
         {
+            var problem = itemDeleted.item == string.Empty;
+            var message = problem
+                            ? $"{itemDeleted.reason.ToString()} ({action.Status})"
+                            : itemDeleted.item;
             switch (action.Status)
             {
                 case TaskStatus.RanToCompletion when action.Result:
 
                     itemDeleted = DeleteClientSessions(client);
 
-                    Logger.WriteLineToToastForced(itemDeleted.item
-                                                , Category.Information);
-
-                    itemDeleted = ClientListVm.Delete(SwipedItem);
-
-                    Logger.WriteLineToToastForced(itemDeleted.item
-                                                , Category.Information);
+                    Logger.WriteLineToToastForced( message
+                                                 , problem
+                                                       ? Category.Error
+                                                       : Category.Information);
 
                     break;
 
                 case TaskStatus.Faulted:
 
-                    Logger.WriteLineToToastForced(itemDeleted.item
-                                                , Category.Information);
+                    Logger.WriteLineToToastForced(message
+                                                , Category.Error);
 
                     break;
 
                 case TaskStatus.Canceled:
-
-                    break;
-
                 case TaskStatus.Created:
-
-                    break;
-
                 case TaskStatus.Running:
-
-                    break;
-
                 case TaskStatus.WaitingForActivation:
-
-                    break;
-
                 case TaskStatus.WaitingForChildrenToComplete:
-
-                    break;
-
                 case TaskStatus.WaitingToRun:
+
+                    Logger.WriteLineToToastForced(message
+                                                , Category.Information);
 
                     break;
 
@@ -273,6 +263,7 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
             }
 
             itemDeleted = ClientListVm.Delete(SwipedItem);
+            ClientListVm.ObservableClients.RemoveAt(SwipedItem);
 
             return itemDeleted;
         }
@@ -344,16 +335,7 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
         private void DeleteImage_OnBindingContextChanged(object sender
                                                        , EventArgs e)
         {
-            if (sender is not Image image)
-                return;
-
-            var imageParent = image.Parent as View;
-
-            imageParent?.GestureRecognizers
-                        .Add(new TapGestureRecognizer
-                        {
-                            Command = new Command(Delete)
-                        });
+            UiUtilities.AddCommandToGestureToImage(sender, Delete);
         }
 
         private void DeleteImage_OnTapped(object sender

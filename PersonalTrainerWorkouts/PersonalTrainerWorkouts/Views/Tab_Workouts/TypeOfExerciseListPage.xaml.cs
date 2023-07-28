@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using Avails.D_Flat.Exceptions;
+using Avails.ApplicationExceptions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
@@ -64,6 +64,12 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
             InitializeComponent();
         }
 
+        public TypeOfExerciseListPage(string workoutId, string exerciseId)
+        {
+            WorkoutId  = workoutId;
+            ExerciseId = exerciseId;
+        }
+
         private void TypeOfExercisePicker_OnOkButtonClicked(object                    sender
                                                                 , SelectionChangedEventArgs e)
         {
@@ -80,11 +86,10 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
                 TryToSaveExerciseType().ConfigureAwait(false);
             }
 
-            PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
-                                          , nameof(ExerciseAddEditPage.WorkoutId)
-                                          , WorkoutId
-                                          , nameof(ExerciseAddEditPage.ExerciseId)
-                                          , _exerciseId);
+            var instance = new ExerciseAddEditPage(WorkoutId
+                                                 , ExerciseId);
+
+            PageNavigation.NavigateTo(instance);
         }
 
         private async Task SaveNewExerciseType()

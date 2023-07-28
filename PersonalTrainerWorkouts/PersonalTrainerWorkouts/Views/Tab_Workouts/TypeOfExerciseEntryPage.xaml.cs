@@ -65,12 +65,10 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
             var nameEntry = (Entry)sender;
 
             _viewModel.SaveTypeOfExercise(nameEntry.Text);
+            var instance = new ExerciseAddEditPage(WorkoutId
+                                                 , ExerciseId);
 
-            PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
-                                          , nameof(ExerciseAddEditPage.WorkoutId)
-                                          , WorkoutId
-                                          , nameof(ExerciseAddEditPage.ExerciseId)
-                                          , ExerciseId);
+            PageNavigation.NavigateTo(instance);
         }
     }
 }

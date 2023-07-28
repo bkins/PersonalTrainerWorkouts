@@ -1,0 +1,26 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<AbsoluteLayout xmlns="http://xamarin.com/schemas/2014/forms"
+                xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                x:Class="PersonalTrainerWorkouts.Views.Tab_Sessions.AppointmentDataTemplate"
+                xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models.ContactsAndClients;assembly=PersonalTrainerWorkouts"
+                Margin="0"
+                Padding="0"
+                BackgroundColor="Bisque"
+                x:DataType="models:Client">
+    <!--CornerRadius="15"
+        AbsoluteLayout.LayoutBounds="0.5,0.5,30,30"
+        AbsoluteLayout.LayoutFlags="PositionProportional"
+        BackgroundColor="{Binding BackgroundColor}"
+        BorderColor="{Binding TextColor}"-->
+    <Frame
+        BackgroundColor="Black"
+        BorderColor="White"
+
+        WidthRequest="50"
+        HasShadow="True"
+        VerticalOptions="Center"
+        HorizontalOptions="Center"
+    >
+    </Frame>
+
+</AbsoluteLayout>

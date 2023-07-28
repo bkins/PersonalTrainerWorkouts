@@ -96,7 +96,7 @@
                        TextColor="{Binding Client.TextColor}"
                        BackgroundColor="{Binding Client.BackgroundColor}">
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped"/>
+                        <TapGestureRecognizer Tapped="ColorValueLabel_OnTapped"/>
                     </Label.GestureRecognizers>
                 </Label>
 

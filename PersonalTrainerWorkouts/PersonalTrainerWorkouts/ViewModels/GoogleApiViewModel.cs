@@ -8,7 +8,6 @@ using System;
 using System.ComponentModel;
 using System.Windows.Input;
 using PersonalTrainerWorkouts.Services;
-using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 using Xamarin.Auth;
 using Xamarin.Auth.Presenters;
 using Xamarin.Forms;

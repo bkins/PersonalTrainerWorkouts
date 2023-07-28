@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Google.Apis.Drive.v3;
 using Google.Apis.Drive.v3.Data;
 
-namespace PersonalTrainerWorkouts.ViewModels.HelperClasses
+namespace PersonalTrainerWorkouts.Services
 {
     public class GoogleDriveService
     {

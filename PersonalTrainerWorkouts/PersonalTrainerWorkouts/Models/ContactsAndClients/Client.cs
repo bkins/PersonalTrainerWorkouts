@@ -1,16 +1,11 @@
-﻿using System;
-using Avails.D_Flat.Extensions;
+﻿using Avails.D_Flat.Extensions;
 using Avails.Xamarin.Logger;
-
-using Java.Lang;
-
 using SQLite;
 
 using SQLiteNetExtensions.Attributes;
 
 using System.Collections.Generic;
 using System.Linq;
-using Android;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 using Xamarin.Essentials;
 using Xamarin.Forms;

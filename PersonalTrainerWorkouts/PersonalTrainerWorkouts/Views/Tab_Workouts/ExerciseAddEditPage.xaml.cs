@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
-using Avails.D_Flat.Exceptions;
+using Avails.ApplicationExceptions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
@@ -30,6 +30,11 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
         public  List<TypeOfExercise> TypesOfExerciseList { get; set; }
         //public  ICommand             DeleteCommand       { get; }
 
+        public ExerciseAddEditPage(string workoutId, string exerciseId)
+        {
+            WorkoutId  = workoutId;
+            ExerciseId = exerciseId;
+        }
         public void ApplyQueryAttributes(IDictionary<string, string> query)
         {
             try
@@ -208,11 +213,9 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
         private void AddTypeOfExerciseButton_OnClicked(object    sender
                                                            , EventArgs e)
         {
-            PageNavigation.NavigateTo(nameof(TypeOfExerciseListPage)
-                                          , nameof(TypeOfExerciseListPage.WorkoutId)
-                                          , ViewModel.Workout.Id.ToString()
-                                          , nameof(TypeOfExerciseListPage.ExerciseId)
-                                          , ViewModel.Exercise.Id.ToString());
+            var instance = new TypeOfExerciseListPage(ViewModel.Workout.Id.ToString()
+                                                    , ViewModel.Exercise.Id.ToString());
+            PageNavigation.NavigateTo(instance);
         }
 
         private void RemoveType_OnClicked(object    sender
@@ -227,19 +230,17 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
         private void AddEquipmentButton_OnClicked(object    sender
                                                       , EventArgs e)
         {
-            PageNavigation.NavigateTo(nameof(EquipmentListPage)
-                                          , nameof(EquipmentListPage.ExerciseId)
-                                          , ExerciseId);
+            var instance = new EquipmentListPage(ExerciseId);
+
+            PageNavigation.NavigateTo(instance);
         }
 
         private void AddMuscleGroupButton_OnClicked(object    sender
                                                         , EventArgs e)
         {
-            PageNavigation.NavigateTo(nameof(MuscleGroupListPage)
-                                          , nameof(MuscleGroupListPage.ExerciseId)
-                                          , ExerciseId
-                                          , nameof(MuscleGroupListPage.WorkoutId)
-                                          , WorkoutId);
+            var instance = new MuscleGroupListPage(WorkoutId
+                                                 , ExerciseId);
+            PageNavigation.NavigateTo(instance);
         }
 
         private void RemoveEquipment_OnClicked(object    sender

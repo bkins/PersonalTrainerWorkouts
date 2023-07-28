@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
-using Avails.D_Flat.Exceptions;
+using Avails.ApplicationExceptions;
 using Avails.D_Flat.Extensions;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.Intermediates;

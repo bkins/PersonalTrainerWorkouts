@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using Avails.D_Flat.Exceptions;
+using Avails.ApplicationExceptions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models;
@@ -57,6 +57,11 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
         public EquipmentListPage()
         {
             InitializeComponent();
+        }
+
+        public EquipmentListPage(string exerciseId)
+        {
+            ExerciseId = exerciseId;
         }
 
         private async void EquipmentPicker_OnOkButtonClicked(object                    sender

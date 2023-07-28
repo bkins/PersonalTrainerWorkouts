@@ -2,11 +2,11 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
-using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
-using Syncfusion.DataSource.Extensions;
+using PersonalTrainerWorkouts.Models.HelperClasses;
 using Syncfusion.SfSchedule.XForms;
 using Xamarin.Forms;
 
@@ -14,8 +14,7 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
 {
     public class SessionListViewModel : ViewModelBase
     {
-        public ObservableCollection<Session>     ObservableListOfSessions { get; set; }
-        public List<WorkoutsToExerciseViewModel> ListOfSessionsWithTotals { get; set; }
+        public  ObservableCollection<Session>             ObservableListOfSessions { get; set; }
 
         private ObservableCollection<ScheduleAppointment> _appointments;
 
@@ -36,24 +35,30 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
         /// </summary>
         /// <param name="aListOfSessions"></param>
         /// <param name="dbAccessLayer"></param>
-        public SessionListViewModel(List<Session> aListOfSessions, DataAccess dbAccessLayer)
+        public SessionListViewModel(IEnumerable<Session> aListOfSessions
+                                  , DataAccess           dbAccessLayer)
         {
             DataAccessLayer = dbAccessLayer;
             LoadData(aListOfSessions);
         }
 
+        public void LoadData()
+        {
+            var allSessions = DataAccessLayer.GetSessions();
+            LoadData(allSessions);
+        }
         public void LoadData(IEnumerable<Session> sessions)
         {
-            var sessionsList = sessions.ToList();
+            var allSessions = sessions.ToList();
 
-            ObservableListOfSessions = new ObservableCollection<Session>(sessionsList);
+            ObservableListOfSessions = new ObservableCollection<Session>(allSessions);
 
-            var appointmentsList = new List<ScheduleAppointment>();
+            var appointmentsList = new List<SessionAppointment>();
 
             try
             {
-                appointmentsList = sessionsList.Select(GetScheduledAppointment)
-                                               .ToList();
+                appointmentsList = allSessions.Select(GetScheduledAppointment)
+                                              .ToList();
             }
             catch (Exception e)
             {
@@ -65,19 +70,55 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
             Appointments = new ObservableCollection<ScheduleAppointment>(appointmentsList);
         }
 
-        private static ScheduleAppointment GetScheduledAppointment(Session session)
+        private static SessionAppointment GetScheduledAppointment(Session session)
         {
-            var appointment = new ScheduleAppointment();
-            appointment.StartTime = session.StartDate;
-            appointment.EndTime   = session.EndDate;
-            appointment.Subject   = session.Client.DisplayName;
-            appointment.Notes     = session.Client.MainNumber;
-            appointment.Color     = Color.FromHex(session.Client.BackgroundColorHex);
-            appointment.TextColor = Color.FromHex(session.Client.TextColorHex);
+            var backColor   = Color.FromHex(session.Client.BackgroundColorHex);
+            var textColor   = Color.FromHex(session.Client.TextColorHex);
+            var subject     = GetSubject(session);
+
+            var appointment = new SessionAppointment();
+            appointment.SessionId              = session.Id;
+            appointment.SessionStartTime       = session.StartDate;
+            appointment.SessionEndTime         = session.EndDate;
+            appointment.SessionSubject         = subject;
+            appointment.SessionNotes           = session.Client.MainNumber;
+            appointment.SessionBackgroundColor = backColor;
+            appointment.SessionTextColor       = textColor;
+            appointment.StartTime              = session.StartDate;
+            appointment.EndTime                = session.EndDate;
+            appointment.Subject                = subject;
+            appointment.Color                  = backColor;
+            appointment.TextColor              = textColor;
 
             return appointment;
         }
 
+        private static string GetSubject(Session session)
+        {
+            var subject = new StringBuilder();
+            subject.AppendLine(session.Client.DisplayName);
+
+            if (session.Workouts.Count == 1)
+            {
+                subject.Append(session.Workouts.First().Name);
+            }
+            else
+            {
+                foreach (var workout in session.Workouts)
+                {
+                    subject.Append($"{workout.Name}; ");
+                }
+
+                var subjectString = subject.ToString()
+                                           .Remove(subject.ToString()
+                                                          .Length - 1
+                                                 , 1);
+
+                return subjectString;
+            }
+
+            return subject.ToString();
+        }
         public (string item, bool success) Delete(int index)
         {
             if (index > ObservableListOfSessions.Count - 1)
@@ -85,22 +126,26 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
                 return (string.Empty, false);
             }
 
-            //Get the workout to be deleted
+            //Get the item to be deleted
             var itemToDelete = ObservableListOfSessions[index];
             var name = itemToDelete.Name;
 
-            //Remove the workout from the source list
+            //Remove the item from the source list
             ObservableListOfSessions.RemoveAt(index);
 
-            //Delete the Workout from the database
+            //Delete the item from the database
             var numberAffected = App.Database.DeleteSession(ref itemToDelete);
 
-            ObservableListOfSessions = new ObservableCollection<Session>(DataAccessLayer.GetSessions());
+            LoadData(DataAccessLayer.GetSessions());
 
-            if (numberAffected == 0) { return ("<Session was not deleted. See Logs>", false); }
-            if (numberAffected > 1) { return ("<More than one Session was deleted!", true); }
+            //ObservableListOfSessions = new ObservableCollection<Session>(DataAccessLayer.GetSessions());
 
-            return (name, true);
+            return numberAffected switch
+                   {
+                         0 => ("<Session was not deleted. See Logs>", false)
+                     , > 1 => ("<More than one Session was deleted!", true)
+                     , _   => (name, true)
+                   };
         }
 
         public ObservableCollection<Session> SearchByClientName(string filterText)
@@ -118,6 +163,15 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
         {
 
             return SearchByClientName(filterText);
+        }
+
+        public ObservableCollection<Session> GetSessionsForTheWeek()
+        {
+            var today = DateTime.Today;
+            var listOfSessions = ObservableListOfSessions.Where(session => session.StartDate >= today
+                                                                        && session.StartDate <= today.AddDays(7));
+
+            return new ObservableCollection<Session>(listOfSessions);
         }
     }
 }

@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using Avails.D_Flat.Extensions;
 using PersonalTrainerWorkouts.Models.Intermediates;
 using SQLite;
 using SQLiteNetExtensions.Attributes;
@@ -36,5 +39,17 @@ namespace PersonalTrainerWorkouts.Models
 
         [OneToMany]
         public List<Synergist> Synergists { get; set; }
+
+        public override string ToString()
+        {
+            var text = new StringBuilder();
+            text.Append($"\t{Name}");
+            if (Reps > 0) text.Append($" ({nameof(Reps)}: {Reps})");
+            if (LengthOfTime.HasValue() && LengthOfTime != "00:00") text.Append($" (Time: {LengthOfTime})");
+            text.Append(Environment.NewLine);
+            if (Description.HasValue()) text.Append(Description);
+
+            return text.ToString();
+        }
     }
 }

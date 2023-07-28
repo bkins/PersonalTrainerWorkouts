@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
+using PersonalTrainerWorkouts.Models.ContactsAndClients;
 
 namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
 {
@@ -11,7 +12,8 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
     {
         public ObservableCollection<Workout>     ObservableListOfWorkouts { get; set; }
         public List<WorkoutsToExerciseViewModel> ListOfWorkoutsWithTotals { get; set; }
-        
+        public ObservableCollection<Client>      Clients                  { get; set; }
+
         public WorkoutListViewModel()
         {
             LoadData(DataAccessLayer.GetWorkouts());
@@ -49,16 +51,29 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
             {
                 ListOfWorkoutsWithTotals.Add(new WorkoutsToExerciseViewModel(workout.Id.ToString(), DataAccessLayer));
             }
+
+            Clients = new ObservableCollection<Client>(DataAccessLayer.GetClients());
         }
+
+        public Workout GetWorkoutByIndex(int index)
+        {
+            return index > ObservableListOfWorkouts.Count - 1
+                    ? null
+                    : RefreshWorkout(index);
+        }
+
+        private Workout RefreshWorkout(int index)
+        {
+            var workout          = ObservableListOfWorkouts[index];
+            var workoutExercises = new WorkoutsToExerciseViewModel(workout.Id.ToString());
+
+            return workoutExercises.Workout;
+        }
+
         public string Delete(int index)
         {
-            if (index > ObservableListOfWorkouts.Count - 1)
-            {
-                return string.Empty;
-            }
-
             //Get the workout to be deleted
-            var workoutToDelete = ObservableListOfWorkouts[index];
+            var workoutToDelete = GetWorkoutByIndex(index);
             var workoutName     = workoutToDelete.Name;
 
             //Remove the workout from the source list

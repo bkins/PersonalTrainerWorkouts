@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Avails.D_Flat.Exceptions;
+using Avails.ApplicationExceptions;
 using Avails.D_Flat.Extensions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
@@ -55,6 +55,10 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
             BindingContext = new Workout();
         }
 
+        public WorkoutExercisePage(string workoutId)
+        {
+            _workoutId = workoutId;
+        }
         private void SaveWorkout()
         {
             var boundContext = (WorkoutsToExerciseViewModel)BindingContext;
@@ -82,19 +86,17 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
                 return;
             }
 
-            PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
-                                          , nameof(ExerciseAddEditPage.WorkoutId)
-                                          , WorkoutId
-                                          , nameof(ExerciseAddEditPage.ExerciseId)
-                                          , exercise.Exercise.Id.ToString());
+            var instance = new ExerciseAddEditPage(WorkoutId
+                                                 , exercise.Exercise.Id.ToString());
+            PageNavigation.NavigateTo(instance);
         }
 
         void OnToolbarManageExercisesClicked(object    sender
                                            , EventArgs e)
         {
-             PageNavigation.NavigateTo(nameof(ExerciseListPage)
-                                          , nameof(ExerciseListPage.WorkoutId)
-                                          , WorkoutId);
+            var instance = new ExerciseListPage(WorkoutId);
+
+            PageNavigation.NavigateTo(instance);
         }
 
         private void Name_OnUnfocused(object         sender

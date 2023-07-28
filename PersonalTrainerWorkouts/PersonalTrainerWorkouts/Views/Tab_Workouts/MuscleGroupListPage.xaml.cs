@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using Avails.D_Flat.Exceptions;
+using Avails.ApplicationExceptions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
@@ -48,6 +48,12 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
             InitializeComponent();
         }
 
+        public MuscleGroupListPage(string workoutId, string exerciseId)
+        {
+            WorkoutId  = workoutId;
+            ExerciseId = exerciseId;
+        }
+
         private void LoadData()
         {
             //Set the list of Synergists, plus the "Add New", to the ItemSource
@@ -81,12 +87,10 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
             try
             {
                 ViewModel.SaveSynergistToExercise();
+                var instance = new ExerciseAddEditPage(WorkoutId
+                                                     , ExerciseId);
 
-                PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
-                                              , nameof(ExerciseAddEditPage.ExerciseId)
-                                              , ExerciseId
-                                              , nameof(ExerciseAddEditPage.WorkoutId)
-                                              , WorkoutId);
+                PageNavigation.NavigateTo(instance);
             }
             catch (EntityRelationAlreadyExistsException alreadyExistsException)
             {

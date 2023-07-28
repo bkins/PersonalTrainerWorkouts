@@ -53,7 +53,7 @@ namespace PersonalTrainerWorkouts.Views
 
         private static string GetTitleText()
         {
-            return $"Log size: {FileSizeFormatter.FormatSize(Logger.GetLogFileSizeInBytes())}";
+            return $"Size: {FileSizeFormatter.FormatSize(Logger.GetLogFileSizeInBytes())}";
         }
 
         private void ClearLogToolbarItem_OnClicked(object    sender

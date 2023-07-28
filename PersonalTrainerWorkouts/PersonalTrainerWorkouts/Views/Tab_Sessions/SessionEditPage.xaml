@@ -7,6 +7,7 @@
              xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
              xmlns:xForms="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
              xmlns:xForms1="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:combobox="clr-namespace:Syncfusion.XForms.ComboBox;assembly=Syncfusion.SfComboBox.XForms"
              xmlns:tabSessions="clr-namespace:PersonalTrainerWorkouts.ViewModels.Tab_Sessions;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.Tab_Sessions.SessionEditPage"
              x:DataType="tabSessions:SessionViewModel"
@@ -63,7 +64,10 @@
                      Clicked="SaveButton_OnClicked"
                      />
     </ContentPage.ToolbarItems>
-    
+
+    <ContentPage.BindingContext>
+        <tabSessions:SessionViewModel/>
+    </ContentPage.BindingContext>
     <ContentPage.Content>
         
         <StackLayout>
@@ -81,20 +85,23 @@
                         <TapGestureRecognizer Tapped="SelectClient_OnTapped"/>
                     </Label.GestureRecognizers>
                 </Label>
-                
+
             </Grid>
-            
-            <xForms:SfPicker x:Name="ClientPicker"
-                             HeaderText="Clients" 
-                             ShowFooter="True"
-                             ItemsSource="{Binding ClientListViewModel.Clients}"
-                             IsVisible="False"
-                             OkButtonClicked="ClientPicker_OnOkButtonClicked"
-                             CancelButtonClicked="ClientPicker_OnCancelButtonClicked"
-            />
+
+                <xForms:SfPicker x:Name="ClientPicker"
+                                 HeaderText="Clients"
+                                 ShowFooter="True"
+                                 ItemsSource="{Binding ClientListViewModel.Clients}"
+                                 IsVisible="False"
+                                 PickerMode="Default"
+                                 WidthRequest="120"
+                                 Grid.ColumnSpan="2"
+                                 OkButtonClicked="ClientPicker_OnOkButtonClicked"
+                                 CancelButtonClicked="ClientPicker_OnCancelButtonClicked"
+                />
             
             <Grid ColumnDefinitions="15*,35*, 28*"
-                  RowDefinitions="Auto,Auto">
+                  RowDefinitions="*,*,*">
                 
                 <Label x:Name="SessionStartDateLabel"
                        Grid.Column="0"
@@ -102,21 +109,18 @@
                        VerticalTextAlignment="Center"
                        Text="Start:"
                        />
-                <Entry x:Name="SessionStartDateEntry"
-                       Grid.Column="1"
-                       FontSize="Small"
-                       Placeholder="Start Date/Time of the session"
-                       Text="{Binding NewSession.StartDate}"
-                       IsVisible="False"
-                       />
                 <DatePicker x:Name="StartDatePicker"
                             Grid.Column="1"
                             Grid.Row="0"
+                            TextColor="Black"
                             />
+
                 <TimePicker x:Name="StartTimePicker"
                             Grid.Column="2"
                             Grid.Row="0"
+                            TextColor="Black"
                             />
+
                 <Label x:Name="SessionEndDateLabel"
                        Grid.Column="0"
                        Grid.Row="1"
@@ -126,19 +130,49 @@
                 <DatePicker x:Name="EndDatePicker"
                             Grid.Column="1"
                             Grid.Row="1"
+                            TextColor="Black"
                             />
                 <TimePicker x:Name="EndTimePicker"
                             Grid.Column="2"
                             Grid.Row="1"
+                            TextColor="Black"
                             />
-                <Entry x:Name="SessionEndDateEntry"
-                       Grid.Column="1"
-                       Grid.Row="1"
-                       FontSize="Small"
-                       Placeholder="End Date/Time of the session"
-                       Text="{Binding NewSession.StartDate}"
-                       IsVisible="False"
-                       />
+                <combobox:SfComboBox x:Name="WorkoutComboBox"
+                                     Grid.Column="0"
+                                     Grid.Row="2"
+                                     Grid.ColumnSpan="3"
+                                     HeightRequest="40"
+                                     DropDownItemHeight="50"
+                                     DisplayMemberPath="Na me"
+                                     MultiSelectMode="Token"
+                                     TokensWrapMode="Wrap"
+                                     EnableAutoSize="True"
+                                     IsSelectedItemsVisibleInDropDown="False"
+                                     Watermark="Workouts for this session"
+                                     DataSource="{Binding WorkoutsCollection}"
+                                     ItemsSource="{Binding SelectedWorkouts}"
+                                     SelectionChanged="WorkoutComboBox_OnSelectionChanged">
+                    <combobox:SfComboBox.TokenSettings>
+                        <combobox:TokenSettings FontSize="16"
+                                                BackgroundColor="#66ccff"
+                                                TextColor="White"
+                                                SelectedBackgroundColor="#ffffe0"
+                                                DeleteButtonColor="Color.Brown"
+                                                IsCloseButtonVisible="true"
+                                                CornerRadius="15"
+                                                DeleteButtonPlacement="Right">
+                        </combobox:TokenSettings>
+                    </combobox:SfComboBox.TokenSettings>
+                </combobox:SfComboBox>
+
+                <!-- <Entry x:Name="SessionEndDateEntry" -->
+                <!--        Grid.Column="1" -->
+                <!--        Grid.Row="1" -->
+                <!--        FontSize="Small" -->
+                <!--        Placeholder="End Date/Time of the session" -->
+                <!--        Text="{Binding NewSession.StartDate}" -->
+                <!--        IsVisible="False" -->
+                <!--        /> -->
             </Grid>
 
             <Grid x:Name="RteNotesGrid"
@@ -147,9 +181,11 @@
                   HorizontalOptions="FillAndExpand">
                 
                 <rte:SfRichTextEditor x:Name="SessionNotesRtEditor"
+                                      BackgroundColor="Beige"
+                                      PlaceHolder="Session notes"
                                       VerticalOptions="FillAndExpand"
                                       HorizontalOptions="FillAndExpand"
-                                      Text="{Binding NewSession.Note}"/>
+                                      Text="{Binding NewSession.StartDate.Date}"/>
             </Grid>
             
             
@@ -162,48 +198,6 @@
                              OkButtonClicked="WorkoutsPicker_OnOkButtonClicked"
                              CancelButtonClicked="WorkoutsPicker_OnCancelButtonClicked"
             />
-            <xForms1:SfListView x:Name="ListView"
-                               VerticalOptions="StartAndExpand"
-                               AutoFitMode="DynamicHeight"
-                               SelectionMode="Single"
-                               AllowSwiping="True"
-                               SelectionChanged="OnSelectionChanged"
-                               SwipeEnded="ListView_SwipeEnded"
-                               ItemTemplate="{StaticResource ItemTemplate}"
-                               IsVisible="False">
-            
-                <xForms1:SfListView.LeftSwipeTemplate >
-                    <DataTemplate x:Name="LeftSwipeTemplate">
-                        <Grid VerticalOptions="CenterAndExpand">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="*" />
-                            </Grid.ColumnDefinitions>
-                            <Grid Grid.Column="0"
-                                  BackgroundColor="#DC595F"
-                                  HorizontalOptions="Fill"
-                                  VerticalOptions="Fill">
-                                <Grid VerticalOptions="CenterAndExpand"
-                                      HorizontalOptions="Center">
-                                    <Image x:Name="DeleteImage"
-                                           Grid.Column="0"
-                                           Grid.Row="0"
-                                           BackgroundColor="Transparent"
-                                           HeightRequest="35"
-                                           WidthRequest="35"
-                                           BindingContextChanged="LeftImage_BindingContextChanged"
-
-                                           Source="Delete.png" />
-                                </Grid>
-                            </Grid>
-                        </Grid>
-
-                    </DataTemplate>
-                </xForms1:SfListView.LeftSwipeTemplate>
-            </xForms1:SfListView>
-            
-            <!-- <Button x:Name="SaveButton" -->
-            <!--         Text="Save" -->
-            <!--         Clicked="SaveButton_OnClicked"/> -->
         </StackLayout>
     </ContentPage.Content>
 </ContentPage>

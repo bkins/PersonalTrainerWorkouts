@@ -1,5 +1,4 @@
-﻿using Avails.D_Flat.Exceptions;
-using Avails.Xamarin.Logger;
+﻿using Avails.Xamarin.Logger;
 
 using PersonalTrainerWorkouts.Data.Interfaces;
 using PersonalTrainerWorkouts.Models;
@@ -9,6 +8,7 @@ using PersonalTrainerWorkouts.Models.Intermediates;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Avails.ApplicationExceptions;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 
 namespace PersonalTrainerWorkouts.Data
@@ -454,6 +454,18 @@ namespace PersonalTrainerWorkouts.Data
         public void AddNewSession(Session session)
         {
             Database.AddJustSession(session);
+        }
+
+        public void AddSessionWithChildren(Session session)
+        {
+            Database.AddSessionWithChildren(session);
+        }
+
+        public void AddSession(Session       session
+                             , Client        client
+                             , List<Workout> workouts = null)
+        {
+            Database.AddSession(session, client, workouts);
         }
 
         public int AddNewPhone(PhoneNumber phoneNumber)

@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Linq;
-using Avails.D_Flat.Exceptions;
+using Avails.ApplicationExceptions;
 using Avails.D_Flat.Extensions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
@@ -37,20 +37,14 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
             {
                 return;
             }
-
-            PageNavigation.NavigateTo(nameof(ExerciseAddEditPage)
-                                          , nameof(ExerciseAddEditPage.WorkoutId)
-                                          , ViewModel.NewWorkout.Id.ToString()
-                                          , nameof(ExerciseAddEditPage.ExerciseId)
-                                          , exercise.Id.ToString());
         }
 
         void OnManageExercisesClicked(object    sender
                                           , EventArgs e)
         {
-            PageNavigation.NavigateTo(nameof(ExerciseListPage)
-                                          , nameof(ExerciseListPage.WorkoutId)
-                                          , ViewModel.NewWorkout.Id.ToString());
+            var instance = new ExerciseListPage(ViewModel.NewWorkout.Id.ToString());
+
+            PageNavigation.NavigateTo(instance);
         }
 
         private void SaveWorkout()

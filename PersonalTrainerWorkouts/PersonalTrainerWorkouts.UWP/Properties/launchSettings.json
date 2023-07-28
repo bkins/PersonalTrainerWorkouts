@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "PersonalTrainerWorkouts.UWP (Package)": {
+      "commandName": "MsixPackage"
+    },
+    "PersonalTrainerWorkouts.UWP (Unpackaged)": {
+      "commandName": "Project"
+    }
+  }
+}

@@ -1,9 +1,11 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:xForms="clr-namespace:Syncfusion.ListView.XForms;assembly=Syncfusion.SfListView.XForms"
+             xmlns:sfPicker="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
              xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
+             xmlns:viewModels="clr-namespace:PersonalTrainerWorkouts.ViewModels.Tab_Clients;assembly=PersonalTrainerWorkouts"
              x:Class="PersonalTrainerWorkouts.Views.Tab_Workouts.WorkoutListPage"
              Title="Workouts">
 
@@ -91,6 +93,7 @@
                     <Grid VerticalOptions="CenterAndExpand">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <Grid Grid.Column="0"
                               BackgroundColor="#DC595F"
@@ -109,10 +112,35 @@
                                        Source="Delete.png" />
                             </Grid>
                         </Grid>
+                        <Grid Grid.Column="1"
+                              BackgroundColor="Green"
+                              HorizontalOptions="Fill"
+                              VerticalOptions="Fill">
+                            <Grid VerticalOptions="CenterAndExpand"
+                                  HorizontalOptions="Center">
+                                <Image x:Name="ShareImage"
+                                       Grid.Column="0"
+                                       Grid.Row="0"
+                                       BackgroundColor="Transparent"
+                                       HeightRequest="35"
+                                       WidthRequest="35"
+                                       BindingContextChanged="ShareImage_OnBindingContextChanged"
+                                       Source="share_white_48.png" />
+                            </Grid>
+                        </Grid>
                     </Grid>
 
                 </DataTemplate>
             </xForms:SfListView.LeftSwipeTemplate>
         </xForms:SfListView>
+        <sfPicker:SfPicker x:Name="ClientPicker"
+                           x:DataType="viewModels:ClientListViewModel"
+                           HeaderText="Choose a Client"
+                           ShowFooter="True"
+                           ItemsSource="{Binding Clients}"
+                           IsVisible="False"
+                           PickerMode="Dialog"
+                           OkButtonClicked="ClientPicker_OnOkButtonClicked"
+                           CancelButtonClicked="ClientPicker_OnCancelButtonClicked" />
     </StackLayout>
 </ContentPage>

@@ -12,8 +12,8 @@ namespace PersonalTrainerWorkouts.Droid
 {
     [Activity
             (
-                Label = "PersonalTrainerWorkouts"
-              , Icon = "@drawable/HopkinsTrainingLogo_medium" //WeightLifting" //"@mipmap/icon"
+                Label = "Workouts"
+              , Icon = "@drawable/HopTrain_Trans" //WeightLifting" //"@mipmap/icon"
               , Theme = "@style/MainTheme"
               , MainLauncher = false
               , LaunchMode = LaunchMode.SingleInstance

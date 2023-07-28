@@ -15,6 +15,8 @@
             <Color x:Key="PrimaryBackColor">#2196F3</Color>
             <Color x:Key="PrimaryForeColor">White</Color>
             <Color x:Key="PrimaryUnselectedForeColor">AntiqueWhite</Color>
+            <Color x:Key="AppBackgroundColor">White</Color>
+            <Color x:Key="AppPrimaryColor">#2196F3</Color>
             <Color x:Key="PageBackgroundColor">White</Color>
 
             <x:Double x:Key="AccordionHeight">30</x:Double>

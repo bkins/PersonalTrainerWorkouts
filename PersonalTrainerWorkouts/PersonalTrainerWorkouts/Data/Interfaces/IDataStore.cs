@@ -19,6 +19,11 @@ namespace PersonalTrainerWorkouts.Data.Interfaces
         int AddJustOneWorkout(Workout workout);
         void AddSessionWithChildren(Session session);
         void AddJustSession(Session session);
+
+        void AddSession(Session       session
+                      , Client        client
+                      , List<Workout> workout = null);
+
         int AddJustOneClient(Client client);
         void AddJustOneClientWithChildren(Client client);
         void AddExercise(Exercise exercise);

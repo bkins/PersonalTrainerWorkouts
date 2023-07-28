@@ -56,6 +56,11 @@ namespace PersonalTrainerWorkouts
             
             Routing.RegisterRoute(nameof(GoalsAddEditPage), typeof(GoalsAddEditPage));
             Routing.RegisterRoute(nameof(MeasurablesAddPage), typeof(MeasurablesAddPage));
+
+            //To build out the Scheduler Calendar view from scratch
+            Routing.RegisterRoute(nameof(TestSessionsPage), typeof(TestSessionsPage));
+
+            Routing.RegisterRoute(nameof(NewSessionEditPage), typeof(NewSessionEditPage));
         }
     }
 }

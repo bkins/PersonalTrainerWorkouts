@@ -8,7 +8,6 @@ using Avails.D_Flat.Extensions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Models.ContactsAndClients;
-using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
 using PersonalTrainerWorkouts.Views.Popups;
@@ -43,6 +42,11 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
             collection.Add(ToolbarOptions.BulletList);
 
             ClientNoteRte.ToolbarItems = collection;
+        }
+
+        public ClientEditPage(string clientId)
+        {
+            ClientId = clientId;
         }
 
         public void ApplyQueryAttributes(IDictionary<string, string> query)
@@ -190,11 +194,9 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
         private void AddNewGoalButton_OnClicked(object    sender
                                               , EventArgs e)
         {
-            PageNavigation.NavigateTo(nameof(GoalsAddEditPage)
-                                    , nameof(GoalsAddEditPage.ClientId)
-                                    , ClientId
-                                    , nameof(GoalsAddEditPage.GoalId)
-                                    , "0");
+            var instance = new GoalsAddEditPage(ClientId, "0");
+
+            PageNavigation.NavigateTo(instance);
         }
 
         private void GoalsCollectionView_OnSelectionChanged(object                                  sender
@@ -203,12 +205,11 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
             var goal = (GoalViewModel)e.CurrentSelection.FirstOrDefault();
 
             if (goal == null) return;
-            
-            PageNavigation.NavigateTo(nameof(GoalsAddEditPage)
-                                    , nameof(GoalsAddEditPage.ClientId)
-                                    , ClientId
-                                    , nameof(GoalsAddEditPage.GoalId)
-                                    , goal.Goal.Id.ToString());
+
+            var instance = new GoalsAddEditPage(ClientId
+                                              , goal.Goal.Id.ToString());
+
+            PageNavigation.NavigateTo(instance);
         }
 
         private void ChangeMainNumberButton_OnClicked(object    sender
@@ -222,11 +223,9 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
         private void AddNewMeasurableButton_OnClicked(object    sender
                                                     , EventArgs e)
         {
-            PageNavigation.NavigateTo(nameof(MeasurablesAddPage)
-                                    , nameof(MeasurablesAddPage.ClientId)
-                                    , ClientId
-                                    , nameof(MeasurablesAddPage.GoalId)
-                                    , "0");
+            var instance = new MeasurablesAddPage(ClientId
+                                                , "0");
+            PageNavigation.NavigateTo(instance);
         }
 
         private void MeasurablesCollectionView_OnSelectionChanged(object                                  sender
@@ -244,8 +243,8 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
             Navigation.ShowPopup(new ToolTipPopup(displayMessage));
         }
 
-        private async void TapGestureRecognizer_OnTapped(object    sender
-                                                       , EventArgs e)
+        private async void ColorValueLabel_OnTapped(object    sender
+                                                  , EventArgs e)
         {
             var clientColorsPopup = new ClientColors(new ClientListViewModel());
 
@@ -257,8 +256,8 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
                     ColorValueLabel.BackgroundColor = clientColorsPopup.ClientBackgroundColor;
                 });
 
-                ClientVm.Client.BackgroundColorHex        = clientColorsPopup.ClientBackgroundColor.ToHex();
-                ClientVm.Client.TextColorHex    = clientColorsPopup.ClientTextColor.ToHex();
+                ClientVm.Client.BackgroundColorHex = clientColorsPopup.ClientBackgroundColor.ToHex();
+                ClientVm.Client.TextColorHex       = clientColorsPopup.ClientTextColor.ToHex();
             }
 
             await Navigation.ShowPopupAsync(clientColorsPopup)

@@ -16,11 +16,10 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
-using Android.Renderscripts;
+using Avails.ApplicationExceptions;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 using InvalidOperationException = System.InvalidOperationException;
-using SequenceContainsNoElementsException = Avails.D_Flat.Exceptions.SequenceContainsNoElementsException;
 using TypeOfExercise = PersonalTrainerWorkouts.Models.TypeOfExercise;
 
 namespace PersonalTrainerWorkouts.Data
@@ -156,6 +155,7 @@ namespace PersonalTrainerWorkouts.Data
             _database.CreateTable<UnitOfMeasurement>();
             _database.CreateTable<GoalSuccession>();
             _database.CreateTable<Goal>();
+            _database.CreateTable<SessionWorkouts>();
 
             _database.CreateTable<AppContact>();
             _database.CreateTable<AppContactPhone>();
@@ -172,6 +172,7 @@ namespace PersonalTrainerWorkouts.Data
             _database.DropTable<UnitOfMeasurement>();
             _database.DropTable<GoalSuccession>();
             _database.DropTable<Goal>();
+            _database.DropTable<SessionWorkouts>();
 
             _database.DropTable<AppContact>();
             _database.DropTable<AppContactPhone>();
@@ -290,14 +291,12 @@ namespace PersonalTrainerWorkouts.Data
         {
             try
             {
-                var client = _database.GetWithChildren<Client>(clientId);
-
-                return client;
+                return _database.GetWithChildren<Client>(clientId);
             }
             catch (InvalidOperationException operationException)
             {
                 throw new SequenceContainsNoElementsException(GetNoElementsExceptionMessage(nameof(clientId)
-                                                                , clientId)
+                                                                                          , clientId)
                                                             , typeof(Client).ToString()
                                                             , operationException);
             }
@@ -1312,7 +1311,6 @@ namespace PersonalTrainerWorkouts.Data
         {
             _database.Insert(session);
 
-            session.Client = client;
             session.Workouts = workouts ?? new List<Workout>();
 
             UpdateSession(session);
