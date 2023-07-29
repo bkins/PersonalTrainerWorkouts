@@ -5,10 +5,10 @@ using Xamarin.Essentials;
 namespace PersonalTrainerWorkouts.Views.Tab_About
 {
     //BENDO: [Before release of version 1.0] Remove xamarin stuff and put in info about this app
-    public partial class AboutPage
+    public partial class AboutPage_old
     {
         public AboutViewModel AboutViewModel { get; set; }
-        public AboutPage()
+        public AboutPage_old()
         {
             InitializeComponent();
 

@@ -18,6 +18,7 @@
     </PackageReference>
     <PackageReference Include="Google.Apis.Auth" Version="1.55.0" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.55.0.2502" />
+    <PackageReference Include="HtmlAgilityPack" Version="1.11.50" />
     <PackageReference Include="NLog" Version="5.0.2" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
@@ -54,7 +55,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Remove="ApplicationExceptions\**" />
-    <Compile Update="Views\Tab_About\AboutPage.xaml.cs">
+    <Compile Update="Views\Tab_About\AboutPage_old.xaml.cs">
       <DependentUpon>AboutPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
@@ -136,6 +137,12 @@
     </Compile>
     <Compile Update="Views\Tab_Sessions\SessionEditPage.code.cs">
       <DependentUpon>SessionEditPage.ui.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Tab_About\AboutPage.code.cs">
+      <DependentUpon>AboutPage.ui.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Views\Tab_About\ReleaseBodyPage.code.cs">
+      <DependentUpon>ReleaseBodyPage.ui.cs</DependentUpon>
     </Compile>
   </ItemGroup>
 
