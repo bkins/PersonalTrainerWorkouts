@@ -12,7 +12,6 @@ using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.ViewModels.Tab_Sessions;
 using PersonalTrainerWorkouts.Views.Tab_Clients;
-using Syncfusion.SfPicker.XForms;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;

@@ -6,16 +6,18 @@ using Xamarin.Forms;
 
 public partial class AboutPage : ContentPage
 {
-    public Grid MainGrid;
-    public Image Image;
+    public Grid        MainGrid;
+    public Image       Image;
     public StackLayout ContentStackLayout;
-    public Label TableHeaderLabel;
-    public ScrollView TableLabelScrollView;
-    public Button CheckForUpdatesButton;
+    public Label       TableHeaderLabel;
+    public ScrollView  TableLabelScrollView;
+    public Button      CheckForUpdatesButton;
+    public Grid        CheckboxGrid                              { get; set; }
+    public CheckBox    AutomaticallyCheckForUpdatesCheckbox      { get; set; }
+    public Label       AutomaticallyCheckForUpdatesCheckboxLabel { get; set; }
 
     public AboutPage()
     {
-        //InitializeComponent();
         Title = "About";
         CreateUi();
     }
@@ -62,6 +64,7 @@ public partial class AboutPage : ContentPage
         CreateTableHeaderLabel();
         CreateTableLabelScrollView();
         CreateGetForUpdatesButton();
+        CreateAutomaticallyCheckForUpdatesCheckbox();
 
         Grid.SetRow(ContentStackLayout, 1); // Set the Grid.Row property for the StackLayout
 
@@ -70,6 +73,7 @@ public partial class AboutPage : ContentPage
         ContentStackLayout.Children.Add(TableHeaderLabel);
         ContentStackLayout.Children.Add(TableLabelScrollView);
         ContentStackLayout.Children.Add(CheckForUpdatesButton);
+        ContentStackLayout.Children.Add(CheckboxGrid);
     }
 
 
@@ -101,5 +105,34 @@ public partial class AboutPage : ContentPage
             Text = "Check for updates"
         };
         CheckForUpdatesButton.Clicked += CheckForUpdates_OnButtonClicked;
+    }
+
+    private void CreateAutomaticallyCheckForUpdatesCheckbox()
+    {
+        AutomaticallyCheckForUpdatesCheckbox = new CheckBox
+                                               {
+                                                   IsChecked = false
+                                               };
+        AutomaticallyCheckForUpdatesCheckbox.CheckedChanged += AutomaticallyCheckForUpdatesCheckbox_OnCheckedChanged;
+        AutomaticallyCheckForUpdatesCheckboxLabel = new Label
+                                               {
+                                                   Text            = "Automatically Check For Updates",
+                                                   VerticalOptions = LayoutOptions.CenterAndExpand
+                                               };
+        CheckboxGrid = new Grid
+                            {
+                                ColumnDefinitions =
+                                {
+                                    new ColumnDefinition { Width = GridLength.Auto }
+                                  , new ColumnDefinition
+                                    {
+                                        Width = new GridLength(1, GridUnitType.Star)
+                                    }
+                                }
+                            };
+
+        // Add the label and checkbox to the checkboxGrid
+        CheckboxGrid.Children.Add(AutomaticallyCheckForUpdatesCheckboxLabel);
+        CheckboxGrid.Children.Add(AutomaticallyCheckForUpdatesCheckbox, 1, 0);
     }
 }

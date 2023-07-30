@@ -68,24 +68,15 @@ namespace PersonalTrainerWorkouts.ViewModels
 
             var initializer = new GoogleAuthorizationCodeFlow.Initializer
                               {
-                                  ClientSecrets = new ClientSecrets()
-                                                  {
-                                                      ClientId = ClientId
-                                                     ,
-                                                  }
-                                 ,
-                                  Scopes = new[]
-                                           {
-                                               Scope
-                                           }
-                                 ,
-                                  DataStore = new FileDataStore("Google.Apis.Auth")
+                                  ClientSecrets = new ClientSecrets{ ClientId = ClientId }
+                                 , Scopes       = new[] { Scope }
+                                 , DataStore    = new FileDataStore("Google.Apis.Auth")
                               };
 
             var codeFlow = new GoogleAuthorizationCodeFlow(initializer);
             var userId   = "DriveTest";
 
-            var token = new TokenResponse()
+            var token = new TokenResponse
                         {
                             AccessToken      = e.Account.Properties["access_token"]
                           , ExpiresInSeconds = Convert.ToInt64(e.Account.Properties["expires_in"])
@@ -98,11 +89,10 @@ namespace PersonalTrainerWorkouts.ViewModels
                                                   , userId
                                                   , token);
 
-            var driveService = new DriveService(new BaseClientService.Initializer()
+            var driveService = new DriveService(new BaseClientService.Initializer
                                                 {
                                                     HttpClientInitializer = userCredential
                                                   , ApplicationName       = "PersonalTrainerWorkouts"
-                                                   ,
                                                 });
 
             //test google drive

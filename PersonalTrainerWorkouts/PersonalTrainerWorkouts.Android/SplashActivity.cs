@@ -69,8 +69,8 @@ namespace PersonalTrainerWorkouts.Droid
         /// </summary>
         private async void Startup()
         {
-            Log.Debug(Tag
-                    , "Performing pre-load work.");
+            Log.Debug(Tag, "Performing pre-load work.");
+
             var preLoadTasks = new List<Task>
                                {
                                    GetPermissions()
@@ -79,9 +79,8 @@ namespace PersonalTrainerWorkouts.Droid
             await Task.WhenAll(preLoadTasks);
 
             Log.Debug(Tag, "Pre-load work complete.");
+            Log.Debug(Tag, "Performing initial loading startup work.");
 
-            Log.Debug(Tag
-                    , "Performing initial loading startup work.");
             var tasks = new List<Task>
                         {
                             LoadContactsFromDevice()
@@ -164,7 +163,7 @@ namespace PersonalTrainerWorkouts.Droid
         {
             while (DoesNotHavePermissions())
             {
-                //HACK: Busy wait for user to grant permissions
+                //HACK?: Busy wait for user to grant permissions
             }
             if (App.ContactDataStore.DeviceContacts.HasNoValue())
             {

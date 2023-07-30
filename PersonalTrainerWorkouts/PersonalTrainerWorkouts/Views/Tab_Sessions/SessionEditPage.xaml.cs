@@ -13,7 +13,6 @@ using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.ViewModels.Tab_Sessions;
 
 using Syncfusion.ListView.XForms;
-using Syncfusion.SfPicker.XForms;
 using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;
 using SwipeEndedEventArgs = Syncfusion.ListView.XForms.SwipeEndedEventArgs;
 

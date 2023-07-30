@@ -1,12 +1,8 @@
-﻿using System;
-using Avails.Xamarin;
-using PersonalTrainerWorkouts.ViewModels.Tab_Sessions;
-using Syncfusion.ListView.XForms;
+﻿using Syncfusion.ListView.XForms;
 using Syncfusion.SfSchedule.XForms;
 using Xamarin.Forms;
 using Syncfusion.SfBusyIndicator.XForms;
 using Avails.Xamarin.Controls.CurvedCornersLabel;
-using PersonalTrainerWorkouts.Models.HelperClasses;
 using SelectionMode = Syncfusion.SfSchedule.XForms.SelectionMode;
 using XForm = Syncfusion.ListView.XForms;
 namespace PersonalTrainerWorkouts.Views.Tab_Sessions;

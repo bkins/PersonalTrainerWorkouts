@@ -1,4 +1,6 @@
-﻿using Android.OS;
+﻿using System;
+using Android.OS;
+using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Data;
 using Environment = System.Environment;
 
@@ -56,7 +58,16 @@ namespace PersonalTrainerWorkouts
             //https://danielcauserblog.wordpress.com/2019/06/28/sqlite-tips-and-tricks-for-mobile-developers/
         }
 
-        protected override void OnStart() { }
+        protected override void OnStart()
+        {
+            AppDomain.CurrentDomain.UnhandledException += HandleGlobalException;
+        }
+        private void HandleGlobalException(object sender, UnhandledExceptionEventArgs e)
+        {
+            var exception = e.ExceptionObject as Exception;
+            // Log or inspect the exception details here
+            Logger.WriteLine(exception?.Message, Category.Error, exception);
+        }
 
         protected override void OnSleep() { }
 

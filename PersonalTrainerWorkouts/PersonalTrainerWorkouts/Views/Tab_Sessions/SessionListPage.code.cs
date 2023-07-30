@@ -1,13 +1,18 @@
 ﻿using System;
+using System.Text;
 using System.Threading.Tasks;
 using Avails.D_Flat.Extensions;
+using Avails.GitHubService.POCOs;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
+using Avails.Xamarin.Utilities;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.HelperClasses;
 using PersonalTrainerWorkouts.ViewModels.Tab_Sessions;
+using PersonalTrainerWorkouts.Views.Tab_About;
 using Syncfusion.ListView.XForms;
 using Syncfusion.SfSchedule.XForms;
+using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
 using SwipeEndedEventArgs = Syncfusion.ListView.XForms.SwipeEndedEventArgs;
@@ -27,9 +32,87 @@ public partial class SessionListPage : ContentPage
         ShowBusyIndicator(true
                         , "Initialing...");
 
+        CheckForUpdates();
+        DisplayReleaseNotes();
+
         InitializeComponents();
 
         //LoadViewModelData();
+    }
+
+    private async void CheckForUpdates()
+    {
+        if ( ! Configuration.AutomaticallyCheckForUpdates)
+        {
+            return;
+        }
+
+        var isThereAnUpdate = await Updater.IsThereAnUpdate()
+                                           .ConfigureAwait(false);
+        if (isThereAnUpdate)
+        {
+            Device.BeginInvokeOnMainThread(AskToUpdate);
+        }
+    }
+
+    private async void DisplayReleaseNotes()
+    {
+        var release = await Updater.GetReleaseByBuildAndVersion(VersionTracking.CurrentBuild
+                                                              , VersionTracking.CurrentVersion)
+                                   .ConfigureAwait(false);
+
+        if (! VersionTracking.IsFirstLaunchForCurrentBuild
+         && ! VersionTracking.IsFirstLaunchForCurrentVersion) return;
+
+        var choseToViewNotes = DoesUserWantToViewNotes(release);
+
+        if (choseToViewNotes)
+        {
+            PageNavigation.NavigateTo(new ReleaseBodyPage(VersionTracking.CurrentBuild
+                                                        , VersionTracking.CurrentVersion));
+        }
+    }
+
+    private bool DoesUserWantToViewNotes(GitHubReleaseInfo release)
+    {
+        var choseToViewNotes = false;
+
+        async void Action()
+        {
+            choseToViewNotes = await DisplayAlert("Read Release Notes?"
+                                                , BuildViewReleaseNotesMessage(release.HtmlUrl)
+                                                , "Yes"
+                                                , "No").ConfigureAwait(false);
+        }
+
+        Device.BeginInvokeOnMainThread(Action);
+
+        return choseToViewNotes;
+    }
+
+    private static string BuildViewReleaseNotesMessage(string htmlUrl)
+    {
+        var message = new StringBuilder();
+        message.AppendLine("Would you like to read the release notes for this new version?");
+        message.AppendLine("You can always view them by going to GitHub to see them:");
+        message.AppendLine(htmlUrl);
+
+        return message.ToString();
+    }
+
+    private async void AskToUpdate()
+    {
+        var update = await DisplayAlert($"New Version: {Updater.ReleaseInfo.TagName}"
+                                      , "There is a new version.  Would you like to install it?"
+                                      , "Yes"
+                                      , "No").ConfigureAwait(false);
+
+        if ( ! update) return;
+
+        Logger.WriteLineToToastForced("Downloading and installing... please be patient."
+                                    , Category.Information);
+
+        Updater.Update();
     }
 
     private void LoadViewModelData()
