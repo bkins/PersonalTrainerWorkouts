@@ -1,4 +1,6 @@
-﻿using static Xamarin.Forms.Color;
+﻿using System;
+using PersonalTrainerWorkouts.ViewModels.Tab_About;
+using static Xamarin.Forms.Color;
 
 namespace PersonalTrainerWorkouts.Views.Tab_About;
 
@@ -15,29 +17,76 @@ public partial class AboutPage : ContentPage
     public Grid        CheckboxGrid                              { get; set; }
     public CheckBox    AutomaticallyCheckForUpdatesCheckbox      { get; set; }
     public Label       AutomaticallyCheckForUpdatesCheckboxLabel { get; set; }
+    public Grid        VersionInfoGrid                           { get; set; }
+    public Label       CurrentBuildValue                         { get; set; }
+    public Label       CurrentVersionValue                       { get; set; }
+    public Label       CurrentBuildLabel                         { get; set; }
+    public Label       CurrentVersionLabel                       { get; set; }
 
     public AboutPage()
     {
-        Title = "About";
+        Title          = "About";
+        AboutViewModel = new AboutViewModel();
+
         CreateUi();
+    }
+
+    private void CreateContentStackLayout()
+    {
+        ContentStackLayout = new StackLayout
+                             {
+                                 Margin  = new Thickness(20),
+                                 Spacing = 10
+                             };
+
+        CreateTableHeaderLabel(); // Move the TableHeaderLabel here
+        ContentStackLayout.Children.Add(CheckForUpdatesButton);
+        ContentStackLayout.Children.Add(CheckboxGrid);
+        ContentStackLayout.Children.Add(VersionInfoGrid);
+
+        // Move the TableLabelScrollView here, after it has been created
+        ContentStackLayout.Children.Add(TableLabelScrollView);
+
+        Grid.SetRow(ContentStackLayout, 1); // Set the Grid.Row property for the StackLayout
+
+        MainGrid.Children.Add(ContentStackLayout); // Add the StackLayout to the Grid
     }
 
     private void CreateUi()
     {
         MainGrid = new Grid
-        {
-            RowDefinitions =
-            {
-                new RowDefinition { Height = GridLength.Auto },
-                new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }
-            }
-        };
+                   {
+                       RowDefinitions =
+                       {
+                           // Version Info row
+                           new RowDefinition { Height = GridLength.Auto }
+                         , // Content row
+                           new RowDefinition
+                           {
+                               Height = new GridLength(1, GridUnitType.Star)
+                           }
+                         , // Table Info row
+                           new RowDefinition { Height = GridLength.Auto }
+                         , // "Table List" row
+                           new RowDefinition { Height = GridLength.Auto }
+                       }
+                   };
 
-        CreateImage();
-        CreateContentStackLayout();
+        CreateVersionInformation();
+        CreateGetForUpdatesButton();
+        CreateAutomaticallyCheckForUpdatesCheckbox();
+        CreateTableLabelScrollView(); // Move this here to create the TableLabelScrollView first
+        CreateContentStackLayout(); // Move this here after creating the TableLabelScrollView
 
-        MainGrid.Children.Add(Image);
+        Grid.SetRow(VersionInfoGrid, 0); // Set the Grid.Row property for the VersionInfoGrid
+        Grid.SetRow(ContentStackLayout, 1); // Set the Grid.Row property for the StackLayout
+        Grid.SetRow(TableLabelScrollView, 2); // Set the Grid.Row property for the TableLabelScrollView
+        Grid.SetRow(TableHeaderLabel, 3); // Set the Grid.Row property for the "Table List" label
+
+        MainGrid.Children.Add(VersionInfoGrid);
         MainGrid.Children.Add(ContentStackLayout, 0, 1);
+        MainGrid.Children.Add(TableLabelScrollView, 0, 2);
+        MainGrid.Children.Add(TableHeaderLabel, 0, 3); // Add "Table List" label at the bottom row
 
         Content = MainGrid;
     }
@@ -53,57 +102,52 @@ public partial class AboutPage : ContentPage
         };
     }
 
-    private void CreateContentStackLayout()
-    {
-        ContentStackLayout = new StackLayout
-                             {
-                                 Margin  = new Thickness(20),
-                                 Spacing = 20
-                             };
-
-        CreateTableHeaderLabel();
-        CreateTableLabelScrollView();
-        CreateGetForUpdatesButton();
-        CreateAutomaticallyCheckForUpdatesCheckbox();
-
-        Grid.SetRow(ContentStackLayout, 1); // Set the Grid.Row property for the StackLayout
-
-        MainGrid.Children.Add(ContentStackLayout); // Add the StackLayout to the Grid
-
-        ContentStackLayout.Children.Add(TableHeaderLabel);
-        ContentStackLayout.Children.Add(TableLabelScrollView);
-        ContentStackLayout.Children.Add(CheckForUpdatesButton);
-        ContentStackLayout.Children.Add(CheckboxGrid);
-    }
-
-
     private void CreateTableHeaderLabel()
     {
         TableHeaderLabel = new Label
-        {
-            Text = "Table Info"
-        };
+                           {
+                               Text            = "Table List"
+                             , FontAttributes  = FontAttributes.Bold
+                             , VerticalOptions = LayoutOptions.FillAndExpand
+                           };
         var tapGestureRecognizer = new TapGestureRecognizer();
-        tapGestureRecognizer.Tapped += TableHeaderLabel_OnTapped;
-
+        tapGestureRecognizer.Tapped += (s, e) =>
+        {
+            AboutViewModel.IsTableLabelScrollViewVisible = !AboutViewModel.IsTableLabelScrollViewVisible;
+            TableLabelScrollView.IsVisible               = AboutViewModel.IsTableLabelScrollViewVisible;
+            CheckForUpdatesButton.IsVisible              = ! AboutViewModel.IsTableLabelScrollViewVisible;
+            CheckboxGrid.IsVisible                       = ! AboutViewModel.IsTableLabelScrollViewVisible;
+        };
         TableHeaderLabel.GestureRecognizers.Add(tapGestureRecognizer);
     }
-
     private void CreateTableLabelScrollView()
     {
         TableLabelScrollView = new ScrollView
-        {
-            IsVisible = false,
-            Content = new Label { Text = "Your table information goes here" }
-        };
+                               {
+                                   IsVisible         = false,
+                                   VerticalOptions   = LayoutOptions.FillAndExpand,
+                                   HorizontalOptions = LayoutOptions.FillAndExpand,
+                                   Margin            = new Thickness(20)
+                               };
+
+        var tableEditor = new Editor
+                          {
+                              BackgroundColor = Color.Transparent
+                            , IsReadOnly      = false
+                            , FontSize = Device.GetNamedSize(NamedSize.Medium, typeof(Editor))
+                            , Text = string.Join(Environment.NewLine
+                                               , AboutViewModel.TableList)
+                          };
+
+        TableLabelScrollView.Content = tableEditor;
     }
 
     private void CreateGetForUpdatesButton()
     {
         CheckForUpdatesButton = new Button
-        {
-            Text = "Check for updates"
-        };
+                                {
+                                    Text            = "Check for updates"
+                                };
         CheckForUpdatesButton.Clicked += CheckForUpdates_OnButtonClicked;
     }
 
@@ -111,14 +155,15 @@ public partial class AboutPage : ContentPage
     {
         AutomaticallyCheckForUpdatesCheckbox = new CheckBox
                                                {
-                                                   IsChecked = false
+                                                   IsChecked       = false
+                                                 , VerticalOptions = LayoutOptions.Center
                                                };
         AutomaticallyCheckForUpdatesCheckbox.CheckedChanged += AutomaticallyCheckForUpdatesCheckbox_OnCheckedChanged;
         AutomaticallyCheckForUpdatesCheckboxLabel = new Label
-                                               {
-                                                   Text            = "Automatically Check For Updates",
-                                                   VerticalOptions = LayoutOptions.CenterAndExpand
-                                               };
+                                                    {
+                                                        Text            = "Automatically Check For Updates"
+                                                      , VerticalOptions = LayoutOptions.Center
+                                                    };
         CheckboxGrid = new Grid
                             {
                                 ColumnDefinitions =
@@ -135,4 +180,55 @@ public partial class AboutPage : ContentPage
         CheckboxGrid.Children.Add(AutomaticallyCheckForUpdatesCheckboxLabel);
         CheckboxGrid.Children.Add(AutomaticallyCheckForUpdatesCheckbox, 1, 0);
     }
+
+    private void CreateVersionInformation()
+    {
+        // Create the Version Information Grid
+        VersionInfoGrid = new Grid
+                          {
+                              RowDefinitions =
+                              {
+                                  new RowDefinition { Height = GridLength.Auto }
+                                , new RowDefinition { Height = GridLength.Auto }
+                              }
+                            , ColumnDefinitions =
+                              {
+                                  new ColumnDefinition { Width = GridLength.Auto }
+                                , new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
+                              }
+                            , Margin          = new Thickness(0, 20, 0, 0)
+                            , VerticalOptions = LayoutOptions.FillAndExpand
+                          };
+
+        CurrentVersionLabel = new Label
+                              {
+                                  Text     = "Current Version:"
+                                , FontSize = 18
+                              };
+
+        CurrentBuildLabel = new Label
+                                {
+                                    Text     = "Current Build:",
+                                    FontSize = 18
+                                };
+
+        CurrentVersionValue = new Label
+                              {
+                                  Text     = AboutViewModel.CurrentVersion
+                                , FontSize = 16
+                              };
+
+        CurrentBuildValue = new Label
+                            {
+                                Text     = AboutViewModel.CurrentBuild
+                              , FontSize = 16
+                            };
+
+        VersionInfoGrid.Children.Add(CurrentVersionLabel, 0, 0);
+        VersionInfoGrid.Children.Add(CurrentVersionValue, 1, 0);
+        VersionInfoGrid.Children.Add(CurrentBuildLabel, 0, 1);
+        VersionInfoGrid.Children.Add(CurrentBuildValue, 1, 1);
+    }
+
+
 }

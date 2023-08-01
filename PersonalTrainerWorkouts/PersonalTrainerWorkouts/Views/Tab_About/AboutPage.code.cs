@@ -1,6 +1,7 @@
 ﻿using System;
 using Avails.Xamarin.Logger;
 using Avails.Xamarin.Utilities;
+using PersonalTrainerWorkouts.ViewModels.Tab_About;
 using Xamarin.Forms;
 using static Avails.Xamarin.Configuration;
 
@@ -8,6 +9,8 @@ namespace PersonalTrainerWorkouts.Views.Tab_About;
 
 public partial class AboutPage
 {
+    public AboutViewModel AboutViewModel { get; set; }
+
     protected override void OnAppearing()
     {
         base.OnAppearing();
@@ -52,4 +55,17 @@ public partial class AboutPage
     {
         AutomaticallyCheckForUpdates = AutomaticallyCheckForUpdatesCheckbox.IsChecked;
     }
+    private string GetBuildName(string buildNumber)
+    {
+        return buildNumber switch
+               {
+                   "1" => "Alpha"
+                 , "2" => "Beta"
+                 , "3" => "RC"
+                 , "4" => "Prod"
+                 , _ => "Unknown"
+               };
+    }
+
+
 }

@@ -64,7 +64,7 @@ public partial class SessionListPage : ContentPage
         if (! VersionTracking.IsFirstLaunchForCurrentBuild
          && ! VersionTracking.IsFirstLaunchForCurrentVersion) return;
 
-        var choseToViewNotes = DoesUserWantToViewNotes(release);
+        var choseToViewNotes = await DoesUserWantToViewNotes(release).ConfigureAwait(false);
 
         if (choseToViewNotes)
         {
@@ -73,11 +73,11 @@ public partial class SessionListPage : ContentPage
         }
     }
 
-    private bool DoesUserWantToViewNotes(GitHubReleaseInfo release)
+    private async Task<bool> DoesUserWantToViewNotes(GitHubReleaseInfo release)
     {
         var choseToViewNotes = false;
 
-        async void Action()
+        async Task Action()
         {
             choseToViewNotes = await DisplayAlert("Read Release Notes?"
                                                 , BuildViewReleaseNotesMessage(release.HtmlUrl)
@@ -85,7 +85,7 @@ public partial class SessionListPage : ContentPage
                                                 , "No").ConfigureAwait(false);
         }
 
-        Device.BeginInvokeOnMainThread(Action);
+        await Device.InvokeOnMainThreadAsync(Action);
 
         return choseToViewNotes;
     }

@@ -34,6 +34,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		Documentation\Xamarin.Forms Solution.png = Documentation\Xamarin.Forms Solution.png
 		Documentation\Xamarin.Forms UI Structure.png = Documentation\Xamarin.Forms UI Structure.png
 		Documentation\Zamarin.Forms Development Setup.png = Documentation\Zamarin.Forms Development Setup.png
+		Documentation\Deploy.md = Documentation\Deploy.md
 	EndProjectSection
 EndProject
 Global

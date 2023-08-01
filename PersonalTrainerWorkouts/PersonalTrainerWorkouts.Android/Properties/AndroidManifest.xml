@@ -1,5 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" android:versionCode="1" android:versionName="0.3.1" package="com.companyname.personaltrainerworkouts" android:installLocation="auto" android:exported="true">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+				android:versionCode="1"
+				android:versionName="0.3.3"
+				package="com.companyname.personaltrainerworkouts"
+				android:installLocation="auto"
+				android:exported="true">
 	<uses-sdk android:minSdkVersion="29" android:targetSdkVersion="31" />
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
