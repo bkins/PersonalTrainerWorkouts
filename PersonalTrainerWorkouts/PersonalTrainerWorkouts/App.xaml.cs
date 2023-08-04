@@ -73,5 +73,6 @@ namespace PersonalTrainerWorkouts
 
         protected override void OnResume() { }
 
+
     }
 }

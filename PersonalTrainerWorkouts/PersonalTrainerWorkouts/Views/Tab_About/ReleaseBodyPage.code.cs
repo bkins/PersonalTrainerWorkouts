@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
 using Avails.Xamarin.Utilities;
+using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;

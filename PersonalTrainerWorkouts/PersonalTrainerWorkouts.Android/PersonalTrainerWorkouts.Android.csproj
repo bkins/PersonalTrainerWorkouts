@@ -136,6 +136,7 @@
     <None Include="Properties\AndroidManifest.xml" />
   </ItemGroup>
   <ItemGroup>
+    <AndroidResource Include="Resources\drawable\AppIcon.png" />
     <AndroidResource Include="Resources\drawable\baseline_add_circle_black_48.png" />
     <AndroidResource Include="Resources\drawable\baseline_add_circle_outline_black_48.png" />
     <AndroidResource Include="Resources\drawable\baseline_remove_circle_outline_black_48.png" />

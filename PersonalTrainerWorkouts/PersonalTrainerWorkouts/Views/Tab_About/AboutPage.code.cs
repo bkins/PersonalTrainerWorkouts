@@ -1,6 +1,7 @@
 ﻿using System;
 using Avails.Xamarin.Logger;
 using Avails.Xamarin.Utilities;
+using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels.Tab_About;
 using Xamarin.Forms;
 using static Avails.Xamarin.Configuration;
@@ -43,10 +44,14 @@ public partial class AboutPage
 
         if (! update) return;
 
-        Logger.WriteLineToToastForced("Downloading and installing... please be patient."
-                                    , Category.Information);
-
-        Updater.Update();
+        // Logger.WriteLineToToastForced("Downloading and installing... please be patient."
+        //                             , Category.Information);
+        // await DisplayAlert("Updating"
+        //                  , "The latest version of the app is ready to download. "
+        //                  + "You will be redirected to your browser to download the update. "
+        //                  + "Please follow the instructions to complete the update."
+        //                  , "OK").ConfigureAwait(false);
+        await Updater.Update();
     }
 
 

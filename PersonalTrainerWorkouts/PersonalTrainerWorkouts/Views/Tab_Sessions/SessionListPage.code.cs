@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
+using Android.App;
 using Avails.D_Flat.Extensions;
 using Avails.GitHubService.POCOs;
 using Avails.Xamarin;
@@ -8,6 +9,7 @@ using Avails.Xamarin.Logger;
 using Avails.Xamarin.Utilities;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.HelperClasses;
+using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels.Tab_Sessions;
 using PersonalTrainerWorkouts.Views.Tab_About;
 using Syncfusion.ListView.XForms;
@@ -51,7 +53,26 @@ public partial class SessionListPage : ContentPage
                                            .ConfigureAwait(false);
         if (isThereAnUpdate)
         {
-            Device.BeginInvokeOnMainThread(AskToUpdate);
+            //Device.BeginInvokeOnMainThread(async () => await AskToUpdate());
+            async void Action()
+            {
+                var update = await DisplayAlert($"New Version: {Updater.ReleaseInfo.TagName}"
+                                              , "There is a new version.  Would you like to install it?"
+                                              , "Yes"
+                                              , "No").ConfigureAwait(false);
+
+                if (! update) return;
+
+                // await DisplayAlert("Updating"
+                //                  , "The latest version of the app is ready to download. "
+                //                  + "You will be redirected to your browser to download the update. "
+                //                  + "Please follow the instructions to complete the update."
+                //                  , "OK").ConfigureAwait(false);
+
+                await Updater.Update();
+            }
+
+            Device.BeginInvokeOnMainThread(Action);
         }
     }
 
@@ -100,7 +121,7 @@ public partial class SessionListPage : ContentPage
         return message.ToString();
     }
 
-    private async void AskToUpdate()
+    private async Task AskToUpdate()
     {
         var update = await DisplayAlert($"New Version: {Updater.ReleaseInfo.TagName}"
                                       , "There is a new version.  Would you like to install it?"
@@ -111,8 +132,13 @@ public partial class SessionListPage : ContentPage
 
         Logger.WriteLineToToastForced("Downloading and installing... please be patient."
                                     , Category.Information);
+        await DisplayAlert("Updating"
+                         , "The latest version of the app is ready to download. "
+                         + "You will be redirected to your browser to download the update. "
+                         + "Please follow the instructions to complete the update."
+                         , "OK").ConfigureAwait(false);
 
-        Updater.Update();
+        await Updater.Update();
     }
 
     private void LoadViewModelData()

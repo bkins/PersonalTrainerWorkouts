@@ -144,6 +144,7 @@
     <Compile Update="Views\Tab_About\ReleaseBodyPage.code.cs">
       <DependentUpon>ReleaseBodyPage.ui.cs</DependentUpon>
     </Compile>
+    <Compile Remove="MauiProgram.cs" />
   </ItemGroup>
 
   <ItemGroup>
