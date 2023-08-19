@@ -102,7 +102,7 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
 
             if ( ! hasClient)
             {
-                Logger.WriteLineToToastForced("Could not save without a selected client."
+                Logger.WriteLineToToastForced("You must select a client before saving."
                                             , Category.Warning);
 
                 return false;

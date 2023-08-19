@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Avails.D_Flat.Extensions;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.ViewModels.Tab_Workouts;
@@ -29,7 +30,7 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
             try
             {
                 _workoutId = itemId;
-                var workoutId = int.Parse(itemId);
+                var workoutId = itemId.ToSafeInt();
 
                 ViewModel = new ExerciseListViewModel(workoutId);
 
@@ -40,8 +41,6 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
                 Logger.WriteLine("Failed to load Exercises."
                                , Category.Error
                                , ex);
-
-                //BENDO: consider implementing a page that shows exception details
             }
         }
 

@@ -1,5 +1,5 @@
-﻿using Avails.Xamarin.Utilities;
-using PersonalTrainerWorkouts.Utilities;
+﻿using System;
+using Avails.Xamarin.Utilities;
 
 namespace PersonalTrainerWorkouts.ViewModels;
 
@@ -20,8 +20,11 @@ public class ReleaseNotesViewModel : ViewModelBase
 
     private async void SetReleaseNotes()
     {
-        ReleaseNotes = await Updater.GetReleaseNotesByBuildAndVersion(BuildNumber
-                                                               , VersionNumber)
-                                    .ConfigureAwait(false);
+        var releaseNotes = await Updater.GetReleaseNotesByBuildAndVersion(BuildNumber
+                                                                        , VersionNumber)
+                                        .ConfigureAwait(false);
+
+        ReleaseNotes = releaseNotes.Replace(" * "
+                                          , $"{Environment.NewLine}\t * ");
     }
 }

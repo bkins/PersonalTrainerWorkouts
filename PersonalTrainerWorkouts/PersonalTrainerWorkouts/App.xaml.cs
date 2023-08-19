@@ -65,7 +65,7 @@ namespace PersonalTrainerWorkouts
         private void HandleGlobalException(object sender, UnhandledExceptionEventArgs e)
         {
             var exception = e.ExceptionObject as Exception;
-            // Log or inspect the exception details here
+
             Logger.WriteLine(exception?.Message, Category.Error, exception);
         }
 

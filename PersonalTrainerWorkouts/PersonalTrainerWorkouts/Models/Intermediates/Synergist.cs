@@ -4,6 +4,13 @@ using SQLiteNetExtensions.Attributes;
 
 namespace PersonalTrainerWorkouts.Models.Intermediates
 {
+    //TODO: Rethink the naming.
+    //A synergists is on part:
+    //A synergist muscle assists the agonist muscle or “primary mover”
+    //for a specific action at a joint. This muscle is not the main
+    //muscle involved in the action, but works in synergy with the
+    //primary muscle. These muscles help make movements more accurate
+    //and fluid.
     [Table("Synergists")]
     public class Synergist : IEquatable<Synergist>
     {

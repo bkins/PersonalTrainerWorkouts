@@ -28,7 +28,7 @@ namespace PersonalTrainerWorkouts.Data.Interfaces
         void AddJustOneClientWithChildren(Client client);
         void AddExercise(Exercise exercise);
         int AddJustOneExercise(Exercise exercise);
-        void AddSynergist(Synergist synergist);
+        void AddSynergist(ref Synergist synergist);
         int AddJustOneMuscleGroup(MuscleGroup muscleGroup);
         void AddExerciseType(ExerciseType exerciseType);
         int AddJustOneTypeOfExercise(TypeOfExercise typeOfExercise);

@@ -19,6 +19,7 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
         public TypeOfExercise                       TypeOfExercise      { get; set; }
         public ObservableCollection<TypeOfExercise> TypesOfExercise     { get; set; }
         public List<TypeOfExercise>                 TypesOfExerciseList { get; set; }
+        public IEnumerable<TypeOfExercise>          AllTypesOfExercises { get; set; }
 
         public Equipment                       Equipment     { get; set; }
         public ObservableCollection<Equipment> Equipments    { get; set; }
@@ -51,7 +52,7 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
             //LoadTheMuscleGroups();
         }
 
-        private void LoadTheEquipment()
+        public void LoadTheEquipment()
         {
             var exerciseEquipment = DataAccessLayer.GetAllExerciseEquipment()
                                                    .Where(field => field.ExerciseId == Exercise.Id);
@@ -83,16 +84,17 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
         //    MuscleGroupsList = muscleGroup.ToList();
         //}
 
-        private void LoadTheTypesOfExercise()
+        public void LoadTheTypesOfExercise()
         {
             var exerciseTypes = DataAccessLayer.GetAllExerciseTypes()
                                                .Where(field => field.ExerciseId == Exercise.Id);
 
             var allTypes = DataAccessLayer.GetAllTypesOfExercise();
 
-            var typesOfExercise = new ObservableCollection<TypeOfExercise>(exerciseTypes.Select(exerciseType => allTypes.First(field => field.Id == exerciseType.TypeId))
+            var typesOfExercise = new ObservableCollection<TypeOfExercise>(exerciseTypes.Select(exerciseType => allTypes.First(field => field.Id
+                                                                                                                                     == exerciseType.TypeId))
                                                                                         .ToList());
-
+            AllTypesOfExercises = allTypes;
             TypesOfExercise     = typesOfExercise;
             TypesOfExerciseList = typesOfExercise.ToList();
         }

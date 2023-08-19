@@ -2,8 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using System.Web;
-using Avails.Xamarin.Utilities;
-using PersonalTrainerWorkouts.Utilities;
+using Avails.D_Flat.Extensions;
 using PersonalTrainerWorkouts.ViewModels;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
@@ -49,16 +48,16 @@ public partial class ReleaseBodyPage : IQueryAttributable
     {
         ReleaseNotesViewModel = new ReleaseNotesViewModel(BuildNumber
                                                         , VersionNumber);
-        var releaseNotes = await Updater.GetReleaseNotesByBuildAndVersion(BuildNumber
-                                                                   , VersionNumber).ConfigureAwait(false);
+        // var releaseNotes = await Updater.GetReleaseNotesByBuildAndVersion(BuildNumber
+        //                                                            , VersionNumber).ConfigureAwait(false);
 
         // Sanitize the HTML content using HtmlAgilityPack
-        var sanitizedNotes = SanitizeHtml(releaseNotes);
+        var sanitizedNotes = SanitizeHtml(ReleaseNotesViewModel.ReleaseNotes);
 
         Device.BeginInvokeOnMainThread(() =>
         {
             // Use the sanitized release notes for display
-            if (string.IsNullOrEmpty(sanitizedNotes))
+            if (sanitizedNotes.IsNullEmptyOrWhitespace())
             {
                 _webView.Source = new HtmlWebViewSource { Html = "No Release Notes found." };
             }

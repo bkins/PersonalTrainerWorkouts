@@ -4,7 +4,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
 
              xmlns:accordion="clr-namespace:Syncfusion.XForms.Accordion;assembly=Syncfusion.Expander.XForms"
-             
+             xmlns:picker="clr-namespace:Syncfusion.SfPicker.XForms;assembly=Syncfusion.SfPicker.XForms"
              xmlns:viewmodels="clr-namespace:PersonalTrainerWorkouts.ViewModels;assembly=PersonalTrainerWorkouts"
              xmlns:converters="clr-namespace:PersonalTrainerWorkouts.Views.Converters;assembly=PersonalTrainerWorkouts"
              xmlns:models="clr-namespace:PersonalTrainerWorkouts.Models;assembly=PersonalTrainerWorkouts"
@@ -143,11 +143,12 @@
                                     Clicked="AddTypeOfExerciseButton_OnClicked" />
                         </Grid>
                     </accordion:AccordionItem.Header>
-
+                    <!--x:DataType="tabWorkouts:ExerciseAddEditViewModel"; x:DataType="models:TypeOfExercise"-->
+                    <!--ItemsSource="{Binding TypeOfExercise.Name}" ;ItemsSource="{Binding Name}"-->
                     <accordion:AccordionItem.Content>
-                        <CollectionView x:Name="TypeOfExerciseCollectionView"
-                                        x:DataType="tabWorkouts:ExerciseAddEditViewModel"
-                                        ItemsSource="{Binding TypeOfExercise.Name}">
+                        <CollectionView x:Name="TypeOfExerciseAccordionCollectionView"
+                                        x:DataType="models:TypeOfExercise"
+                                        ItemsSource="{Binding Name}">
                             
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout Orientation="Vertical"
@@ -226,7 +227,7 @@
                     </accordion:AccordionItem.Header>
 
                     <accordion:AccordionItem.Content>
-                        <CollectionView x:Name="EquipmentCollectionView"
+                        <CollectionView x:Name="EquipmentAccordionCollectionView"
                                         x:DataType="tabWorkouts:ExerciseAddEditViewModel"
                                         ItemsSource="{Binding Equipment.Name}">
                             <CollectionView.ItemsLayout>
@@ -300,7 +301,7 @@
                     </accordion:AccordionItem.Header>
 
                     <accordion:AccordionItem.Content>
-                        <CollectionView x:Name="MuscleGroupCollectionView"
+                        <CollectionView x:Name="MuscleGroupAccordionCollectionView"
                                         x:DataType="tabWorkouts:MuscleGroupViewModel">
                             <CollectionView.ItemsLayout>
                                 <LinearItemsLayout Orientation="Vertical"
@@ -355,5 +356,46 @@
                 </accordion:AccordionItem>
             </accordion:SfAccordion.Items>
         </accordion:SfAccordion>
+
+        <picker:SfPicker x:Name="TypeOfExercisePicker"
+                         x:DataType="tabWorkouts:TypeOfExerciseListViewModel"
+                         ItemsSource="{Binding ListOfAllExerciseTypes}"
+                         DisplayMemberPath="Name"
+                         ShowColumnHeader="False"
+                         HeaderText="Select a Type"
+                         ShowHeader="True"
+                         ShowFooter="True"
+                         PickerMode="Dialog"
+                         OkButtonClicked="TypeOfExercisePicker_OnOkButtonClicked"
+                         CancelButtonClicked="TypeOfExercisePicker_OnCancelButtonClicked" />
+
+        <picker:SfPicker x:Name="EquipmentPicker"
+                         x:DataType="tabWorkouts:EquipmentListViewModel"
+                         ItemsSource="{Binding ListOfAllExerciseEquipment}"
+                         DisplayMemberPath="Name"
+                         ShowColumnHeader="False"
+                         HeaderText="Select Equipment"
+                         ShowHeader="True"
+                         OkButtonClicked="EquipmentPicker_OnOkButtonClicked"
+                         CancelButtonClicked="EquipmentPicker_OnCancelButtonClicked"
+                         ShowFooter="True"
+                         PickerMode="Dialog"
+                         IsOpen="False"
+                         IsVisible="False" />
+
+        <picker:SfPicker x:Name="MuscleGroupPicker"
+                         x:DataType="tabWorkouts:MuscleGroupViewModel"
+                         ItemsSource="{Binding Synergists}"
+                         DisplayMemberPath="Name"
+                         ShowColumnHeader="False"
+                         HeaderText="Select a Muscle Group"
+                         ShowHeader="True"
+                         OkButtonClicked="MuscleGroupPicker_OnOkButtonClicked"
+                         CancelButtonClicked="MuscleGroupPicker_OnCancelButtonClicked"
+                         ShowFooter="True"
+                         PickerMode="Dialog"
+                         IsOpen="False"
+                         IsVisible="False"/>
+
     </StackLayout>
 </ContentPage>

@@ -129,14 +129,12 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
 
         public void SaveWorkoutsToExercise(LinkedWorkoutsToExercises workoutsToExercise)
         {
-            if (workoutsToExercise.LengthOfTime.ToTime() > new TimeSpan(0
-                                                                      , 1
-                                                                      , 0
-                                                                      , 0))
+            if (workoutsToExercise.LengthOfTime.ToTime() > new TimeSpan(0, 1, 0, 0))
             {
                 throw new ValueTooLargeException(nameof(workoutsToExercise.LengthOfTime)
                                                , workoutsToExercise.LengthOfTime
-                                               , workoutsToExercise.LengthOfTime.GetType()
+                                               , workoutsToExercise.LengthOfTime
+                                                                   .GetType()
                                                                    .ToString()
                                                , workoutsToExercise.LengthOfTime
                                                , "it is greater than 1 hour.");

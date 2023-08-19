@@ -5,6 +5,7 @@ using Avails.ApplicationExceptions;
 using Avails.D_Flat.Extensions;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Data;
+using PersonalTrainerWorkouts.HelperClasses;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 

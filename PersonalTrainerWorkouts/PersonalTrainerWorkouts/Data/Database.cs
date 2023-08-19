@@ -732,10 +732,10 @@ namespace PersonalTrainerWorkouts.Data
         {
             try
             {
-                var opposingMuscleGroup = GetMuscleGroups()
-                       .First(field => field.Id == muscleGroupId);
+                var opposingMuscleGroupId = GetSynergists().FirstOrDefault(synergist => synergist.MuscleGroupId == muscleGroupId)
+                                                           ?.OpposingMuscleGroupId; //Synergist.OpposingMuscleGroupId
 
-                return opposingMuscleGroup;
+                return GetMuscleGroups().FirstOrDefault(muscle => muscle.Id == opposingMuscleGroupId);
             }
             catch (InvalidOperationException operationException)
             {
@@ -744,6 +744,23 @@ namespace PersonalTrainerWorkouts.Data
                                                             , nameof(ExerciseEquipment)
                                                             , operationException);
             }
+
+            // try
+            // {
+            //     //TODO: This is not returning the opposing muscle group.
+            //     //Should Synergists be query instead?
+            //     var opposingMuscleGroup = GetMuscleGroups()
+            //            .First(field => field.Id == muscleGroupId);
+            //
+            //     return opposingMuscleGroup;
+            // }
+            // catch (InvalidOperationException operationException)
+            // {
+            //     throw new SequenceContainsNoElementsException(GetNoElementsExceptionMessage(nameof(muscleGroupId)
+            //                                                                               , muscleGroupId)
+            //                                                 , nameof(ExerciseEquipment)
+            //                                                 , operationException);
+            // }
         }
 
         public TypeOfExercise GetTypeOfExercise(int typeOfExerciseId)
@@ -1240,7 +1257,7 @@ namespace PersonalTrainerWorkouts.Data
             0; //Nothing was inserted
         }
 
-        public void AddSynergist(Synergist synergist)
+        public void AddSynergist(ref Synergist synergist)
         {
             _database.InsertWithChildren(synergist);
         }
