@@ -81,6 +81,16 @@ public partial class MeasurablesAddPage : ContentPage, IQueryAttributable
         }
     }
 
+    protected override void OnAppearing()
+    {
+        DisplayAlert("Under Construction"
+                   , "There is a problem with Measurables. It is broken in this version. It will be fixed in the next update."
+                   , "OK");
+
+        DateTakenPicker.Date = DateTakenPicker.Date == DateTime.MinValue ? DateTime.Today : DateTakenPicker.Date;
+        base.OnAppearing();
+    }
+
     private void LoadClient(string value)
     {
         
@@ -106,6 +116,10 @@ public partial class MeasurablesAddPage : ContentPage, IQueryAttributable
     private void SaveButton_OnClicked(object    sender
                                     , EventArgs e)
     {
+        DisplayAlert("Under Construction"
+                   , "There is a problem with Measurables. It is broken in this version. It will be fixed in the next update."
+                   , "OK");
+        return;
 
         try
         {

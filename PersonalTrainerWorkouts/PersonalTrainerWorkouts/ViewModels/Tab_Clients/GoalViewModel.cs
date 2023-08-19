@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using Avails.D_Flat.Extensions;
 using PersonalTrainerWorkouts.Data;
+using PersonalTrainerWorkouts.HelperClasses;
 using PersonalTrainerWorkouts.Models.ContactsAndClients.Goals;
 using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 

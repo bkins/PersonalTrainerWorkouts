@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using Android.App;
 using Avails.D_Flat.Extensions;
 using Avails.GitHubService.POCOs;
 using Avails.Xamarin;
@@ -9,8 +8,8 @@ using Avails.Xamarin.Logger;
 using Avails.Xamarin.Utilities;
 using PersonalTrainerWorkouts.Models;
 using PersonalTrainerWorkouts.Models.HelperClasses;
-using PersonalTrainerWorkouts.Utilities;
 using PersonalTrainerWorkouts.ViewModels.Tab_Sessions;
+using PersonalTrainerWorkouts.Views.Misc;
 using PersonalTrainerWorkouts.Views.Tab_About;
 using Syncfusion.ListView.XForms;
 using Syncfusion.SfSchedule.XForms;
@@ -24,7 +23,10 @@ namespace PersonalTrainerWorkouts.Views.Tab_Sessions;
 [XamlCompilation(XamlCompilationOptions.Compile)]
 public partial class SessionListPage : ContentPage
 {
-    public int SwipedItem { get; set; }
+
+    private const string Week = "WEEK";
+    private const string All  = "ALL";
+    public        int    SwipedItem { get; set; }
 
     public SessionListViewModel                      SessionList    { get; set; }
     //public ObservableCollection<ScheduleAppointment> Appointments { get; set; }
@@ -78,12 +80,17 @@ public partial class SessionListPage : ContentPage
 
     private async void DisplayReleaseNotes()
     {
+        if (! VersionTracking.IsFirstLaunchForCurrentBuild
+         && ! VersionTracking.IsFirstLaunchForCurrentVersion) return;
+
         var release = await Updater.GetReleaseByBuildAndVersion(VersionTracking.CurrentBuild
                                                               , VersionTracking.CurrentVersion)
                                    .ConfigureAwait(false);
-
-        if (! VersionTracking.IsFirstLaunchForCurrentBuild
-         && ! VersionTracking.IsFirstLaunchForCurrentVersion) return;
+        if(release is null)
+        {
+            Logger.WriteLineToToastForced("Release info could not be retrieved from GitHub.  Visit https://github.com/bkins/PersonalTrainerWorkouts/releases for release notes", Category.Warning);
+            return;
+        }
 
         var choseToViewNotes = await DoesUserWantToViewNotes(release).ConfigureAwait(false);
 
@@ -147,7 +154,7 @@ public partial class SessionListPage : ContentPage
 
         SessionsSchedule.DataSource  = SessionList.Appointments;
 
-        SessionsListView.ItemsSource = SessionList.ObservableListOfSessions;
+        SessionsListView.ItemsSource = SessionList.GetSessionsForTheWeek(); //SessionList.ObservableListOfSessions;
 
         //Appointments = ViewModel.Appointments;
         //SessionsListView.ItemsSource = Appointments;
@@ -275,16 +282,25 @@ public partial class SessionListPage : ContentPage
     private void ToggleListViewToolbarItem_OnClicked(object    sender
                                                    , EventArgs e)
     {
-        var listViewIsVisualWhenClicked = SessionsListView.IsVisible;
+        try
+        {
+            var listViewIsVisualWhenClicked = SessionsListView.IsVisible;
 
-        SessionsListView.IsVisible = ! listViewIsVisualWhenClicked;
-        ShowAllToolbarItem.Text    = ! listViewIsVisualWhenClicked ? "All" : "";
-        SessionsSchedule.IsVisible = listViewIsVisualWhenClicked;
+            SessionsListView.IsVisible = ! listViewIsVisualWhenClicked;
+            ShowAllToolbarItem.Text    = ! listViewIsVisualWhenClicked ? All : "";
+            SessionsSchedule.IsVisible = listViewIsVisualWhenClicked;
 
-        ToggleListViewToolbarItem.IconImageSource = listViewIsVisualWhenClicked
-                                                        ? "segment_black_48.png"
-                                                        : "calendar_month_black_48.png";
-        SearchToolbarItem.IsEnabled = SessionsListView.IsVisible;
+            ToggleListViewToolbarItem.IconImageSource = listViewIsVisualWhenClicked
+                                                            ? "segment_black_48.png"
+                                                            : "calendar_month_black_48.png";
+            SearchToolbarItem.IsEnabled = SessionsListView.IsVisible;
+        }
+        catch (Exception exception)
+        {
+            Console.WriteLine(exception);
+
+            throw;
+        }
     }
 
     public void DeleteImage_OnTapped()
@@ -297,14 +313,14 @@ public partial class SessionListPage : ContentPage
     {
         var allToolbarItem = sender as ToolbarItem;
 
-        if (allToolbarItem?.Text == "All")
+        if (allToolbarItem?.Text == All)
         {
-            allToolbarItem.Text          = "Week";
+            allToolbarItem.Text          = Week;
             SessionsListView.ItemsSource = SessionList.ObservableListOfSessions;
 
             return;
         }
-        allToolbarItem!.Text         = "All";
+        allToolbarItem!.Text         = All;
         SessionsListView.ItemsSource = SessionList.GetSessionsForTheWeek();
     }
 
@@ -313,7 +329,8 @@ public partial class SessionListPage : ContentPage
     {
         //PageNavigation.NavigateTo(nameof(TestSessionsPage));
         //PageNavigation.NavigateTo(nameof(AppointmentEditor));
-        var instance = new NewSessionEditPage( "0");
+        // var instance = new NewSessionEditPage( "0");
+        var instance = new BrowserPage("www.google.com");
 
         PageNavigation.NavigateTo(instance);
     }

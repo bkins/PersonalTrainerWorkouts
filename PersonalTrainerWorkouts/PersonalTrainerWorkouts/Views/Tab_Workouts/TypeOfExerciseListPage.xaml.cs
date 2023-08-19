@@ -49,13 +49,14 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
 
         private void LoadData()
         {
-            TypeOfExercisePicker.ItemsSource = ViewModel.ListOfAllExerciseTypes.Concat(new[]
-                                                                                       {
-                                                                                           new TypeOfExercise
-                                                                                           {
-                                                                                               Name = "<New>"
-                                                                                           }
-                                                                                       })
+            TypeOfExercisePicker.ItemsSource = ViewModel.ListOfAllExerciseTypes
+                                                        .Concat(new[]
+                                                                {
+                                                                    new TypeOfExercise
+                                                                    {
+                                                                        Name = HelperClasses.Constants.AddNew
+                                                                    }
+                                                                })
                                                         .OrderBy(field => field.Id);
         }
 
@@ -75,7 +76,7 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
         {
             var selected = (TypeOfExercise)TypeOfExercisePicker.SelectedItem;
             
-            if (selected.Name == "<New>")
+            if (selected.Name == HelperClasses.Constants.AddNew)
             {
                 SaveNewExerciseType().ConfigureAwait(false);
             }

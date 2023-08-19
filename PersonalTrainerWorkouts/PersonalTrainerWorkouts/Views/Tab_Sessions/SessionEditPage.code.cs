@@ -176,7 +176,7 @@ public partial class NewSessionEditPage: IQueryAttributable, INotifyPropertyChan
                                                       , EndTimePicker.Time);
         ViewModel.NewSession.Note = SessionNotesRtEditor.Text;
 
-        var newListOfWorkouts = ((IEnumerable)WorkoutComboBox.SelectedItem).Cast<Workout>().ToList();
+        var newListOfWorkouts = ((IEnumerable)WorkoutComboBox.SelectedItem)?.Cast<Workout>().ToList();
 
         ViewModel.NewSession.Workouts = newListOfWorkouts;
 

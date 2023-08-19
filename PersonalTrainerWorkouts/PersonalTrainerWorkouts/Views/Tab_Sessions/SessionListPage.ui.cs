@@ -13,7 +13,7 @@ public partial class SessionListPage //UI Components
     private readonly RowDefinition    _rowDefinition        = new() { Height = GridLength.Auto };
 
     public ToolbarItem     ShowAllToolbarItem          { get; set; }
-    public ToolbarItem     TestToolbarItem              { get; set; }
+    public ToolbarItem     TestToolbarItem             { get; set; }
     public ToolbarItem     AddToolbarItem              { get; set; }
     public ToolbarItem     SearchToolbarItem           { get; set; }
     public ToolbarItem     ToggleListViewToolbarItem   { get; set; }
@@ -219,33 +219,11 @@ public partial class SessionListPage //UI Components
     private void InitializeToolbarItems()
     {
         // Create the toolbar items
-        ShowAllToolbarItem         =  new ToolbarItem { Text = "" };
-        ShowAllToolbarItem.Clicked += ShowAllToolbarItem_OnClicked;
-
-        TestToolbarItem         =  new ToolbarItem { Text = "Test" };
-        TestToolbarItem.Clicked += TestToolbarItem_OnClicked;
-
-        AddToolbarItem = new ToolbarItem
-                         {
-                             Text            = "Add"
-                           , IconImageSource = "baseline_add_circle_outline_black_48.png"
-                         };
-        AddToolbarItem.Clicked += AddToolbarItem_OnClicked;
-
-        SearchToolbarItem = new ToolbarItem
-                            {
-                                Text            = "Search"
-                              , IconImageSource = "baseline_search_black_48.png"
-                              , IsEnabled       = false
-                            };
-        SearchToolbarItem.Clicked += SearchToolbarItem_OnClicked;
-
-        ToggleListViewToolbarItem = new ToolbarItem
-                                    {
-                                        Text            = "Toggle List View"
-                                      , IconImageSource = "segment_black_48.png"
-                                    };
-        ToggleListViewToolbarItem.Clicked += ToggleListViewToolbarItem_OnClicked;
+        CreateShowAllToolbarItem();
+        CreateTestToolbarItem();
+        CreateAddToolbarItem();
+        CreateSearchToolbarItem();
+        CreateToggleListViewToolbarItem();
 
         //ToolbarItems.Add(TestToolbarItem);
         ToolbarItems.Add(ShowAllToolbarItem);
@@ -254,5 +232,50 @@ public partial class SessionListPage //UI Components
         ToolbarItems.Add(ToggleListViewToolbarItem);
     }
 
+    private void CreateToggleListViewToolbarItem()
+    {
 
+        ToggleListViewToolbarItem = new ToolbarItem
+                                    {
+                                        Text            = "Toggle List View"
+                                      , IconImageSource = "segment_black_48.png"
+                                    };
+        ToggleListViewToolbarItem.Clicked += ToggleListViewToolbarItem_OnClicked;
+    }
+
+    private void CreateSearchToolbarItem()
+    {
+
+        SearchToolbarItem = new ToolbarItem
+                            {
+                                Text            = "Search"
+                              , IconImageSource = "baseline_search_black_48.png"
+                              , IsEnabled       = false
+                            };
+        SearchToolbarItem.Clicked += SearchToolbarItem_OnClicked;
+    }
+
+    private void CreateAddToolbarItem()
+    {
+
+        AddToolbarItem = new ToolbarItem
+                         {
+                             Text            = "Add"
+                           , IconImageSource = "baseline_add_circle_outline_black_48.png"
+                         };
+        AddToolbarItem.Clicked += AddToolbarItem_OnClicked;
+    }
+
+    private void CreateTestToolbarItem()
+    {
+
+        TestToolbarItem         =  new ToolbarItem { Text = "Test" };
+        TestToolbarItem.Clicked += TestToolbarItem_OnClicked;
+    }
+
+    private void CreateShowAllToolbarItem()
+    {
+        ShowAllToolbarItem         =  new ToolbarItem { Text = "" };
+        ShowAllToolbarItem.Clicked += ShowAllToolbarItem_OnClicked;
+    }
 }

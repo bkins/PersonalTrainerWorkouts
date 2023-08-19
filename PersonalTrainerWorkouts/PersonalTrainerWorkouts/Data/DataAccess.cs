@@ -588,8 +588,9 @@ namespace PersonalTrainerWorkouts.Data
             return Database.AddJustOneMuscleGroup(muscleGroup);
         }
 
-        public void AddSynergist(Synergist newSynergist)
+        public void AddSynergist(ref Synergist synergist)
         {
+            var newSynergist = synergist;
             var existingSynergist = Database.GetSynergists()
                                             .Where(field => field.ExerciseId == newSynergist.ExerciseId
                                                          && field.MuscleGroupId == newSynergist.MuscleGroupId
@@ -601,14 +602,13 @@ namespace PersonalTrainerWorkouts.Data
                 "You cannot add this Synergist.\r\nIt already exists in this Exercise\r\nPlease select/Add a different Synergist.");
             }
 
-            Database.AddSynergist(new Synergist
-            {
-                ExerciseId = newSynergist.ExerciseId
-                                    ,
-                MuscleGroupId = newSynergist.MuscleGroupId
-                                    ,
-                OpposingMuscleGroupId = newSynergist.OpposingMuscleGroupId
-            });
+            synergist = new Synergist
+                        {
+                            ExerciseId            = synergist.ExerciseId
+                          , MuscleGroupId         = synergist.MuscleGroupId
+                          , OpposingMuscleGroupId = synergist.OpposingMuscleGroupId
+                        };
+            Database.AddSynergist(ref synergist);
         }
 
         public int AddWorkoutExercise(WorkoutExercise workoutExercise)

@@ -1,4 +1,5 @@
-﻿using PersonalTrainerWorkouts.Views.Tab_About;
+﻿using PersonalTrainerWorkouts.Views.Misc;
+using PersonalTrainerWorkouts.Views.Tab_About;
 using PersonalTrainerWorkouts.Views.Tab_Clients;
 using PersonalTrainerWorkouts.Views.Tab_Sessions;
 using PersonalTrainerWorkouts.Views.Tab_Workouts;
@@ -63,6 +64,8 @@ namespace PersonalTrainerWorkouts
 
             Routing.RegisterRoute(nameof(NewSessionEditPage), typeof(NewSessionEditPage));
             Routing.RegisterRoute(nameof(ReleaseBodyPage), typeof(ReleaseBodyPage));
+
+            Routing.RegisterRoute(nameof(BrowserPage), typeof(BrowserPage));
         }
     }
 }

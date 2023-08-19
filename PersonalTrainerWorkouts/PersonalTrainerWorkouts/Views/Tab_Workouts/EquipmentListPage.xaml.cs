@@ -48,7 +48,7 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
                                                                                       {
                                                                                           new Equipment()
                                                                                           {
-                                                                                              Name = "<New>"
+                                                                                              Name = HelperClasses.Constants.AddNew
                                                                                           }
                                                                                       })
                                                    .OrderBy(field => field.Id);
@@ -69,7 +69,7 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
         {
             var selected = (Equipment)EquipmentPicker.SelectedItem;
 
-            if (selected.Name == "<New>")
+            if (selected.Name == HelperClasses.Constants.AddNew)
             {
                 await SaveNewExerciseEquipment();
             }

@@ -142,7 +142,7 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
         {
             var itemData = (Button)sender;
 
-            if ( ! (itemData.CommandParameter is ExerciseViewModel selectedWorkoutExercise))
+            if ( itemData.CommandParameter is not ExerciseViewModel selectedWorkoutExercise)
                 return;
 
             var workoutsToExercise = BuildWorkoutToExerciseFromSelected(selectedWorkoutExercise);
@@ -173,7 +173,8 @@ namespace PersonalTrainerWorkouts.Views.Tab_Workouts
 
         private LinkedWorkoutsToExercises BuildWorkoutToExerciseFromSelected(ExerciseViewModel selectedWorkoutExercise)
         {
-            var workoutsToExercise = ViewModel.WorkoutsToExercises.First(field => field.Id == selectedWorkoutExercise.WorkoutExerciseId);
+            var workoutsToExercise = ViewModel.WorkoutsToExercises
+                                              .First(field => field.Id == selectedWorkoutExercise.WorkoutExerciseId);
 
             workoutsToExercise.LengthOfTime = selectedWorkoutExercise.LengthOfTime;
             workoutsToExercise.Reps         = selectedWorkoutExercise.Reps;

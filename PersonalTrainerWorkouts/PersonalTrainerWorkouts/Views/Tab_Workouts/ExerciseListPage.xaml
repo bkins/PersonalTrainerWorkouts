@@ -52,7 +52,9 @@
                          IsStickyGroupHeader="false"
                          SelectionMode="None"
                          ItemDragging="ExerciseList_OnItemDragging"
-                         ItemTapped="ExerciseList_OnItemTapped">
+                         ItemTapped="ExerciseList_OnItemTapped"
+                         >
+        <!--End swipe option to removed exercises from the workout -->
         <listview:SfListView.DataSource>
             <dataSource:DataSource>
                 <dataSource:DataSource.SortDescriptors>

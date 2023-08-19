@@ -9,10 +9,10 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
 {
     public class MuscleGroupViewModel : ViewModelBase
     {
-        private Exercise                          Exercise                { get; set; }
-        public  IList<ResolvedSynergistViewModel> Synergists              { get; set; }
-        public  ResolvedSynergistViewModel        SelectedSynergist       { get; set; }
-        public  IList<ResolvedSynergistViewModel> SynergistsNotInExercise { get; set; }
+        private Exercise                            Exercise                { get; set; }
+        public  List<ResolvedSynergistViewModel>    Synergists              { get; set; }
+        public  ResolvedSynergistViewModel          SelectedSynergist       { get; set; }
+        public  IList<ResolvedSynergistViewModel>   SynergistsNotInExercise { get; set; }
 
         public MuscleGroupViewModel(string exerciseId)
         {
@@ -105,7 +105,7 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
 
         }
 
-        private void SetSynergistsInExercise(string exerciseId)
+        public void SetSynergistsInExercise(string exerciseId)
         {
             Exercise   = DataAccessLayer.GetExercise(int.Parse(exerciseId));
             Synergists = new List<ResolvedSynergistViewModel>();
@@ -124,7 +124,7 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
             }
         }
 
-        public void SaveNewSynergist(string muscleGroupName
+        public Synergist SaveNewSynergist(string muscleGroupName
                                    , string opposingMuscleGroupName)
         {
             if (muscleGroupName.IsNullEmptyOrWhitespace()
@@ -133,26 +133,28 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
                 Logger.WriteLine("Either the muscle does not have a name or the Exercise has not been defined. Synergist was not saved"
                                , Category.Warning);
 
-                return;
+                return new Synergist();
             }
 
             var newPrimaryMuscleGroupId  = SaveNewMuscleGroup(muscleGroupName);
             var newOpposingMuscleGroupId = SaveNewMuscleGroup(opposingMuscleGroupName);
+            var newSynergist = new Synergist
+                               {
+                                   ExerciseId            = Exercise.Id
+                                 , MuscleGroupId         = newPrimaryMuscleGroupId
+                                 , OpposingMuscleGroupId = newOpposingMuscleGroupId
+                               };
+            DataAccessLayer.AddSynergist(ref newSynergist);
 
-            DataAccessLayer.AddSynergist(new Synergist
-                                         {
-                                             ExerciseId            = Exercise.Id
-                                           , MuscleGroupId         = newPrimaryMuscleGroupId
-                                           , OpposingMuscleGroupId = newOpposingMuscleGroupId
-                                         });
+            return newSynergist;
         }
 
-        public void SaveOppositeSynergist(string muscleGroupName
+        public Synergist SaveOppositeSynergist(string muscleGroupName
                                         , string opposingMuscleGroupName)
         {
             if (opposingMuscleGroupName.IsNullEmptyOrWhitespace())
             {
-                return; //Don't add the opposite synergist if no opposing muscle group is defined
+                return new Synergist(); //Don't add the opposite synergist if no opposing muscle group is defined
             }
 
             var allMuscleGroups = DataAccessLayer.GetAllMuscleGroups()
@@ -163,12 +165,15 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
             var opposingMuscleGroup = allMuscleGroups.First(field => field.Name == muscleGroupName);
 
             //Add Synergist without assigning an Exercise
-            DataAccessLayer.AddSynergist(new Synergist
-                                         {
-                                             ExerciseId            = 0
-                                           , MuscleGroupId         = primaryMuscleGroup.Id
-                                           , OpposingMuscleGroupId = opposingMuscleGroup.Id
-                                         });
+            var newSynergist = new Synergist
+                               {
+                                   ExerciseId            = 0
+                                 , MuscleGroupId         = primaryMuscleGroup.Id
+                                 , OpposingMuscleGroupId = opposingMuscleGroup.Id
+                               };
+            DataAccessLayer.AddSynergist(ref newSynergist);
+
+            return newSynergist;
         }
 
         public int SaveNewMuscleGroup(string newMuscleGroupName)
@@ -186,22 +191,26 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Workouts
             return DataAccessLayer.AddNewMuscleGroup(newMuscleGroup);
         }
 
-        public void SaveSynergistToExercise()
+        public int SaveSynergistToExercise()
         {
             if (Exercise.Id == 0)
             {
                 Logger.WriteLine("The Exercise was not defined.  Synergist was not saved."
                                , Category.Warning);
 
-                return;
+                return 0;
             }
 
-            DataAccessLayer.AddSynergist(new Synergist
-                                         {
-                                             ExerciseId            = Exercise.Id
-                                           , MuscleGroupId         = SelectedSynergist.PrimaryMuscleGroup.Id
-                                           , OpposingMuscleGroupId = SelectedSynergist.OpposingMuscleGroup.Id
-                                         });
+            var newSynergist = new Synergist
+                               {
+                                   ExerciseId            = Exercise.Id
+                                 , MuscleGroupId         = SelectedSynergist.PrimaryMuscleGroup.Id
+                                 , OpposingMuscleGroupId = SelectedSynergist.OpposingMuscleGroup.Id
+                               };
+            DataAccessLayer.AddSynergist(ref newSynergist);
+
+            return newSynergist.Id;
         }
+
     }
 }

@@ -44,10 +44,10 @@ namespace PersonalTrainerWorkouts.Models
         {
             var text = new StringBuilder();
             text.Append($"\t{Name}");
-            if (Reps > 0) text.Append($" ({nameof(Reps)}: {Reps})");
-            if (LengthOfTime.HasValue() && LengthOfTime != "00:00") text.Append($" (Time: {LengthOfTime})");
+            if (Reps > 0) text.Append($"\t({nameof(Reps)}: {Reps})");
+            if (LengthOfTime.HasValue() && LengthOfTime != "00:00") text.Append($"\t(Time: {LengthOfTime})");
             text.Append(Environment.NewLine);
-            if (Description.HasValue()) text.Append(Description);
+            if (Description.HasValue()) text.Append($"\t{Description}");
 
             return text.ToString();
         }
