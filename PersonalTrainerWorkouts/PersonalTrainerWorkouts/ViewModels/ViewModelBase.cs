@@ -1,12 +1,15 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using Avails.Xamarin.Utilities;
 using PersonalTrainerWorkouts.Data;
 
 namespace PersonalTrainerWorkouts.ViewModels
 {
     public class ViewModelBase : INotifyPropertyChanged
     {
+        public Updater AppUpdater { get; set; }
+
         protected static DataAccess _dataAccess;
 
         public DataAccess DataAccessLayer

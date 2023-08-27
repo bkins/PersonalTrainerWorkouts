@@ -1,4 +1,5 @@
 ﻿using System;
+using Avails.Xamarin;
 using Avails.Xamarin.Logger;
 using Avails.Xamarin.Utilities;
 using PersonalTrainerWorkouts.Utilities;
@@ -10,11 +11,13 @@ namespace PersonalTrainerWorkouts.Views.Tab_About;
 
 public partial class AboutPage
 {
-    public AboutViewModel AboutViewModel { get; set; }
-
+    public  AboutViewModel AboutViewModel { get; set; }
+    private Updater        AppUpdater     { get; set; }
     protected override void OnAppearing()
     {
         base.OnAppearing();
+
+        AppUpdater = new Updater(App.InternetData);
 
         AutomaticallyCheckForUpdatesCheckbox.IsChecked = AutomaticallyCheckForUpdates;
     }
@@ -27,8 +30,8 @@ public partial class AboutPage
     private async void CheckForUpdates_OnButtonClicked(object    sender
                                                      , EventArgs e)
     {
-        var isThereAnUpdate = await Updater.IsThereAnUpdate()
-                                           .ConfigureAwait(false);
+        var isThereAnUpdate = await AppUpdater.IsThereAnUpdate()
+                                              .ConfigureAwait(false);
         if (isThereAnUpdate)
         {
             Device.BeginInvokeOnMainThread(AskToUpdate);
@@ -37,7 +40,7 @@ public partial class AboutPage
 
     private async void AskToUpdate()
     {
-        var update = await DisplayAlert($"New Version: {Updater.ReleaseInfo.TagName}"
+        var update = await DisplayAlert($"New Version: {AppUpdater.ReleaseInfo?.TagName}"
                                       , "There is a new version.  Would you like to install it?"
                                       , "Yes"
                                       , "No").ConfigureAwait(false);
@@ -51,7 +54,7 @@ public partial class AboutPage
         //                  + "You will be redirected to your browser to download the update. "
         //                  + "Please follow the instructions to complete the update."
         //                  , "OK").ConfigureAwait(false);
-        await Updater.Update();
+        await AppUpdater.Update();
     }
 
 
@@ -70,6 +73,14 @@ public partial class AboutPage
                  , "4" => "Prod"
                  , _ => "Unknown"
                };
+    }
+
+    private void ReleaseNotesButtonOnClicked(object    sender
+                                           , EventArgs e)
+    {
+        var instance = new ReleaseBodyPage(AboutViewModel.CurrentBuild
+                                         , AboutViewModel.CurrentVersion);
+        PageNavigation.NavigateTo(instance);
     }
 
 

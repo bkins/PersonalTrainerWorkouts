@@ -53,9 +53,13 @@ public class ContactsDataStore : IContactsDataStore
     /// </summary>
     public async void SetContacts()
     {
-        var contacts = await Contacts.GetAllAsync().ConfigureAwait(false);
-
-        DeviceContacts = contacts.ToList();
+        var contacts = await Contacts.GetAllAsync()
+                                     .ConfigureAwait(false);
+//TODO: This is being called twice at startup.  Why?!:  Because this method is call in the ctor, and in the Splash screen.
+//I believe I can remove the second call in the Splash screen.  I believe the only reason the DeviceContacts are not set
+// is because there are no contacts on device. <- THis is not accurate.  Even on my phone this runs twice.
+//Maybe remove the first call in the ctor?
+        DeviceContacts = contacts?.ToList();
     }
 
     public void UpdateClientWithContactInfo(Client client)
