@@ -30,7 +30,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Documentation", "Documentat
 		Documentation\Mockup.xlsx = Documentation\Mockup.xlsx
 		Documentation\Uno Framework Article.url = Documentation\Uno Framework Article.url
 		Documentation\Uno Framework in Github.url = Documentation\Uno Framework in Github.url
-		Documentation\Untitled (Recovered).bmp = Documentation\Untitled (Recovered).bmp
 		Documentation\Xamarin.Forms Solution.png = Documentation\Xamarin.Forms Solution.png
 		Documentation\Xamarin.Forms UI Structure.png = Documentation\Xamarin.Forms UI Structure.png
 		Documentation\Zamarin.Forms Development Setup.png = Documentation\Zamarin.Forms Development Setup.png

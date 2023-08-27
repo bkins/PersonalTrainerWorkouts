@@ -1,5 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using Android.OS;
+using Avails.GitHubService.POCOs;
+using Avails.Xamarin.Interfaces;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Data;
 using Environment = System.Environment;
@@ -8,19 +11,21 @@ namespace PersonalTrainerWorkouts
 {
     public partial class App
     {
-        //private static AsyncDatabase     _asyncDatabase;
-        //private static DataStore         _dataStore;
-        private static Database _database;
-        private static ContactsDataStore _contactDataStore;
+        private static Database                _database;
+        private static ContactsDataStore       _contactDataStore;
+        private static InternetDataStore       _internetData;
+        private static List<GitHubReleaseInfo> _releases;
 
-        private static readonly string Path = System.IO
-                                                    .Path
-                                                    .Combine(Environment.GetFolderPath(Environment.SpecialFolder
-                                                                                                  .LocalApplicationData)
-                                                           , "WorkoutDatabase.db3");
+        private static readonly string DatabasePath = System.IO
+                                                            .Path
+                                                            .Combine(Environment.GetFolderPath(Environment.SpecialFolder
+                                                                                                          .LocalApplicationData)
+                                                                   , "WorkoutDatabase.db3");
 
-        public static Database Database => _database ??= new Database(Path);
-        public static ContactsDataStore ContactDataStore => _contactDataStore ??= new ContactsDataStore();
+        public static Database                Database         => _database ??= new Database(DatabasePath);
+        public static ContactsDataStore       ContactDataStore => _contactDataStore ??= new ContactsDataStore();
+        public static IInternetDataStore      InternetData     => _internetData ??= new InternetDataStore();
+        public static List<GitHubReleaseInfo> Releases         { get; set; }
 
         public App()
         {

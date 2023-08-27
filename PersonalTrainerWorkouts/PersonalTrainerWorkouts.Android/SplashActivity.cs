@@ -1,7 +1,7 @@
 ﻿using Android.App;
 using Android.Content;
 using Android.OS;
-using Android.Support.V7.App;
+using AndroidX.AppCompat.App;
 using Android.Util;
 
 using Avails.D_Flat.Extensions;
@@ -12,6 +12,7 @@ using Android;
 using Android.Content.PM;
 using AndroidX.Core.Content;
 using AndroidX.Core.App;
+using Avails.GitHubService;
 
 namespace PersonalTrainerWorkouts.Droid
 {
@@ -85,6 +86,7 @@ namespace PersonalTrainerWorkouts.Droid
                         {
                             LoadContactsFromDevice()
                           , InsertConfigurationValueIntoDatabase()
+                          , PopulateReleaseInfo()
                             //, Add loading of resources that can be retrieve at start up here
                         };
 
@@ -165,6 +167,7 @@ namespace PersonalTrainerWorkouts.Droid
             {
                 //HACK?: Busy wait for user to grant permissions
             }
+
             if (App.ContactDataStore.DeviceContacts.HasNoValue())
             {
                 App.ContactDataStore.SetContacts();
@@ -177,6 +180,13 @@ namespace PersonalTrainerWorkouts.Droid
             App.Database.InsertConfigurationValues();
 
             return Task.FromResult(true);
+        }
+
+        private static async Task PopulateReleaseInfo()
+        {
+            App.Releases = await GitHubService.GetReleases()
+                                              .ConfigureAwait(false);
+            //App.Releases = await Updater.GetAllReleases().ConfigureAwait(false);
         }
     }
 

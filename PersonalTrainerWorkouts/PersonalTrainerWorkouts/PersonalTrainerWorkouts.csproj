@@ -10,6 +10,11 @@
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <WarningLevel>2</WarningLevel>
   </PropertyGroup>
+  
+  <PropertyGroup>
+    <AndroidXJetifierEnabled>true</AndroidXJetifierEnabled>
+    <AndroidXAppCompatVersion>5.0.0.2515</AndroidXAppCompatVersion>
+  </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="coverlet.collector" Version="3.1.0">
@@ -19,6 +24,7 @@
     <PackageReference Include="Google.Apis.Auth" Version="1.55.0" />
     <PackageReference Include="Google.Apis.Drive.v3" Version="1.55.0.2502" />
     <PackageReference Include="HtmlAgilityPack" Version="1.11.50" />
+    <PackageReference Include="Markdig" Version="0.32.0" />
     <PackageReference Include="NLog" Version="5.0.2" />
     <PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
     <PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
@@ -127,10 +133,6 @@
       <DependentUpon>WorkoutsPage.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Update="Views\Tab_SettingAndTools\ConfigurationPage.xaml.cs">
-      <DependentUpon>ConfigurationPage.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
     <Compile Update="Views\Tab_Sync\SyncPage.xaml.cs">
       <DependentUpon>SyncPage.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -145,6 +147,11 @@
       <DependentUpon>ReleaseBodyPage.ui.cs</DependentUpon>
     </Compile>
     <Compile Remove="MauiProgram.cs" />
+    <Compile Update="Views\Tab_SettingAndTools\ConfigurationPage.ui.code.cs">
+      <DependentUpon>ConfigurationPage.ui.cs</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Remove="Views\Tab_SettingAndTools\ConfigurationPage_old.xaml.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -152,6 +159,9 @@
       <Generator>MSBuild:UpdateDesignTimeXaml</Generator>
     </EmbeddedResource>
     <EmbeddedResource Remove="ApplicationExceptions\**" />
+    <EmbeddedResource Remove="Views\Tab_SettingAndTools\ConfigurationPage_old.xaml" />
+    <None Remove="Views\Tab_About\MarkdownTemplate.html" />
+    <EmbeddedResource Include="Views\Tab_About\MarkdownTemplate.html" />
   </ItemGroup>
 
   <ItemGroup>

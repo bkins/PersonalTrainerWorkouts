@@ -10,7 +10,7 @@
 	  android:installLocation="auto"  
 	  android:exported="true">
 ```
-(see below for what these values are used.)
+(see below for what these values are used for.)
 2.  Commit and Push code
 3. Open solution in Visual Studio.
 4. Right click on the Android project and select Archive...
@@ -25,10 +25,10 @@
 
 ## Prepare the Release
 1. Go to GitHub, and [Create a new Release](https://github.com/bkins/PersonalTrainerWorkouts/releases/new)
-2. Create a new tag. Tag should "v" then the "versionName" updated above, followed by versionCode as a word (see which word to pick below)
+2. Create a new tag. Tag should start with "v" then the "versionName" updated above, followed by versionCode as a word (see which word to pick below)
    Example: v0.3.2-alpha
 3. Name the release in such a way that briefly descripts the changes in this release
-4. In the Description and a detailed list of the changes in this release.
+4. In the Description add a detailed list of the changes in this release.
 5. If this release is for anything other than "prod", check the "Set as pre-release" checkbox.
 6. Now go back to Visual Studio, and click on Open Folder. This will open the folder that has the deployment.
 7. Open the signed-apks folder
