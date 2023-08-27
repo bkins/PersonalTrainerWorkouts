@@ -1,30 +1,47 @@
 ﻿using System;
+using System.Threading.Tasks;
+using Android.OS;
 using Avails.Xamarin.Utilities;
 
-namespace PersonalTrainerWorkouts.ViewModels;
-
-public class ReleaseNotesViewModel : ViewModelBase
+namespace PersonalTrainerWorkouts.ViewModels
 {
-    private string BuildNumber   { get; set; }
-    private string VersionNumber { get; set; }
-
-    public  string ReleaseNotes  { get; set; }
-
-    public ReleaseNotesViewModel(string buildNumber, string versionNumber)
+    public class ReleaseNotesViewModel : ViewModelBase
     {
-        BuildNumber   = buildNumber;
-        VersionNumber = versionNumber;
+        private string  BuildNumber   { get; set; }
+        private string  VersionNumber { get; set; }
 
-        SetReleaseNotes();
-    }
+        public  string  ReleaseNotes  { get; set; }
+        public  string  TagName       { get; set; }
+        private ReleaseNotesViewModel(string buildNumber, string versionNumber)
+        {
+            BuildNumber   = buildNumber;
+            VersionNumber = versionNumber;
 
-    private async void SetReleaseNotes()
-    {
-        var releaseNotes = await Updater.GetReleaseNotesByBuildAndVersion(BuildNumber
-                                                                        , VersionNumber)
-                                        .ConfigureAwait(false);
+            AppUpdater = new Updater(App.InternetData);
+        }
 
-        ReleaseNotes = releaseNotes.Replace(" * "
-                                          , $"{Environment.NewLine}\t * ");
+        public static async Task<ReleaseNotesViewModel> CreateAsync(string buildNumber, string versionNumber)
+        {
+            var viewModel = new ReleaseNotesViewModel(buildNumber, versionNumber);
+            await viewModel.InitializeReleaseNotesAsync();
+
+            return viewModel;
+        }
+
+        private async Task InitializeReleaseNotesAsync()
+        {
+            await SetRelease().ConfigureAwait(false);
+        }
+
+        private async Task SetRelease()
+        {
+            var release = await AppUpdater.GetReleaseByBuildAndVersion(BuildNumber
+                                                                     , VersionNumber)
+                                          .ConfigureAwait(false);
+            if (release is null) return;
+
+            TagName      = release.TagName;
+            ReleaseNotes = release.Body; //releaseNotes;//.Replace(" * ", $"{Environment.NewLine}\t * ");
+        }
     }
 }

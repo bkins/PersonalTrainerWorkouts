@@ -28,7 +28,7 @@
         
         <ShellContent Title="Settings &amp; Tools"
                       Icon="settings_black_48.png"
-                      ContentTemplate="{DataTemplate tabSettingAndTools:ConfigurationPage}" 
+                      ContentTemplate="{DataTemplate tabSettingAndTools:ConfigurationPage}"
                       />
         <ShellContent Title="Sync"
                       Icon="sync_black_48.png"

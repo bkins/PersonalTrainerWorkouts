@@ -14,6 +14,7 @@ public partial class AboutPage : ContentPage
     public Label       TableHeaderLabel;
     public ScrollView  TableLabelScrollView;
     public Button      CheckForUpdatesButton;
+    public Button      ReleaseNotesButton                        { get; set; }
     public Grid        CheckboxGrid                              { get; set; }
     public CheckBox    AutomaticallyCheckForUpdatesCheckbox      { get; set; }
     public Label       AutomaticallyCheckForUpdatesCheckboxLabel { get; set; }
@@ -42,6 +43,7 @@ public partial class AboutPage : ContentPage
         CreateTableHeaderLabel(); // Move the TableHeaderLabel here
         ContentStackLayout.Children.Add(CheckForUpdatesButton);
         ContentStackLayout.Children.Add(CheckboxGrid);
+        ContentStackLayout.Children.Add(ReleaseNotesButton);
         ContentStackLayout.Children.Add(VersionInfoGrid);
 
         // Move the TableLabelScrollView here, after it has been created
@@ -61,10 +63,7 @@ public partial class AboutPage : ContentPage
                            // Version Info row
                            new RowDefinition { Height = GridLength.Auto }
                          , // Content row
-                           new RowDefinition
-                           {
-                               Height = new GridLength(1, GridUnitType.Star)
-                           }
+                           new RowDefinition { Height = new GridLength(1, GridUnitType.Star) }
                          , // Table Info row
                            new RowDefinition { Height = GridLength.Auto }
                          , // "Table List" row
@@ -75,11 +74,16 @@ public partial class AboutPage : ContentPage
         CreateVersionInformation();
         CreateGetForUpdatesButton();
         CreateAutomaticallyCheckForUpdatesCheckbox();
-        CreateTableLabelScrollView(); // Move this here to create the TableLabelScrollView first
+        CreateReleaseNotesButton();
+        CreateTableLabelScrollView();
+
         CreateContentStackLayout(); // Move this here after creating the TableLabelScrollView
 
-        Grid.SetRow(VersionInfoGrid, 0); // Set the Grid.Row property for the VersionInfoGrid
-        Grid.SetRow(ContentStackLayout, 1); // Set the Grid.Row property for the StackLayout
+        Grid.SetRow(VersionInfoGrid, 0); // Put VersionInfoGrid at the top of the page ("page "header")
+        Grid.SetRow(ContentStackLayout, 1); // The ContentStackLayout will have the "body" of the page.  Put all (most) buttons, checkboxes, other info here.
+
+        //This is for the Table List at the bottom of the page.  This mostly for verifying that tables are setup correctly.
+        //This can be removed or hidden in Prod release.
         Grid.SetRow(TableLabelScrollView, 2); // Set the Grid.Row property for the TableLabelScrollView
         Grid.SetRow(TableHeaderLabel, 3); // Set the Grid.Row property for the "Table List" label
 
@@ -113,11 +117,12 @@ public partial class AboutPage : ContentPage
         var tapGestureRecognizer = new TapGestureRecognizer();
         tapGestureRecognizer.Tapped += (s, e) =>
         {
-            AboutViewModel.IsTableLabelScrollViewVisible = !AboutViewModel.IsTableLabelScrollViewVisible;
-            TableLabelScrollView.IsVisible               = AboutViewModel.IsTableLabelScrollViewVisible;
+            AboutViewModel.IsTableLabelScrollViewVisible = ! AboutViewModel.IsTableLabelScrollViewVisible;
+            TableLabelScrollView.IsVisible               =   AboutViewModel.IsTableLabelScrollViewVisible;
             CheckForUpdatesButton.IsVisible              = ! AboutViewModel.IsTableLabelScrollViewVisible;
             CheckboxGrid.IsVisible                       = ! AboutViewModel.IsTableLabelScrollViewVisible;
         };
+
         TableHeaderLabel.GestureRecognizers.Add(tapGestureRecognizer);
     }
     private void CreateTableLabelScrollView()
@@ -146,7 +151,7 @@ public partial class AboutPage : ContentPage
     {
         CheckForUpdatesButton = new Button
                                 {
-                                    Text            = "Check for updates"
+                                    Text = "Check for updates"
                                 };
         CheckForUpdatesButton.Clicked += CheckForUpdates_OnButtonClicked;
     }
@@ -169,16 +174,22 @@ public partial class AboutPage : ContentPage
                                 ColumnDefinitions =
                                 {
                                     new ColumnDefinition { Width = GridLength.Auto }
-                                  , new ColumnDefinition
-                                    {
-                                        Width = new GridLength(1, GridUnitType.Star)
-                                    }
+                                  , new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) }
                                 }
                             };
 
         // Add the label and checkbox to the checkboxGrid
         CheckboxGrid.Children.Add(AutomaticallyCheckForUpdatesCheckboxLabel);
         CheckboxGrid.Children.Add(AutomaticallyCheckForUpdatesCheckbox, 1, 0);
+    }
+
+    private void CreateReleaseNotesButton()
+    {
+        ReleaseNotesButton = new Button
+                             {
+                                 Text = "Release Notes"
+                             };
+        ReleaseNotesButton.Clicked += ReleaseNotesButtonOnClicked;
     }
 
     private void CreateVersionInformation()

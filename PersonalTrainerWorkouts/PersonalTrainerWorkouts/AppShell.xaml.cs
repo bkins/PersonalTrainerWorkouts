@@ -2,6 +2,7 @@
 using PersonalTrainerWorkouts.Views.Tab_About;
 using PersonalTrainerWorkouts.Views.Tab_Clients;
 using PersonalTrainerWorkouts.Views.Tab_Sessions;
+using PersonalTrainerWorkouts.Views.Tab_SettingAndTools;
 using PersonalTrainerWorkouts.Views.Tab_Workouts;
 using Xamarin.Forms;
 using WorkoutExercisePage = PersonalTrainerWorkouts.Views.Tab_Workouts.WorkoutExercisePage;
@@ -14,6 +15,60 @@ namespace PersonalTrainerWorkouts
         {
             InitializeComponent();
 
+            RegisterWorkoutPages();
+
+            RegisterSessionsAndClientPages();
+
+            RegisterAboutSettingAndOtherPages();
+
+            //To build out the Scheduler Calendar view from scratch
+            Routing.RegisterRoute(nameof(TestSessionsPage)
+                                , typeof(TestSessionsPage));
+
+        }
+
+        private static void RegisterAboutSettingAndOtherPages()
+        {
+
+            Routing.RegisterRoute(nameof(Avails.Xamarin.Views.LoggingPage.MessageLog)
+                                , typeof(Avails.Xamarin.Views.LoggingPage.MessageLog));
+
+            Routing.RegisterRoute(nameof(ReleaseBodyPage)
+                                , typeof(ReleaseBodyPage));
+
+            Routing.RegisterRoute(nameof(BrowserPage)
+                                , typeof(BrowserPage));
+
+            Routing.RegisterRoute(nameof(ConfigurationPage)
+                                , typeof(ConfigurationPage));
+        }
+
+        private static void RegisterSessionsAndClientPages()
+        {
+            Routing.RegisterRoute(nameof(SessionListPage)
+                                , typeof(SessionListPage));
+
+            Routing.RegisterRoute(nameof(SessionEditPage)
+                                , typeof(SessionEditPage));
+
+            Routing.RegisterRoute(nameof(ClientListPage)
+                                , typeof(ClientListPage));
+
+            Routing.RegisterRoute(nameof(ClientEditPage)
+                                , typeof(ClientEditPage));
+
+            Routing.RegisterRoute(nameof(GoalsAddEditPage)
+                                , typeof(GoalsAddEditPage));
+
+            Routing.RegisterRoute(nameof(MeasurablesAddPage)
+                                , typeof(MeasurablesAddPage));
+
+            Routing.RegisterRoute(nameof(NewSessionEditPage)
+                                , typeof(NewSessionEditPage));
+        }
+
+        private static void RegisterWorkoutPages()
+        {
             Routing.RegisterRoute(nameof(WorkoutListPage)
                                 , typeof(WorkoutListPage));
 
@@ -29,12 +84,6 @@ namespace PersonalTrainerWorkouts
             Routing.RegisterRoute(nameof(ExerciseListPage)
                                 , typeof(ExerciseListPage));
 
-            // Routing.RegisterRoute(nameof(MessageLog)
-            //                     , typeof(MessageLog));
-
-            Routing.RegisterRoute(nameof(Avails.Xamarin.Views.LoggingPage.MessageLog)
-                                , typeof(Avails.Xamarin.Views.LoggingPage.MessageLog));
-
             Routing.RegisterRoute(nameof(WorkoutExercisePage)
                                 , typeof(WorkoutExercisePage));
 
@@ -49,23 +98,7 @@ namespace PersonalTrainerWorkouts
 
             Routing.RegisterRoute(nameof(MuscleGroupListPage)
                                 , typeof(MuscleGroupListPage));
-            
-            Routing.RegisterRoute(nameof(SessionListPage), typeof(SessionListPage));
-            Routing.RegisterRoute(nameof(SessionEditPage), typeof(SessionEditPage));
-            
-            Routing.RegisterRoute(nameof(ClientListPage), typeof(ClientListPage));
-            Routing.RegisterRoute(nameof(ClientEditPage), typeof(ClientEditPage));
-            
-            Routing.RegisterRoute(nameof(GoalsAddEditPage), typeof(GoalsAddEditPage));
-            Routing.RegisterRoute(nameof(MeasurablesAddPage), typeof(MeasurablesAddPage));
 
-            //To build out the Scheduler Calendar view from scratch
-            Routing.RegisterRoute(nameof(TestSessionsPage), typeof(TestSessionsPage));
-
-            Routing.RegisterRoute(nameof(NewSessionEditPage), typeof(NewSessionEditPage));
-            Routing.RegisterRoute(nameof(ReleaseBodyPage), typeof(ReleaseBodyPage));
-
-            Routing.RegisterRoute(nameof(BrowserPage), typeof(BrowserPage));
         }
     }
 }

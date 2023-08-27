@@ -31,10 +31,12 @@ public partial class SessionListPage : ContentPage
     public SessionListViewModel                      SessionList    { get; set; }
     //public ObservableCollection<ScheduleAppointment> Appointments { get; set; }
 
+    private Updater AppUpdater { get; set; }
     public SessionListPage()
     {
         ShowBusyIndicator(true
                         , "Initialing...");
+        AppUpdater = new Updater(App.InternetData);
 
         CheckForUpdates();
         DisplayReleaseNotes();
@@ -51,14 +53,14 @@ public partial class SessionListPage : ContentPage
             return;
         }
 
-        var isThereAnUpdate = await Updater.IsThereAnUpdate()
-                                           .ConfigureAwait(false);
+        var isThereAnUpdate = await AppUpdater.IsThereAnUpdate()
+                                              .ConfigureAwait(false);
         if (isThereAnUpdate)
         {
             //Device.BeginInvokeOnMainThread(async () => await AskToUpdate());
             async void Action()
             {
-                var update = await DisplayAlert($"New Version: {Updater.ReleaseInfo.TagName}"
+                var update = await DisplayAlert($"New Version: {AppUpdater.ReleaseInfo.TagName}"
                                               , "There is a new version.  Would you like to install it?"
                                               , "Yes"
                                               , "No").ConfigureAwait(false);
@@ -71,7 +73,7 @@ public partial class SessionListPage : ContentPage
                 //                  + "Please follow the instructions to complete the update."
                 //                  , "OK").ConfigureAwait(false);
 
-                await Updater.Update();
+                await AppUpdater.Update();
             }
 
             Device.BeginInvokeOnMainThread(Action);
@@ -83,12 +85,15 @@ public partial class SessionListPage : ContentPage
         if (! VersionTracking.IsFirstLaunchForCurrentBuild
          && ! VersionTracking.IsFirstLaunchForCurrentVersion) return;
 
-        var release = await Updater.GetReleaseByBuildAndVersion(VersionTracking.CurrentBuild
-                                                              , VersionTracking.CurrentVersion)
-                                   .ConfigureAwait(false);
-        if(release is null)
+        var release = await AppUpdater.GetReleaseByBuildAndVersion(VersionTracking.CurrentBuild
+                                                                 , VersionTracking.CurrentVersion)
+                                      .ConfigureAwait(false);
+        if (release is null)
         {
-            Logger.WriteLineToToastForced("Release info could not be retrieved from GitHub.  Visit https://github.com/bkins/PersonalTrainerWorkouts/releases for release notes", Category.Warning);
+            Logger.WriteLineToToastForced(
+                "Release info could not be retrieved from GitHub.  Visit https://github.com/bkins/PersonalTrainerWorkouts/releases for release notes"
+              , Category.Warning);
+
             return;
         }
 
@@ -130,7 +135,7 @@ public partial class SessionListPage : ContentPage
 
     private async Task AskToUpdate()
     {
-        var update = await DisplayAlert($"New Version: {Updater.ReleaseInfo.TagName}"
+        var update = await DisplayAlert($"New Version: {AppUpdater.ReleaseInfo.TagName}"
                                       , "There is a new version.  Would you like to install it?"
                                       , "Yes"
                                       , "No").ConfigureAwait(false);
@@ -145,7 +150,7 @@ public partial class SessionListPage : ContentPage
                          + "Please follow the instructions to complete the update."
                          , "OK").ConfigureAwait(false);
 
-        await Updater.Update();
+        await AppUpdater.Update();
     }
 
     private void LoadViewModelData()

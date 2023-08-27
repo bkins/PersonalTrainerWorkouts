@@ -1,0 +1,10 @@
+﻿/* MarkdownStyles.css */
+
+ul {
+    list-style-type: disc;
+    margin-left: 1em;
+}
+
+body {
+    word-wrap: break-word;
+}
