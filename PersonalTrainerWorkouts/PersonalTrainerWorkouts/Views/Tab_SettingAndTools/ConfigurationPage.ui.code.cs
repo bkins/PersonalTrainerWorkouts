@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Threading.Tasks;
+using Avails.D_Flat.Extensions;
 using Avails.GitHubService;
 using Avails.Xamarin;
 using Avails.Xamarin.Logger;
@@ -37,6 +38,8 @@ namespace PersonalTrainerWorkouts.Views.Tab_SettingAndTools
 
             _toggleRefreshTokenControlsSwitch.IsToggled = false;
             ShowRefreshTokenControls();
+
+            _daysToWarnEntry.Text = Configuration.DaysToWarn.ToString();
         }
 
         private void ShowRefreshTokenControls()
@@ -46,6 +49,8 @@ namespace PersonalTrainerWorkouts.Views.Tab_SettingAndTools
             _pasteButton.IsVisible          = _toggleRefreshTokenControlsSwitch.IsToggled;
             _expirationDatePicker.IsVisible = _toggleRefreshTokenControlsSwitch.IsToggled;
             _applyButton.IsVisible          = _toggleRefreshTokenControlsSwitch.IsToggled;
+            _daysToWarnLabel.IsVisible      = _toggleRefreshTokenControlsSwitch.IsToggled;
+            _daysToWarnEntry.IsVisible      = _toggleRefreshTokenControlsSwitch.IsToggled;
         }
 
         private static string GetBackupDestinationPath()
@@ -243,26 +248,42 @@ namespace PersonalTrainerWorkouts.Views.Tab_SettingAndTools
 
             if (tokenValid)
             {
-                Logger.WriteLineToToastForced("Token is valid!", Category.Information);
+                const string tokenIsValid = "Token is valid!";
+                Logger.WriteLineToToastForced(tokenIsValid, Category.Information);
+
                 Configuration.GitHubToken = token;
-                _applyButton.IsEnabled    = true;
+                UiUtilities.TemporarilyChangeButtonText(_pasteButton, tokenIsValid, 10);
+
+                _applyButton.IsEnabled = true;
+
                 return;
             }
+            const string tokenIsNotValid = "Token is NOT valid!!!!";
+            Logger.WriteLineToToastForced(tokenIsNotValid, Category.Warning);
 
-            Logger.WriteLineToToastForced("Token is NOT valid!!!!", Category.Warning);
+            UiUtilities.TemporarilyChangeButtonText(_pasteButton, tokenIsNotValid, 10);
+
             _applyButton.IsEnabled = false;
         }
+
+
 
         private void ApplyButtonOnClicked(object    sender
                                         , EventArgs e)
         {
             Configuration.GitHubTokenExpirationDate = _expirationDatePicker.Date;
+            UiUtilities.TemporarilyChangeButtonText(_applyButton, "Token Applied", 10);
         }
 
         private void ToggleRefreshTokenControlsSwitchOnToggled(object           sender
                                                              , ToggledEventArgs e)
         {
             ShowRefreshTokenControls();
+        }
+        private void DaysToWarnEntryOnUnfocused(object         sender
+                                              , FocusEventArgs e)
+        {
+            Configuration.DaysToWarn = _daysToWarnEntry.Text.ToSafeInt();
         }
     }
 }

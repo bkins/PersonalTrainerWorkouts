@@ -33,9 +33,11 @@ public partial class AboutPage
         var isThereAnUpdate = await AppUpdater.IsThereAnUpdate()
                                               .ConfigureAwait(false);
         if (isThereAnUpdate)
-        {
             Device.BeginInvokeOnMainThread(AskToUpdate);
-        }
+        else
+            UiUtilities.TemporarilyChangeButtonText(CheckForUpdatesButton
+                                                  , "Already up to date."
+                                                  , 5);
     }
 
     private async void AskToUpdate()
