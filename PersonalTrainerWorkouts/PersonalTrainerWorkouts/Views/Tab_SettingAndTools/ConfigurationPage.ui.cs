@@ -34,6 +34,8 @@ namespace PersonalTrainerWorkouts.Views.Tab_SettingAndTools
         private Label      _applyNewTokenLabel;
         private Switch     _toggleRefreshTokenControlsSwitch;
         private Label      _toggleRefreshTokenControls;
+        private Label      _daysToWarnLabel;
+        private Entry      _daysToWarnEntry;
 
         public void InitializeComponent()
         {
@@ -129,8 +131,7 @@ namespace PersonalTrainerWorkouts.Views.Tab_SettingAndTools
             _viewLogButton         =  new Button { Text = "View Log" };
             _viewLogButton.Clicked += ViewLogButtonClicked;
 
-            _toggleRefreshTokenControls =  new Label { Text = "Show Refresh Token Settings" };
-
+            _toggleRefreshTokenControls = new Label { Text = "Show Refresh Token Settings" };
 
             _toggleRefreshTokenControlsSwitch         =  new Switch();
             _toggleRefreshTokenControlsSwitch.Toggled += ToggleRefreshTokenControlsSwitchOnToggled;
@@ -153,9 +154,10 @@ namespace PersonalTrainerWorkouts.Views.Tab_SettingAndTools
                                Text          = "Paste/Validate"
                              , HeightRequest = 25
                            };
+
             _pasteButton.Clicked += PasteButtonOnClicked;
 
-            _expirationDatePicker = new DatePicker{ TextColor = Color.Black };
+            _expirationDatePicker = new DatePicker { TextColor = Color.Black };
             _applyButton = new Button
                            {
                                Text          = "Apply"
@@ -163,10 +165,24 @@ namespace PersonalTrainerWorkouts.Views.Tab_SettingAndTools
                            };
             _applyButton.Clicked += ApplyButtonOnClicked;
 
+            _daysToWarnLabel = new Label
+                               {
+                                   Text                  = "Days to warn before expiration date:"
+                                 , VerticalTextAlignment = TextAlignment.Center
+                               };
+
+            _daysToWarnEntry = new Entry
+                               {
+                                   Keyboard                = Keyboard.Numeric
+                                 , VerticalTextAlignment   = TextAlignment.Center
+                                 , HorizontalTextAlignment = TextAlignment.Center
+                               };
+            _daysToWarnEntry.Unfocused += DaysToWarnEntryOnUnfocused;
+
             _dbFunctionsHeaderLabel = new Label
                                       {
-                                          TextColor               = (Color)Application.Current
-                                                                                      .Resources["PrimaryBackColor"]
+                                          TextColor = (Color)Application.Current
+                                                                        .Resources["PrimaryBackColor"]
                                         , FontAttributes          = FontAttributes.Bold
                                         , HeightRequest           = 25
                                         , VerticalTextAlignment   = TextAlignment.Center
@@ -174,10 +190,9 @@ namespace PersonalTrainerWorkouts.Views.Tab_SettingAndTools
                                       };
 
             _warningImage = new Image
-            {
-                Source = "outline_warning_amber_black_24.png",
-                HorizontalOptions = LayoutOptions.Start
-            };
+                            {
+                                Source = "outline_warning_amber_black_24.png", HorizontalOptions = LayoutOptions.Start
+                            };
 
             _dropTablesButton         =  new Button { Text = "Drop Tables" };
             _dropTablesButton.Clicked += DropTablesButtonClicked;
@@ -247,13 +262,16 @@ namespace PersonalTrainerWorkouts.Views.Tab_SettingAndTools
                                                       {
                                                           ColumnDefinitions = new ColumnDefinitionCollection
                                                                               {
-                                                                                  new() { Width = GridLength.Star }
-                                                                                , new() { Width = GridLength.Auto }
+                                                                                  //   new() { Width = GridLength.Star }
+                                                                                  // , new() { Width = GridLength.Auto }
+                                                                                  UiUtilities.NewColumnDefinition(75, GridUnitType.Star)
+                                                                                , UiUtilities.NewColumnDefinition(25, GridUnitType.Star)
                                                                               }
                                                         , Children =
                                                           {
-                                                              { _tokenEditor,          0, 0 }, { _pasteButton, 1, 0 }
+                                                              { _tokenEditor, 0, 0 }, { _pasteButton, 1, 0 }
                                                             , { _expirationDatePicker, 0, 1 }, { _applyButton, 1, 1 }
+                                                            , { _daysToWarnLabel, 0, 2 }, { _daysToWarnEntry, 1, 2 }
                                                           }
                                                       }
                                                     , new Label() //Hack to keep the grid above from filling the remainder of the space.
