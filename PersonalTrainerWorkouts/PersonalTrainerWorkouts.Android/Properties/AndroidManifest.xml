@@ -5,7 +5,9 @@
 				package="com.companyname.personaltrainerworkouts"
 				android:installLocation="auto"
 				android:exported="true">
+
 	<uses-sdk android:minSdkVersion="29" android:targetSdkVersion="31" />
+
 	<uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 	<uses-permission android:name="android.permission.READ_CONTACTS" />
@@ -18,8 +20,7 @@
 		android:label="PersonalTrainerWorkouts.Android"
 		android:theme="@style/MainTheme"
 		android:allowBackup="false"
-		android:icon="@drawable/AppIcon"
+		android:icon="@drawable/HopTrain_Trans"
 		android:fullBackupContent="@xml/auto_backup_rules" >
-
 	</application>
 </manifest>

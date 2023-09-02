@@ -105,13 +105,11 @@ public class ClientListViewModel : ViewModelBase
         LoadData();
 
         return numberAffected switch
-        {
-            0 => ("Client was not deleted. See Logs", false, DeleteReasons.Failure)
-                  ,
-            > 1 => ("More than one Client was deleted!", true, DeleteReasons.MultipleDeleted)
-                  ,
-            _ => (name, true, DeleteReasons.Success)
-        };
+               {
+                     0 => ("Client was not deleted. See Logs", false, DeleteReasons.Failure)
+                 , > 1 => ("More than one Client was deleted!", true, DeleteReasons.MultipleDeleted)
+                 ,   _ => (name, true, DeleteReasons.Success)
+               };
     }
 
     public (string item, bool success, DeleteReasons reason) DeleteClientSessions(int index)

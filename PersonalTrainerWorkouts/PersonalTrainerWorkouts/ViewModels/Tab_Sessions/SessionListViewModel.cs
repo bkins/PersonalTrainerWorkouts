@@ -37,9 +37,10 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
         private async void LogApiLimit()
         {
             var apiLimit = await GitHubService.CheckIfHitApiLimit().ConfigureAwait(false);
-            Logger.WriteLine(apiLimit.ToString(), Category.Information);
+
             if (apiLimit != HttpStatusCode.OK)
             {
+                Logger.WriteLineToToastForced($"API Limit reached! (HttpStatusCode: {apiLimit}", Category.Warning);
             }
 
         }
