@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using System.Web;
+using Avails.D_Flat.Extensions;
 using Avails.Xamarin.Logger;
 using Avails.Xamarin.Utilities;
 using Markdig;
@@ -65,7 +66,7 @@ public partial class ReleaseBodyPage : IQueryAttributable
         // Sanitize the HTML content using HtmlAgilityPack
         if (ReleaseNotesViewModel.ReleaseNotes is null)
         {
-            Logger.WriteLineToToastForced($"No Release Notes found for {AppUpdater.ReleaseInfo?.TagName}. See logs for a problem"
+            Logger.WriteLineToToastForced($"No Release Notes found for {AppUpdater?.ReleaseInfo?.TagName}. See logs for a problem"
                                         , Category.Information);
         }
 
@@ -75,7 +76,7 @@ public partial class ReleaseBodyPage : IQueryAttributable
                                  .Replace("</code></pre>", "");
 
         //var htmlWithMarkdown = string.Format(File.ReadAllText(TemplatePath), htmlContent);
-        string templateContent = string.Empty;
+        var templateContent = string.Empty;
 
         var assembly = Assembly.GetExecutingAssembly(); // Get a reference to the current assembly
         using (var stream = assembly.GetManifestResourceStream(TemplatePath))
@@ -90,7 +91,10 @@ public partial class ReleaseBodyPage : IQueryAttributable
 
         Device.BeginInvokeOnMainThread(() =>
         {
-            Title = $"Release Notes: {ReleaseNotesViewModel.TagName}";
+            Title = $"{ReleaseNotesViewModel.TagName}";
+            htmlWithMarkdown = htmlWithMarkdown.IsNullEmptyOrWhitespace()
+                                        ? "The release notes are not ready."
+                                        : htmlWithMarkdown;
             _webView.Source = new HtmlWebViewSource { Html = htmlWithMarkdown };
         });
 

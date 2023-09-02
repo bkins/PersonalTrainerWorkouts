@@ -35,13 +35,17 @@ namespace PersonalTrainerWorkouts.ViewModels
 
         private async Task SetRelease()
         {
-            var release = await AppUpdater.GetReleaseByBuildAndVersion(BuildNumber
-                                                                     , VersionNumber)
-                                          .ConfigureAwait(false);
+            var release = await AppUpdater.GetReleaseByTag(BuildNumber
+                                           , VersionNumber);
+
+            // var release = await AppUpdater.GetReleaseByBuildAndVersion(BuildNumber
+            //                                                          , VersionNumber)
+                                          // .ConfigureAwait(false);
+
             if (release is null) return;
 
             TagName      = release.TagName;
-            ReleaseNotes = release.Body; //releaseNotes;//.Replace(" * ", $"{Environment.NewLine}\t * ");
+            ReleaseNotes = release.Body;
         }
     }
 }
