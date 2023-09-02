@@ -23,6 +23,19 @@ public class InternetDataStore : IInternetDataStore
         return releases;
     }
 
+    public async Task<GitHubReleaseInfo> GetLatestRelease()
+    {
+        var latestRelease = await GitHub.GetLatestRelease().ConfigureAwait(false);
+
+        return latestRelease;
+    }
+    public async Task<GitHubReleaseInfo> GetReleaseByTag(string tag)
+    {
+        var release = await GitHub.GetReleaseByTag(tag)
+                                  .ConfigureAwait(false);
+
+        return release;
+    }
     public bool IsInternetAvailable()
     {
         var current = Connectivity.NetworkAccess;

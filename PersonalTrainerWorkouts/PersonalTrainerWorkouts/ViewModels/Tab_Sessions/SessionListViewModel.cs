@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Net;
 using System.Text;
+using Avails.GitHubService;
 using Avails.Xamarin.Logger;
 using PersonalTrainerWorkouts.Data;
 using PersonalTrainerWorkouts.Models;
@@ -27,7 +29,19 @@ namespace PersonalTrainerWorkouts.ViewModels.Tab_Sessions
         public SessionListViewModel()
         {
             var allSessions = DataAccessLayer.GetSessions();
+
             LoadData(allSessions);
+            LogApiLimit();
+        }
+
+        private async void LogApiLimit()
+        {
+            var apiLimit = await GitHubService.CheckIfHitApiLimit().ConfigureAwait(false);
+            Logger.WriteLine(apiLimit.ToString(), Category.Information);
+            if (apiLimit != HttpStatusCode.OK)
+            {
+            }
+
         }
 
         /// <summary>
