@@ -17,6 +17,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Amporis.Xamarin.Forms.ColorPicker" Version="1.0.23" />
     <PackageReference Include="coverlet.collector" Version="3.1.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -34,6 +35,7 @@
     <PackageReference Include="Syncfusion.Xamarin.SfBusyIndicator" Version="22.1.38" />
     <PackageReference Include="Syncfusion.Xamarin.SfListView" Version="22.1.38" />
     <PackageReference Include="Syncfusion.Xamarin.SfPicker" Version="22.1.38" />
+    <PackageReference Include="Syncfusion.Xamarin.SfRadialMenu" Version="22.2.11" />
     <PackageReference Include="Syncfusion.Xamarin.SfRichTextEditor" Version="22.1.38" />
     <PackageReference Include="Syncfusion.Xamarin.SfSchedule" Version="22.1.38" />
 
@@ -46,6 +48,9 @@
   <ItemGroup>
     <Reference Include="Mono.Android">
       <HintPath>..\..\..\..\..\..\..\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\ReferenceAssemblies\Microsoft\Framework\MonoAndroid\v11.0\Mono.Android.dll</HintPath>
+    </Reference>
+    <Reference Include="Syncfusion.SfRadialMenu.Android">
+      <HintPath>..\..\..\..\.nuget\packages\syncfusion.xamarin.sfradialmenu\22.2.11\lib\MonoAndroid10.0\Syncfusion.SfRadialMenu.Android.dll</HintPath>
     </Reference>
     <Reference Include="Windows.Foundation.UniversalApiContract">
       <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Windows Kits\10\References\10.0.19041.0\Windows.Foundation.UniversalApiContract\10.0.0.0\Windows.Foundation.UniversalApiContract.winmd</HintPath>

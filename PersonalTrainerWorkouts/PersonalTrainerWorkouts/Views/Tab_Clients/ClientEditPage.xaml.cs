@@ -11,11 +11,13 @@ using PersonalTrainerWorkouts.Models.ContactsAndClients;
 using PersonalTrainerWorkouts.ViewModels.HelperClasses;
 using PersonalTrainerWorkouts.ViewModels.Tab_Clients;
 using PersonalTrainerWorkouts.Views.Popups;
+using Syncfusion.SfRadialMenu.XForms;
 using Syncfusion.XForms.RichTextEditor;
 using Xamarin.CommunityToolkit.Extensions;
 using Xamarin.Essentials;
 using Xamarin.Forms;
 using Xamarin.Forms.Xaml;
+using ItemTappedEventArgs = Syncfusion.SfRadialMenu.XForms.ItemTappedEventArgs;
 using SelectionChangedEventArgs = Syncfusion.SfPicker.XForms.SelectionChangedEventArgs;
 
 namespace PersonalTrainerWorkouts.Views.Tab_Clients
@@ -25,9 +27,12 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
     [XamlCompilation(XamlCompilationOptions.Compile)]
     public partial class ClientEditPage : IQueryAttributable
     {
-        public string          ClientId { get; set; }
-        public ClientViewModel ClientVm { get; set; }
-        public GoalViewModel   GoalVm   { get; set; }
+        private const string TapToChange = "Tap to change";
+        private const string TapWhenDone = "Tap when done";
+
+        public        string          ClientId { get; set; }
+        public        ClientViewModel ClientVm { get; set; }
+        public        GoalViewModel   GoalVm   { get; set; }
 
         public ClientEditPage()
         {
@@ -42,6 +47,8 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
             collection.Add(ToolbarOptions.BulletList);
 
             ClientNoteRte.ToolbarItems = collection;
+
+            ColorValueLabel.Text = TapToChange;
         }
 
         public ClientEditPage(string clientId)
@@ -82,8 +89,12 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
 
             PhoneNumberPicker.ItemsSource   = ClientVm.PhoneNumbers;
             Title                           = ClientVm.Client.DisplayName;
+
             ColorValueLabel.TextColor       = ClientVm.Client.TextColor;
             ColorValueLabel.BackgroundColor = ClientVm.Client.BackgroundColor;
+
+            FontColorPickerRadialMenu.CenterButtonBackgroundColor       = ColorValueLabel.TextColor;
+            BackgroundColorPickerRadialMenu.CenterButtonBackgroundColor = ColorValueLabel.BackgroundColor;
         }
 
         private static string GetDisplayMessage(GoalViewModel goalVm)
@@ -246,23 +257,48 @@ namespace PersonalTrainerWorkouts.Views.Tab_Clients
         private async void ColorValueLabel_OnTapped(object    sender
                                                   , EventArgs e)
         {
-            var clientColorsPopup = new ClientColors(new ClientListViewModel());
+            ColorPickersGrid.IsVisible = ! ColorPickersGrid.IsVisible;
+            ColorValueLabel.Text       = ColorValueLabel.Text == TapToChange
+                                                            ? TapWhenDone
+                                                            : TapToChange;
 
-            void SetClientColors(Task<object> _)
-            {
-                Device.BeginInvokeOnMainThread(() =>
-                {
-                    ColorValueLabel.TextColor       = clientColorsPopup.ClientTextColor;
-                    ColorValueLabel.BackgroundColor = clientColorsPopup.ClientBackgroundColor;
-                });
+            // var clientColorsPopup = new ClientColors(new ClientListViewModel());
+            //
+            // await Navigation.ShowPopupAsync(clientColorsPopup)
+            //                 .ContinueWith(SetClientColors
+            //                             , TaskContinuationOptions.OnlyOnRanToCompletion);
+            //
+            // return;
+            //
+            // void SetClientColors(Task<object> _)
+            // {
+            //     Device.BeginInvokeOnMainThread(() =>
+            //     {
+            //         ColorValueLabel.TextColor       = clientColorsPopup.ClientColorsVm.SelectedTextColor;
+            //         ColorValueLabel.BackgroundColor = clientColorsPopup.ClientColorsVm.SelectedBackgroundColor;
+            //     });
+            //
+            //     ClientVm.Client.BackgroundColorHex = clientColorsPopup.ClientColorsVm.SelectedBackgroundColor.ToHex();
+            //     ClientVm.Client.TextColorHex       = clientColorsPopup.ClientColorsVm.SelectedTextColor.ToHex();
+            // }
+        }
 
-                ClientVm.Client.BackgroundColorHex = clientColorsPopup.ClientBackgroundColor.ToHex();
-                ClientVm.Client.TextColorHex       = clientColorsPopup.ClientTextColor.ToHex();
-            }
+        private void SfRadialMenuItemFont_OnItemTapped(object              sender
+                                                 , ItemTappedEventArgs e)
+        {
+            var selectedColor = ((SfRadialMenuItem)sender).BackgroundColor;
+            FontColorPickerRadialMenu.CenterButtonBackgroundColor = selectedColor;
+            ColorValueLabel.TextColor                             = selectedColor;
+            ClientVm.Client.TextColorHex                          = selectedColor.ToHex();
+        }
 
-            await Navigation.ShowPopupAsync(clientColorsPopup)
-                            .ContinueWith(SetClientColors
-                                        , TaskContinuationOptions.OnlyOnRanToCompletion);
+        private void SfRadialMenuItemBackGround_OnItemTapped(object              sender
+                                                           , ItemTappedEventArgs e)
+        {
+            var selectedColor = ((SfRadialMenuItem)sender).BackgroundColor;
+            BackgroundColorPickerRadialMenu.CenterButtonBackgroundColor = selectedColor;
+            ColorValueLabel.BackgroundColor                             = selectedColor;
+            ClientVm.Client.BackgroundColorHex                          = selectedColor.ToHex();
         }
 
         #endregion //Events

@@ -1,4 +1,7 @@
 ﻿using System;
+using Avails.Xamarin.Extensions;
+using Avails.Xamarin.Logger;
+using Avails.Xamarin.Utilities;
 using PersonalTrainerWorkouts.ViewModels.Tab_About;
 using static Xamarin.Forms.Color;
 
@@ -12,7 +15,9 @@ public partial class AboutPage : ContentPage
     public Image       Image;
     public StackLayout ContentStackLayout;
     public Label       TableHeaderLabel;
+    public Label       CopyToClipboardLabel;
     public ScrollView  TableLabelScrollView;
+    public Editor      TableEditor;
     public Button      CheckForUpdatesButton;
     public Button      ReleaseNotesButton                        { get; set; }
     public Grid        CheckboxGrid                              { get; set; }
@@ -70,27 +75,33 @@ public partial class AboutPage : ContentPage
                            new RowDefinition { Height = GridLength.Auto }
                        }
                    };
+        //NotesGrid.ColumnDefinitions.Add(NewColumnDefinition(1, GridUnitType.Star));
+        MainGrid.ColumnDefinitions.Add(UiUtilities.NewColumnDefinition(GridLength.Star));
+        MainGrid.ColumnDefinitions.Add(UiUtilities.NewColumnDefinition(GridLength.Star));
 
         CreateVersionInformation();
         CreateGetForUpdatesButton();
         CreateAutomaticallyCheckForUpdatesCheckbox();
         CreateReleaseNotesButton();
         CreateTableLabelScrollView();
+        CreateCopyToClipboardLabel();
 
-        CreateContentStackLayout(); // Move this here after creating the TableLabelScrollView
+        CreateContentStackLayout();
 
         Grid.SetRow(VersionInfoGrid, 0); // Put VersionInfoGrid at the top of the page ("page "header")
-        Grid.SetRow(ContentStackLayout, 1); // The ContentStackLayout will have the "body" of the page.  Put all (most) buttons, checkboxes, other info here.
+        Grid.SetRow(ContentStackLayout, 1); // The ContentStackLayout will have the "body" of the page.
+                                            // Put all (most) buttons, checkboxes, other info here.
 
         //This is for the Table List at the bottom of the page.  This mostly for verifying that tables are setup correctly.
         //This can be removed or hidden in Prod release.
         Grid.SetRow(TableLabelScrollView, 2); // Set the Grid.Row property for the TableLabelScrollView
         Grid.SetRow(TableHeaderLabel, 3); // Set the Grid.Row property for the "Table List" label
 
-        MainGrid.Children.Add(VersionInfoGrid);
-        MainGrid.Children.Add(ContentStackLayout, 0, 1);
-        MainGrid.Children.Add(TableLabelScrollView, 0, 2);
-        MainGrid.Children.Add(TableHeaderLabel, 0, 3); // Add "Table List" label at the bottom row
+        MainGrid.Children.Add(VersionInfoGrid, 0, 2, 0, 1); //);
+        MainGrid.Children.Add(ContentStackLayout, 0, 2, 1, 2); //, 0, 1);
+        MainGrid.Children.Add(TableLabelScrollView, 0, 2, 2, 3); //, 0, 2);
+        MainGrid.Children.Add(TableHeaderLabel, 0, 2); //, 0, 3); // Add "Table List" label at the bottom row
+        MainGrid.Children.Add(CopyToClipboardLabel, 1, 2); //, 1, 3);
 
         Content = MainGrid;
     }
@@ -106,6 +117,22 @@ public partial class AboutPage : ContentPage
         };
     }
 
+    private void CreateCopyToClipboardLabel()
+    {
+        CopyToClipboardLabel = new Label
+                               {
+                                   Text                    = "Tap here to copy"
+                                 , HorizontalOptions       = LayoutOptions.Start
+                                 , HorizontalTextAlignment = TextAlignment.Start
+                               };
+        var tapGestureRecognizer = new TapGestureRecognizer();
+
+        tapGestureRecognizer.Tapped += OnTapGestureRecognizerOnTapped;
+
+        CopyToClipboardLabel.GestureRecognizers.Add(tapGestureRecognizer);
+    }
+
+
     private void CreateTableHeaderLabel()
     {
         TableHeaderLabel = new Label
@@ -118,9 +145,10 @@ public partial class AboutPage : ContentPage
         tapGestureRecognizer.Tapped += (s, e) =>
         {
             AboutViewModel.IsTableLabelScrollViewVisible = ! AboutViewModel.IsTableLabelScrollViewVisible;
-            TableLabelScrollView.IsVisible               =   AboutViewModel.IsTableLabelScrollViewVisible;
+            TableLabelScrollView.IsVisible               = AboutViewModel.IsTableLabelScrollViewVisible;
             CheckForUpdatesButton.IsVisible              = ! AboutViewModel.IsTableLabelScrollViewVisible;
             CheckboxGrid.IsVisible                       = ! AboutViewModel.IsTableLabelScrollViewVisible;
+            ReleaseNotesButton.IsVisible                 = ! AboutViewModel.IsTableLabelScrollViewVisible;
         };
 
         TableHeaderLabel.GestureRecognizers.Add(tapGestureRecognizer);
@@ -135,7 +163,7 @@ public partial class AboutPage : ContentPage
                                    Margin            = new Thickness(20)
                                };
 
-        var tableEditor = new Editor
+        TableEditor = new Editor
                           {
                               BackgroundColor = Color.Transparent
                             , IsReadOnly      = false
@@ -144,9 +172,17 @@ public partial class AboutPage : ContentPage
                                                , AboutViewModel.TableList)
                           };
 
-        TableLabelScrollView.Content = tableEditor;
-    }
+        TableLabelScrollView.Content = TableEditor;
 
+    }
+    private async void OnTapGestureRecognizerOnTapped(object    sender
+                                                          , EventArgs e)
+    {
+        await UiUtilities.SetClipboardValueAsync(TableEditor.Text).ConfigureAwait(false);
+
+        Logger.WriteLineToToastForced("Copied to clipboard."
+                                    , Category.Information);
+    }
     private void CreateGetForUpdatesButton()
     {
         CheckForUpdatesButton = new Button

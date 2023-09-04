@@ -105,6 +105,9 @@
     <PackageReference Include="Syncfusion.Xamarin.SfPicker">
       <Version>22.1.38</Version>
     </PackageReference>
+    <PackageReference Include="Syncfusion.Xamarin.SfRadialMenu">
+      <Version>22.2.11</Version>
+    </PackageReference>
     <PackageReference Include="Syncfusion.Xamarin.SfRichTextEditor">
       <Version>22.1.38</Version>
     </PackageReference>
@@ -152,6 +155,7 @@
     <AndroidResource Include="Resources\drawable\calendar_month_black_48.png" />
     <AndroidResource Include="Resources\drawable\change_history_black_48.png" />
     <AndroidResource Include="Resources\drawable\contact_page_black_48.png" />
+    <AndroidResource Include="Resources\drawable\contact_phone_black_48.png" />
     <AndroidResource Include="Resources\drawable\done_black_48.png" />
     <AndroidResource Include="Resources\drawable\edit_black_48.png" />
     <AndroidResource Include="Resources\drawable\Failed_48.png" />

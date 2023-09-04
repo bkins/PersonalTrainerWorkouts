@@ -8,12 +8,12 @@
              xmlns:sfRte="clr-namespace:Syncfusion.XForms.RichTextEditor;assembly=Syncfusion.SfRichTextEditor.XForms"
 
              xmlns:tabClients="clr-namespace:PersonalTrainerWorkouts.ViewModels.Tab_Clients;assembly=PersonalTrainerWorkouts"
+             xmlns:radialMenu="clr-namespace:Syncfusion.SfRadialMenu.XForms;assembly=Syncfusion.SfRadialMenu.XForms"
 
              x:Class="PersonalTrainerWorkouts.Views.Tab_Clients.ClientEditPage"
              x:DataType="tabClients:ClientViewModel"
 
-             Title="{Binding Client.DisplayName}"
-             >
+             Title="{Binding Client.DisplayName}">
     <ContentPage.Resources>
         <!-- Implicit styles -->
         <Style TargetType="{x:Type Editor}">
@@ -36,29 +36,26 @@
             </Setter>
         </Style>
     </ContentPage.Resources>
-    
+
     <ContentPage.ToolbarItems>
-        
+
         <ToolbarItem x:Name="SaveToolbarItem"
                      Text="Save"
                      IconImageSource="save_black_48.png"
-                     Clicked="SaveButton_OnClicked"
-        /> <!--SaveToolbarItem-->
-        
+                     Clicked="SaveButton_OnClicked" /> <!--SaveToolbarItem-->
+
         <ToolbarItem x:Name="LinkContactToolbarItem"
                      Text="Link to Contact"
                      IconImageSource="contact_page_black_48.png"
-                     Clicked="LinkContactToolbarItem_OnClicked"
-        /> <!--LinkContactToolbarItem-->
-        
+                     Clicked="LinkContactToolbarItem_OnClicked" /> <!--LinkContactToolbarItem-->
+
     </ContentPage.ToolbarItems>
-    
+
     <ContentPage.Content>
         <StackLayout Margin="5,0,0,0">
             <Grid x:Name="ClientInfoGrid"
                   ColumnDefinitions="*, *, *"
-                  RowDefinitions="Auto, Auto, Auto"
-                  >
+                  RowDefinitions="Auto, Auto, Auto">
 
                 <Label x:Name="ClientMainPhoneLabel"
                        Grid.Column="0"
@@ -66,10 +63,9 @@
                        VerticalTextAlignment="Center"
                        FontSize="Small"
                        FontAttributes="Bold"
-                       Text="Main Number:"
-                >
+                       Text="Main Number:">
                     <Label.GestureRecognizers>
-                            <TapGestureRecognizer Tapped="ClientMainPhoneLabel_OnTapped"/>
+                        <TapGestureRecognizer Tapped="ClientMainPhoneLabel_OnTapped" />
                     </Label.GestureRecognizers>
                 </Label>
 
@@ -78,49 +74,311 @@
                        Grid.Row="0"
                        VerticalTextAlignment="Center"
                        FontSize="Small"
-                       Text="{Binding Client.MainNumber}"
-                       >
+                       Text="{Binding Client.MainNumber}">
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="ClientMainPhoneValueLabel_OnTapped"/>
+                        <TapGestureRecognizer Tapped="ClientMainPhoneValueLabel_OnTapped" />
                     </Label.GestureRecognizers>
                 </Label>
                 <Label x:Name="ColorLabel"
                        Grid.Column="0"
                        Grid.Row="1"
-                       Text="Color:"
-                       />
+                       Text="Color:" />
+
                 <Label x:Name="ColorValueLabel"
                        Grid.Column="1"
                        Grid.Row="1"
                        Text="Tap to change"
                        TextColor="{Binding Client.TextColor}"
-                       BackgroundColor="{Binding Client.BackgroundColor}">
+                       BackgroundColor="{Binding Client.BackgroundColor}"
+                       IsVisible="True">
                     <Label.GestureRecognizers>
-                        <TapGestureRecognizer Tapped="ColorValueLabel_OnTapped"/>
+                        <TapGestureRecognizer Tapped="ColorValueLabel_OnTapped" />
                     </Label.GestureRecognizers>
                 </Label>
 
                 <ImageButton x:Name="ChangeMainNumberButton"
                              Grid.Column="2"
                              Grid.Row="0"
-                             Source="swap_calls_black_48.png"
+                             Source="contact_phone_black_48.png"
                              Clicked="ChangeMainNumberButton_OnClicked"
                              BackgroundColor="Transparent"
                              HeightRequest="35"
-                             IsVisible="{Binding ShowChangeNumberImage}"
-                             />
+                             IsVisible="{Binding ShowChangeNumberImage}" />
             </Grid>
+            <Grid x:Name="ColorPickersGrid"
+                  ColumnDefinitions="*, *"
+                  IsVisible="False">
 
-            <sfAccordion:SfAccordion DynamicSizeMode="Content" 
-                                     ExpandMode="MultipleOrNone"
-                                     >
+                <radialMenu:SfRadialMenu x:Name="FontColorPickerRadialMenu"
+                                         Grid.Column="0"
+                                         CenterButtonBackgroundColor="DarkGray"
+                                         CenterButtonRadius="25"
+                                         CenterButtonText="F">
+                    <radialMenu:SfRadialMenu.Items>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="#FF0000"
+                                                     ItemTapped="SfRadialMenuItemFont_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF0000"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF1E1E"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF3C3C"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF5A5A"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF7878"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF9696"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FFB4B4"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="#FFFF00"
+                                                     ItemTapped="SfRadialMenuItemFont_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FFFF99"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FFD700"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FFC200"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FFAB00"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF9300"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF7A00"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="#00FF00"
+                                                     ItemTapped="SfRadialMenuItemFont_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#1A7D1A"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#349934"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#4DAA4D"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#66CC66"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#99FF99"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#CCFFCC"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="#00FFFF"
+                                                     ItemTapped="SfRadialMenuItemFont_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#3CFFFF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#78FFFF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#96FFFF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#B4FFFF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="#0000FF"
+                                                     ItemTapped="SfRadialMenuItemFont_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#0000FF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#1E1EFF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#3C3CFF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#7878FF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#9696FF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#B4B4FF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#D2D2FF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="#FF00FF"
+                                                     ItemTapped="SfRadialMenuItemFont_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF00FF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF1EFF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF3CFF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF78FF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF96FF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FFB4FF"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="Black"
+                                                     ItemTapped="SfRadialMenuItemFont_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <!-- Add 6 sub-menu items with the specified colors -->
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#1E1E1E"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#3C3C3C"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#5A5A5A"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#787878"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#969696"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#B4B4B4"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="White"
+                                                             ItemTapped="SfRadialMenuItemFont_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                    </radialMenu:SfRadialMenu.Items>
+                </radialMenu:SfRadialMenu>
+
+                <radialMenu:SfRadialMenu x:Name="BackgroundColorPickerRadialMenu"
+                                         Grid.Column="1"
+                                         CenterButtonBackgroundColor="DarkGray"
+                                         CenterButtonRadius="25"
+                                         CenterButtonText="B">
+                    <radialMenu:SfRadialMenu.Items>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="#FF0000"
+                                                     ItemTapped="SfRadialMenuItemBackGround_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF0000"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF1E1E"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF3C3C"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF5A5A"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF7878"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF9696"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FFB4B4"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="#FFFF00"
+                                                     ItemTapped="SfRadialMenuItemBackGround_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FFFF99"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FFD700"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FFC200"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FFAB00"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF9300"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF7A00"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="#00FF00"
+                                                     ItemTapped="SfRadialMenuItemBackGround_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#1A7D1A"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#349934"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#4DAA4D"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#66CC66"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#99FF99"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#CCFFCC"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="#00FFFF"
+                                                     ItemTapped="SfRadialMenuItemBackGround_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#3CFFFF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#78FFFF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#96FFFF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#B4FFFF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="#0000FF"
+                                                     ItemTapped="SfRadialMenuItemBackGround_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#0000FF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#1E1EFF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#3C3CFF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#7878FF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#9696FF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#B4B4FF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#D2D2FF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="#FF00FF"
+                                                     ItemTapped="SfRadialMenuItemBackGround_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF00FF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF1EFF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF3CFF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF78FF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FF96FF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#FFB4FF"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                        <radialMenu:SfRadialMenuItem BackgroundColor="Black"
+                                                     ItemTapped="SfRadialMenuItemBackGround_OnItemTapped">
+                            <radialMenu:SfRadialMenuItem.Items>
+                                <!-- Add 6 sub-menu items with the specified colors -->
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#1E1E1E"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#3C3C3C"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#5A5A5A"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#787878"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#969696"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="#B4B4B4"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                                <radialMenu:SfRadialMenuItem BackgroundColor="White"
+                                                             ItemTapped="SfRadialMenuItemBackGround_OnItemTapped" />
+                            </radialMenu:SfRadialMenuItem.Items>
+                        </radialMenu:SfRadialMenuItem>
+                    </radialMenu:SfRadialMenu.Items>
+                </radialMenu:SfRadialMenu>
+            </Grid>
+            <sfAccordion:SfAccordion DynamicSizeMode="Content"
+                                     ExpandMode="MultipleOrNone">
 
                 <sfAccordion:SfAccordion.Items>
 
-                    <sfAccordion:AccordionItem x:Name="ClientAccordionItem" 
-                                               IsExpanded="True"
-                                               > <!--Client Notes-->
-                        
+                    <sfAccordion:AccordionItem x:Name="ClientAccordionItem"
+                                               IsExpanded="True"> <!--Client Notes-->
+
                         <sfAccordion:AccordionItem.Header> <!--Client Notes: Header-->
 
                             <Grid>
@@ -131,8 +389,7 @@
                                        FontSize="Medium"
                                        HeightRequest="{StaticResource AccordionHeight}"
                                        VerticalTextAlignment="Center"
-                                       HorizontalTextAlignment="Center"
-                                       >
+                                       HorizontalTextAlignment="Center">
                                     <Label.GestureRecognizers>
                                         <TapGestureRecognizer Tapped="OnAccordionItemTapped" />
                                     </Label.GestureRecognizers>
@@ -140,7 +397,7 @@
                             </Grid>
 
                         </sfAccordion:AccordionItem.Header> <!--Client Notes: Header-->
-                        
+
                         <sfAccordion:AccordionItem.Content> <!--Client Notes: Content-->
 
                             <Grid ColumnDefinitions="*"
@@ -182,21 +439,20 @@
                                                                        , Strikethrough
                                                                        , SubScript
                                                                        , SuperScript
-                                                                       , Underline"
-                                                        />
+                                                                       , Underline" />
                             </Grid>
 
                         </sfAccordion:AccordionItem.Content> <!--Client Notes: Content-->
 
                     </sfAccordion:AccordionItem> <!--Client Notes-->
-                    
+
                     <sfAccordion:AccordionItem> <!--Goals-->
-                        
+
                         <sfAccordion:AccordionItem.Header> <!--Goals: Header-->
 
                             <!-- <Grid ColumnDefinitions="90*,10*"> -->
                             <Grid ColumnDefinitions="*, 25">
-                                
+
                                 <Label Grid.Column="0"
                                        Text="Goals"
                                        BackgroundColor="{StaticResource PrimaryBackColor}"
@@ -205,8 +461,7 @@
                                        FontSize="Medium"
                                        HeightRequest="{StaticResource AccordionHeight}"
                                        VerticalTextAlignment="Center"
-                                       HorizontalTextAlignment="Center"
-                                />
+                                       HorizontalTextAlignment="Center" />
                                 <Button x:Name="AddNewGoalButton"
                                         Grid.Column="1"
                                         Text="+"
@@ -215,14 +470,13 @@
                                         HeightRequest="{StaticResource AccordionHeight}"
                                         VerticalOptions="FillAndExpand"
                                         HorizontalOptions="FillAndExpand"
-                                        Clicked="AddNewGoalButton_OnClicked"
-                                        />
+                                        Clicked="AddNewGoalButton_OnClicked" />
                             </Grid>
 
                         </sfAccordion:AccordionItem.Header> <!--Goals: Header-->
 
                         <sfAccordion:AccordionItem.Content> <!--Goals: Content-->
-                            
+
                             <Grid>
                                 <CollectionView x:Name="GoalsCollectionView"
                                                 x:DataType="tabClients:ClientViewModel"
@@ -230,20 +484,17 @@
                                                 SelectionMode="Single"
                                                 SelectionChanged="GoalsCollectionView_OnSelectionChanged"
                                                 ItemsUpdatingScrollMode="KeepItemsInView"
-                                                HorizontalScrollBarVisibility="Always"
-                                                >
+                                                HorizontalScrollBarVisibility="Always">
                                     <CollectionView.ItemsLayout>
 
                                         <LinearItemsLayout Orientation="Vertical"
-                                                           ItemSpacing="0" 
-                                                           />
+                                                           ItemSpacing="0" />
                                     </CollectionView.ItemsLayout>
 
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
                                             <Grid ColumnDefinitions="*, *, *"
-                                                  x:DataType="tabClients:GoalViewModel"
-                                                  >
+                                                  x:DataType="tabClients:GoalViewModel">
 
                                                 <Label x:Name="GoalLabel"
                                                        Grid.Column="0"
@@ -251,7 +502,7 @@
                                                        VerticalOptions="CenterAndExpand"
                                                        Text="{Binding Goal.Name}"
                                                        FontSize="Medium"
-                                                       TextColor="Black"/>
+                                                       TextColor="Black" />
                                                 <Label x:Name="GoalDateCompleted"
                                                        Grid.Column="1"
                                                        VerticalTextAlignment="Start"
@@ -259,14 +510,15 @@
                                                        IsVisible="{Binding ShowGoalCompletedDate}"
                                                        Text="{Binding GoalCompletedDateForDisplay}"
                                                        FontSize="Medium"
-                                                       TextColor="Black"/>
+                                                       TextColor="Black" />
                                                 <Image x:Name="GoalStatusImage"
                                                        Grid.Column="2"
                                                        HeightRequest="25"
-                                                       Source="{Binding GoalStatusImageFileName}"
-                                                       >
+                                                       Source="{Binding GoalStatusImageFileName}">
                                                     <Image.GestureRecognizers>
-                                                        <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped_GoalStatusImage"></TapGestureRecognizer>
+                                                        <TapGestureRecognizer
+                                                            Tapped="TapGestureRecognizer_OnTapped_GoalStatusImage">
+                                                        </TapGestureRecognizer>
                                                     </Image.GestureRecognizers>
                                                 </Image>
 
@@ -282,11 +534,11 @@
                     </sfAccordion:AccordionItem> <!--Goals-->
 
                     <sfAccordion:AccordionItem> <!--Measurables-->
-                        
+
                         <sfAccordion:AccordionItem.Header> <!--Measurables: Header-->
-                             
+
                             <Grid ColumnDefinitions="*, 25">
-                                
+
                                 <Label Text="Measurables"
                                        Grid.Column="0"
                                        BackgroundColor="{StaticResource PrimaryBackColor}"
@@ -296,7 +548,7 @@
                                        HeightRequest="{StaticResource AccordionHeight}"
                                        VerticalTextAlignment="Center"
                                        HorizontalTextAlignment="Center" />
-                                
+
                                 <Button x:Name="AddNewMeasurableButton"
                                         Grid.Column="1"
                                         Text="+"
@@ -305,14 +557,13 @@
                                         HeightRequest="{StaticResource AccordionHeight}"
                                         VerticalOptions="FillAndExpand"
                                         HorizontalOptions="FillAndExpand"
-                                        Clicked="AddNewMeasurableButton_OnClicked"
-                                />
+                                        Clicked="AddNewMeasurableButton_OnClicked" />
                             </Grid>
 
                         </sfAccordion:AccordionItem.Header> <!--Measurables: Header-->
 
                         <sfAccordion:AccordionItem.Content> <!--Measurables: Content-->
-                            
+
                             <Grid>
                                 <CollectionView x:Name="MeasurablesCollectionView"
                                                 x:DataType="tabClients:MeasurablesViewModel"
@@ -320,46 +571,41 @@
                                                 SelectionMode="Single"
                                                 SelectionChanged="MeasurablesCollectionView_OnSelectionChanged"
                                                 ItemsUpdatingScrollMode="KeepItemsInView"
-                                                HorizontalScrollBarVisibility="Always"
-                                >
+                                                HorizontalScrollBarVisibility="Always">
                                     <CollectionView.ItemsLayout>
 
                                         <LinearItemsLayout Orientation="Vertical"
-                                                           ItemSpacing="0" 
-                                        />
+                                                           ItemSpacing="0" />
                                     </CollectionView.ItemsLayout>
-                                    
+
                                     <CollectionView.ItemTemplate>
                                         <DataTemplate>
                                             <Grid ColumnDefinitions="5*, 35*, 45*, 15*"
-                                                  x:DataType="tabClients:MeasurablesViewModel"
-                                            >
+                                                  x:DataType="tabClients:MeasurablesViewModel">
                                                 <Image x:Name="IsTargetImage"
                                                        Grid.Column="0"
                                                        HeightRequest="25"
                                                        Source="target_black_48.png"
-                                                       IsVisible="{Binding IsTarget}"
-                                                />
+                                                       IsVisible="{Binding IsTarget}" />
                                                 <Image x:Name="IsInterimImage"
                                                        Grid.Column="0"
                                                        HeightRequest="25"
                                                        Source="done_black_48.png"
-                                                       IsVisible="{Binding IsInterim}"
-                                                />
+                                                       IsVisible="{Binding IsInterim}" />
                                                 <Label x:Name="DateTakenLabel"
                                                        Grid.Column="1"
                                                        VerticalTextAlignment="Start"
                                                        VerticalOptions="CenterAndExpand"
                                                        Text="{Binding DateTaken, StringFormat='{0:yyyy/MM/dd}'}"
                                                        FontSize="Medium"
-                                                       TextColor="Black"/>
+                                                       TextColor="Black" />
                                                 <Label x:Name="VariableLabel"
                                                        Grid.Column="2"
                                                        VerticalTextAlignment="Start"
                                                        VerticalOptions="CenterAndExpand"
                                                        Text="{Binding Variable}"
                                                        FontSize="Medium"
-                                                       TextColor="Black"/>
+                                                       TextColor="Black" />
                                                 <Label x:Name="ValueLabel"
                                                        Grid.Column="3"
                                                        VerticalTextAlignment="Start"
@@ -367,20 +613,20 @@
                                                        Text="{Binding Value}"
                                                        FontSize="Medium"
                                                        TextColor="Black"
-                                                       HorizontalTextAlignment="End"/>
-                                                
+                                                       HorizontalTextAlignment="End" />
+
                                                 <!--TODO: Display Measurables status indicators (image):
                                                     * Improving      (trending up)
                                                     * NotImproving   (trending down)
                                                     * StayingTheSame (trending flat)
-                                                    
+
                                                     Add tap gesture to each of the above that shows the status image meaning:
                                                       * Use ToolTipPopup
                                                 -->
                                             </Grid>
                                         </DataTemplate>
-                                    </CollectionView.ItemTemplate>    
-                                    
+                                    </CollectionView.ItemTemplate>
+
                                 </CollectionView>
                             </Grid>
 
@@ -390,7 +636,7 @@
 
                 </sfAccordion:SfAccordion.Items>
             </sfAccordion:SfAccordion>
-            
+
             <xForms:SfPicker x:Name="PhoneNumberPicker"
                              HeaderText="Main Number"
                              ShowFooter="True"
@@ -398,9 +644,7 @@
                              IsVisible="False"
                              PickerMode="Dialog"
                              OkButtonClicked="PhoneNumberPicker_OnOkButtonClicked"
-                             CancelButtonClicked="PhoneNumberPicker_OnCancelButtonClicked"
-                             
-            />
+                             CancelButtonClicked="PhoneNumberPicker_OnCancelButtonClicked" />
 
         </StackLayout>
     </ContentPage.Content>

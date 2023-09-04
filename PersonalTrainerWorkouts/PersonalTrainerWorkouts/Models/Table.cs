@@ -17,18 +17,18 @@ namespace PersonalTrainerWorkouts.Models
 
         public override string ToString()
         {
-            return string.Format("{1}{2}\t{0}: {3}{2}\t{4}: {5}{2}\t{6}: {7}{2}\t{8}: {9}{10}"
-                               , nameof(Name)        //0
-                               , Name                //1
+            return string.Format("{1}{2}\t{3}: {4}{2}\t{7}: {8}{2}\t{9}:{2}{10}{2}"
+                               , nameof(Name)        //0;  Name
+                               , Name                //1;  Ex: Workouts
                                , Environment.NewLine //2
-                               , nameof(Type)        //3
-                               , Type                //4
-                               , nameof(Tbl_Name)    //5
-                               , Tbl_Name            //6
-                               , nameof(RootPage)    //7
-                               , RootPage.ToString() //8
-                               , nameof(Sql)         //9
-                               , Sql                 //10
+                               , nameof(Type)        //3;  Type
+                               , Type                //4;  Ex: table, index
+                               , nameof(Tbl_Name)    //5;  Tbl_Name
+                               , Tbl_Name            //6;  Ex: Workouts
+                               , nameof(RootPage)    //7;  RootPage
+                               , RootPage.ToString() //8;  Ex: 2
+                               , nameof(Sql)         //9;  Sql
+                               , Sql                 //10; SQL code to generate the table
             );
         }
     }
